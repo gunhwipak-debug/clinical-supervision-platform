@@ -111,7 +111,7 @@ export default async function Page({
         </div>
         <div className="flex items-center gap-md">
           <Link
-            className="rounded bg-primary px-lg py-sm font-label-md text-label-md text-on-primary transition-opacity hover:bg-opacity-90"
+            className="rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80"
             href="/login"
           >
             보안 로그인
@@ -246,43 +246,47 @@ export default async function Page({
             </section>
 
             <div className="grid grid-cols-1 gap-lg md:grid-cols-2">
-              <section className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg">
-                <h2 className="mb-md flex items-center gap-sm font-headline-md text-headline-md text-primary">
-                  <span className="material-symbols-outlined">school</span>
-                  학력 및 자격
-                </h2>
-                <ul className="space-y-sm">
-                  {supervisor.qualifications.length === 0 ? (
-                    <li className="font-body-sm text-body-sm text-on-surface-variant">
-                      공개된 자격 정보가 없습니다.
-                    </li>
-                  ) : (
-                    supervisor.qualifications.map((qualification) => (
-                      <li className="flex items-start gap-sm" key={qualification.name}>
-                        <span className="material-symbols-outlined mt-1 text-[20px] text-secondary">
-                          check_circle
-                        </span>
-                        <div>
-                          <p className="font-label-md text-label-md">
-                            {qualification.name}
-                          </p>
-                        </div>
+              <section className="flex flex-col justify-between rounded-xl border border-outline-variant bg-surface-container-lowest p-lg h-full">
+                <div>
+                  <h2 className="mb-md flex items-center gap-sm font-headline-md text-headline-md text-primary">
+                    <span className="material-symbols-outlined">school</span>
+                    학력 및 자격
+                  </h2>
+                  <ul className="space-y-sm">
+                    {supervisor.qualifications.length === 0 ? (
+                      <li className="font-body-sm text-body-sm text-on-surface-variant">
+                        공개된 자격 정보가 없습니다.
                       </li>
-                    ))
-                  )}
-                </ul>
+                    ) : (
+                      supervisor.qualifications.map((qualification) => (
+                        <li className="flex items-start gap-sm" key={qualification.name}>
+                          <span className="material-symbols-outlined mt-1 text-[20px] text-secondary">
+                            check_circle
+                          </span>
+                          <div>
+                            <p className="font-label-md text-label-md">
+                              {qualification.name}
+                            </p>
+                          </div>
+                        </li>
+                      ))
+                    )}
+                  </ul>
+                </div>
               </section>
 
-              <section className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg">
-                <h2 className="mb-md flex items-center gap-sm font-headline-md text-headline-md text-primary">
-                  <span className="material-symbols-outlined">work</span>
-                  주요 경력
-                </h2>
-                <div className="border-l-2 border-surface-container-highest pl-md">
-                  <p className="font-label-md text-label-md">
-                    등록된 공개 경력 정보는 현재 프로필 소개와 자격 항목을 기준으로
-                    확인합니다.
-                  </p>
+              <section className="flex flex-col justify-between rounded-xl border border-outline-variant bg-surface-container-lowest p-lg h-full">
+                <div>
+                  <h2 className="mb-md flex items-center gap-sm font-headline-md text-headline-md text-primary">
+                    <span className="material-symbols-outlined">work</span>
+                    주요 경력
+                  </h2>
+                  <div className="border-l-2 border-surface-container-highest pl-md">
+                    <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
+                      등록된 공개 경력 정보는 현재 프로필 소개와 자격 항목을 기준으로
+                      확인합니다.
+                    </p>
+                  </div>
                 </div>
               </section>
             </div>
@@ -441,15 +445,16 @@ export default async function Page({
                               <div className="space-y-xs">
                                 {dayOptions.map((option) => (
                                   <div
-                                    className="rounded-lg border border-secondary bg-surface-container-lowest p-xs"
+                                    className="rounded-lg border border-secondary/60 bg-surface-container-lowest p-1.5"
                                     key={`${day.isoDate}-${option.product.id}-${option.startTime}`}
                                   >
-                                    <p className="font-label-md text-label-md text-secondary">
-                                      {option.startTime}-{option.endTime}
+                                    <p className="text-[13px] font-semibold text-secondary text-center">
+                                      {option.startTime} - {option.endTime}
                                     </p>
                                     <Link
-                                      className="mt-xs block rounded-md bg-primary px-xs py-1 text-center font-label-sm text-label-sm text-on-primary transition-opacity hover:opacity-90"
+                                      className="mt-1 block rounded-md bg-primary py-1 text-center text-[11px] font-semibold text-on-primary hover:bg-opacity-90 transition-all truncate"
                                       href={`/requests/new?supervisorId=${supervisor.id}&serviceProductId=${option.product.id}&slot=${encodeURIComponent(slotRequestLabel(day, option))}&slotStart=${encodeURIComponent(slotDateTimeIso(day, option.startTime))}&slotEnd=${encodeURIComponent(slotDateTimeIso(day, option.endTime))}`}
+                                      title={option.product.title}
                                     >
                                       {option.product.title}
                                     </Link>

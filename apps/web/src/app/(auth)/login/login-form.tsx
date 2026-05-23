@@ -63,20 +63,20 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
       description="임상 슈퍼비전 자료와 의뢰 내역을 안전하게 확인합니다."
       title="로그인"
     >
-      <form className="grid gap-5" method="post" onSubmit={form.handleSubmit(submit)}>
-        <Field className="gap-2">
-          <Label className="text-base font-bold sm:text-lg" htmlFor="email">
+      <form className="grid gap-4" method="post" onSubmit={form.handleSubmit(submit)}>
+        <Field className="gap-1.5">
+          <Label className="text-sm font-semibold text-ink-900" htmlFor="email">
             이메일
           </Label>
           <div className="relative">
             <Mail
               aria-hidden
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-500 sm:left-5"
-              size={24}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-400"
+              size={20}
             />
             <Input
               autoComplete="email"
-              className="h-16 rounded-lg bg-surface-base pl-12 text-base sm:h-20 sm:pl-16 sm:text-2xl"
+              className="h-12 rounded-lg bg-surface-base pl-11 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 sm:h-13 sm:pl-12 sm:text-base"
               id="email"
               placeholder="이메일 주소"
               type="email"
@@ -84,19 +84,19 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
             />
           </div>
           {form.formState.errors.email ? (
-            <p className="text-sm text-danger">{form.formState.errors.email.message}</p>
+            <p className="text-xs text-danger">{form.formState.errors.email.message}</p>
           ) : null}
         </Field>
-        <Field className="gap-2">
-          <div className="flex items-start justify-between gap-3 sm:items-center">
+        <Field className="gap-1.5">
+          <div className="flex items-center justify-between gap-3">
             <Label
-              className="whitespace-nowrap text-base font-bold sm:text-lg"
+              className="whitespace-nowrap text-sm font-semibold text-ink-900"
               htmlFor="password"
             >
               비밀번호
             </Label>
             <Link
-              className="shrink-0 text-right text-sm font-semibold text-brand-600 hover:underline sm:text-base"
+              className="shrink-0 text-right text-xs font-medium text-brand-600 hover:underline sm:text-sm"
               href="/forgot-password"
             >
               비밀번호 찾기
@@ -105,12 +105,12 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
           <div className="relative">
             <LockKeyhole
               aria-hidden
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-500 sm:left-5"
-              size={24}
+              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-400"
+              size={20}
             />
             <Input
               autoComplete="current-password"
-              className="h-16 rounded-lg bg-surface-base px-12 text-base sm:h-20 sm:px-16 sm:text-2xl"
+              className="h-12 rounded-lg bg-surface-base px-11 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 sm:h-13 sm:px-12 sm:text-base"
               id="password"
               placeholder="비밀번호를 입력하세요"
               type={showPassword ? "text" : "password"}
@@ -118,32 +118,32 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
             />
             <button
               aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-              className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full text-ink-500 transition hover:bg-surface-sunken hover:text-ink-900 sm:right-4"
+              className="absolute right-2 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full text-ink-400 transition hover:bg-surface-sunken hover:text-ink-800"
               onClick={() => setShowPassword((value) => !value)}
               type="button"
             >
               {showPassword ? (
-                <EyeOff aria-hidden size={24} />
+                <EyeOff aria-hidden size={18} />
               ) : (
-                <Eye aria-hidden size={24} />
+                <Eye aria-hidden size={18} />
               )}
             </button>
           </div>
           {form.formState.errors.password ? (
-            <p className="text-sm text-danger">
+            <p className="text-xs text-danger">
               {form.formState.errors.password.message}
             </p>
           ) : null}
         </Field>
         <Button
-          className="h-16 rounded-lg bg-ink-900 text-xl font-bold text-surface-elevated hover:bg-ink-700"
+          className="mt-2 h-12 rounded-lg bg-ink-900 text-sm font-bold text-surface-elevated transition-colors hover:bg-ink-800 active:bg-ink-950 sm:h-13 sm:text-base"
           disabled={!isHydrated || form.formState.isSubmitting}
           type="submit"
         >
           로그인
-          <ArrowRight aria-hidden size={22} />
+          <ArrowRight aria-hidden size={18} />
         </Button>
-        <div className="border-t border-line pt-7 text-center text-xl leading-relaxed text-ink-700">
+        <div className="border-t border-line pt-5 text-center text-sm leading-relaxed text-ink-600 sm:text-base">
           아직 계정이 없나요?{" "}
           <Link
             className="font-bold text-ink-900 hover:underline"

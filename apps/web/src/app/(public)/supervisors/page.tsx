@@ -96,7 +96,7 @@ export default async function Page({
         </div>
         <div className="flex items-center gap-md">
           <Link
-            className="hidden cursor-pointer rounded-lg bg-primary-container px-md py-2 font-label-md text-label-md text-on-primary-fixed transition-colors hover:bg-surface-tint hover:text-on-primary active:opacity-80 md:block"
+            className="hidden cursor-pointer rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80 md:block"
             href="/login"
           >
             보안 로그인
@@ -125,23 +125,23 @@ export default async function Page({
 
         <form
           action="/supervisors"
-          className="relative z-10 mb-xl flex w-full flex-col items-center gap-sm rounded-xl border border-outline-variant bg-surface-container-lowest p-sm shadow-sm md:flex-row md:p-md"
+          className="relative z-10 mb-xl flex w-full flex-col items-stretch gap-sm rounded-xl border border-outline-variant bg-surface-container-lowest p-sm shadow-sm md:flex-row md:items-center md:p-md"
         >
           <div className="relative w-full md:flex-1">
-            <span className="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">
+            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
               search
             </span>
             <input
-              className="w-full rounded-lg border border-outline-variant bg-surface py-2 pl-xl pr-sm font-body-md text-body-md text-on-surface transition-all placeholder:text-on-tertiary-container focus:border-secondary focus:outline-none focus:ring-1 focus:ring-secondary"
+              className="w-full h-11 rounded-lg border border-outline-variant bg-surface pl-10 pr-sm font-body-md text-sm text-on-surface transition-all placeholder:text-on-tertiary-container focus:border-secondary focus:outline-none focus:ring-1 focus:ring-secondary"
               defaultValue={keyword ?? ""}
               name="keyword"
               placeholder="이름, 전문 분야 또는 자격증 검색"
               type="text"
             />
           </div>
-          <div className="flex w-full flex-wrap gap-sm md:w-auto md:flex-nowrap">
+          <div className="flex w-full flex-wrap items-center gap-sm md:w-auto md:flex-nowrap">
             <select
-              className="flex-1 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm py-2 font-label-md text-label-md text-on-surface focus:border-secondary focus:outline-none md:w-48"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-44"
               defaultValue={qualification}
               name="qualification"
             >
@@ -151,7 +151,7 @@ export default async function Page({
               <option value="신경심리전문가">신경심리전문가</option>
             </select>
             <select
-              className="flex-1 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm py-2 font-label-md text-label-md text-on-surface focus:border-secondary focus:outline-none md:w-48"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-44"
               defaultValue={specialty}
               name="specialty"
             >
@@ -163,7 +163,7 @@ export default async function Page({
               ))}
             </select>
             <select
-              className="flex-1 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm py-2 font-label-md text-label-md text-on-surface focus:border-secondary focus:outline-none md:w-40"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-38"
               defaultValue={availability ?? ""}
               name="availability"
             >
@@ -172,7 +172,7 @@ export default async function Page({
               <option value="this_month">이번 달 가능</option>
             </select>
             <input
-              className="min-w-0 flex-1 rounded-lg border border-outline-variant bg-surface px-sm py-2 font-label-md text-label-md text-on-surface placeholder:text-on-tertiary-container focus:border-secondary focus:outline-none md:w-36"
+              className="min-w-0 flex-1 h-11 rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface placeholder:text-on-tertiary-container focus:border-secondary focus:outline-none md:w-32"
               defaultValue={priceMin ?? ""}
               inputMode="numeric"
               min={0}
@@ -181,7 +181,7 @@ export default async function Page({
               type="number"
             />
             <input
-              className="min-w-0 flex-1 rounded-lg border border-outline-variant bg-surface px-sm py-2 font-label-md text-label-md text-on-surface placeholder:text-on-tertiary-container focus:border-secondary focus:outline-none md:w-36"
+              className="min-w-0 flex-1 h-11 rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface placeholder:text-on-tertiary-container focus:border-secondary focus:outline-none md:w-32"
               defaultValue={priceMax ?? ""}
               inputMode="numeric"
               min={0}
@@ -190,7 +190,7 @@ export default async function Page({
               type="number"
             />
             <select
-              className="flex-1 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm py-2 font-label-md text-label-md text-on-surface focus:border-secondary focus:outline-none md:w-40"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-38"
               defaultValue={sort}
               name="sort"
             >
@@ -199,7 +199,7 @@ export default async function Page({
               <option value="total_completed">진행 많은 순</option>
             </select>
             <button
-              className="rounded-lg bg-primary-container px-md py-2 font-label-md text-label-md text-on-primary transition-colors hover:bg-surface-tint"
+              className="rounded-lg h-11 bg-primary px-md font-label-md text-sm font-bold text-on-primary transition-all hover:bg-opacity-90 active:opacity-80"
               type="submit"
             >
               검색

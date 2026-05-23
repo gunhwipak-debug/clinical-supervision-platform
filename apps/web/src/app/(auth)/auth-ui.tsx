@@ -40,14 +40,14 @@ export function AuthScaffold({
         </div>
 
         <footer className="mt-10 border-t border-line pt-8 text-ink-500">
-          <p className="mb-6 text-3xl font-bold text-ink-900">ClinicFlow</p>
-          <nav className="grid gap-4 text-lg">
-            <Link href="/privacy">개인정보 처리방침</Link>
-            <Link href="/terms">서비스 이용약관</Link>
-            <Link href="/security">보안 기준</Link>
-            <Link href="/forgot-password">계정 지원</Link>
+          <p className="mb-4 text-xl font-bold text-ink-900">ClinicFlow</p>
+          <nav className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
+            <Link className="hover:text-brand-600 transition-colors" href="/privacy">개인정보 처리방침</Link>
+            <Link className="hover:text-brand-600 transition-colors" href="/terms">서비스 이용약관</Link>
+            <Link className="hover:text-brand-600 transition-colors" href="/security">보안 기준</Link>
+            <Link className="hover:text-brand-600 transition-colors" href="/forgot-password">계정 지원</Link>
           </nav>
-          <p className="mt-10 text-lg leading-relaxed">
+          <p className="mt-6 text-sm leading-relaxed">
             © {currentYear} ClinicFlow. 민감정보 보호 아키텍처를 기준으로 운영됩니다.
           </p>
         </footer>
@@ -75,7 +75,7 @@ export function AuthPanel({
 
   return (
     <section className={`mx-auto grid w-full ${maxWidth} gap-5`}>
-      <Card className="rounded-2xl border-line bg-surface-elevated p-10 shadow-card md:p-10">
+      <Card className="rounded-2xl border-line bg-surface-elevated p-6 shadow-card md:p-10">
         <div className="mb-6 grid gap-3 text-center">
           {badge ? (
             <Badge className="mx-auto w-fit" tone="accent">
