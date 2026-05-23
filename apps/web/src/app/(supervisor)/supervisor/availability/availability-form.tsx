@@ -190,14 +190,23 @@ export function AvailabilityForm({
                     const isSelected = selected.has(`${String(day.value)}-${time}`);
                     return (
                       <button
-                        className={`slot-btn h-10 w-full rounded border font-label-sm text-label-sm ${
-                          isSelected ? "slot-available shadow-sm" : "slot-empty"
+                        className={`slot-btn flex h-10 w-full items-center justify-center gap-xs rounded border font-label-sm text-[12px] transition-all duration-200 active:scale-95 hover:scale-[1.025] ${
+                          isSelected 
+                            ? "bg-secondary text-on-primary border-secondary shadow-sm" 
+                            : "bg-surface border-dashed border-outline-variant text-on-surface-variant hover:border-secondary/60 hover:bg-surface-bright"
                         }`}
                         key={time}
                         onClick={() => toggle(day.value, time)}
                         type="button"
                       >
-                        {isSelected ? "가능" : "+ 추가"}
+                        {isSelected ? (
+                          <>
+                            <span className="material-symbols-outlined text-[14px] font-bold animate-[scaleIn_0.15s_ease-out]">check</span>
+                            <span>가능</span>
+                          </>
+                        ) : (
+                          <span>+ 추가</span>
+                        )}
                       </button>
                     );
                   })}

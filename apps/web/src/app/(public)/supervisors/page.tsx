@@ -300,7 +300,7 @@ export default async function Page({
           </div>
           <div className="flex w-full flex-wrap items-center gap-sm md:w-auto md:flex-nowrap">
             <select
-              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-44"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface pl-sm pr-8 font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-44 select-custom-arrow"
               defaultValue={qualification}
               name="qualification"
             >
@@ -310,7 +310,7 @@ export default async function Page({
               <option value="신경심리전문가">신경심리전문가</option>
             </select>
             <select
-              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-44"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface pl-sm pr-8 font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-44 select-custom-arrow"
               defaultValue={specialty}
               name="specialty"
             >
@@ -322,7 +322,7 @@ export default async function Page({
               ))}
             </select>
             <select
-              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-38"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface pl-sm pr-8 font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-38 select-custom-arrow"
               defaultValue={availability ?? ""}
               name="availability"
             >
@@ -349,7 +349,7 @@ export default async function Page({
               type="number"
             />
             <select
-              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface px-sm font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-38"
+              className="flex-1 h-11 cursor-pointer rounded-lg border border-outline-variant bg-surface pl-sm pr-8 font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none md:w-38 select-custom-arrow"
               defaultValue={sort}
               name="sort"
             >
@@ -526,15 +526,15 @@ function SupervisorCard({ supervisor }: { supervisor: profiles.PublicSupervisor 
           </div>
         </div>
       </div>
-      <div className="mb-lg flex flex-grow flex-wrap gap-xs">
+      <div className="mb-lg flex flex-wrap gap-xs flex-nowrap overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden min-h-[32px] items-center">
         {supervisor.specialties.length === 0 ? (
-          <span className="rounded-md border border-outline-variant/30 bg-surface-container px-2.5 py-1 font-label-sm text-label-sm text-on-surface">
+          <span className="rounded-md border border-outline-variant/30 bg-surface-container px-2.5 py-1 font-label-sm text-label-sm text-on-surface whitespace-nowrap shrink-0">
             전문분야 미등록
           </span>
         ) : (
-          supervisor.specialties.slice(0, 4).map((specialtyItem) => (
+          supervisor.specialties.map((specialtyItem) => (
             <span
-              className="rounded-md border border-outline-variant/30 bg-surface-container px-2.5 py-1 font-label-sm text-label-sm text-on-surface"
+              className="rounded-md border border-outline-variant/30 bg-surface-container px-2.5 py-1 font-label-sm text-label-sm text-on-surface whitespace-nowrap shrink-0"
               key={specialtyItem}
             >
               {specialtyItem}

@@ -331,12 +331,21 @@ export default async function Page({
                     <span className="material-symbols-outlined">work</span>
                     주요 경력
                   </h2>
-                  <div className="border-l-2 border-surface-container-highest pl-md">
-                    <p className="font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-                      등록된 공개 경력 정보는 현재 프로필 소개와 자격 항목을 기준으로
-                      확인합니다.
-                    </p>
-                  </div>
+                  <ul className="space-y-sm">
+                    <li className="flex items-start gap-sm">
+                      <span className="material-symbols-outlined mt-1 text-[20px] text-secondary">
+                        stars
+                      </span>
+                      <div>
+                        <p className="font-label-md text-label-md">
+                          임상 심리 실무 경력 {supervisor.yearsOfExperience ? `${String(supervisor.yearsOfExperience)}년 이상` : "등록 진행 중"}
+                        </p>
+                        <p className="mt-xs font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                          본 전문가의 학력, 자격 증빙 및 활동 이력은 플랫폼 관리자 승인을 완료했습니다.
+                        </p>
+                      </div>
+                    </li>
+                  </ul>
                 </div>
               </section>
             </div>
@@ -523,6 +532,31 @@ export default async function Page({
           </div>
         </div>
       </main>
+
+      {/* 모바일 화면 전용 글라스모피즘 하단 플로팅 예약 바 */}
+      {firstProduct ? (
+        <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant bg-surface/80 px-gutter py-sm backdrop-blur-md dark:border-outline dark:bg-inverse-surface/80 md:hidden">
+          <div className="mx-auto flex w-full max-w-container-max items-center justify-between gap-md">
+            <div className="flex flex-col">
+              <span className="font-label-sm text-[11px] text-on-surface-variant">대표 요금</span>
+              <span className="font-headline-sm text-base font-bold text-primary dark:text-inverse-primary">
+                ₩ {firstProduct.priceKrw.toLocaleString("ko-KR")}~
+              </span>
+            </div>
+            <Link
+              className="flex-grow flex items-center justify-center gap-xs rounded-lg bg-primary py-2.5 font-label-md text-xs font-bold text-on-primary shadow-sm transition-all hover:bg-opacity-90 active:scale-98"
+              href={
+                timedProducts.length > 0
+                  ? (availabilityHref as never)
+                  : (`/requests/new?supervisorId=${supervisor.id}&serviceProductId=${firstProduct.id}` as never)
+              }
+            >
+              <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+              {timedProducts.length > 0 ? "예약 일정 선택" : "의뢰 신청"}
+            </Link>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

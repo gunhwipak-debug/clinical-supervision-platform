@@ -63,7 +63,6 @@ export default async function RequestDetailPage({
     contextFor(current, undefined, { phiAccess: true }),
     (tx) => supervision.getCompletionRecordForRequest(tx, id)
   );
-  const locked = basic.status !== "draft";
 
   return (
     <main className="min-h-screen bg-surface-base pb-24 text-ink-900">
@@ -186,32 +185,56 @@ export default async function RequestDetailPage({
             </Card>
           </div>
 
-          <Card className="h-fit rounded-2xl border-line bg-surface-elevated shadow-card">
-            <h2 className="mb-4 text-xl font-bold">진행 요약</h2>
-            <div className="grid gap-3 text-sm">
-              <ProgressRow
-                label="상태"
-                value={statusLabel(basic.status)}
-                tone="accent"
-              />
-              <ProgressRow
-                label="케이스 패킷"
-                value={basic.packetComplete ? "완료" : locked ? "잠김" : "미완료"}
-                tone={basic.packetComplete ? "brand" : locked ? "neutral" : "danger"}
-              />
-              <ProgressRow
-                label="자료 점검"
-                value={
-                  basic.deidentificationComplete ? "기록됨" : locked ? "잠김" : "선택"
-                }
-                tone={
-                  basic.deidentificationComplete
-                    ? "brand"
-                    : locked
-                      ? "neutral"
-                      : "danger"
-                }
-              />
+          <Card className="h-fit rounded-2xl border-line bg-surface-elevated p-5 shadow-card">
+            <h2 className="mb-5 text-xl font-bold text-ink-900">진행 타임라인</h2>
+            <div className="relative border-l border-outline-variant/60 ml-3.5 space-y-lg pb-1">
+              {timelineSteps.map((stepItem, idx) => {
+                const isFinished = checkFinished(stepItem.key, basic.status);
+                const isActive = checkActive(stepItem.key, basic.status);
+                
+                return (
+                  <div className="relative pl-6" key={stepItem.key}>
+                    {/* 커스텀 타임라인 도트 */}
+                    <div className={`absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full border-2 text-[12px] transition-all duration-200 ${
+                      isFinished 
+                        ? "bg-primary border-primary text-on-primary"
+                        : isActive
+                          ? "bg-surface-elevated border-secondary text-secondary animate-pulse ring-4 ring-secondary/15"
+                          : "bg-surface-elevated border-outline-variant text-on-surface-variant"
+                    }`}>
+                      {isFinished ? (
+                        <span className="material-symbols-outlined text-[16px] font-bold">check</span>
+                      ) : (
+                        <span>{idx + 1}</span>
+                      )}
+                    </div>
+                    <div>
+                      <h3 className={`font-label-md text-sm font-bold ${
+                        isActive ? "text-secondary" : isFinished ? "text-primary" : "text-on-surface-variant"
+                      }`}>
+                        {stepItem.label}
+                      </h3>
+                      <p className="mt-xs font-body-sm text-[11px] text-on-surface-variant leading-relaxed">
+                        {stepItem.desc}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+            
+            {/* 상태별 상세 수치 요약 */}
+            <div className="mt-md border-t border-outline-variant/40 pt-md grid gap-2 text-xs">
+              <div className="flex items-center justify-between">
+                <span className="text-on-surface-variant">현재 상태</span>
+                <Badge tone="accent">{statusLabel(basic.status)}</Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-on-surface-variant">사례 완료여부</span>
+                <Badge tone={basic.packetComplete ? "brand" : "danger"}>
+                  {basic.packetComplete ? "완료" : "미완료"}
+                </Badge>
+              </div>
             </div>
           </Card>
         </section>
@@ -220,21 +243,56 @@ export default async function RequestDetailPage({
   );
 }
 
-function ProgressRow({
-  label,
-  value,
-  tone
-}: {
-  label: string;
-  value: string;
-  tone: "brand" | "accent" | "neutral" | "danger";
-}) {
-  return (
-    <div className="flex items-center justify-between gap-3">
-      <span className="text-ink-700">{label}</span>
-      <Badge tone={tone}>{value}</Badge>
-    </div>
-  );
+const timelineSteps = [
+  { key: "draft", label: "작성 및 자료 점검", desc: "케이스 패킷 정보 입력 및 파일 비식별화" },
+  { key: "payment", label: "결제 완료", desc: "Toss 결제 완료 후 매칭 성사" },
+  { key: "supervision", label: "슈퍼비전 진행", desc: "전문가 검토 및 1:1 세션 진행" },
+  { key: "completed", label: "최종 완료", desc: "완료 기록 및 피드백 발급 완료" }
+] as const;
+
+function checkFinished(stepKey: string, status: string): boolean {
+  if (status === "rejected" || status === "cancelled" || status === "refunded") return false;
+  
+  if (stepKey === "draft") {
+    return status !== "draft";
+  }
+  if (stepKey === "payment") {
+    return status !== "draft" && status !== "awaiting_payment";
+  }
+  if (stepKey === "supervision") {
+    return (
+      status === "feedback_submitted" ||
+      status === "completion_record_issued" ||
+      status === "completed"
+    );
+  }
+  if (stepKey === "completed") {
+    return status === "completed" || status === "completion_record_issued";
+  }
+  return false;
+}
+
+function checkActive(stepKey: string, status: string): boolean {
+  if (status === "rejected" || status === "cancelled" || status === "refunded") return false;
+  
+  if (stepKey === "draft") {
+    return status === "draft";
+  }
+  if (stepKey === "payment") {
+    return status === "awaiting_payment";
+  }
+  if (stepKey === "supervision") {
+    return (
+      status === "paid" ||
+      status === "awaiting_supervisor_review" ||
+      status === "accepted" ||
+      status === "in_review"
+    );
+  }
+  if (stepKey === "completed") {
+    return status === "feedback_submitted";
+  }
+  return false;
 }
 
 function formatBookingSlot(request: supervision.SupervisionRequestDetails): string {

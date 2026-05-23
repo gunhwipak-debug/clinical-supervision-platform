@@ -78,6 +78,9 @@ importers:
       '@types/node':
         specifier: ^24.10.1
         version: 24.12.4
+      drizzle-orm:
+        specifier: ^0.45.2
+        version: 0.45.2(@electric-sql/pglite@0.4.5)(@neondatabase/serverless@1.1.0)(pg@8.21.0)(postgres@3.4.9)
       eslint:
         specifier: ^9.39.1
         version: 9.39.4(jiti@2.7.0)

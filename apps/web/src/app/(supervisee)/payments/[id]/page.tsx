@@ -60,29 +60,39 @@ export default async function PaymentDetailPage({
       </header>
 
       <div className="mx-auto grid max-w-4xl gap-5 px-5 py-7">
-        <Card className="rounded-3xl border-line bg-surface-elevated p-7 shadow-card">
+        <Card className="relative overflow-hidden rounded-3xl border border-outline-variant/80 bg-surface-container-lowest p-7 shadow-xl shadow-secondary/5 dark:bg-inverse-surface/10">
+          {/* 장식용 프리미엄 탑 그라데이션 라인 */}
+          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
+          
           <div className="mb-5 flex items-start justify-between gap-4">
-            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-secondary/10 text-secondary">
               <ReceiptText aria-hidden size={24} />
             </span>
             <Badge tone={paymentTone(payment.status)}>
               {paymentLabel(payment.status)}
             </Badge>
           </div>
-          <p className="text-lg font-medium text-ink-700">
-            {payment.productTitle ?? "슈퍼비전 결제"}
+          <p className="text-sm font-semibold tracking-wide text-on-surface-variant/80 uppercase">
+            {payment.productTitle ?? "임상 슈퍼비전 결제 서비스"}
           </p>
-          <h2 className="mt-3 text-4xl font-bold text-ink-900">
+          <h2 className="mt-2 text-4xl font-extrabold tracking-tight text-primary dark:text-inverse-primary">
             ₩{payment.amountKrw.toLocaleString("ko-KR")}
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-ink-500">
-            결제번호 {shortPaymentId(payment.id)} · 의뢰{" "}
-            {requestStatusLabel(payment.requestStatus)}
-          </p>
+          <div className="mt-4 flex flex-wrap items-center gap-xs border-t border-dashed border-outline-variant/60 pt-4 text-xs text-on-surface-variant">
+            <span>결제번호</span>
+            <code className="rounded bg-surface-container px-1.5 py-0.5 font-mono text-[11px] font-bold text-secondary">
+              {shortPaymentId(payment.id)}
+            </code>
+            <span className="text-outline-variant/60">|</span>
+            <span>의뢰 상태</span>
+            <Badge tone="neutral" className="text-[10px] py-0 px-1.5">
+              {requestStatusLabel(payment.requestStatus)}
+            </Badge>
+          </div>
         </Card>
 
         <section className="grid gap-5 lg:grid-cols-[1fr_360px]">
-          <Card className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+          <Card className="rounded-3xl border border-outline-variant/80 bg-surface-container-lowest p-6 shadow-lg shadow-outline-variant/5">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-ink-900">금액 상세</h2>

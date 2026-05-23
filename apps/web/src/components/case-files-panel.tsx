@@ -113,6 +113,7 @@ export function CaseFilesPanel({
   const [fileAction, setFileAction] = useState<FileAction | null>(null);
   const [fileActionNote, setFileActionNote] = useState("");
   const [fileActionBusy, setFileActionBusy] = useState(false);
+  const [selectedFileName, setSelectedFileName] = useState("");
   const form = useForm<FileFormValues>({
     resolver: zodResolver(fileFormSchema),
     defaultValues: { kind: "report_draft" }
@@ -172,6 +173,7 @@ export function CaseFilesPanel({
       const registeredFile = registered.data.file;
       setFiles((current) => [registeredFile, ...current]);
       form.reset({ kind: "report_draft" });
+      setSelectedFileName("");
       toast.success("파일이 등록되었습니다.");
     } catch (error) {
       toast.error(error instanceof Error ? error.message : "파일 업로드 실패");
@@ -418,42 +420,73 @@ export function CaseFilesPanel({
       </div>
 
       {canUpload ? (
-        <form className="grid gap-3" onSubmit={form.handleSubmit(upload)}>
-          <div className="grid gap-3 md:grid-cols-[180px_1fr_auto]">
-            <select
-              className="h-11 rounded-md border border-line bg-surface-elevated px-3"
-              {...form.register("kind")}
-            >
-              <option value="report_draft">보고서 초안</option>
-              <option value="test_result">검사 결과</option>
-              <option value="scoring_sheet">채점표</option>
-              <option value="response_sheet">반응지</option>
-              <option value="behavioral_observation">행동관찰</option>
-              <option value="interview_summary">면담 요약</option>
-              <option value="direct_edit_revision">직접 수정본</option>
-              <option value="other">기타</option>
-            </select>
-            <Field>
-              <Label className="sr-only" htmlFor="case-file">
-                파일 선택
-              </Label>
-              <input
-                className="h-11 w-full rounded-md border border-line bg-surface-elevated px-3 py-2 text-sm"
-                id="case-file"
-                accept=".pdf,.png,.jpg,.jpeg,.webp,.hwp,.hwpx,.docx,.xlsx,.txt,.md,.markdown,.json,.csv,application/pdf,image/png,image/jpeg,image/webp,application/x-hwp,application/haansofthwp,application/vnd.hancom.hwp,application/haansofthwpx,application/vnd.hancom.hwpx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,text/markdown,application/json,text/csv"
-                type="file"
-                {...form.register("file")}
-              />
-              {form.formState.errors.file ? (
-                <p className="text-sm text-danger" role="alert">
-                  {form.formState.errors.file.message}
-                </p>
-              ) : null}
-            </Field>
-            <Button disabled={busy} type="submit">
-              <UploadCloud aria-hidden size={16} />
-              업로드
-            </Button>
+        <form className="grid gap-4 rounded-xl border border-dashed border-outline-variant/60 bg-surface p-6 transition-all hover:border-secondary hover:bg-surface-bright/50" onSubmit={form.handleSubmit(upload)}>
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center">
+              <div className="w-full md:w-56">
+                <Label htmlFor="file-kind-select" className="mb-1.5 block font-label-md text-xs text-on-surface-variant font-bold">자료 종류</Label>
+                <select
+                  id="file-kind-select"
+                  className="h-11 w-full rounded-lg border border-outline bg-surface px-3 font-label-md text-sm text-on-surface focus:border-secondary focus:outline-none"
+                  {...form.register("kind")}
+                >
+                  <option value="report_draft">보고서 초안</option>
+                  <option value="test_result">검사 결과</option>
+                  <option value="scoring_sheet">채점표</option>
+                  <option value="response_sheet">반응지</option>
+                  <option value="behavioral_observation">행동관찰</option>
+                  <option value="interview_summary">면담 요약</option>
+                  <option value="direct_edit_revision">직접 수정본</option>
+                  <option value="other">기타</option>
+                </select>
+              </div>
+
+              {/* 프리미엄 파일 드래그 앤 드롭 카드 라벨 */}
+              <div className="flex-1">
+                <Label className="mb-1.5 block font-label-md text-xs text-on-surface-variant font-bold">파일 첨부</Label>
+                <label className="flex h-11 w-full cursor-pointer items-center justify-between rounded-lg border border-outline bg-surface px-sm font-label-md text-sm text-on-surface transition-all hover:bg-surface-container active:scale-99">
+                  <div className="flex items-center gap-xs truncate">
+                    <span className="material-symbols-outlined text-[20px] text-on-surface-variant">
+                      attachment
+                    </span>
+                    <span className="truncate text-on-surface-variant">
+                      {selectedFileName || "자료 파일을 선택하세요."}
+                    </span>
+                  </div>
+                  <span className="rounded bg-surface-container-highest px-xs py-0.5 font-label-sm text-xs font-bold text-on-surface-variant">
+                    찾아보기
+                  </span>
+                  <input
+                    className="hidden"
+                    id="case-file"
+                    accept=".pdf,.png,.jpg,.jpeg,.webp,.hwp,.hwpx,.docx,.xlsx,.txt,.md,.markdown,.json,.csv,application/pdf,image/png,image/jpeg,image/webp,application/x-hwp,application/haansofthwp,application/vnd.hancom.hwp,application/haansofthwpx,application/vnd.hancom.hwpx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain,text/markdown,application/json,text/csv"
+                    type="file"
+                    {...form.register("file", {
+                      onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                        const fileList = e.target.files;
+                        if (fileList && fileList.length > 0) {
+                          setSelectedFileName(fileList[0]?.name ?? "");
+                        } else {
+                          setSelectedFileName("");
+                        }
+                      }
+                    })}
+                  />
+                </label>
+              </div>
+
+              <div className="mt-md md:mt-auto">
+                <Button disabled={busy} type="submit" className="h-11 w-full md:w-auto font-label-md text-sm font-bold active:scale-98">
+                  <UploadCloud aria-hidden size={16} />
+                  업로드
+                </Button>
+              </div>
+            </div>
+            {form.formState.errors.file ? (
+              <p className="text-xs text-danger font-medium leading-none" role="alert">
+                {form.formState.errors.file.message}
+              </p>
+            ) : null}
           </div>
         </form>
       ) : null}

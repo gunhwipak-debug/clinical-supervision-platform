@@ -170,7 +170,7 @@ export default async function Page() {
               ]
             ].map(([href, label, icon, body]) => (
               <Link
-                className="flex items-center gap-sm rounded-xl border border-outline-variant bg-surface-container-lowest p-md hover:bg-surface-container-low"
+                className="flex items-center gap-sm rounded-xl border border-outline-variant bg-surface-container-lowest p-md transition-all duration-250 hover:scale-[1.015] hover:border-secondary hover:bg-surface-bright active:scale-[0.985] shadow-2xs hover:shadow-sm"
                 href={href as never}
                 key={href}
               >
@@ -202,7 +202,7 @@ function KpiCard({
   value: number;
 }) {
   return (
-    <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg">
+    <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg transition-all duration-300 hover:scale-[1.025] hover:border-secondary hover:shadow-lg hover:shadow-secondary/5 cursor-default">
       <span className="material-symbols-outlined text-secondary">{icon}</span>
       <p className="mt-md font-label-md text-label-md text-on-surface-variant">
         {label}
