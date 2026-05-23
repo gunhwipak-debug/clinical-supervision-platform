@@ -16,7 +16,9 @@
   "dependencies": {
     "@csp/shared": "workspace:*",
     "@electric-sql/pglite": "^0.4.5",
+    "@neondatabase/serverless": "^1.1.0",
     "drizzle-orm": "^0.45.2",
+    "pg": "^8.21.0",
     "postgres": "^3.4.7"
   },
   "devDependencies": {
