@@ -12,6 +12,17 @@ type AppDatabase = ReturnType<typeof drizzlePostgres<typeof schema>>;
 let pgliteDatabase: AppDatabase | null = null;
 let pgliteClient: PGlite | null = null;
 
+// Global cache for postgres clients to prevent leaks in hot reloading / serverless envs
+declare global {
+  // eslint-disable-next-line no-var
+  var __db_clients: Record<string, {
+    client: postgres.Sql;
+    drizzle: AppDatabase;
+  }> | undefined;
+}
+
+globalThis.__db_clients = globalThis.__db_clients || {};
+
 export function createDatabase(connectionString = process.env["DATABASE_URL"]) {
   if (process.env["DEV_DB"] === "pglite") {
     if (!pgliteDatabase) {
@@ -27,12 +38,25 @@ export function createDatabase(connectionString = process.env["DATABASE_URL"]) {
 
   const resolvedConnectionString = resolveConnectionString(connectionString);
 
+  if (globalThis.__db_clients?.[resolvedConnectionString]) {
+    return globalThis.__db_clients[resolvedConnectionString].drizzle;
+  }
+
   const client = postgres(resolvedConnectionString, {
     max: 10,
     prepare: false
   });
 
-  return drizzlePostgres(client, { schema });
+  const drizzleInstance = drizzlePostgres(client, { schema });
+
+  if (globalThis.__db_clients) {
+    globalThis.__db_clients[resolvedConnectionString] = {
+      client,
+      drizzle: drizzleInstance
+    };
+  }
+
+  return drizzleInstance;
 }
 
 export type Database = ReturnType<typeof createDatabase>;

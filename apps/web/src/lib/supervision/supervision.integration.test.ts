@@ -29,7 +29,8 @@ const migrations = [
   "packages/db/drizzle/0009_supervision_request_constraints.sql",
   "packages/db/drizzle/0010_payments_constraints.sql",
   "packages/db/drizzle/0013_document_workspace.sql",
-  "packages/db/drizzle/0014_google_calendar.sql"
+  "packages/db/drizzle/0014_google_calendar.sql",
+  "packages/db/drizzle/0016_add_zoom_meeting_url.sql"
 ] as const;
 
 const superviseeId = "30000000-0000-0000-0000-000000000001";
@@ -206,7 +207,7 @@ describe("supervision request integration", () => {
     expect(body.error?.code).toBe("past_slot");
   });
 
-  it("rejects timed booking until the supervisor connects Google Calendar", async () => {
+  it("succeeds timed booking with platform-only calendar when the supervisor has not connected Google Calendar", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
 
@@ -220,15 +221,15 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as ApiEnvelope;
+    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
     `);
 
-    expect(response.status, JSON.stringify(body)).toBe(409);
-    expect(body.error?.code).toBe("calendar_not_connected");
-    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(0);
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.data?.calendarSync).toBe("not_required");
+    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(1);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -385,7 +386,7 @@ describe("supervision request integration", () => {
     );
   });
 
-  it("rolls back the internal booking and removes the orphaned Google Calendar event if link persistence fails", async () => {
+  it("completes the booking internally and removes the orphaned Google Calendar event if link persistence fails", async () => {
     const existingRequest = await createDraft();
     const existingBooking = await createBooking(existingRequest?.id ?? "");
     await connectGoogleCalendar();
@@ -407,19 +408,19 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as ApiEnvelope;
+    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
     `);
 
-    expect(response.status, JSON.stringify(body)).toBe(409);
-    expect(body.error?.code).toBe("calendar_sync_failed");
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.data?.calendarSync).toBe("sync_failed");
     expect(fetchMock).toHaveBeenCalledWith(
       expect.stringContaining("/events/google-event-duplicate"),
       expect.objectContaining({ method: "DELETE" })
     );
-    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(1);
+    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(2);
   });
 
   it("rejects a selected slot that overlaps Google Calendar busy time", async () => {
@@ -487,7 +488,7 @@ describe("supervision request integration", () => {
     expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(0);
   });
 
-  it("blocks new booking when the platform Google Calendar OAuth config is missing", async () => {
+  it("succeeds timed booking with platform-only calendar when the platform Google Calendar OAuth config is missing", async () => {
     vi.stubEnv("GOOGLE_CALENDAR_CLIENT_ID", "");
     vi.stubEnv("GOOGLE_CALENDAR_CLIENT_SECRET", "");
     await connectGoogleCalendar();
@@ -504,19 +505,19 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as ApiEnvelope;
+    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
     `);
 
-    expect(response.status, JSON.stringify(body)).toBe(503);
-    expect(body.error?.code).toBe("calendar_config_required");
-    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(0);
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.data?.calendarSync).toBe("not_required");
+    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(1);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("blocks new booking when a connected Google Calendar needs reauth", async () => {
+  it("succeeds timed booking with platform-only calendar when a connected Google Calendar needs reauth", async () => {
     await connectGoogleCalendar();
     await withUserContext(
       db,
@@ -543,15 +544,15 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as ApiEnvelope;
+    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
     `);
 
-    expect(response.status, JSON.stringify(body)).toBe(409);
-    expect(body.error?.code).toBe("calendar_reauth_required");
-    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(0);
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.data?.calendarSync).toBe("sync_failed");
+    expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(1);
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
@@ -811,7 +812,7 @@ describe("supervision request integration", () => {
     );
   });
 
-  it("rejects rescheduling when the supervisor calendar is not connected", async () => {
+  it("succeeds rescheduling with platform-only calendar when the supervisor calendar is not connected", async () => {
     const request = await createDraft();
     expect(request).toBeTruthy();
     const booking = await createBooking(request?.id ?? "");
@@ -827,14 +828,14 @@ describe("supervision request integration", () => {
         selectedSlotStart: "2026-06-01T13:00:00+09:00"
       }
     );
-    const body = (await response.json()) as ApiEnvelope;
+    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
 
-    expect(response.status, JSON.stringify(body)).toBe(409);
-    expect(body.error?.code).toBe("calendar_not_connected");
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.data?.calendarSync).toBe("not_required");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 
-  it("rejects rescheduling when Google Calendar OAuth config is missing", async () => {
+  it("succeeds rescheduling with platform-only calendar when Google Calendar OAuth config is missing", async () => {
     vi.stubEnv("GOOGLE_CALENDAR_CLIENT_ID", "");
     vi.stubEnv("GOOGLE_CALENDAR_CLIENT_SECRET", "");
     const request = await createDraft();
@@ -853,10 +854,10 @@ describe("supervision request integration", () => {
         selectedSlotStart: "2026-06-01T13:00:00+09:00"
       }
     );
-    const body = (await response.json()) as ApiEnvelope;
+    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
 
-    expect(response.status, JSON.stringify(body)).toBe(503);
-    expect(body.error?.code).toBe("calendar_config_required");
+    expect(response.status, JSON.stringify(body)).toBe(200);
+    expect(body.data?.calendarSync).toBe("not_required");
     expect(fetchMock).not.toHaveBeenCalled();
   });
 

@@ -21,7 +21,8 @@ const migrations = [
   "packages/db/drizzle/0009_supervision_request_constraints.sql",
   "packages/db/drizzle/0010_payments_constraints.sql",
   "packages/db/drizzle/0014_google_calendar.sql",
-  "packages/db/drizzle/0015_qualification_evidence.sql"
+  "packages/db/drizzle/0015_qualification_evidence.sql",
+  "packages/db/drizzle/0016_add_zoom_meeting_url.sql"
 ] as const;
 
 const supervisorId = "20000000-0000-0000-0000-000000000001";
@@ -320,7 +321,8 @@ describe("profile and search integration", () => {
           photoUrl: null,
           headline: null,
           bio: null,
-          yearsOfExperience: null
+          yearsOfExperience: null,
+          zoomMeetingUrl: null
         });
         await profiles.createQualification(tx, {
           supervisorProfileId: profile.id,

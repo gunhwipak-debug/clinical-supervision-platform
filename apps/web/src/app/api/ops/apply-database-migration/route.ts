@@ -85,7 +85,19 @@ function splitMigration(migrationSql: string): string[] {
   return migrationSql
     .split(/-->\s*statement-breakpoint/u)
     .map((statement) => statement.trim())
-    .filter((statement) => statement.length > 0);
+    .filter((statement) => statement.length > 0)
+    .filter((statement) => !isManagedRoleStatement(statement));
+}
+
+function isManagedRoleStatement(statement: string): boolean {
+  const normalized = statement.toLowerCase();
+  return (
+    (normalized.startsWith("do $$") && normalized.includes("create role csp_app")) ||
+    normalized.startsWith("alter role csp_app") ||
+    (normalized.startsWith("grant ") && normalized.includes(" to csp_app")) ||
+    (normalized.startsWith("alter default privileges") &&
+      normalized.includes(" to csp_app"))
+  );
 }
 
 function rowsOf<TRow>(result: unknown): TRow[] {

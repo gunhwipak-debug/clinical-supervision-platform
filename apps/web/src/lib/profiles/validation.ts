@@ -13,7 +13,8 @@ export const supervisorProfileSchema = z.object({
   photoUrl: z.url().max(500).nullable().optional(),
   headline: z.string().trim().max(180).nullable().optional(),
   bio: z.string().trim().max(2000).nullable().optional(),
-  yearsOfExperience: z.number().int().min(0).max(80).nullable().optional()
+  yearsOfExperience: z.number().int().min(0).max(80).nullable().optional(),
+  zoomMeetingUrl: z.string().trim().max(500).nullable().optional()
 });
 
 export const visibilitySchema = z.object({

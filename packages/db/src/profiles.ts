@@ -14,6 +14,7 @@ export type SupervisorProfileInput = {
   headline: string | null;
   bio: string | null;
   yearsOfExperience: number | null;
+  zoomMeetingUrl: string | null;
 };
 
 export type SupervisorProfile = SupervisorProfileInput & {
@@ -158,6 +159,7 @@ export async function getSupervisorProfileByUserId(
       headline,
       bio,
       years_of_experience as "yearsOfExperience",
+      zoom_meeting_url as "zoomMeetingUrl",
       verification_status as "verificationStatus",
       verified_at as "verifiedAt",
       visibility,
@@ -205,6 +207,7 @@ export async function startSupervisorApplication(
       headline,
       bio,
       years_of_experience as "yearsOfExperience",
+      zoom_meeting_url as "zoomMeetingUrl",
       verification_status as "verificationStatus",
       verified_at as "verifiedAt",
       visibility,
@@ -233,14 +236,16 @@ export async function upsertSupervisorProfile(
       photo_url,
       headline,
       bio,
-      years_of_experience
+      years_of_experience,
+      zoom_meeting_url
     ) values (
       ${userId},
       ${input.displayName},
       ${input.photoUrl},
       ${input.headline},
       ${input.bio},
-      ${input.yearsOfExperience}
+      ${input.yearsOfExperience},
+      ${input.zoomMeetingUrl}
     )
     on conflict (user_id) do update
     set
@@ -249,6 +254,7 @@ export async function upsertSupervisorProfile(
       headline = excluded.headline,
       bio = excluded.bio,
       years_of_experience = excluded.years_of_experience,
+      zoom_meeting_url = excluded.zoom_meeting_url,
       updated_at = now()
     returning
       id,
@@ -258,6 +264,7 @@ export async function upsertSupervisorProfile(
       headline,
       bio,
       years_of_experience as "yearsOfExperience",
+      zoom_meeting_url as "zoomMeetingUrl",
       verification_status as "verificationStatus",
       verified_at as "verifiedAt",
       visibility,
@@ -291,6 +298,7 @@ export async function setSupervisorVisibility(
       headline,
       bio,
       years_of_experience as "yearsOfExperience",
+      zoom_meeting_url as "zoomMeetingUrl",
       verification_status as "verificationStatus",
       verified_at as "verifiedAt",
       visibility,

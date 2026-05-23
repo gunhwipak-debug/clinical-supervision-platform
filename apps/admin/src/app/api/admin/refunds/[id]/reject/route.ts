@@ -1,4 +1,4 @@
-import { payments, withUserContext } from "@csp/db";
+import { payments, profiles, withUserContext } from "@csp/db";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { apiError, envelope } from "../../../../../../lib/api/envelope";
@@ -37,7 +37,20 @@ export async function POST(
       role: "admin",
       adminReason: parsedBody.data.reason
     },
-    (tx) => payments.rejectRefund(tx, parsedParams.data.id, parsedBody.data.reason)
+    async (tx) => {
+      const res = await payments.rejectRefund(tx, parsedParams.data.id, parsedBody.data.reason);
+      if (res) {
+        await profiles.tryInsertAuditLog(tx, {
+          actorUserId: current.session.userId,
+          actorRole: "admin",
+          action: "refund.reject",
+          targetType: "refund",
+          targetId: res.id,
+          reason: parsedBody.data.reason
+        });
+      }
+      return res;
+    }
   );
 
   if (!refund)

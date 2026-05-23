@@ -21,7 +21,8 @@ const migrations = [
   "packages/db/drizzle/0008_profile_constraints.sql",
   "packages/db/drizzle/0009_supervision_request_constraints.sql",
   "packages/db/drizzle/0010_payments_constraints.sql",
-  "packages/db/drizzle/0014_google_calendar.sql"
+  "packages/db/drizzle/0014_google_calendar.sql",
+  "packages/db/drizzle/0016_add_zoom_meeting_url.sql"
 ] as const;
 
 const superviseeId = "40000000-0000-0000-0000-000000000001";

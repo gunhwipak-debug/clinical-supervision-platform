@@ -1,4 +1,4 @@
-import { calendar, supervision, withUserContext } from "@csp/db";
+import { calendar, profiles, supervision, withUserContext } from "@csp/db";
 import type { NextRequest } from "next/server";
 import { apiError, envelope } from "@/lib/api/envelope";
 import { parseJson } from "@/lib/api/request";
@@ -122,9 +122,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let calendarSync: "not_required" | "synced" | "sync_failed" = requiresBooking
-    ? "sync_failed"
-    : "not_required";
+  let calendarSync: "not_required" | "synced" | "sync_failed" = "not_required";
 
   if (requiresBooking && created.supervisorId && selectedSlotStart && selectedSlotEnd) {
     const config = getGoogleCalendarConfig(new URL(request.url).origin);
@@ -138,85 +136,76 @@ export async function POST(request: NextRequest) {
       (tx) => calendar.getConnectionForUser(tx, created.supervisorId ?? "")
     );
 
-    if (!connection) {
-      await deleteDraft();
-      return envelope(
-        null,
-        apiError(
-          "calendar_not_connected",
-          "슈퍼바이저의 구글 캘린더가 아직 연결되지 않아 일정 예약을 받을 수 없습니다."
-        ),
-        409
-      );
-    }
-    const calendarBlock = googleCalendarBlockReason(connection, config);
-    if (calendarBlock) {
-      await deleteDraft();
-      return envelope(
-        null,
-        apiError(calendarBlock, googleCalendarErrorMessage(calendarBlock)),
-        calendarBlock === "calendar_config_required" ? 503 : 409
-      );
-    }
-
-    let createdGoogleEventId: string | null = null;
-    try {
-      const busy = await withUserContext(
-        db,
-        {
-          userId: created.supervisorId,
-          role: "supervisor",
-          phiAccess: true
-        },
-        (tx) =>
-          listBusyIntervalsForConnection(
-            tx,
-            connection,
-            config,
-            selectedSlotStart,
-            selectedSlotEnd
-          )
-      );
-
-      if (
-        busy.some((interval) =>
-          intervalsOverlap(
-            selectedSlotStart,
-            selectedSlotEnd,
-            interval.start,
-            interval.end
-          )
-        )
-      ) {
-        await deleteDraft();
-        return envelope(
-          null,
-          apiError("slot_unavailable", "이미 예약되었거나 선택할 수 없는 시간입니다."),
-          409
-        );
+    let isGoogleCheckEligible = false;
+    if (connection && config) {
+      const calendarBlock = googleCalendarBlockReason(connection, config);
+      if (!calendarBlock) {
+        isGoogleCheckEligible = true;
+      } else {
+        calendarSync = "sync_failed";
       }
-    } catch (error) {
-      await withUserContext(
-        db,
-        {
-          userId: created.supervisorId,
-          role: "supervisor",
-          phiAccess: true
-        },
-        (tx) =>
-          calendar.markConnectionStatus(
-            tx,
-            connection.id,
-            isGoogleCalendarAuthProblem(error) ? "needs_reauth" : "error"
-          )
-      ).catch(() => undefined);
-      await deleteDraft();
-      const code = isGoogleCalendarAuthProblem(error)
-        ? "calendar_reauth_required"
-        : "calendar_sync_failed";
-      return envelope(null, apiError(code, googleCalendarErrorMessage(code)), 409);
+    } else {
+      calendarSync = "not_required";
     }
 
+    // 1. 구글 캘린더 연동이 정상인 경우에만 구글 바쁜 일정(FreeBusy) 확인
+    if (isGoogleCheckEligible && connection) {
+      try {
+        const busy = await withUserContext(
+          db,
+          {
+            userId: created.supervisorId,
+            role: "supervisor",
+            phiAccess: true
+          },
+          (tx) =>
+            listBusyIntervalsForConnection(
+              tx,
+              connection,
+              config,
+              selectedSlotStart,
+              selectedSlotEnd
+            )
+        );
+
+        if (
+          busy.some((interval) =>
+            intervalsOverlap(
+              selectedSlotStart,
+              selectedSlotEnd,
+              interval.start,
+              interval.end
+            )
+          )
+        ) {
+          await deleteDraft();
+          return envelope(
+            null,
+            apiError("slot_unavailable", "이미 예약되었거나 선택할 수 없는 시간입니다."),
+            409
+          );
+        }
+      } catch (error) {
+        // 구글 FreeBusy 확인 실패 시, 마크만 하고 중단 없이 플랫폼 단독 예약 진행을 위해 패스
+        calendarSync = "sync_failed";
+        await withUserContext(
+          db,
+          {
+            userId: created.supervisorId,
+            role: "supervisor",
+            phiAccess: true
+          },
+          (tx) =>
+            calendar.markConnectionStatus(
+              tx,
+              connection.id,
+              isGoogleCalendarAuthProblem(error) ? "needs_reauth" : "error"
+            )
+        ).catch(() => undefined);
+      }
+    }
+
+    // 2. 플랫폼 내부 로컬 DB 예약 생성 (구글 연동 여부와 관계없이 핵심 성공 기준)
     const booking = await withUserContext(db, contextFor(current), (tx) =>
       supervision.createBookingForRequest(tx, {
         requestId: created.id,
@@ -235,43 +224,80 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    try {
-      const event = await withUserContext(
+    if (created.supervisorId) {
+      const supervisorProfile = await withUserContext(
         db,
-        {
-          userId: created.supervisorId,
-          role: "supervisor",
-          phiAccess: true
-        },
-        (tx) =>
-          createGoogleCalendarEvent(tx, connection, config, {
-            attendeeEmails: [current.user.email],
-            conferenceRequestId: booking.id,
-            description:
-              "ClinicFlow 슈퍼비전 예약입니다. 환자 정보는 캘린더에 저장하지 않습니다.",
-            end: selectedSlotEnd,
-            start: selectedSlotStart,
-            title: "ClinicFlow 슈퍼비전"
-          })
+        { userId: created.supervisorId, role: "supervisor", phiAccess: true },
+        (tx) => profiles.getSupervisorProfileByUserId(tx, created.supervisorId ?? "")
       );
-      createdGoogleEventId = event.eventId;
-      await withUserContext(db, contextFor(current), (tx) =>
-        calendar.createCalendarEventLink(tx, {
-          bookingId: booking.id,
-          providerEventId: event.eventId
-        })
-      );
-      if (event.meetingUrl) {
+      if (supervisorProfile?.zoomMeetingUrl) {
         await withUserContext(db, contextFor(current), (tx) =>
           supervision.updateBookingMeetingUrl(tx, {
             bookingId: booking.id,
-            meetingUrl: event.meetingUrl
+            meetingUrl: supervisorProfile.zoomMeetingUrl
           })
         );
       }
-      calendarSync = "synced";
-    } catch (error) {
-      if (createdGoogleEventId) {
+    }
+
+    // 3. 구글 연동이 유효한 경우에만 구글 이벤트 생성 시도
+    if (isGoogleCheckEligible && connection) {
+      let createdGoogleEventId: string | null = null;
+      try {
+        const event = await withUserContext(
+          db,
+          {
+            userId: created.supervisorId,
+            role: "supervisor",
+            phiAccess: true
+          },
+          (tx) =>
+            createGoogleCalendarEvent(tx, connection, config, {
+              attendeeEmails: [current.user.email],
+              conferenceRequestId: booking.id,
+              description:
+                "ClinicFlow 슈퍼비전 예약입니다. 환자 정보는 캘린더에 저장하지 않습니다.",
+              end: selectedSlotEnd,
+              start: selectedSlotStart,
+              title: "ClinicFlow 슈퍼비전"
+            })
+        );
+        createdGoogleEventId = event.eventId;
+        await withUserContext(db, contextFor(current), (tx) =>
+          calendar.createCalendarEventLink(tx, {
+            bookingId: booking.id,
+            providerEventId: event.eventId
+          })
+        );
+        if (event.meetingUrl) {
+          await withUserContext(db, contextFor(current), (tx) =>
+            supervision.updateBookingMeetingUrl(tx, {
+              bookingId: booking.id,
+              meetingUrl: event.meetingUrl
+            })
+          );
+        }
+        calendarSync = "synced";
+      } catch (error) {
+        // 구글 이벤트 생성 실패 시, 전체 예약을 롤백하지 않고 구글 연동 오류 마크 후 200 OK 진행
+        calendarSync = "sync_failed";
+        if (createdGoogleEventId) {
+          await withUserContext(
+            db,
+            {
+              userId: created.supervisorId,
+              role: "supervisor",
+              phiAccess: true
+            },
+            (tx) =>
+              cancelGoogleCalendarEvent(
+                tx,
+                connection,
+                config,
+                createdGoogleEventId ?? ""
+              )
+          ).catch(() => undefined);
+        }
         await withUserContext(
           db,
           {
@@ -280,33 +306,13 @@ export async function POST(request: NextRequest) {
             phiAccess: true
           },
           (tx) =>
-            cancelGoogleCalendarEvent(
+            calendar.markConnectionStatus(
               tx,
-              connection,
-              config,
-              createdGoogleEventId ?? ""
+              connection.id,
+              isGoogleCalendarAuthProblem(error) ? "needs_reauth" : "error"
             )
         ).catch(() => undefined);
       }
-      await withUserContext(
-        db,
-        {
-          userId: created.supervisorId,
-          role: "supervisor",
-          phiAccess: true
-        },
-        (tx) =>
-          calendar.markConnectionStatus(
-            tx,
-            connection.id,
-            isGoogleCalendarAuthProblem(error) ? "needs_reauth" : "error"
-          )
-      ).catch(() => undefined);
-      await deleteDraft();
-      const code = isGoogleCalendarAuthProblem(error)
-        ? "calendar_reauth_required"
-        : "calendar_sync_failed";
-      return envelope(null, apiError(code, googleCalendarErrorMessage(code)), 409);
     }
   }
 
@@ -386,18 +392,4 @@ function isGoogleCalendarAuthProblem(error: unknown): boolean {
     message === "google_calendar_refresh_failed" ||
     message === "invalid_grant"
   );
-}
-
-function googleCalendarErrorMessage(
-  code:
-    | "calendar_config_required"
-    | "calendar_reauth_required"
-    | "calendar_sync_failed"
-): string {
-  if (code === "calendar_config_required") {
-    return "서비스의 구글 캘린더 OAuth 설정이 없어 일정 예약을 진행할 수 없습니다. 예약 기능 사용 전 캘린더 연동 설정을 완료해야 합니다.";
-  }
-  return code === "calendar_reauth_required"
-    ? "슈퍼바이저의 구글 캘린더 재연동이 필요합니다. 캘린더 확인 전까지 이 시간대는 예약할 수 없습니다."
-    : "슈퍼바이저의 구글 캘린더 일정을 확인하지 못했습니다. 캘린더 확인 전까지 이 시간대는 예약할 수 없습니다.";
 }

@@ -28,7 +28,8 @@ const migrationFiles = [
   "0012_case_files_security.sql",
   "0013_document_workspace.sql",
   "0014_google_calendar.sql",
-  "0015_qualification_evidence.sql"
+  "0015_qualification_evidence.sql",
+  "0016_add_zoom_meeting_url.sql"
 ] as const;
 
 async function main() {

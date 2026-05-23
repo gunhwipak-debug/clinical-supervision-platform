@@ -62,6 +62,24 @@ export async function GET(
     );
   }
 
+  await withUserContext(
+    db,
+    {
+      userId: current.session.userId,
+      role: "admin",
+      adminReason
+    },
+    (tx) =>
+      profiles.tryInsertAuditLog(tx, {
+        actorUserId: current.session.userId,
+        actorRole: "admin",
+        action: "qualification_evidence.download",
+        targetType: "qualification_evidence",
+        targetId: evidence.id,
+        reason: adminReason
+      })
+  );
+
   const object = await getStorageAdapter().commitUpload(evidence.storageKey);
   if (!object) {
     return NextResponse.json(

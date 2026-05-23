@@ -6,6 +6,8 @@ coverage/
 .npm-cache/
 .netlify/
 dev-data/
+docs/OPERATIONS_STATE.md
+scripts/prod-bootstrap/
 test-results/
 interim_reports/
 *.log

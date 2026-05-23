@@ -1,6 +1,6 @@
 import { getTossClient } from "@csp/shared/payments/toss";
 import { assertTransition } from "@csp/shared/supervision/status-machine";
-import { payments, supervision, withUserContext } from "@csp/db";
+import { payments, profiles, supervision, withUserContext } from "@csp/db";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { apiError, envelope } from "../../../../../../lib/api/envelope";
@@ -61,6 +61,15 @@ export async function POST(
 
       const completed = await payments.completeRefund(tx, refund.id);
       if (!completed) return { kind: "invalid_state" as const };
+
+      await profiles.tryInsertAuditLog(tx, {
+        actorUserId: current.session.userId,
+        actorRole: "admin",
+        action: "refund.approve",
+        targetType: "refund",
+        targetId: refund.id,
+        reason: parsedBody.data.reason
+      });
 
       if (completed.paymentStatus === "refunded") {
         assertTransition(completed.requestStatus, "refunded", "admin");

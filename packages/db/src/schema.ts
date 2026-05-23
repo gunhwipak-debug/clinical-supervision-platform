@@ -262,6 +262,7 @@ export const supervisorProfiles = pgTable(
     bio: text("bio"),
     yearsOfExperience: integer("years_of_experience"),
     signatureStorageKey: text("signature_storage_key"),
+    zoomMeetingUrl: text("zoom_meeting_url"),
     verificationStatus: verificationStatus("verification_status")
       .notNull()
       .default("pending"),

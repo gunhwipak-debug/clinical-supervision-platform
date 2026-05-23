@@ -52,7 +52,8 @@ export async function PUT(request: NextRequest) {
         photoUrl: nullable(parsed.data.photoUrl),
         headline: nullable(parsed.data.headline),
         bio: nullable(parsed.data.bio),
-        yearsOfExperience: nullable(parsed.data.yearsOfExperience)
+        yearsOfExperience: nullable(parsed.data.yearsOfExperience),
+        zoomMeetingUrl: nullable(parsed.data.zoomMeetingUrl)
       })
   );
 

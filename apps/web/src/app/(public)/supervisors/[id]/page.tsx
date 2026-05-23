@@ -660,9 +660,9 @@ async function loadAvailabilityState(
   if (!connection) {
     return {
       busyIntervals: localIntervals,
-      bookingDisabled: true,
+      bookingDisabled: false,
       calendarNotice:
-        "이 슈퍼바이저는 아직 구글 캘린더를 연결하지 않았습니다. 일정 예약 상품은 캘린더 연동 후 공개 예약이 가능합니다."
+        "플랫폼 예약 및 설정된 가용 시간표 기준으로 예약을 접수합니다."
     };
   }
 
@@ -676,8 +676,8 @@ async function loadAvailabilityState(
   if (calendarBlock) {
     return {
       busyIntervals: localIntervals,
-      bookingDisabled: true,
-      calendarNotice: publicCalendarBlockNotice(calendarBlock)
+      bookingDisabled: false,
+      calendarNotice: `${publicCalendarBlockNotice(calendarBlock)} (플랫폼 내장 캘린더 스케줄 기준으로 우선 예약 가능합니다)`
     };
   }
 
@@ -691,14 +691,14 @@ async function loadAvailabilityState(
       busyIntervals: [...localIntervals, ...googleBusy],
       bookingDisabled: false,
       calendarNotice:
-        "구글 캘린더의 바쁜 시간과 플랫폼 예약을 함께 제외해 표시합니다."
+        "구글 캘린더의 바쁜 시간과 플랫폼 예약을 통합 검사하여 일정을 표시합니다."
     };
   } catch {
     return {
       busyIntervals: localIntervals,
-      bookingDisabled: true,
+      bookingDisabled: false,
       calendarNotice:
-        "구글 캘린더 상태를 확인하지 못해 현재 예약을 받을 수 없습니다. 슈퍼바이저의 캘린더 재연동 후 정확한 가능 시간이 표시됩니다."
+        "구글 캘린더 상태 확인 불가로, 플랫폼 스케줄 기준으로 가능 일정을 표시합니다."
     };
   }
 }
