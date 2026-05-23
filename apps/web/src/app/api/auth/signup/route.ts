@@ -43,45 +43,54 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const db = createAuthDatabase();
-  const termsVersions = await auth.getActiveTermsVersions(db, [...requiredTerms]);
-  const foundKinds = new Set(termsVersions.map((terms) => terms.kind));
+  try {
+    const db = createAuthDatabase();
+    const termsVersions = await auth.getActiveTermsVersions(db, [...requiredTerms]);
+    const foundKinds = new Set(termsVersions.map((terms) => terms.kind));
 
-  if (requiredTerms.some((kind) => !foundKinds.has(kind))) {
+    if (requiredTerms.some((kind) => !foundKinds.has(kind))) {
+      return envelope(
+        null,
+        apiError("terms_missing", "필수 약관에 모두 동의해주세요."),
+        422
+      );
+    }
+
+    const existing = await auth.findUserByEmail(db, parsed.data.email);
+
+    if (existing?.status === "active") {
+      await hashPassword(parsed.data.password);
+      return envelope({ ok: true }, null, 200);
+    }
+
+    const passwordHash = await hashPassword(parsed.data.password);
+    const user = await auth.createUserWithPassword(db, {
+      email: parsed.data.email,
+      passwordHash,
+      role: "supervisee"
+    });
+
+    await auth.insertConsentRecords(db, {
+      userId: user.id,
+      termsVersions,
+      ip: request.headers.get("x-forwarded-for") ?? undefined,
+      userAgent: request.headers.get("user-agent") ?? undefined
+    });
+    await createAndSendEmailVerification(db, {
+      userId: user.id,
+      email: user.email,
+      ip: request.headers.get("x-forwarded-for") ?? undefined
+    });
+
+    return envelope({ ok: true }, null, 200);
+  } catch (error) {
+    console.error("[auth.signup]", error);
     return envelope(
       null,
-      apiError("terms_missing", "필수 약관에 모두 동의해주세요."),
-      422
+      apiError("server_unavailable", "가입 서버 설정을 확인해주세요."),
+      503
     );
   }
-
-  const existing = await auth.findUserByEmail(db, parsed.data.email);
-
-  if (existing?.status === "active") {
-    await hashPassword(parsed.data.password);
-    return envelope({ ok: true }, null, 200);
-  }
-
-  const passwordHash = await hashPassword(parsed.data.password);
-  const user = await auth.createUserWithPassword(db, {
-    email: parsed.data.email,
-    passwordHash,
-    role: "supervisee"
-  });
-
-  await auth.insertConsentRecords(db, {
-    userId: user.id,
-    termsVersions,
-    ip: request.headers.get("x-forwarded-for") ?? undefined,
-    userAgent: request.headers.get("user-agent") ?? undefined
-  });
-  await createAndSendEmailVerification(db, {
-    userId: user.id,
-    email: user.email,
-    ip: request.headers.get("x-forwarded-for") ?? undefined
-  });
-
-  return envelope({ ok: true }, null, 200);
 }
 
 async function parseJson(request: NextRequest): Promise<unknown> {

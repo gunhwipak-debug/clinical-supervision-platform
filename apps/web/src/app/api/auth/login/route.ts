@@ -37,71 +37,80 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  const db = createAuthDatabase();
-  const user = await auth.findUserByEmail(db, parsed.data.email);
+  try {
+    const db = createAuthDatabase();
+    const user = await auth.findUserByEmail(db, parsed.data.email);
 
-  if (
-    user &&
-    user.passwordHash &&
-    user.status === "active" &&
-    auth.isLoginLocked(user)
-  ) {
-    return envelope(
-      null,
-      apiError("locked", "로그인 시도가 많아 잠시 후 다시 시도해주세요."),
-      423
-    );
-  }
+    if (
+      user &&
+      user.passwordHash &&
+      user.status === "active" &&
+      auth.isLoginLocked(user)
+    ) {
+      return envelope(
+        null,
+        apiError("locked", "로그인 시도가 많아 잠시 후 다시 시도해주세요."),
+        423
+      );
+    }
 
-  const passwordCheck = await verifyLoginPassword({
-    user,
-    password: parsed.data.password,
-    dummyHash,
-    verifyPassword
-  });
+    const passwordCheck = await verifyLoginPassword({
+      user,
+      password: parsed.data.password,
+      dummyHash,
+      verifyPassword
+    });
 
-  if (!user || !passwordCheck.userCanAuthenticate) {
-    return envelope(
-      null,
-      apiError("invalid_credentials", "이메일 또는 비밀번호를 확인해주세요."),
-      401
-    );
-  }
+    if (!user || !passwordCheck.userCanAuthenticate) {
+      return envelope(
+        null,
+        apiError("invalid_credentials", "이메일 또는 비밀번호를 확인해주세요."),
+        401
+      );
+    }
 
-  if (!passwordCheck.passwordMatches) {
-    await auth.recordFailedLogin(db, user.id);
-    return envelope(
-      null,
-      apiError("invalid_credentials", "이메일 또는 비밀번호를 확인해주세요."),
-      401
-    );
-  }
+    if (!passwordCheck.passwordMatches) {
+      await auth.recordFailedLogin(db, user.id);
+      return envelope(
+        null,
+        apiError("invalid_credentials", "이메일 또는 비밀번호를 확인해주세요."),
+        401
+      );
+    }
 
-  await auth.clearLoginFailures(db, user.id);
-  await auth.touchLastLogin(db, user.id);
+    await auth.clearLoginFailures(db, user.id);
+    await auth.touchLastLogin(db, user.id);
 
-  const { token, payload } = await signSession({
-    userId: user.id,
-    role: user.role
-  });
-  const response = envelope(
-    {
-      user: {
-        id: user.id,
-        email: user.email,
-        role: user.role
+    const { token, payload } = await signSession({
+      userId: user.id,
+      role: user.role
+    });
+    const response = envelope(
+      {
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role
+        },
+        session: {
+          expiresAt: payload.expiresAt
+        }
       },
-      session: {
-        expiresAt: payload.expiresAt
-      }
-    },
-    null,
-    200
-  );
+      null,
+      200
+    );
 
-  response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions());
+    response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions());
 
-  return response;
+    return response;
+  } catch (error) {
+    console.error("[auth.login]", error);
+    return envelope(
+      null,
+      apiError("server_unavailable", "로그인 서버 설정을 확인해주세요."),
+      503
+    );
+  }
 }
 
 async function parseJson(request: NextRequest): Promise<unknown> {

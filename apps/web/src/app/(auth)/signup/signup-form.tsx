@@ -57,27 +57,33 @@ export function SignupForm() {
   }, []);
 
   async function submit(values: SignupValues) {
-    const response = await fetch("/api/auth/signup", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({
-        email: values.email,
-        password: values.password,
-        consent: {
-          tos: values.tos,
-          privacy: values.privacy,
-          sensitive: values.sensitive
-        }
-      })
-    });
-    const body = (await response.json()) as { error?: { code: string } };
-    const nextMessage = response.ok
-      ? "가입 요청이 완료되었습니다. 이메일 인증을 진행해주세요."
-      : signupErrorMessage(body.error?.code);
-    setMessage(nextMessage);
-    if (response.ok) {
-      toast.success("가입 요청 완료");
-    } else {
+    try {
+      const response = await fetch("/api/auth/signup", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          email: values.email,
+          password: values.password,
+          consent: {
+            tos: values.tos,
+            privacy: values.privacy,
+            sensitive: values.sensitive
+          }
+        })
+      });
+      const body = (await readApiBody(response)) as { error?: { code: string } };
+      const nextMessage = response.ok
+        ? "가입 요청이 완료되었습니다. 이메일 인증을 진행해주세요."
+        : signupErrorMessage(body.error?.code);
+      setMessage(nextMessage);
+      if (response.ok) {
+        toast.success("가입 요청 완료");
+      } else {
+        toast.error(nextMessage);
+      }
+    } catch {
+      const nextMessage = signupErrorMessage("server_unavailable");
+      setMessage(nextMessage);
       toast.error(nextMessage);
     }
   }
@@ -242,9 +248,19 @@ function signupErrorMessage(code: string | undefined): string {
     consent_required: "필수 약관 동의를 모두 확인해주세요.",
     email_exists: "이미 가입된 이메일입니다. 로그인하거나 비밀번호를 재설정해주세요.",
     invalid_request: "입력값을 다시 확인해주세요.",
+    server_unavailable:
+      "서버 설정 또는 데이터베이스 연결 문제로 가입할 수 없습니다. 관리자에게 문의해주세요.",
     weak_password: "비밀번호는 10자 이상이며 숫자와 특수문자를 포함해야 합니다."
   };
   return (
     labels[code ?? ""] ?? "가입을 완료하지 못했습니다. 입력값을 다시 확인해주세요."
   );
+}
+
+async function readApiBody(response: Response): Promise<unknown> {
+  try {
+    return await response.json();
+  } catch {
+    return {};
+  }
 }

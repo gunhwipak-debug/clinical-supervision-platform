@@ -32,24 +32,30 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
   }, []);
 
   async function submit(values: LoginValues) {
-    const response = await fetch("/api/auth/login", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(values)
-    });
-    const body = (await response.json()) as {
-      data?: { user?: { role?: string } };
-      error?: { code: string };
-    };
-    if (response.ok) {
-      toast.success("로그인되었습니다.");
-      const role = body.data?.user?.role;
-      window.location.href = safeReturnTo(returnTo) ?? roleHome(role);
-      return;
+    try {
+      const response = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(values)
+      });
+      const body = (await readApiBody(response)) as {
+        data?: { user?: { role?: string } };
+        error?: { code: string };
+      };
+      if (response.ok) {
+        toast.success("로그인되었습니다.");
+        const role = body.data?.user?.role;
+        window.location.href = safeReturnTo(returnTo) ?? roleHome(role);
+        return;
+      }
+      const next = loginErrorMessage(body.error?.code);
+      setMessage(next);
+      toast.error(next);
+    } catch {
+      const next = loginErrorMessage("server_unavailable");
+      setMessage(next);
+      toast.error(next);
     }
-    const next = loginErrorMessage(body.error?.code);
-    setMessage(next);
-    toast.error(next);
   }
 
   return (
@@ -182,8 +188,18 @@ function loginErrorMessage(code: string | undefined): string {
     invalid_credentials: "이메일 또는 비밀번호가 올바르지 않습니다.",
     invalid_request: "입력값을 다시 확인해주세요.",
     rate_limited: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.",
+    server_unavailable:
+      "서버 설정 또는 데이터베이스 연결 문제로 로그인할 수 없습니다. 관리자에게 문의해주세요.",
     totp_required: "2단계 인증이 필요합니다.",
     unauthorized: "이메일 또는 비밀번호가 올바르지 않습니다."
   };
   return labels[code ?? ""] ?? "로그인에 실패했습니다. 입력값을 다시 확인해주세요.";
+}
+
+async function readApiBody(response: Response): Promise<unknown> {
+  try {
+    return await response.json();
+  } catch {
+    return {};
+  }
 }
