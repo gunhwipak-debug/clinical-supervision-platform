@@ -4,19 +4,16 @@ import { profiles, withUserContext } from "@csp/db";
 import {
   ArrowLeft,
   CalendarClock,
-  CheckCircle2,
   ClipboardList,
   Eye,
   ShieldCheck,
-  User,
-  UserRoundCog
+  User
 } from "lucide-react";
-import { Badge } from "../../../../components/ui/badge";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
-import { SupervisorProfileForm, SupervisorVisibilityForm } from "./profile-form";
+import { SupervisorProfileEditor, SupervisorVisibilityForm } from "./profile-form";
 
 export const dynamic = "force-dynamic";
 
@@ -78,30 +75,15 @@ export default async function SupervisorProfilePage() {
       </header>
 
       <div className="mx-auto grid max-w-5xl gap-5 px-5 py-6">
-        <ProfilePreviewCard
-          canPublish={canPublish}
-          profile={profile}
-          products={products}
-          qualifications={qualifications}
-          specialties={specialties}
-        />
-
-        <section className="grid gap-5 lg:grid-cols-[1fr_360px]">
-          <Card className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
-            <div className="mb-5 flex items-start justify-between gap-4">
-              <div>
-                <h2 className="text-xl font-bold">공개 프로필 초안</h2>
-                <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  검색 카드와 상세 페이지에 노출되는 핵심 문구입니다. 저장 후 위
-                  미리보기에서 실제 공개 모습을 확인하세요.
-                </p>
-              </div>
-              <Badge tone={canPublish ? "brand" : "neutral"}>
-                {canPublish ? "공개 가능" : "공개 조건 미충족"}
-              </Badge>
-            </div>
-            <SupervisorProfileForm profile={profile} />
-          </Card>
+        <section className="grid gap-5 lg:grid-cols-1">
+          <div className="w-full">
+            <SupervisorProfileEditor
+              profile={profile}
+              qualifications={qualifications}
+              specialties={specialties}
+              initialProducts={products}
+            />
+          </div>
 
           <div className="grid gap-4">
             <InfoCard
@@ -130,130 +112,7 @@ export default async function SupervisorProfilePage() {
   );
 }
 
-function ProfilePreviewCard({
-  canPublish,
-  products,
-  profile,
-  qualifications,
-  specialties
-}: {
-  canPublish: boolean;
-  products: profiles.Product[];
-  profile: profiles.SupervisorProfile | null;
-  qualifications: profiles.Qualification[];
-  specialties: profiles.Specialty[];
-}) {
-  const approvedQualifications = qualifications.filter(
-    (qualification) => qualification.status === "approved"
-  );
-  const activeProducts = products.filter((product) => product.active);
-  const isPublic =
-    profile?.visibility === "public" && profile.verificationStatus === "approved";
 
-  return (
-    <Card className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
-      <div className="grid gap-6 lg:grid-cols-[220px_1fr] lg:items-start">
-        <div className="text-center">
-          <div className="mx-auto grid size-28 place-items-center overflow-hidden rounded-full border border-line bg-brand-50 text-brand-600">
-            {profile?.photoUrl ? (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                alt={`${profile.displayName} 프로필 사진`}
-                className="h-full w-full object-cover"
-                src={profile.photoUrl}
-              />
-            ) : (
-              <UserRoundCog aria-hidden size={42} />
-            )}
-          </div>
-          <div className="mt-4 flex flex-wrap justify-center gap-2">
-            <Badge tone={visibilityTone(profile?.visibility ?? "hidden")}>
-              {visibilityLabel(profile?.visibility ?? "hidden")}
-            </Badge>
-            <Badge tone={verificationTone(profile?.verificationStatus ?? "pending")}>
-              {verificationLabel(profile?.verificationStatus ?? "pending")}
-            </Badge>
-          </div>
-        </div>
-        <div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-            <div>
-              <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-2xl font-bold">
-                  {profile?.displayName ?? "프로필 이름을 저장해주세요"}
-                </h2>
-                {profile?.verificationStatus === "approved" ? (
-                  <CheckCircle2 aria-hidden className="text-brand-600" size={22} />
-                ) : null}
-              </div>
-              <p className="mt-2 text-lg text-ink-700">
-                {profile?.headline ?? "검색 결과에 표시될 한 줄 소개가 필요합니다."}
-              </p>
-            </div>
-            {isPublic ? (
-              <Link
-                className="inline-flex items-center justify-center rounded-md border border-line px-3 py-2 text-sm font-semibold text-ink-900 hover:bg-surface-sunken"
-                href={`/supervisors/${profile.id}`}
-              >
-                공개 페이지 보기
-              </Link>
-            ) : null}
-          </div>
-          <p className="mt-4 line-clamp-3 whitespace-pre-wrap text-sm leading-relaxed text-ink-600">
-            {profile?.bio ?? "상세 소개를 저장하면 공개 상세 페이지에 표시됩니다."}
-          </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            <PreviewMetric
-              label="경력"
-              value={
-                profile?.yearsOfExperience !== null &&
-                profile?.yearsOfExperience !== undefined
-                  ? `${String(profile.yearsOfExperience)}년`
-                  : "미등록"
-              }
-            />
-            <PreviewMetric
-              label="공개 상품"
-              value={`${String(activeProducts.length)}개`}
-            />
-            <PreviewMetric label="평점" value={profile?.averageRating ?? "신규"} />
-          </div>
-          <div className="mt-4 flex flex-wrap gap-2">
-            {approvedQualifications.length > 0 ? (
-              approvedQualifications.slice(0, 3).map((qualification) => (
-                <Badge key={qualification.id} tone="brand">
-                  {qualification.name}
-                </Badge>
-              ))
-            ) : (
-              <Badge tone={canPublish ? "neutral" : "danger"}>
-                승인된 자격 정보 없음
-              </Badge>
-            )}
-            {specialties.length > 0 ? (
-              specialties.slice(0, 4).map((specialty) => (
-                <Badge key={specialty.id} tone="neutral">
-                  {specialty.labelKo}
-                </Badge>
-              ))
-            ) : (
-              <Badge tone="neutral">전문분야 미등록</Badge>
-            )}
-          </div>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function PreviewMetric({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-lg border border-line bg-surface-base p-3">
-      <p className="text-xs font-semibold text-ink-500">{label}</p>
-      <p className="mt-1 text-sm font-bold text-ink-900">{value}</p>
-    </div>
-  );
-}
 
 function publishBlockReason({
   profile,
@@ -270,42 +129,7 @@ function publishBlockReason({
   return null;
 }
 
-function visibilityLabel(visibility: profiles.SupervisorProfile["visibility"]): string {
-  const labels = {
-    hidden: "비공개",
-    private: "제한 공개",
-    public: "검색 공개"
-  } satisfies Record<profiles.SupervisorProfile["visibility"], string>;
-  return labels[visibility];
-}
 
-function visibilityTone(
-  visibility: profiles.SupervisorProfile["visibility"]
-): "brand" | "accent" | "neutral" | "danger" {
-  if (visibility === "public") return "brand";
-  if (visibility === "private") return "accent";
-  return "neutral";
-}
-
-function verificationLabel(
-  status: profiles.SupervisorProfile["verificationStatus"]
-): string {
-  const labels = {
-    approved: "자격 승인됨",
-    pending: "자격 검토 대기",
-    rejected: "자격 반려",
-    revoked: "승인 철회"
-  } satisfies Record<profiles.SupervisorProfile["verificationStatus"], string>;
-  return labels[status];
-}
-
-function verificationTone(
-  status: profiles.SupervisorProfile["verificationStatus"]
-): "brand" | "accent" | "neutral" | "danger" {
-  if (status === "approved") return "brand";
-  if (status === "rejected" || status === "revoked") return "danger";
-  return "neutral";
-}
 
 function InfoCard({
   icon,

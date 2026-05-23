@@ -90,9 +90,9 @@ export default async function SettingsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>슈퍼바이지 프로필</CardTitle>
+              <CardTitle>[의뢰자 전용] 슈퍼바이지 프로필 설정</CardTitle>
               <CardDescription>
-                내가 슈퍼비전을 의뢰할 때 상대 슈퍼바이저가 확인하는 기본 정보입니다.
+                후배 임상가(의뢰자)로서 선배 슈퍼바이저에게 슈퍼비전을 신청할 때 전달되는 정보입니다.
               </CardDescription>
             </CardHeader>
             <SettingsProfileForm profile={superviseeProfile} />
@@ -155,44 +155,46 @@ export default async function SettingsPage() {
                 </div>
               </div>
             ) : (
-              <div className="grid gap-4 rounded-md border border-line bg-surface-sunken p-4 text-sm text-ink-700 md:grid-cols-[1fr_auto] md:items-center">
-                <p>
-                  현재 계정은 슈퍼비전을 받을 수 있는 슈퍼바이지 권한입니다. 슈퍼바이저
-                  업무를 시작하려면 신청을 먼저 열고 프로필, 자격, 가능시간을
-                  등록해주세요. 공개 검색 노출은 운영자 검증이 끝난 뒤에만 가능합니다.
-                </p>
-                <SupervisorApplicationButton />
+              <div className="grid gap-md rounded-xl border border-secondary/20 bg-gradient-to-r from-secondary/5 via-surface to-surface p-md text-sm text-on-surface">
+                <div className="flex flex-col gap-sm">
+                  <span className="inline-flex max-w-fit rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold text-secondary">
+                    슈퍼바이저 매칭 안내
+                  </span>
+                  <h4 className="font-title-md text-base font-bold text-on-surface">
+                    회원가입만으로 간편하게 시작하는 지도교수 업무 절차
+                  </h4>
+                  <p className="font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                    복잡한 인증 절차 없이, 본인만의 임상 프로필과 예약 가능한 시간 슬롯을 지정하여 후배 임상가(슈퍼바이지)와 매칭을 즉각 시작하세요.
+                  </p>
+                  
+                  <div className="mt-sm grid gap-sm sm:grid-cols-2 md:grid-cols-4 text-xs">
+                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
+                      <strong className="block text-secondary">1. 권한 신청 시작</strong>
+                      <p className="mt-xs text-on-surface-variant text-[11px]">아래 [신청 시작] 버튼을 누르고 약관에 동의합니다.</p>
+                    </div>
+                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
+                      <strong className="block text-secondary">2. 프로필 및 캘린더 등록</strong>
+                      <p className="mt-xs text-on-surface-variant text-[11px]">이름, 주요 학력 및 예약 가능한 시간 슬롯을 지정합니다.</p>
+                    </div>
+                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
+                      <strong className="block text-secondary">3. 상품 구성</strong>
+                      <p className="mt-xs text-on-surface-variant text-[11px]">대면, 비대면(화상), 서면 등 제공할 상품 단가를 등록합니다.</p>
+                    </div>
+                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
+                      <strong className="block text-secondary">4. 매칭 및 자동 정산</strong>
+                      <p className="mt-xs text-on-surface-variant text-[11px]">매칭 건당 수수료를 제외한 금액이 본인 계좌로 자동 정산됩니다.</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-md flex justify-end border-t border-outline-variant/30 pt-sm">
+                  <SupervisorApplicationButton />
+                </div>
               </div>
             )}
           </Card>
         </section>
 
         <aside className="grid content-start gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>바로가기</CardTitle>
-              <CardDescription>
-                현재 계정에서 이어서 처리할 수 있는 작업입니다.
-              </CardDescription>
-            </CardHeader>
-            <div className="grid gap-2">
-              <Button asChild variant="secondary">
-                <Link href="/requests">내 의뢰와 받은 자료</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/payments">결제 내역</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/supervisors">슈퍼바이저 찾기</Link>
-              </Button>
-              {isSupervisor(current) ? (
-                <Button asChild variant="secondary">
-                  <Link href="/supervisor">슈퍼바이저 업무</Link>
-                </Button>
-              ) : null}
-            </div>
-          </Card>
-
           <Card>
             <CardHeader>
               <CardTitle>보안</CardTitle>
@@ -209,9 +211,6 @@ export default async function SettingsPage() {
                     : "관리자와 슈퍼바이저 업무에는 2단계 인증을 켜는 것을 권장합니다."}
                 </p>
               </div>
-              <Button asChild variant="secondary">
-                <Link href="/forgot-password">비밀번호 재설정</Link>
-              </Button>
             </div>
           </Card>
         </aside>
