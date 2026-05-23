@@ -1,0 +1,26 @@
+{
+  "name": "@csp/shared",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./auth/password": "./src/auth/password.ts",
+    "./auth/tokens": "./src/auth/tokens.ts",
+    "./crypto/phi": "./src/crypto/phi.ts",
+    "./email/mailer": "./src/email/mailer.ts",
+    "./payments/toss": "./src/payments/toss/index.ts",
+    "./supervision/phi-regex": "./src/supervision/phi-regex.ts",
+    "./supervision/status-machine": "./src/supervision/status-machine.ts",
+    "./storage": "./src/storage/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run"
+  },
+  "dependencies": {
+    "drizzle-orm": "^0.45.2",
+    "hash-wasm": "^4.12.0",
+    "zod": "^4.1.13"
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "generatedAt": "2026-05-21T12:06:15.594Z",
+  "sourceOfTruth": {
+    "tokens": "packages/design-tokens/src/tokens.ts",
+    "screenshots": "demo-evidence/SCREENS.md",
+    "figmaGuide": "docs/decisions/DESIGN-FIGMA.md"
+  },
+  "tokens": {
+    "color": {
+      "brand": {
+        "50": "#EFF6FF",
+        "100": "#DBEAFE",
+        "500": "#3B82F6",
+        "600": "#2563EB",
+        "700": "#0F172A"
+      },
+      "accent": {
+        "100": "#E0F2FE",
+        "500": "#38BDF8",
+        "600": "#0284C7"
+      },
+      "surface": {
+        "base": "#F8FAFC",
+        "elevated": "#FFFFFF",
+        "sunken": "#EEF4FF"
+      },
+      "ink": {
+        "100": "#E2E8F0",
+        "300": "#94A3B8",
+        "500": "#64748B",
+        "700": "#334155",
+        "900": "#0F172A"
+      },
+      "line": "#E2E8F0",
+      "success": "#2F855A",
+      "danger": "#C24141",
+      "warn": "#D97706",
+      "info": "#2563EB"
+    },
+    "radius": {
+      "sm": 8,
+      "md": 12,
+      "lg": 16,
+      "xl": 20,
+      "pill": 9999
+    },
+    "spacing": {
+      "1": 4,
+      "2": 8,
+      "3": 12,
+      "4": 16,
+      "5": 20,
+      "6": 24,
+      "7": 28,
+      "8": 32,
+      "9": 36,
+      "10": 40,
+      "11": 44,
+      "12": 48
+    },
+    "font": {
+      "family": {
+        "sans": "Pretendard Variable, system-ui, sans-serif"
+      },
+      "size": {
+        "xs": 12,
+        "sm": 14,
+        "base": 15,
+        "lg": 17,
+        "xl": 20,
+        "2xl": 24,
+        "3xl": 32,
+        "4xl": 40
+      },
+      "weight": {
+        "regular": 400,
+        "medium": 500,
+        "semibold": 600,
+        "bold": 700
+      },
+      "lineHeight": {
+        "tight": 1.25,
+        "normal": 1.55,
+        "relaxed": 1.7
+      }
+    },
+    "shadow": {
+      "card": "0 1px 2px rgba(15,23,42,0.04), 0 4px 12px rgba(15,23,42,0.05)",
+      "pop": "0 8px 24px rgba(15,23,42,0.10)"
+    },
+    "motion": {
+      "ease": {
+        "standard": "cubic-bezier(0.2,0,0,1)"
+      },
+      "duration": {
+        "fast": 120,
+        "normal": 200,
+        "slow": 320
+      }
+    }
+  },
+  "priorities": [
+    {
+      "phase": "1",
+      "title": "Auth + Trust Entry",
+      "routes": ["/", "/login", "/signup", "/forgot-password", "/reset-password"],
+      "intent": "첫 진입에서 신뢰감, 보안 범위, 다음 행동을 명확히 한다."
+    },
+    {
+      "phase": "2",
+      "title": "Catalog + Request Start",
+      "routes": ["/supervisors", "/supervisors/:id", "/requests/new"],
+      "intent": "슈퍼바이저 탐색에서 의뢰 생성까지의 선택 피로를 줄인다."
+    },
+    {
+      "phase": "3",
+      "title": "Flow A Work Surfaces",
+      "routes": ["/requests/:id", "/supervisor/requests/:id", "/payments/:id"],
+      "intent": "민감 자료 검토, 결제, 피드백, 완료기록 발급의 상태 전이를 선명하게 보여준다."
+    },
+    {
+      "phase": "4",
+      "title": "Ops Consoles",
+      "routes": ["/supervisor", "/admin", "/admin/qualifications", "/admin/refunds"],
+      "intent": "운영자가 큐와 리스크를 빠르게 스캔할 수 있게 한다."
+    }
+  ],
+  "screens": [
+    {
+      "area": "Public",
+      "route": "/",
+      "desktop": "demo-evidence/screenshots/desktop-home.png",
+      "mobile": "demo-evidence/screenshots/mobile-home.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 165715,
+      "mobileBytes": 146665
+    },
+    {
+      "area": "Auth",
+      "route": "/login",
+      "desktop": "demo-evidence/screenshots/desktop-login.png",
+      "mobile": "demo-evidence/screenshots/mobile-login.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 73785,
+      "mobileBytes": 63704
+    },
+    {
+      "area": "Auth",
+      "route": "/signup",
+      "desktop": "demo-evidence/screenshots/desktop-signup.png",
+      "mobile": "demo-evidence/screenshots/mobile-signup.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 98726,
+      "mobileBytes": 89393
+    },
+    {
+      "area": "Auth",
+      "route": "/verify-email",
+      "desktop": "demo-evidence/screenshots/desktop-verify-email.png",
+      "mobile": "demo-evidence/screenshots/mobile-verify-email.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 69435,
+      "mobileBytes": 58981
+    },
+    {
+      "area": "Auth",
+      "route": "/forgot-password",
+      "desktop": "demo-evidence/screenshots/desktop-forgot-password.png",
+      "mobile": "demo-evidence/screenshots/mobile-forgot-password.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 71070,
+      "mobileBytes": 59748
+    },
+    {
+      "area": "Auth",
+      "route": "/reset-password",
+      "desktop": "demo-evidence/screenshots/desktop-reset-password.png",
+      "mobile": "demo-evidence/screenshots/mobile-reset-password.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 71680,
+      "mobileBytes": 61346
+    },
+    {
+      "area": "Catalog",
+      "route": "/supervisors",
+      "desktop": "demo-evidence/screenshots/desktop-supervisors.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisors.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 128829,
+      "mobileBytes": 153299
+    },
+    {
+      "area": "Catalog",
+      "route": "/supervisors/:id",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-detail.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-detail.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 114675,
+      "mobileBytes": 119904
+    },
+    {
+      "area": "Supervisee",
+      "route": "/requests",
+      "desktop": "demo-evidence/screenshots/desktop-requests.png",
+      "mobile": "demo-evidence/screenshots/mobile-requests.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 102394,
+      "mobileBytes": 89223
+    },
+    {
+      "area": "Supervisee",
+      "route": "/requests/new",
+      "desktop": "demo-evidence/screenshots/desktop-request-new.png",
+      "mobile": "demo-evidence/screenshots/mobile-request-new.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 124576,
+      "mobileBytes": 120992
+    },
+    {
+      "area": "Supervisee",
+      "route": "/requests/:id",
+      "desktop": "demo-evidence/screenshots/desktop-request-detail.png",
+      "mobile": "demo-evidence/screenshots/mobile-request-detail.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 126345,
+      "mobileBytes": 112266
+    },
+    {
+      "area": "Supervisee",
+      "route": "/payments",
+      "desktop": "demo-evidence/screenshots/desktop-payments.png",
+      "mobile": "demo-evidence/screenshots/mobile-payments.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 47073,
+      "mobileBytes": 38310
+    },
+    {
+      "area": "Supervisee",
+      "route": "/payments/:id",
+      "desktop": "demo-evidence/screenshots/desktop-payment-detail.png",
+      "mobile": "demo-evidence/screenshots/mobile-payment-detail.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 104855,
+      "mobileBytes": 96630
+    },
+    {
+      "area": "Supervisee",
+      "route": "/settings",
+      "desktop": "demo-evidence/screenshots/desktop-settings.png",
+      "mobile": "demo-evidence/screenshots/mobile-settings.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 90881,
+      "mobileBytes": 84689
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-dashboard.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-dashboard.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 108574,
+      "mobileBytes": 107863
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor/requests",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-requests.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-requests.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 169615,
+      "mobileBytes": 155526
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor/requests/:id",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-request-detail.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-request-detail.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 101479,
+      "mobileBytes": 95345
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor/profile",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-profile.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-profile.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 67057,
+      "mobileBytes": 58548
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor/qualifications",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-qualifications.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-qualifications.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 64229,
+      "mobileBytes": 56297
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor/products",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-products.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-products.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 75274,
+      "mobileBytes": 81726
+    },
+    {
+      "area": "Supervisor",
+      "route": "/supervisor/availability",
+      "desktop": "demo-evidence/screenshots/desktop-supervisor-availability.png",
+      "mobile": "demo-evidence/screenshots/mobile-supervisor-availability.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 55006,
+      "mobileBytes": 50565
+    },
+    {
+      "area": "Admin",
+      "route": "/admin",
+      "desktop": "demo-evidence/screenshots/desktop-admin-dashboard.png",
+      "mobile": "demo-evidence/screenshots/mobile-admin-dashboard.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 108033,
+      "mobileBytes": 111057
+    },
+    {
+      "area": "Admin",
+      "route": "/admin/qualifications",
+      "desktop": "demo-evidence/screenshots/desktop-admin-qualifications.png",
+      "mobile": "demo-evidence/screenshots/mobile-admin-qualifications.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 73383,
+      "mobileBytes": 68236
+    },
+    {
+      "area": "Admin",
+      "route": "/admin/refunds",
+      "desktop": "demo-evidence/screenshots/desktop-admin-refunds.png",
+      "mobile": "demo-evidence/screenshots/mobile-admin-refunds.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 59583,
+      "mobileBytes": 54791
+    },
+    {
+      "area": "Admin",
+      "route": "/admin/payouts",
+      "desktop": "demo-evidence/screenshots/desktop-admin-payouts.png",
+      "mobile": "demo-evidence/screenshots/mobile-admin-payouts.png",
+      "desktopExists": true,
+      "mobileExists": true,
+      "desktopBytes": 61711,
+      "mobileBytes": 54831
+    }
+  ]
+}

@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+
+<html class="light" lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>자격 승인 관리 - Supervision Pro</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:ital,wght@0,100..900;1,100..900&amp;family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#dae2fd",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#40484f",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#d8e3fb",
+                      "on-secondary-fixed-variant": "#004395",
+                      "surface-tint": "#565e74",
+                      "surface": "#f9f9ff",
+                      "on-primary-fixed": "#131b2e",
+                      "inverse-on-surface": "#ecf1ff",
+                      "secondary": "#0058be",
+                      "secondary-container": "#2170e4",
+                      "on-background": "#111c2d",
+                      "on-primary-container": "#7c839b",
+                      "surface-container-high": "#dee8ff",
+                      "primary": "#000000",
+                      "error": "#ba1a1a",
+                      "tertiary": "#000000",
+                      "primary-container": "#131b2e",
+                      "on-surface-variant": "#45464d",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#263143",
+                      "tertiary-fixed": "#dce3ec",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface-bright": "#f9f9ff",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-surface": "#111c2d",
+                      "on-tertiary-container": "#7d858d",
+                      "tertiary-container": "#151c23",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#fefcff",
+                      "on-secondary-fixed": "#001a42",
+                      "surface-dim": "#cfdaf2",
+                      "surface-container": "#e7eeff",
+                      "background": "#f9f9ff",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#bec6e0",
+                      "outline-variant": "#c6c6cd",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-tertiary-fixed": "#151c23",
+                      "inverse-primary": "#bec6e0",
+                      "tertiary-fixed-dim": "#c0c7d0",
+                      "surface-container-highest": "#d8e3fb",
+                      "outline": "#76777d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "sm": "12px",
+                      "base": "8px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "xl": "40px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "label-sm": ["Inter"],
+                      "body-md": ["Inter"],
+                      "body-sm": ["Inter"],
+                      "headline-lg-mobile": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "display-lg": ["Hanken Grotesk"],
+                      "label-md": ["Inter"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "label-sm": ["12px", {"lineHeight": "1", "fontWeight": "500"}],
+                      "body-md": ["16px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                      "body-sm": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                      "headline-lg-mobile": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                      "headline-md": ["24px", {"lineHeight": "1.4", "fontWeight": "600"}],
+                      "display-lg": ["48px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "label-md": ["14px", {"lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600"}],
+                      "headline-lg": ["32px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+                      "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+      </style>
+</head>
+<body class="bg-surface-container-lowest text-on-surface font-body-md antialiased flex h-screen overflow-hidden">
+<!-- Desktop Side Navigation -->
+<nav class="hidden md:flex flex-col bg-surface h-full left-0 w-64 border-r border-outline-variant z-40">
+<!-- Brand Header -->
+<div class="p-lg border-b border-outline-variant flex items-center gap-sm">
+<div class="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined text-[20px]" data-icon="shield_person">shield_person</span>
+</div>
+<span class="font-headline-md text-headline-md font-bold text-primary">Supervision Pro</span>
+</div>
+<!-- User Profile Minimal -->
+<div class="p-md flex items-center gap-sm mt-sm">
+<img alt="Supervisor Avatar" class="w-10 h-10 rounded-full border border-outline-variant object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCNhxD4wUqgZ6Q6uP-P9GqE5eCttIz0u3FYKxH98Q7hJZifnfjtHsrR5G7FY4-bpBLWzl3XpXOO_fwWTnMqbPonVdclunSUJY5RDTanELj7UEcrLw-wA_eeNCzV2BGJgarkjmzyoy6Fajl0x4X96coYwLVS4jbdLaR60JRF43b5Lj-pSPTWzd8LnUOxPBLdUK-GI_1en0DUeA0kl3K2QIPF1jBBx2aDJNOiCNtO7iXrJFkTg_3yGNPu0hYBAf8Pch1N8KxY2t_ubyQ"/>
+<div>
+<p class="font-label-md text-label-md text-on-surface">Dr. Kim, PhD</p>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Clinical Supervisor</p>
+</div>
+</div>
+<div class="px-md mb-md">
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-lg flex items-center justify-center gap-xs hover:bg-surface-tint transition-colors">
+<span class="material-symbols-outlined text-[18px]">add</span>
+                New Feedback
+            </button>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 overflow-y-auto px-sm flex flex-col gap-xs">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+                Dashboard
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg bg-secondary-container text-on-secondary-container font-bold transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">clinical_notes</span>
+                Case Review
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">badge</span>
+                Profile
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">payments</span>
+                Services
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+                Schedule
+            </a>
+</div>
+<!-- Footer Links -->
+<div class="p-sm border-t border-outline-variant flex flex-col gap-xs mt-auto">
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">settings</span>
+                Settings
+            </a>
+<a class="flex items-center gap-md px-md py-sm rounded-lg text-on-surface-variant font-label-md text-label-md hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined">logout</span>
+                Sign Out
+            </a>
+</div>
+</nav>
+<!-- Main Canvas -->
+<main class="flex-1 flex flex-col min-w-0 bg-background relative h-full">
+<!-- Top App Bar (Mobile Only for Shell Consistency, Desktop uses SideNav) -->
+<header class="md:hidden flex justify-between items-center w-full px-margin-mobile h-16 bg-surface-container-lowest border-b border-outline-variant sticky top-0 z-30">
+<span class="font-headline-lg-mobile text-headline-lg-mobile font-bold text-primary">Supervision Pro</span>
+<div class="flex items-center gap-sm">
+<button class="text-secondary p-xs cursor-pointer active:opacity-80 transition-opacity rounded-full hover:bg-surface-container-low">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+<img alt="Supervisor Profile" class="w-8 h-8 rounded-full border border-outline-variant" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBm4gpEH0PexCEkcRPxLaBnq5Wx29lFW6_gLcB-Gt4M6L-SWzRQtssalHpk-IATS4j2SgvhTfWNdTkzLHfozLs5e6or8bW1IOW5KGTBFCx0cqkGuoDjnTGZXqjY6mIyqj3IMZcH6cMYD2q7xMR8EzmW4uJfMl9rbVL1eHt-l6dn2toVm8iFf-fs2rtA2TOOLcsEdu87iFkrp0Jn9EMrQCvAzDuU4o6528OgljQDijm5TFtEGRLJHoPgEbeKkwDJXxT93KUfUCS5C_0"/>
+</div>
+</header>
+<!-- Page Content -->
+<div class="flex-1 overflow-y-auto w-full pb-24 md:pb-lg">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-gutter py-lg md:py-xl">
+<!-- Page Header & Actions -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-md mb-lg">
+<div>
+<h1 class="font-headline-lg text-headline-lg font-bold text-on-background mb-xs">자격 승인 관리</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">슈퍼바이저로 등록 요청한 전문가들의 자격을 심사합니다.</p>
+</div>
+<!-- Search & Filter Controls -->
+<div class="flex items-center gap-sm">
+<div class="relative w-full md:w-64">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
+<input class="w-full bg-surface border border-outline-variant rounded-lg py-2 pl-10 pr-4 font-body-sm text-body-sm text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-shadow" placeholder="이름 또는 자격증 검색" type="text"/>
+</div>
+</div>
+</div>
+<!-- Status Tabs (Segmented Control) -->
+<div class="flex overflow-x-auto no-scrollbar gap-2 mb-lg pb-1">
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-sm transition-transform active:scale-95">
+                        전체 보기
+                    </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95 flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+                        대기 중 <span class="ml-1 text-surface-tint">3</span>
+</button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95 flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-surface-tint"></span>
+                        승인 완료
+                    </button>
+<button class="whitespace-nowrap px-4 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95 flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-error"></span>
+                        반려됨
+                    </button>
+</div>
+<!-- Bento-style Data Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-md">
+<!-- Card 1: Pending -->
+<div class="group bg-surface rounded-xl border border-outline-variant p-md flex flex-col sm:flex-row sm:items-center justify-between gap-md hover:bg-surface-container-low transition-colors duration-200">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface overflow-hidden border border-outline-variant flex-shrink-0">
+<img alt="Profile" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-4NxWqsJhSr9JPWTgmRcP8VxzHzNLSx7OAbWwBSMWwowyUFUOPDWT20lecgFIn5DDBjlvJHUKYQ9q_RP-7fiX9M7fkzklzaWQ2dROBqDxdOvOMDLXR7ZH3i-NeDLHom2HnbKxuctlvjKV5uDc_15x5LWmdq3SPhy5nGZW8WXP96hAGhULFFb_TYNiKcYLt6h7z0M4KcFNMwJbEBZoL7e5eeFwwah3wKui43_P7NQPDv_K6gj7oQ49vPo-aKsM_JxwsgkiYIoccjY"/>
+</div>
+<div>
+<div class="flex items-center gap-xs mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">김지연</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-bold bg-secondary-container text-on-secondary-container">신규</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">한국심리학회 임상심리전문가</p>
+<div class="flex items-center gap-xs mt-1 text-surface-tint font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>2023.10.26 제출</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-md sm:w-auto w-full border-t sm:border-t-0 border-outline-variant pt-md sm:pt-0 mt-sm sm:mt-0">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">hourglass_empty</span> 대기
+                            </span>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-xs">
+                                심사하기
+                                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Pending -->
+<div class="group bg-surface rounded-xl border border-outline-variant p-md flex flex-col sm:flex-row sm:items-center justify-between gap-md hover:bg-surface-container-low transition-colors duration-200">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface overflow-hidden border border-outline-variant flex-shrink-0">
+<span class="material-symbols-outlined text-[24px]">person</span>
+</div>
+<div>
+<div class="flex items-center gap-xs mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">이민수</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">보건복지부 정신건강임상심리사 1급</p>
+<div class="flex items-center gap-xs mt-1 text-surface-tint font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">calendar_today</span>
+<span>2023.10.25 제출</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-md sm:w-auto w-full border-t sm:border-t-0 border-outline-variant pt-md sm:pt-0 mt-sm sm:mt-0">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container-high text-on-surface font-label-sm text-label-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">hourglass_empty</span> 대기
+                            </span>
+<button class="bg-primary text-on-primary px-4 py-2 rounded-lg font-label-md text-label-md hover:opacity-90 transition-opacity active:scale-95 flex items-center gap-xs">
+                                심사하기
+                                <span class="material-symbols-outlined text-[16px]">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Card 3: Approved -->
+<div class="group bg-surface rounded-xl border border-outline-variant p-md flex flex-col sm:flex-row sm:items-center justify-between gap-md opacity-80 hover:opacity-100 transition-opacity duration-200">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface overflow-hidden border border-outline-variant flex-shrink-0">
+<img alt="Profile" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAHshecGc4GWoITh9jdKrJJ9ibVwoOUDykoGZ6KFbrenJxAPaPocBR51fGZ1SoqZHjUw4w52Ce6AclqADFXHP008A1ZpUA2ILcmacHhixjN2fzpUUmfSqjE84g58Tgvf_u2Zk3h_vxQfSDW3KJ7MNLN1JFONtwCWX9mmwZ9iZc2Bk4EgL7f4hHZyye8YgyjGYI41lPsWGBP_NWqTP41sxsRhCYuytxg9w53qxasNY8yLnStPhi9yReEfZ0_k80iwY41_Faz8GZ0DTg"/>
+</div>
+<div>
+<div class="flex items-center gap-xs mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">박서준</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">상담심리사 1급 (한국상담심리학회)</p>
+<div class="flex items-center gap-xs mt-1 text-surface-tint font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+<span>2023.10.20 승인됨</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-md sm:w-auto w-full border-t sm:border-t-0 border-outline-variant pt-md sm:pt-0 mt-sm sm:mt-0">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-surface-container text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">done</span> 승인
+                            </span>
+<button class="bg-surface border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95 flex items-center gap-xs">
+                                상세 보기
+                            </button>
+</div>
+</div>
+<!-- Card 4: Rejected -->
+<div class="group bg-surface rounded-xl border border-outline-variant p-md flex flex-col sm:flex-row sm:items-center justify-between gap-md opacity-80 hover:opacity-100 transition-opacity duration-200">
+<div class="flex items-center gap-md">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface overflow-hidden border border-outline-variant flex-shrink-0">
+<img alt="Profile" class="w-full h-full object-cover grayscale" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBH81zU18rLJZxcIIj0Uk9dk0t9GFqCet6idlBuVzoqgaKfFU5h30EUgCwezzY06QdiPSApJ7vauv9YtntyWRvxh-xQXa-Gm-8X_P2UPzb6B-ZxN1Uf2Z6iQYP6a539w7yVfD0EW0qtxoPAUNf2od4W3-iXQbLetFdlQitX_htyVEL_CeSVs_TGtj5FM8-3P5p9ZGEPVC_e3dtONkQIqZOz_fjXATx_igVScnl-dxr_9qQcJPxorbgps8xhw1Ptbw8LDdhLexcd0_I"/>
+</div>
+<div>
+<div class="flex items-center gap-xs mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">최유진</h3>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-1">기타 민간 자격증</p>
+<div class="flex items-center gap-xs mt-1 text-error font-body-sm text-[12px]">
+<span class="material-symbols-outlined text-[14px]">error</span>
+<span>2023.10.18 반려됨: 서류 미비</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between sm:justify-end gap-md sm:w-auto w-full border-t sm:border-t-0 border-outline-variant pt-md sm:pt-0 mt-sm sm:mt-0">
+<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-error-container text-on-error-container font-label-sm text-label-sm border border-error-container">
+<span class="material-symbols-outlined text-[14px]">close</span> 반려
+                            </span>
+<button class="bg-surface border border-outline-variant text-on-surface px-4 py-2 rounded-lg font-label-md text-label-md hover:bg-surface-container-low transition-colors active:scale-95 flex items-center gap-xs">
+                                이력 보기
+                            </button>
+</div>
+</div>
+</div>
+<!-- Pagination (Simple placeholder) -->
+<div class="mt-lg flex items-center justify-center gap-xs">
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors disabled:opacity-50" disabled="">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 rounded bg-primary text-on-primary font-label-sm flex items-center justify-center">1</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors font-label-sm">2</button>
+<button class="w-8 h-8 rounded border border-outline-variant flex items-center justify-center text-on-surface-variant hover:bg-surface-container transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</main>
+<!-- Mobile Bottom Navigation Shell -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 md:hidden bg-surface-container-lowest border-t border-outline-variant shadow-lg">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container active:scale-95 transition-transform duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined mb-1">home</span>
+<span class="font-label-sm text-label-sm">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">rate_review</span>
+<span class="font-label-sm text-label-sm font-bold">Review</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container active:scale-95 transition-transform duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined mb-1">inventory_2</span>
+<span class="font-label-sm text-label-sm">Products</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container active:scale-95 transition-transform duration-150 rounded-lg" href="#">
+<span class="material-symbols-outlined mb-1">person</span>
+<span class="font-label-sm text-label-sm">Profile</span>
+</a>
+</nav>
+</body></html>

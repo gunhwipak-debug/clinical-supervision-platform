@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicFlow - 결제 내역</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "surface-container-low": "#f0f3ff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#40484f",
+                      "on-secondary-fixed-variant": "#004395",
+                      "outline": "#76777d",
+                      "tertiary": "#000000",
+                      "on-background": "#111c2d",
+                      "outline-variant": "#c6c6cd",
+                      "tertiary-container": "#151c23",
+                      "surface-container-high": "#dee8ff",
+                      "primary-fixed": "#dae2fd",
+                      "on-surface": "#111c2d",
+                      "background": "#f9f9ff",
+                      "on-primary-fixed": "#131b2e",
+                      "surface-dim": "#cfdaf2",
+                      "surface-container": "#e7eeff",
+                      "on-tertiary-container": "#7d858d",
+                      "surface-variant": "#d8e3fb",
+                      "inverse-on-surface": "#ecf1ff",
+                      "surface": "#f9f9ff",
+                      "primary": "#000000",
+                      "on-primary-container": "#7c839b",
+                      "secondary": "#0058be",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#2170e4",
+                      "on-error": "#ffffff",
+                      "on-secondary-container": "#fefcff",
+                      "surface-container-highest": "#d8e3fb",
+                      "surface-bright": "#f9f9ff",
+                      "secondary-fixed": "#d8e2ff",
+                      "primary-container": "#131b2e",
+                      "surface-tint": "#565e74",
+                      "error": "#ba1a1a",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "tertiary-fixed": "#dce3ec",
+                      "on-primary": "#ffffff",
+                      "primary-fixed-dim": "#bec6e0",
+                      "inverse-surface": "#263143",
+                      "inverse-primary": "#bec6e0",
+                      "on-tertiary-fixed": "#151c23",
+                      "on-surface-variant": "#45464d",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "tertiary-fixed-dim": "#c0c7d0",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-fixed": "#001a42",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "base": "8px",
+                      "xs": "4px",
+                      "sm": "12px",
+                      "margin-mobile": "16px",
+                      "container-max": "1280px",
+                      "md": "16px",
+                      "xl": "40px",
+                      "gutter": "24px",
+                      "lg": "24px"
+              },
+              "fontFamily": {
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ]
+              },
+              "fontSize": {
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface font-body-md antialiased selection:bg-secondary selection:text-on-secondary min-h-screen flex flex-col">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface px-gutter max-w-container-max mx-auto flex justify-between items-center h-16 border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-xl">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary cursor-pointer hover:opacity-80 transition-opacity">ClinicFlow</div>
+<div class="hidden md:flex gap-lg h-full items-center">
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:text-secondary dark:hover:text-secondary-fixed transition-colors cursor-pointer active:opacity-80 h-full flex items-center" href="#">Find Supervisors</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:text-secondary dark:hover:text-secondary-fixed transition-colors cursor-pointer active:opacity-80 h-full flex items-center" href="#">My Requests</a>
+<a class="text-on-surface-variant dark:text-surface-variant font-label-md text-label-md hover:text-secondary dark:hover:text-secondary-fixed transition-colors cursor-pointer active:opacity-80 h-full flex items-center" href="#">Resources</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="flex gap-sm">
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">security</span>
+</button>
+<button class="p-2 rounded-full hover:bg-surface-variant transition-colors text-on-surface-variant flex items-center justify-center relative">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+<span class="absolute top-1 right-1 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+<button class="font-label-md text-label-md bg-primary-container text-on-primary-container px-4 py-2 rounded-lg hover:bg-opacity-90 transition-opacity flex items-center gap-2">
+                Secure Login
+            </button>
+</div>
+</nav>
+<!-- Main Content Area -->
+<main class="flex-grow pt-24 pb-xl px-gutter max-w-container-max mx-auto w-full">
+<header class="mb-xl">
+<h1 class="font-display-lg text-display-lg text-primary mb-xs">결제 내역</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">모든 결제 및 영수증 내역을 안전하게 관리합니다.</p>
+</header>
+<!-- Payment History Table/List -->
+<section class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden shadow-sm">
+<!-- Table Header -->
+<div class="grid grid-cols-12 gap-md p-md bg-surface-container-low border-b border-outline-variant font-label-md text-label-md text-on-surface-variant hidden md:grid">
+<div class="col-span-2">결제일</div>
+<div class="col-span-4">서비스 내역</div>
+<div class="col-span-2">담당 슈퍼바이저</div>
+<div class="col-span-2 text-right">결제 금액</div>
+<div class="col-span-2 text-center">상태 및 영수증</div>
+</div>
+<!-- List Items -->
+<div class="divide-y divide-outline-variant">
+<!-- Item 1 (Completed) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md p-md items-center hover:bg-surface-variant/30 transition-colors">
+<div class="md:col-span-2 font-body-sm text-body-sm text-on-surface-variant flex flex-col md:block">
+<span class="md:hidden font-label-sm text-label-sm mb-1">결제일</span>
+                        2024. 05. 20
+                    </div>
+<div class="md:col-span-4 flex flex-col">
+<span class="font-label-md text-label-md text-on-surface mb-1">개인 사례 검토 (심층)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">60분 비대면 세션</span>
+</div>
+<div class="md:col-span-2 font-body-sm text-body-sm text-on-surface flex items-center gap-2">
+<span class="md:hidden font-label-sm text-label-sm text-on-surface-variant">슈퍼바이저:</span>
+                        김지연 Ph.D.
+                    </div>
+<div class="md:col-span-2 font-label-md text-label-md text-on-surface md:text-right">
+                        ₩ 150,000
+                    </div>
+<div class="md:col-span-2 flex flex-row md:flex-col items-center justify-between md:justify-center gap-sm">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            결제완료
+                        </span>
+<button class="text-secondary hover:text-secondary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                            영수증 출력
+                        </button>
+</div>
+</div>
+<!-- Item 2 (Completed) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md p-md items-center hover:bg-surface-variant/30 transition-colors">
+<div class="md:col-span-2 font-body-sm text-body-sm text-on-surface-variant flex flex-col md:block">
+<span class="md:hidden font-label-sm text-label-sm mb-1">결제일</span>
+                        2024. 05. 03
+                    </div>
+<div class="md:col-span-4 flex flex-col">
+<span class="font-label-md text-label-md text-on-surface mb-1">집단 슈퍼비전 (윤리)</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">90분 대면 세션</span>
+</div>
+<div class="md:col-span-2 font-body-sm text-body-sm text-on-surface flex items-center gap-2">
+<span class="md:hidden font-label-sm text-label-sm text-on-surface-variant">슈퍼바이저:</span>
+                        이준호 Psy.D.
+                    </div>
+<div class="md:col-span-2 font-label-md text-label-md text-on-surface md:text-right">
+                        ₩ 80,000
+                    </div>
+<div class="md:col-span-2 flex flex-row md:flex-col items-center justify-between md:justify-center gap-sm">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                            결제완료
+                        </span>
+<button class="text-secondary hover:text-secondary-container font-label-sm text-label-sm flex items-center gap-1 transition-colors">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                            영수증 출력
+                        </button>
+</div>
+</div>
+<!-- Item 3 (Refunded) -->
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md p-md items-center hover:bg-surface-variant/30 transition-colors opacity-75">
+<div class="md:col-span-2 font-body-sm text-body-sm text-on-surface-variant flex flex-col md:block">
+<span class="md:hidden font-label-sm text-label-sm mb-1">결제일</span>
+                        2024. 04. 15
+                    </div>
+<div class="md:col-span-4 flex flex-col">
+<span class="font-label-md text-label-md text-on-surface mb-1 line-through">개인 사례 검토</span>
+<span class="font-body-sm text-body-sm text-on-surface-variant">일정 변경으로 인한 취소</span>
+</div>
+<div class="md:col-span-2 font-body-sm text-body-sm text-on-surface flex items-center gap-2">
+<span class="md:hidden font-label-sm text-label-sm text-on-surface-variant">슈퍼바이저:</span>
+                        박민영 Ph.D.
+                    </div>
+<div class="md:col-span-2 font-label-md text-label-md text-on-surface-variant md:text-right line-through">
+                        ₩ 120,000
+                    </div>
+<div class="md:col-span-2 flex flex-row md:flex-col items-center justify-between md:justify-center gap-sm">
+<span class="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-surface-variant text-on-surface-variant font-label-sm text-label-sm border border-outline-variant">
+<span class="material-symbols-outlined text-[14px]">undo</span>
+                            환불완료
+                        </span>
+<button class="text-on-surface-variant hover:text-on-surface font-label-sm text-label-sm flex items-center gap-1 transition-colors" disabled="">
+<span class="material-symbols-outlined text-[16px]">receipt_long</span>
+                            취소 내역
+                        </button>
+</div>
+</div>
+</div>
+<!-- Pagination / Load More -->
+<div class="p-md border-t border-outline-variant flex justify-center bg-surface-container-lowest">
+<button class="px-4 py-2 border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-colors flex items-center gap-2">
+                    더 보기 <span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+</div>
+</section>
+<!-- Trust Helper Text -->
+<div class="mt-md flex items-center gap-2 text-on-surface-variant font-body-sm text-body-sm px-2">
+<span class="material-symbols-outlined text-[16px]">lock</span>
+            모든 결제 정보는 암호화되어 안전하게 보관되며, HIPAA 규정을 준수합니다.
+        </div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-gutter flex flex-col md:flex-row justify-between items-center gap-md border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-surface-container-low mt-auto">
+<div class="font-headline-sm text-headline-sm font-bold text-primary">
+            ClinicFlow
+        </div>
+<div class="flex flex-wrap justify-center gap-md font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant">
+<a class="hover:text-secondary transition-colors cursor-pointer" href="#">Privacy Policy</a>
+<a class="hover:text-secondary transition-colors cursor-pointer" href="#">Terms of Service</a>
+<a class="hover:text-secondary transition-colors cursor-pointer" href="#">Security Standards</a>
+<a class="hover:text-secondary transition-colors cursor-pointer" href="#">Clinical Guidelines</a>
+</div>
+<div class="font-body-sm text-body-sm text-on-surface dark:text-on-surface text-center md:text-right">
+            © 2024 ClinicFlow Korea. HIPAA &amp; PHI Compliant Architecture.
+        </div>
+</footer>
+</body></html>

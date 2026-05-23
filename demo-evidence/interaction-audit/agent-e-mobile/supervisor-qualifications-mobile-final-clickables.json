@@ -1,0 +1,145 @@
+[
+  {
+    "tag": "button",
+    "text": "menu",
+    "href": "",
+    "x": 16,
+    "y": 8,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-tertiary-container transition-"
+  },
+  {
+    "tag": "button",
+    "text": "notifications",
+    "href": "",
+    "x": 334,
+    "y": 8,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-secondary dark:text-secondary-fixed-dim hover:bg-surface-container-low dark:hover:bg-tertiary-container transition-"
+  },
+  {
+    "tag": "button",
+    "text": "전체보기",
+    "href": "",
+    "x": 16,
+    "y": 220,
+    "w": 83,
+    "h": 32,
+    "disabled": false,
+    "classes": "whitespace-nowrap px-4 py-2 bg-secondary-container text-on-secondary-container rounded-full font-label-md text-label-md "
+  },
+  {
+    "tag": "button",
+    "text": "대기 중",
+    "href": "",
+    "x": 107,
+    "y": 220,
+    "w": 74,
+    "h": 32,
+    "disabled": false,
+    "classes": "whitespace-nowrap px-4 py-2 bg-surface-container-lowest text-on-surface-variant rounded-full font-label-md text-label-md"
+  },
+  {
+    "tag": "button",
+    "text": "승인됨",
+    "href": "",
+    "x": 189,
+    "y": 220,
+    "w": 71,
+    "h": 32,
+    "disabled": false,
+    "classes": "whitespace-nowrap px-4 py-2 bg-surface-container-lowest text-on-surface-variant rounded-full font-label-md text-label-md"
+  },
+  {
+    "tag": "button",
+    "text": "반려됨",
+    "href": "",
+    "x": 268,
+    "y": 220,
+    "w": 71,
+    "h": 32,
+    "disabled": false,
+    "classes": "whitespace-nowrap px-4 py-2 bg-surface-container-lowest text-on-surface-variant rounded-full font-label-md text-label-md"
+  },
+  {
+    "tag": "button",
+    "text": "검토하기",
+    "href": "",
+    "x": 276,
+    "y": 407,
+    "w": 81,
+    "h": 30,
+    "disabled": false,
+    "classes": "px-4 py-2 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-primary/90 transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "검토하기",
+    "href": "",
+    "x": 276,
+    "y": 596,
+    "w": 81,
+    "h": 30,
+    "disabled": false,
+    "classes": "px-4 py-2 bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-primary/90 transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "상세보기",
+    "href": "",
+    "x": 274,
+    "y": 786,
+    "w": 83,
+    "h": 32,
+    "disabled": false,
+    "classes": "px-4 py-2 bg-surface-container-lowest text-on-background border border-outline-variant rounded font-label-md text-label-"
+  },
+  {
+    "tag": "a",
+    "text": "dashboard Dashboard",
+    "href": "http://localhost:3000/supervisor/qualifications#",
+    "x": 15,
+    "y": 785,
+    "w": 90,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-seconda"
+  },
+  {
+    "tag": "a",
+    "text": "pending_actions Requests",
+    "href": "http://localhost:3000/supervisor/qualifications#",
+    "x": 120,
+    "y": 785,
+    "w": 81,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container dark:bg-secondary dark:text"
+  },
+  {
+    "tag": "a",
+    "text": "calendar_month Schedule",
+    "href": "http://localhost:3000/supervisor/qualifications#",
+    "x": 215,
+    "y": 785,
+    "w": 81,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-seconda"
+  },
+  {
+    "tag": "a",
+    "text": "person Profile",
+    "href": "http://localhost:3000/supervisor/qualifications#",
+    "x": 310,
+    "y": 785,
+    "w": 66,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-seconda"
+  }
+]

@@ -1,0 +1,27 @@
+{
+  "name": "@csp/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --port 3000",
+    "build": "next build",
+    "start": "next start --port 3000",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@csp/db": "workspace:*",
+    "@csp/shared": "workspace:*",
+    "next": "15.5.18",
+    "otplib": "^13.4.0",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "zod": "^4.1.13",
+    "@csp/design-tokens": "workspace:*"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "^0.4.5",
+    "@types/react": "^19.0.12",
+    "@types/react-dom": "^19.0.4",
+    "drizzle-orm": "^0.45.2"
+  }
+}

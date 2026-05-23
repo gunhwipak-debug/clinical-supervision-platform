@@ -1,0 +1,4 @@
+ALTER TABLE "case_packets" ADD CONSTRAINT "case_packets_client_age_band_allowed" CHECK ("case_packets"."client_age_band" is null or "case_packets"."client_age_band" in ('6-12', '13-18', '19-39', '40-64', '65+'));--> statement-breakpoint
+ALTER TABLE "case_packets" ADD CONSTRAINT "case_packets_setting_allowed" CHECK ("case_packets"."setting" is null or "case_packets"."setting" in ('hospital', 'counseling_center', 'community_center', 'school', 'other'));--> statement-breakpoint
+ALTER TABLE "supervision_requests" ADD CONSTRAINT "supervision_requests_retention_days_allowed" CHECK ("supervision_requests"."retention_days" in (7, 30, 90));--> statement-breakpoint
+CREATE INDEX IF NOT EXISTS "supervision_requests_supervisee_status_idx" ON "supervision_requests" USING btree ("supervisee_id","status");

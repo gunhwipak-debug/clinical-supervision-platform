@@ -1,0 +1,25 @@
+{
+  "name": "@csp/db",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./schema": "./src/schema.ts",
+    "./context": "./src/context.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "drizzle:generate": "drizzle-kit generate --config drizzle.config.ts",
+    "drizzle:check": "drizzle-kit check --config drizzle.config.ts"
+  },
+  "dependencies": {
+    "@csp/shared": "workspace:*",
+    "@electric-sql/pglite": "^0.4.5",
+    "drizzle-orm": "^0.45.2",
+    "postgres": "^3.4.7"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.10"
+  }
+}

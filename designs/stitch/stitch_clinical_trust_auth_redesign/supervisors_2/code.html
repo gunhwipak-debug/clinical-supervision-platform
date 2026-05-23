@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicFlow - 수퍼바이저 찾기</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#151c23",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "outline": "#76777d",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "background": "#f9f9ff",
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary-container": "#fefcff",
+                        "inverse-surface": "#263143",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "error": "#ba1a1a",
+                        "surface-container": "#e7eeff",
+                        "on-surface-variant": "#45464d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "on-surface": "#111c2d",
+                        "error-container": "#ffdad6",
+                        "surface": "#f9f9ff",
+                        "primary-container": "#131b2e",
+                        "outline-variant": "#c6c6cd",
+                        "inverse-primary": "#bec6e0",
+                        "on-background": "#111c2d",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "surface-tint": "#565e74",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-container": "#2170e4",
+                        "surface-dim": "#cfdaf2",
+                        "on-primary-container": "#7c839b",
+                        "tertiary-fixed": "#dce3ec",
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#dee8ff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-tertiary-container": "#7d858d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed": "#001a42",
+                        "on-tertiary-fixed": "#151c23",
+                        "secondary": "#0058be",
+                        "tertiary": "#000000",
+                        "on-primary-fixed": "#131b2e",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "sm": "12px",
+                        "md": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col pt-16">
+<!-- TopNavBar -->
+<nav class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface px-margin-mobile md:px-gutter max-w-container-max mx-auto flex justify-between items-center h-16 border-b border-outline-variant">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary">ClinicFlow</span>
+</div>
+<div class="hidden md:flex gap-lg items-center h-full">
+<a class="h-full flex items-center text-secondary border-b-2 border-secondary pb-1 px-sm" href="#">
+<span class="font-label-md text-label-md">Find Supervisors</span>
+</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors px-sm" href="#">
+<span class="font-label-md text-label-md">My Requests</span>
+</a>
+<a class="h-full flex items-center text-on-surface-variant hover:text-secondary transition-colors px-sm" href="#">
+<span class="font-label-md text-label-md">Resources</span>
+</a>
+</div>
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-secondary transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">notifications</span>
+</button>
+<button class="md:hidden text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<button class="hidden md:flex items-center gap-xs px-md py-base bg-primary-container text-on-primary-container rounded font-label-md text-label-md hover:opacity-90 transition-opacity">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">security</span>
+                Secure Login
+            </button>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="flex-1 px-margin-mobile py-lg pb-xl max-w-container-max mx-auto w-full">
+<!-- Header & Search (Simplified for Mobile) -->
+<header class="mb-lg">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background mb-sm">수퍼바이저 찾기</h1>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-md">임상 전문성과 신뢰를 바탕으로 한 멘토를 만나보세요.</p>
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-variation-settings: 'FILL' 0;">search</span>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-lg py-sm pl-xl pr-sm font-body-sm text-body-sm text-on-surface focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-colors" placeholder="이름, 전문 분야 또는 키워드 검색" type="text"/>
+<button class="absolute right-sm top-1/2 -translate-y-1/2 text-secondary p-xs rounded hover:bg-surface-container-low transition-colors">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">tune</span>
+</button>
+</div>
+<!-- Quick Filters (Horizontal Scroll on Mobile) -->
+<div class="flex overflow-x-auto gap-base mt-md pb-xs hide-scrollbar w-full">
+<button class="whitespace-nowrap px-md py-base bg-primary-container text-on-primary-container rounded-full font-label-sm text-label-sm border border-transparent">전체보기</button>
+<button class="whitespace-nowrap px-md py-base bg-surface-container-lowest text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">인지행동치료 (CBT)</button>
+<button class="whitespace-nowrap px-md py-base bg-surface-container-lowest text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">정신분석</button>
+<button class="whitespace-nowrap px-md py-base bg-surface-container-lowest text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">아동/청소년</button>
+<button class="whitespace-nowrap px-md py-base bg-surface-container-lowest text-on-surface rounded-full font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">가족상담</button>
+</div>
+</header>
+<!-- Supervisor List -->
+<div class="flex flex-col gap-md">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-start gap-md mb-sm">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Profile of Dr. Kim" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged Korean female clinical psychologist with a warm, reassuring smile. She is wearing a dark navy blazer over a light blue blouse, set against a bright, modern clinic background with soft, natural lighting. The mood is highly professional, trustworthy, and empathetic, aligning with a premium healthcare app aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgWNcuj5oAr1Xd9HIw0w2kw4qANoyJ6FXaGFXwbKT6rk3TpNesAO0s8rczYxASEByHMdht10RuZ9tAUAhvhtxcEd0Sf0ew-LoRMhakeFohVvrljcqJDVwQ7U17KR-3x_0mk3HbqtqPLUBnbz3eRPqyQ1rPdUbDzhrIVToFiWBWkNStBE8ZhtLewkZy0MC5UcxIj1M3zSZ9mmmNOixEnbI-5s8qZpbVjOz1-865YTo7n6ZfYTbyUIpYH_yjB9vUWHGUl2GY74pUKkY"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-label-md text-label-md text-on-surface mb-xs truncate">김지영, Ph.D.</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">임상심리전문가 · 15년 경력</p>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-lowest border border-outline-variant px-xs py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-[#F59E0B]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm text-on-surface">4.9</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-sm">
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">인지행동치료</span>
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">성인 우울/불안</span>
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">수련감독자</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-md">
+                    다양한 임상 현장에서의 경험을 바탕으로 체계적이고 실무 중심적인 수퍼비전을 제공합니다. 사례 개념화와 치료 개입 전략 수립에 강점이 있습니다.
+                </p>
+<div class="flex items-center justify-between border-t border-outline-variant pt-sm mt-auto">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">video_camera_front</span>
+<span class="font-label-sm text-label-sm">화상 상담 가능</span>
+</div>
+<button class="font-label-sm text-label-sm text-secondary flex items-center gap-xs group-hover:underline">
+                        프로필 보기
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-start gap-md mb-sm">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Profile of Dr. Lee" class="w-full h-full object-cover" data-alt="A professional headshot of a senior Korean male psychiatrist in his 50s, looking composed and thoughtful. He wears a crisp white medical coat over a light grey shirt, set against a deep slate blue background. The lighting is clean, bright, and slightly cool, conveying clinical precision, high security, and deep expertise suitable for a specialized medical platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuChjOyAdT5cx9kXQfcWuHO_4nxhUwHhQlDXdIScI9I02DkdVYmBG834pBzTc5hlmUbrDphQeLbGI1y14CZsyF4e7SD4ZVX0IDyGmb-DjY_hNlw-95OrZ6tCGTyigtjzhP7-Bc8_sByHJuKPuX-vX8vegfZk9ZlD23zppihuEl4Ksivcvt-Kqkx_K9p9zmppXZH36jgc4HcjshKaBo4hAEIG0DtZrnUMKDAFMBU1lu_ZuQNE6J2j1lboUTWvsLrFvQFS2n-8D6eQmxM"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-label-md text-label-md text-on-surface mb-xs truncate">이민수, M.D.</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">정신건강의학과 전문의 · 20년 경력</p>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-lowest border border-outline-variant px-xs py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-[#F59E0B]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm text-on-surface">4.8</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-sm">
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">정신분석</span>
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">복합 외상</span>
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">약물 치료 병행</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-md">
+                    심층적인 정신역동적 이해를 바탕으로 내담자의 근본적인 변화를 돕는 치료적 접근을 함께 고민합니다. 중증도 높은 사례에 대한 심도 깊은 논의가 가능합니다.
+                </p>
+<div class="flex items-center justify-between border-t border-outline-variant pt-sm mt-auto">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">apartment</span>
+<span class="font-label-sm text-label-sm">대면 상담 (서울)</span>
+</div>
+<button class="font-label-sm text-label-sm text-secondary flex items-center gap-xs group-hover:underline">
+                        프로필 보기
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</button>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-lowest border border-outline-variant rounded-lg p-md hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-start gap-md mb-sm">
+<div class="w-16 h-16 rounded-full bg-surface-container-highest overflow-hidden flex-shrink-0 border border-outline-variant">
+<img alt="Profile of Dr. Park" class="w-full h-full object-cover" data-alt="A professional headshot of a young Korean female therapist in her early 30s, exuding an approachable yet highly competent demeanor. She is wearing a smart casual dark blue collared shirt. The background is a very light, clinical grey-white. The lighting is bright and evenly distributed, creating a crisp, high-contrast, modern SaaS profile aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC6MRnsOGdZK50ttkjYnMOC_YEf3dtMR1AWxQpLmcgD3TkbTtmlu-EHqSIPYJbU4RETD7lyeDBV-uefdHAfzTZ-ZYgexjYMvbTionQ1MycjW1Wts9T15emKM6egvDQE4VuC7kNEOpPWFFNwgvUo2KplhEEKJRqGTiwPdylMhAGrINhhuDpQHFJROUgI-12Lg3C9pSx6FrlMHAG_x4N6_XwVQOWv5lYF1H3MYtOCeeOBZ8Als0uVS_lKTlWYJublNHD3i2uXglMLW6A"/>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex justify-between items-start">
+<div>
+<h2 class="font-label-md text-label-md text-on-surface mb-xs truncate">박소연, M.A.</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant truncate">상담심리사 1급 · 8년 경력</p>
+</div>
+<div class="flex items-center gap-xs bg-surface-container-lowest border border-outline-variant px-xs py-1 rounded">
+<span class="material-symbols-outlined text-[14px] text-[#F59E0B]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-sm text-label-sm text-on-surface">5.0</span>
+</div>
+</div>
+</div>
+</div>
+<div class="flex flex-wrap gap-xs mb-sm">
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">아동/청소년</span>
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">놀이치료</span>
+<span class="px-xs py-1 bg-[#EFF6FF] text-[#1E293B] rounded font-label-sm text-[11px]">부모 교육</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant line-clamp-2 mb-md">
+                    초보 상담사들이 아동 및 청소년 내담자와 라포를 형성하고 효과적인 개입을 할 수 있도록 친절하고 세심한 가이드를 제공합니다.
+                </p>
+<div class="flex items-center justify-between border-t border-outline-variant pt-sm mt-auto">
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">video_camera_front</span>
+<span class="font-label-sm text-label-sm">화상 / 대면 병행</span>
+</div>
+<button class="font-label-sm text-label-sm text-secondary flex items-center gap-xs group-hover:underline">
+                        프로필 보기
+                        <span class="material-symbols-outlined text-[16px]" style="font-variation-settings: 'FILL' 0;">chevron_right</span>
+</button>
+</div>
+</article>
+</div>
+<!-- Load More -->
+<div class="mt-lg flex justify-center">
+<button class="px-md py-sm border border-outline-variant rounded-lg font-label-md text-label-md text-on-surface hover:bg-surface-container-low transition-colors w-full">
+                더보기
+            </button>
+</div>
+</main>
+<!-- Footer -->
+<footer class="w-full py-xl px-margin-mobile md:px-gutter flex flex-col md:flex-row justify-between items-center gap-md bg-surface-container-lowest dark:bg-surface-container-low border-t border-outline-variant">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">ClinicFlow</span>
+<div class="flex flex-wrap justify-center gap-md">
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Security Standards</a>
+<a class="font-body-sm text-body-sm text-on-surface-variant hover:text-secondary transition-colors" href="#">Clinical Guidelines</a>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant text-center md:text-right">© 2024 ClinicFlow Korea. HIPAA &amp; PHI Compliant Architecture.</p>
+</footer>
+<style>
+        /* Utility for hiding scrollbar in horizontal scroll containers */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

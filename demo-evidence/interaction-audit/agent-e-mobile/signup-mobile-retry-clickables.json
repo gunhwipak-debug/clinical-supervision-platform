@@ -1,0 +1,156 @@
+[
+  {
+    "tag": "button",
+    "text": "arrow_back",
+    "href": "",
+    "x": 8,
+    "y": 8,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "p-2 -ml-2 text-on-surface hover:bg-surface-container-low rounded-full transition-colors"
+  },
+  {
+    "tag": "label",
+    "text": "Full Name",
+    "href": "",
+    "x": 33,
+    "y": 178,
+    "w": 324,
+    "h": 12,
+    "disabled": false,
+    "classes": "font-label-sm text-label-sm text-on-surface"
+  },
+  {
+    "tag": "label",
+    "text": "Work Email",
+    "href": "",
+    "x": 33,
+    "y": 258,
+    "w": 324,
+    "h": 12,
+    "disabled": false,
+    "classes": "font-label-sm text-label-sm text-on-surface"
+  },
+  {
+    "tag": "label",
+    "text": "Password",
+    "href": "",
+    "x": 33,
+    "y": 338,
+    "w": 324,
+    "h": 12,
+    "disabled": false,
+    "classes": "font-label-sm text-label-sm text-on-surface"
+  },
+  {
+    "tag": "button",
+    "text": "visibility_off",
+    "href": "",
+    "x": 317,
+    "y": 364,
+    "w": 28,
+    "h": 28,
+    "disabled": false,
+    "classes": "absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant p-1 flex items-center justify-center"
+  },
+  {
+    "tag": "label",
+    "text": "Clinical Role",
+    "href": "",
+    "x": 33,
+    "y": 460,
+    "w": 324,
+    "h": 12,
+    "disabled": false,
+    "classes": "font-label-sm text-label-sm text-on-surface"
+  },
+  {
+    "tag": "label",
+    "text": "License Number (Optional)",
+    "href": "",
+    "x": 33,
+    "y": 540,
+    "w": 324,
+    "h": 12,
+    "disabled": false,
+    "classes": "font-label-sm text-label-sm text-on-surface"
+  },
+  {
+    "tag": "label",
+    "text": "Agree to all Terms Includes Terms of Service, Privacy Policy, and HIPAA Consent.",
+    "href": "",
+    "x": 12,
+    "y": 649,
+    "w": 362,
+    "h": 64,
+    "disabled": false,
+    "classes": "flex items-start gap-sm p-xs -ml-xs cursor-pointer group"
+  },
+  {
+    "tag": "label",
+    "text": "Terms of Service (Required) View",
+    "href": "",
+    "x": 65,
+    "y": 725,
+    "w": 309,
+    "h": 32,
+    "disabled": false,
+    "classes": "flex items-center gap-sm py-1 cursor-pointer"
+  },
+  {
+    "tag": "button",
+    "text": "View",
+    "href": "",
+    "x": 345,
+    "y": 731,
+    "w": 29,
+    "h": 19,
+    "disabled": false,
+    "classes": "ml-auto text-secondary text-[12px] font-semibold underline underline-offset-2"
+  },
+  {
+    "tag": "label",
+    "text": "Privacy Policy (Required) View",
+    "href": "",
+    "x": 65,
+    "y": 769,
+    "w": 309,
+    "h": 32,
+    "disabled": false,
+    "classes": "flex items-center gap-sm py-1 cursor-pointer"
+  },
+  {
+    "tag": "button",
+    "text": "View",
+    "href": "",
+    "x": 345,
+    "y": 775,
+    "w": 29,
+    "h": 19,
+    "disabled": false,
+    "classes": "ml-auto text-secondary text-[12px] font-semibold underline underline-offset-2"
+  },
+  {
+    "tag": "label",
+    "text": "PHI/HIPAA Consent (Required) View",
+    "href": "",
+    "x": 65,
+    "y": 813,
+    "w": 309,
+    "h": 32,
+    "disabled": false,
+    "classes": "flex items-center gap-sm py-1 cursor-pointer"
+  },
+  {
+    "tag": "button",
+    "text": "View",
+    "href": "",
+    "x": 345,
+    "y": 819,
+    "w": 29,
+    "h": 19,
+    "disabled": false,
+    "classes": "ml-auto text-secondary text-[12px] font-semibold underline underline-offset-2"
+  }
+]

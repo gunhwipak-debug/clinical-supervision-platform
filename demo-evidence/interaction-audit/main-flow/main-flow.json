@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-05-21T22:31:28.545Z",
+  "steps": [
+    {
+      "name": "home-loaded",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/01-home-loaded.png"
+    },
+    {
+      "name": "home-get-started-to-signup",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/signup",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/02-home-get-started-to-signup.png"
+    },
+    {
+      "name": "home-login-to-login",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/login",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/03-home-login-to-login.png"
+    },
+    {
+      "name": "login-supervisee-to-supervisors",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/supervisors",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/04-login-supervisee-to-supervisors.png"
+    },
+    {
+      "name": "supervisor-profile-open",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/05-supervisor-profile-open.png"
+    },
+    {
+      "name": "profile-to-new-request",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/06-profile-to-new-request.png"
+    },
+    {
+      "name": "new-request-created-submitted",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/requests/f1a1cace-b782-482f-923b-de613d76cd26",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/07-new-request-created-submitted.png"
+    },
+    {
+      "name": "request-detail-payment-click",
+      "status": "check",
+      "note": "payment button clicked; verify resulting state",
+      "url": "http://localhost:3000/requests/f1a1cace-b782-482f-923b-de613d76cd26",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-flow/08-request-detail-payment-click.png"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+[
+  {
+    "label": "detail-before-exact-request",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/focus-detail-before-exact-request.png",
+    "url": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101"
+  },
+  {
+    "label": "detail-after-exact-request",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/focus-detail-after-exact-request.png",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "label": "exact request cta",
+    "before": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101",
+    "after": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301",
+    "ok": true
+  },
+  {
+    "label": "detail-after-my-requests-nav",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/focus-detail-after-my-requests-nav.png",
+    "url": "http://localhost:3000/supervisor/requests"
+  },
+  {
+    "label": "my requests nav on /supervisors/[id]",
+    "before": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101",
+    "after": "http://localhost:3000/supervisor/requests"
+  },
+  {
+    "label": "list-after-my-requests-nav",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/focus-list-after-my-requests-nav.png",
+    "url": "http://localhost:3000/supervisor/requests"
+  },
+  {
+    "label": "my requests nav on /supervisors",
+    "before": "http://localhost:3000/supervisors",
+    "after": "http://localhost:3000/supervisor/requests"
+  }
+]

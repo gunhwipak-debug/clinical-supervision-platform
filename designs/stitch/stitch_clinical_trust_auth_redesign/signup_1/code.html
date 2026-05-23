@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>회원가입 - Clinical Supervision Platform</title>
+<!-- Material Symbols Outlined -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts: Hanken Grotesk (Headlines) & Inter (Body/Labels) -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration (Theme Rules) -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "tertiary-fixed": "#dce3ec",
+                        "background": "#f9f9ff",
+                        "surface-tint": "#565e74",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-container": "#7d858d",
+                        "on-secondary-container": "#fefcff",
+                        "primary-container": "#131b2e",
+                        "on-tertiary-fixed": "#151c23",
+                        "on-primary-fixed": "#131b2e",
+                        "tertiary": "#000000",
+                        "secondary": "#0058be",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-dim": "#cfdaf2",
+                        "on-secondary-fixed-variant": "#004395",
+                        "inverse-surface": "#263143",
+                        "on-primary-container": "#7c839b",
+                        "secondary-container": "#2170e4",
+                        "surface-container-highest": "#d8e3fb",
+                        "outline-variant": "#c6c6cd",
+                        "primary": "#000000",
+                        "on-surface": "#111c2d",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface-variant": "#45464d",
+                        "surface": "#f9f9ff",
+                        "surface-variant": "#d8e3fb",
+                        "on-error-container": "#93000a",
+                        "outline": "#76777d",
+                        "error-container": "#ffdad6",
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#151c23",
+                        "surface-container-low": "#f0f3ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-secondary-fixed": "#001a42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "xl": "40px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "container-max": "1280px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background min-h-screen flex flex-col md:flex-row font-sans antialiased text-on-surface">
+<!-- Suppressed Navigation Shells: This is a linear transactional page, top/bottom navs are excluded to prioritize the flow. -->
+<!-- Left Branding Panel (Desktop Only) -->
+<div class="hidden md:flex md:w-5/12 lg:w-1/2 relative bg-primary-container text-on-primary-container overflow-hidden">
+<div class="absolute inset-0 z-0">
+<!-- High-quality professional imagery for clinical context -->
+<img class="w-full h-full object-cover opacity-20" data-alt="An abstract architectural interior showing an expansive, modern clinic corridor with glass partitions and soft, high-key diffused lighting. The scene utilizes a muted color palette dominated by deep navy blues and pristine whites, conveying a sterile, professional, and highly secure environment typical of advanced SaaS medical platforms. Smooth shadows and geometric reflections emphasize a sense of clarity and structure." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAA9043_KvA6nvyiKDIeASVpmfycE_XeR8lmPBeINKcDEQMxFBJapzVrBGM8rQmyNS2JVRoU4HSKAc2vxS78Zvgv7A76quMMExLEJi12HYvVJZk6A9WasjabvkFgXAfGCTJERp6RDJbxNLLYaq_UYplxvBkTFZhPjpEkJzzaPnpKSJAJVz4_qHcFPW3UcNLXOYA8dSLDCNnbUgGjj3kekAQqoov31SgqsTM8T0dtb-IONNggs1k3mO9eDxR_cu40P4t2LPBHj6Davs"/>
+<div class="absolute inset-0 bg-gradient-to-t from-primary-container to-transparent opacity-80"></div>
+</div>
+<div class="relative z-10 flex flex-col justify-between p-10 lg:p-16 h-full w-full">
+<div>
+<div class="flex items-center gap-2 mb-gutter">
+<span class="material-symbols-outlined text-inverse-primary" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-headline-md text-headline-md text-inverse-primary tracking-tight">ClinicalSup</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-inverse-primary mt-xl max-w-md">
+                    전문적인<br/>임상 감독의<br/>새로운 기준.
+                </h1>
+<p class="font-body-lg text-body-lg text-surface-container-high mt-gutter max-w-md opacity-90">
+                    안전하고 체계적인 환경에서 귀하의 임상 역량을 강화하십시오. 업계 표준 보안을 준수합니다.
+                </p>
+</div>
+<div class="space-y-base">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-surface-container-highest">verified_user</span>
+<span class="font-label-md text-label-md text-surface-container-highest">HIPAA &amp; PHI 규정 준수</span>
+</div>
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-surface-container-highest">lock</span>
+<span class="font-label-md text-label-md text-surface-container-highest">엔드투엔드 데이터 암호화</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Right Form Panel -->
+<div class="w-full md:w-7/12 lg:w-1/2 flex items-center justify-center p-margin-mobile sm:p-gutter lg:p-xl bg-surface-container-lowest min-h-screen">
+<div class="w-full max-w-[440px] flex flex-col gap-xl">
+<!-- Mobile Logo (Hidden on Desktop) -->
+<div class="flex md:hidden items-center gap-2 mb-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-headline-md text-headline-md text-primary tracking-tight">ClinicalSup</span>
+</div>
+<!-- Header -->
+<div>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface">회원가입</h2>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">플랫폼 이용을 위해 계정을 생성해주세요.</p>
+</div>
+<!-- Step Progress Indicator -->
+<div class="flex items-center justify-between relative border-b border-surface-container-high pb-lg">
+<!-- Step 1: Info (Active) -->
+<div class="flex flex-col items-center gap-2 z-10 w-1/3">
+<div class="w-8 h-8 rounded-full bg-primary text-on-primary flex items-center justify-center font-label-md text-label-md">1</div>
+<span class="font-label-sm text-label-sm text-primary text-center">정보 입력</span>
+</div>
+<!-- Step 2: Terms -->
+<div class="flex flex-col items-center gap-2 z-10 w-1/3">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-md text-label-md">2</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">약관 동의</span>
+</div>
+<!-- Step 3: Verification -->
+<div class="flex flex-col items-center gap-2 z-10 w-1/3">
+<div class="w-8 h-8 rounded-full bg-surface-container text-on-surface-variant border border-outline-variant flex items-center justify-center font-label-md text-label-md">3</div>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-center">이메일 인증</span>
+</div>
+<!-- Connecting Line -->
+<div class="absolute top-4 left-1/6 right-1/6 h-[2px] bg-surface-container -z-0"></div>
+<div class="absolute top-4 left-1/6 w-1/3 h-[2px] bg-primary -z-0"></div>
+</div>
+<!-- Alert: Email Verification Notice -->
+<div class="bg-surface-container-low border border-surface-tint/20 rounded-lg p-sm flex items-start gap-sm">
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5">info</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                    가입 완료 후, 보안을 위해 입력하신 이메일로 인증 링크가 발송됩니다. 반드시 사용 가능한 이메일을 입력해 주세요.
+                </p>
+</div>
+<!-- Registration Form -->
+<form action="#" class="flex flex-col gap-lg" method="POST" onsubmit="event.preventDefault(); alert('회원가입 절차가 진행됩니다.');">
+<!-- Field: Name -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="name">이름 (실명)</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition-shadow placeholder:text-outline" id="name" name="name" placeholder="홍길동" required="" type="text"/>
+</div>
+<!-- Field: Email -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="email">이메일 주소</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition-shadow placeholder:text-outline" id="email" name="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+<!-- Field: Password -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="password">비밀번호</label>
+<input class="w-full px-md py-sm bg-surface-container-lowest border border-outline-variant rounded-DEFAULT font-body-md text-body-md text-on-surface focus:outline-none focus:ring-2 focus:ring-secondary focus:border-secondary transition-shadow placeholder:text-outline" id="password" name="password" placeholder="영문, 숫자, 특수문자 조합 8자 이상" required="" type="password"/>
+</div>
+<!-- Terms & Conditions Section -->
+<div class="flex flex-col gap-sm pt-sm border-t border-surface-container-high mt-sm">
+<p class="font-label-md text-label-md text-on-surface mb-xs">약관 동의</p>
+<label class="flex items-start gap-sm cursor-pointer group">
+<div class="relative flex items-center justify-center mt-0.5">
+<input class="peer appearance-none w-5 h-5 border border-outline-variant rounded-sm bg-surface-container-lowest checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-1 transition-colors cursor-pointer" required="" type="checkbox"/>
+<span class="material-symbols-outlined absolute text-white text-[16px] opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">[필수] 서비스 이용약관 동의</span>
+<button class="text-left font-label-sm text-label-sm text-secondary hover:underline mt-1 w-max" type="button">전문 보기</button>
+</div>
+</label>
+<label class="flex items-start gap-sm cursor-pointer group">
+<div class="relative flex items-center justify-center mt-0.5">
+<input class="peer appearance-none w-5 h-5 border border-outline-variant rounded-sm bg-surface-container-lowest checked:bg-primary checked:border-primary focus:outline-none focus:ring-2 focus:ring-secondary focus:ring-offset-1 transition-colors cursor-pointer" required="" type="checkbox"/>
+<span class="material-symbols-outlined absolute text-white text-[16px] opacity-0 peer-checked:opacity-100 pointer-events-none transition-opacity" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-sm text-body-sm text-on-surface group-hover:text-primary transition-colors">[필수] 개인정보 수집 및 이용 동의</span>
+<button class="text-left font-label-sm text-label-sm text-secondary hover:underline mt-1 w-max" type="button">전문 보기</button>
+</div>
+</label>
+</div>
+<!-- Submit Action -->
+<div class="pt-sm mt-sm">
+<button class="w-full bg-primary hover:bg-inverse-surface text-on-primary font-label-md text-label-md py-sm px-lg rounded-DEFAULT transition-colors duration-200 shadow-sm flex justify-center items-center gap-2" type="submit">
+                        회원가입 완료
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="text-center mt-xs">
+<span class="font-body-sm text-body-sm text-on-surface-variant">이미 계정이 있으신가요? </span>
+<a class="font-label-md text-label-md text-secondary hover:text-secondary-container transition-colors" href="/login">로그인</a>
+</div>
+</form>
+</div>
+</div>
+</body></html>

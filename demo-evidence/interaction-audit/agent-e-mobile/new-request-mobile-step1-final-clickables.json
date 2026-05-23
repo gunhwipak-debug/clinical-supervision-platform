@@ -1,0 +1,90 @@
+[
+  {
+    "tag": "button",
+    "text": "close",
+    "href": "",
+    "x": 9,
+    "y": 8,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "text-on-surface-variant p-2 -ml-2 rounded-full hover:bg-surface-variant transition-colors"
+  },
+  {
+    "tag": "label",
+    "text": "개인 상담 수퍼비전 1:1 내담자 상담 사례 분석 및 지도 check_circle",
+    "href": "",
+    "x": 17,
+    "y": 183,
+    "w": 356,
+    "h": 73,
+    "disabled": false,
+    "classes": "relative flex p-md border border-outline-variant rounded-lg cursor-pointer bg-surface-container-lowest hover:bg-surface-"
+  },
+  {
+    "tag": "label",
+    "text": "집단 상담 수퍼비전 집단 역동 및 리더십 코칭 check_circle",
+    "href": "",
+    "x": 17,
+    "y": 268,
+    "w": 356,
+    "h": 73,
+    "disabled": false,
+    "classes": "relative flex p-md border border-outline-variant rounded-lg cursor-pointer bg-surface-container-lowest hover:bg-surface-"
+  },
+  {
+    "tag": "label",
+    "text": "심리 검사 해석 MMPI-2, TCI 등 검사 결과 분석 check_circle",
+    "href": "",
+    "x": 17,
+    "y": 353,
+    "w": 356,
+    "h": 73,
+    "disabled": false,
+    "classes": "relative flex p-md border border-outline-variant rounded-lg cursor-pointer bg-surface-container-lowest hover:bg-surface-"
+  },
+  {
+    "tag": "label",
+    "text": "내담자 가명/코드",
+    "href": "",
+    "x": 17,
+    "y": 515,
+    "w": 356,
+    "h": 12,
+    "disabled": false,
+    "classes": "block font-label-sm text-label-sm text-on-surface-variant mb-xs"
+  },
+  {
+    "tag": "label",
+    "text": "상담 회기 수",
+    "href": "",
+    "x": 17,
+    "y": 599,
+    "w": 356,
+    "h": 12,
+    "disabled": false,
+    "classes": "block font-label-sm text-label-sm text-on-surface-variant mb-xs"
+  },
+  {
+    "tag": "label",
+    "text": "주요 호소 문제 (Brief)",
+    "href": "",
+    "x": 17,
+    "y": 682,
+    "w": 356,
+    "h": 12,
+    "disabled": false,
+    "classes": "block font-label-sm text-label-sm text-on-surface-variant mb-xs"
+  },
+  {
+    "tag": "button",
+    "text": "다음",
+    "href": "",
+    "x": 17,
+    "y": 790,
+    "w": 356,
+    "h": 38,
+    "disabled": false,
+    "classes": "flex-1 py-3 px-4 rounded-DEFAULT font-label-md text-label-md text-on-primary bg-primary hover:bg-tertiary-container tran"
+  }
+]

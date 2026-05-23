@@ -1,0 +1,68 @@
+{
+  "generatedAt": "2026-05-21T22:37:59.635Z",
+  "steps": [
+    {
+      "name": "supervisor-login-result",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/login",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/01-supervisor-login-result.png"
+    },
+    {
+      "name": "supervisor-dashboard",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/supervisor",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/02-supervisor-dashboard.png"
+    },
+    {
+      "name": "supervisor-dashboard-case-review-click",
+      "status": "check",
+      "note": "",
+      "url": "http://localhost:3000/supervisor",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/03-supervisor-dashboard-case-review-click.png"
+    },
+    {
+      "name": "supervisor-requests",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3000/supervisor/requests",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/04-supervisor-requests.png"
+    },
+    {
+      "name": "supervisor-request-action-click",
+      "status": "check",
+      "note": "",
+      "url": "http://localhost:3000/supervisor/requests/10000000-0000-4000-8000-000000000602",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/05-supervisor-request-action-click.png"
+    },
+    {
+      "name": "admin-dashboard",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3001/admin",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/06-admin-dashboard.png"
+    },
+    {
+      "name": "admin-qualifications",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3001/admin/qualifications",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/07-admin-qualifications.png"
+    },
+    {
+      "name": "admin-refunds",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3001/admin/refunds",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/08-admin-refunds.png"
+    },
+    {
+      "name": "admin-payouts",
+      "status": "ok",
+      "note": "",
+      "url": "http://localhost:3001/admin/payouts",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/main-roles/09-admin-payouts.png"
+    }
+  ]
+}

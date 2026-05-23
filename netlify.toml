@@ -1,0 +1,15 @@
+# Netlify deploy target: public ClinicFlow web app.
+# Deploy the admin console as a separate protected site; do not expose it through
+# this public web app deployment.
+
+[build]
+  command = "pnpm --filter @csp/web build"
+  publish = "apps/web/.next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "11.1.2"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

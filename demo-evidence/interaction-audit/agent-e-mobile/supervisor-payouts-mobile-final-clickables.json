@@ -1,0 +1,90 @@
+[
+  {
+    "tag": "button",
+    "text": "arrow_back",
+    "href": "",
+    "x": 16,
+    "y": 8,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-tertiary-container p-2 ro"
+  },
+  {
+    "tag": "button",
+    "text": "filter_list",
+    "href": "",
+    "x": 334,
+    "y": 8,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "text-on-surface-variant dark:text-outline-variant hover:bg-surface-container-low dark:hover:bg-tertiary-container p-2 ro"
+  },
+  {
+    "tag": "button",
+    "text": "chevron_left",
+    "href": "",
+    "x": 29,
+    "y": 102,
+    "w": 32,
+    "h": 40,
+    "disabled": false,
+    "classes": "p-xs text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "chevron_right",
+    "href": "",
+    "x": 329,
+    "y": 102,
+    "w": 32,
+    "h": 40,
+    "disabled": false,
+    "classes": "p-xs text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors"
+  },
+  {
+    "tag": "a",
+    "text": "dashboard Dashboard",
+    "href": "http://localhost:3000/supervisor/payouts#",
+    "x": 15,
+    "y": 785,
+    "w": 90,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container dark:bg-secondary dark:text"
+  },
+  {
+    "tag": "a",
+    "text": "pending_actions Requests",
+    "href": "http://localhost:3000/supervisor/payouts#",
+    "x": 120,
+    "y": 785,
+    "w": 81,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-seconda"
+  },
+  {
+    "tag": "a",
+    "text": "calendar_month Schedule",
+    "href": "http://localhost:3000/supervisor/payouts#",
+    "x": 215,
+    "y": 785,
+    "w": 81,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-seconda"
+  },
+  {
+    "tag": "a",
+    "text": "person Profile",
+    "href": "http://localhost:3000/supervisor/payouts#",
+    "x": 310,
+    "y": 785,
+    "w": 66,
+    "h": 46,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-seconda"
+  }
+]

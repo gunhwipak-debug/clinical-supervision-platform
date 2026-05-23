@@ -1,0 +1,17 @@
+codex-piped-quiche.md
+node_modules
+.next
+dist
+coverage
+test-results
+pnpm-lock.yaml
+demo-evidence/*.log
+demo-evidence/run*.json
+demo-evidence/ops-smoke.json
+demo-evidence/real-db-smoke.json
+demo-evidence/REPORT.md
+demo-evidence/OPS-REPORT.md
+demo-evidence/REAL-DB-SMOKE.md
+designs/stitch/stitch_clinical_trust_auth_redesign/
+designs/stitch/manual-overrides/
+docs/decisions/STITCH-MANUAL-OVERRIDE-SOURCES.md

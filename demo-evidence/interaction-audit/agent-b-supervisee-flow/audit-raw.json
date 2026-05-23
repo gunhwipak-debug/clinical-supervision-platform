@@ -1,0 +1,204 @@
+[
+  {
+    "type": "screenshot",
+    "label": "login-page",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/01-login-page.png",
+    "url": "http://localhost:3000/login"
+  },
+  {
+    "type": "screenshot",
+    "label": "login-filled",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/02-login-filled.png",
+    "url": "http://localhost:3000/login"
+  },
+  {
+    "type": "note",
+    "step": "login submit",
+    "status": "clicked",
+    "detail": "/로그인|login|sign in/i",
+    "url": "http://localhost:3000/supervisors"
+  },
+  {
+    "type": "screenshot",
+    "label": "after-login",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/03-after-login.png",
+    "url": "http://localhost:3000/supervisors"
+  },
+  {
+    "type": "note",
+    "step": "login result",
+    "status": "ok",
+    "detail": "before=http://localhost:3000/login after=http://localhost:3000/supervisors",
+    "url": "http://localhost:3000/supervisors"
+  },
+  {
+    "type": "screenshot",
+    "label": "supervisors-list",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/04-supervisors-list.png",
+    "url": "http://localhost:3000/supervisors"
+  },
+  {
+    "type": "screenshot",
+    "label": "supervisors-search-enter",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/05-supervisors-search-enter.png",
+    "url": "http://localhost:3000/supervisors"
+  },
+  {
+    "type": "note",
+    "step": "search input",
+    "status": "tested",
+    "detail": "1 visible inputs; filled first with 성인 and pressed Enter",
+    "url": "http://localhost:3000/supervisors"
+  },
+  {
+    "type": "note",
+    "step": "open supervisor detail",
+    "status": "clicked",
+    "detail": "/프로필 보기|View Profile|자세히|상세/i",
+    "url": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101"
+  },
+  {
+    "type": "note",
+    "step": "open supervisor detail result",
+    "status": "ok",
+    "detail": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101",
+    "url": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101"
+  },
+  {
+    "type": "screenshot",
+    "label": "supervisor-detail",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/06-supervisor-detail.png",
+    "url": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101"
+  },
+  {
+    "type": "note",
+    "step": "start request from detail",
+    "status": "clicked",
+    "detail": "/의뢰 신청|Request|View Slots|예약|시작/i",
+    "url": "http://localhost:3000/supervisor/requests"
+  },
+  {
+    "type": "note",
+    "step": "start request result",
+    "status": "broken-or-static",
+    "detail": "before=http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101 after=http://localhost:3000/supervisor/requests",
+    "url": "http://localhost:3000/supervisor/requests"
+  },
+  {
+    "type": "screenshot",
+    "label": "new-request-step1",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/07-new-request-step1.png",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "screenshot",
+    "label": "new-request-filled-step1",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/08-new-request-filled-step1.png",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "note",
+    "step": "new request next 1",
+    "status": "clicked",
+    "detail": "/다음|Next/i",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "screenshot",
+    "label": "new-request-step2",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/09-new-request-step2.png",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "note",
+    "step": "new request next 2",
+    "status": "clicked",
+    "detail": "/다음|Next/i",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "screenshot",
+    "label": "new-request-step3-checked",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/10-new-request-step3-checked.png",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "note",
+    "step": "new request submit",
+    "status": "missing",
+    "detail": "/요청 제출|제출|Submit/i",
+    "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+  },
+  {
+    "type": "screenshot",
+    "label": "request-detail-after-submit",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/11-request-detail-after-submit.png",
+    "url": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19"
+  },
+  {
+    "type": "note",
+    "step": "request submit result",
+    "status": "ok",
+    "detail": "before=http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301 after=http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19",
+    "url": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19"
+  },
+  {
+    "type": "note",
+    "step": "request detail payment cta",
+    "status": "clicked",
+    "detail": "/결제|Payment|Pay/i",
+    "url": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19"
+  },
+  {
+    "type": "screenshot",
+    "label": "after-payment-cta",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/12-after-payment-cta.png",
+    "url": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19"
+  },
+  {
+    "type": "note",
+    "step": "payment cta result",
+    "status": "clicked-no-navigation",
+    "detail": "before=http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19 after=http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19",
+    "url": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19"
+  },
+  {
+    "type": "screenshot",
+    "label": "payments-list",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/13-payments-list.png",
+    "url": "http://localhost:3000/payments"
+  },
+  {
+    "type": "note",
+    "step": "open payment detail",
+    "status": "clicked",
+    "detail": "/영수증|Receipt|상세|Details|보기/i",
+    "url": "http://localhost:3000/payments"
+  },
+  {
+    "type": "screenshot",
+    "label": "payment-detail-attempt",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/14-payment-detail-attempt.png",
+    "url": "http://localhost:3000/payments"
+  },
+  {
+    "type": "note",
+    "step": "payment detail result",
+    "status": "clicked-no-navigation",
+    "detail": "before=http://localhost:3000/payments after=http://localhost:3000/payments",
+    "url": "http://localhost:3000/payments"
+  },
+  {
+    "type": "screenshot",
+    "label": "settings-page",
+    "path": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-b-supervisee-flow/15-settings-page.png",
+    "url": "http://localhost:3000/settings"
+  },
+  {
+    "type": "note",
+    "step": "settings controls visible",
+    "status": "observed",
+    "detail": "[\"add\\n                New Feedback\",\"저장 (Save)\",\"사진 변경\",\"비밀번호 업데이트\",\"설정 변경\",\"로그아웃\",\"power_settings_new\\n                                모든 다른 세션 로그아웃\"]",
+    "url": "http://localhost:3000/settings"
+  }
+]

@@ -1,0 +1,413 @@
+{
+  "generatedAt": "2026-05-21T22:35:32.031Z",
+  "pageSummaries": [
+    {
+      "page": "dashboard",
+      "url": "http://localhost:3001/admin",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/10-dashboard.png",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "type": "",
+          "text": "dashboard Dashboard",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 162,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "type": "",
+          "text": "clinical_notes Case Review",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 218,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "type": "",
+          "text": "badge Profile",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 274,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "type": "",
+          "text": "payments Services",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 330,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "type": "",
+          "text": "calendar_month Schedule",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 386,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 5,
+          "tag": "button",
+          "type": "",
+          "text": "New Feedback",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 16,
+            "y": 713,
+            "w": 207,
+            "h": 38
+          }
+        },
+        {
+          "index": 6,
+          "tag": "a",
+          "type": "",
+          "text": "settings Settings",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 780,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 7,
+          "tag": "a",
+          "type": "",
+          "text": "logout Sign Out",
+          "href": "#",
+          "disabled": false,
+          "box": {
+            "x": 18,
+            "y": 836,
+            "w": 203,
+            "h": 47
+          }
+        },
+        {
+          "index": 8,
+          "tag": "input",
+          "type": "text",
+          "text": "검색...",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 928,
+            "y": 14,
+            "w": 240,
+            "h": 31
+          }
+        },
+        {
+          "index": 9,
+          "tag": "button",
+          "type": "",
+          "text": "notifications",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1180,
+            "y": 10,
+            "w": 32,
+            "h": 38
+          }
+        },
+        {
+          "index": 10,
+          "tag": "button",
+          "type": "",
+          "text": "help",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1224,
+            "y": 10,
+            "w": 32,
+            "h": 38
+          }
+        },
+        {
+          "index": 11,
+          "tag": "button",
+          "type": "",
+          "text": "모두 보기",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1186,
+            "y": 330,
+            "w": 53,
+            "h": 14
+          }
+        },
+        {
+          "index": 12,
+          "tag": "button",
+          "type": "",
+          "text": "상세",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1219,
+            "y": 420,
+            "w": 24,
+            "h": 21
+          }
+        },
+        {
+          "index": 13,
+          "tag": "button",
+          "type": "",
+          "text": "상세",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1219,
+            "y": 466,
+            "w": 24,
+            "h": 21
+          }
+        },
+        {
+          "index": 14,
+          "tag": "button",
+          "type": "",
+          "text": "상세",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1219,
+            "y": 512,
+            "w": 24,
+            "h": 21
+          }
+        },
+        {
+          "index": 15,
+          "tag": "button",
+          "type": "",
+          "text": "상세",
+          "href": "",
+          "disabled": false,
+          "box": {
+            "x": 1219,
+            "y": 558,
+            "w": 24,
+            "h": 21
+          }
+        }
+      ]
+    },
+    {
+      "page": "qualifications",
+      "url": "http://localhost:3001/admin/qualifications",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/10-qualifications.png",
+      "controls": []
+    },
+    {
+      "page": "refunds",
+      "url": "http://localhost:3001/admin/refunds",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/10-refunds.png",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "type": "",
+          "text": "관리자 대시보드",
+          "href": "/admin",
+          "disabled": false,
+          "box": {
+            "x": 160,
+            "y": 25,
+            "w": 30,
+            "h": 30
+          }
+        }
+      ]
+    },
+    {
+      "page": "payouts",
+      "url": "http://localhost:3001/admin/payouts",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/10-payouts.png",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "type": "",
+          "text": "관리자 대시보드",
+          "href": "/admin",
+          "disabled": false,
+          "box": {
+            "x": 160,
+            "y": 25,
+            "w": 30,
+            "h": 30
+          }
+        }
+      ]
+    }
+  ],
+  "interactionResults": [
+    {
+      "label": "web login as admin submit",
+      "beforeUrl": "http://localhost:3000/login",
+      "afterUrl": "http://localhost:3001/admin",
+      "changed": true,
+      "requests": [
+        "POST http://localhost:3000/api/auth/login",
+        "GET http://localhost:3001/admin",
+        "GET http://localhost:3000/login?_rsc=OCjuPL3cKFt-Yi5_",
+        "GET http://localhost:3000/_next/static/css/app/layout.css?v=1779402909097",
+        "GET http://localhost:3001/_next/static/css/app/layout.css?v=1779402909089",
+        "GET http://localhost:3001/_next/static/chunks/webpack.js?v=1779402909089",
+        "GET http://localhost:3001/_next/static/chunks/main-app.js?v=1779402909089",
+        "GET http://localhost:3001/_next/static/chunks/app-pages-internals.js",
+        "GET http://localhost:3001/_next/static/chunks/app/error.js",
+        "GET http://localhost:3001/_next/static/chunks/app/page.js",
+        "GET http://localhost:3001/_next/static/media/inter-latin-700-normal.953b7aa5.woff2",
+        "GET http://localhost:3001/_next/static/media/inter-latin-600-normal.8fb1a964.woff2",
+        "GET http://localhost:3001/_next/static/media/hanken-grotesk-latin-700-normal.cf28c809.woff2",
+        "GET http://localhost:3001/_next/static/media/inter-latin-400-normal.ef6d3f52.woff2",
+        "GET http://localhost:3001/_next/static/media/inter-latin-500-normal.b7b43ace.woff2",
+        "GET http://localhost:3001/_next/static/media/material-symbols-outlined-latin-400-normal.ceecf045.woff2",
+        "GET http://localhost:3001/_next/static/media/hanken-grotesk-latin-600-normal.3182e117.woff2",
+        "GET http://localhost:3001/_next/static/media/hanken-grotesk-latin-ext-700-normal.300a2d05.woff2"
+      ],
+      "error": null,
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/02-web-login-admin-after-submit.png"
+    },
+    {
+      "label": "dashboard -> qualifications visible control",
+      "beforeUrl": "http://localhost:3001/admin",
+      "afterUrl": "http://localhost:3001/admin#",
+      "changed": true,
+      "requests": [],
+      "error": null,
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/20-dashboard-qualifications-visible-control.png"
+    },
+    {
+      "label": "dashboard -> refunds visible control",
+      "beforeUrl": "http://localhost:3001/admin",
+      "afterUrl": "http://localhost:3001/admin",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/20-dashboard-refunds-visible-control-not-found.png"
+    },
+    {
+      "label": "dashboard -> payouts visible control",
+      "beforeUrl": "http://localhost:3001/admin",
+      "afterUrl": "http://localhost:3001/admin",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/20-dashboard-payouts-visible-control-not-found.png"
+    },
+    {
+      "label": "qualifications shell nav /환불 큐/i",
+      "beforeUrl": "http://localhost:3001/admin/qualifications",
+      "afterUrl": "http://localhost:3001/admin/qualifications",
+      "changed": false,
+      "requests": [],
+      "error": "locator.click: Timeout 2500ms exceeded.",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/30-qualifications-shell-nav.png"
+    },
+    {
+      "label": "refunds shell nav /정산/i",
+      "beforeUrl": "http://localhost:3001/admin/refunds",
+      "afterUrl": "http://localhost:3001/admin/refunds",
+      "changed": false,
+      "requests": [],
+      "error": "locator.click: Timeout 2500ms exceeded.",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/30-refunds-shell-nav.png"
+    },
+    {
+      "label": "payouts shell nav /대시보드/i",
+      "beforeUrl": "http://localhost:3001/admin/payouts",
+      "afterUrl": "http://localhost:3001/admin/payouts",
+      "changed": false,
+      "requests": [],
+      "error": "locator.click: Timeout 2500ms exceeded.",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/30-payouts-shell-nav.png"
+    },
+    {
+      "label": "qualification-approve-button",
+      "beforeUrl": "http://localhost:3001/admin/qualifications",
+      "afterUrl": "http://localhost:3001/admin/qualifications",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/40-qualification-approve-button-not-found.png"
+    },
+    {
+      "label": "qualification-reject-button",
+      "beforeUrl": "http://localhost:3001/admin/qualifications",
+      "afterUrl": "http://localhost:3001/admin/qualifications",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/40-qualification-reject-button-not-found.png"
+    },
+    {
+      "label": "refund-approve-button",
+      "beforeUrl": "http://localhost:3001/admin/refunds",
+      "afterUrl": "http://localhost:3001/admin/refunds",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/40-refund-approve-button-not-found.png"
+    },
+    {
+      "label": "refund-reject-button",
+      "beforeUrl": "http://localhost:3001/admin/refunds",
+      "afterUrl": "http://localhost:3001/admin/refunds",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/40-refund-reject-button-not-found.png"
+    },
+    {
+      "label": "payout-compute-button",
+      "beforeUrl": "http://localhost:3001/admin/payouts",
+      "afterUrl": "http://localhost:3001/admin/payouts",
+      "changed": false,
+      "requests": [],
+      "error": "control not found",
+      "screenshot": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/interaction-audit/agent-d-admin/40-payout-compute-button-not-found.png"
+    }
+  ]
+}

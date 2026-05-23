@@ -1,0 +1,271 @@
+{
+  "generatedAt": "2026-05-21T16:23:00.869Z",
+  "results": [
+    {
+      "name": "landing-page",
+      "viewport": "desktop",
+      "source": "landing_page_1",
+      "result": "landing-page-desktop.png",
+      "original": true
+    },
+    {
+      "name": "landing-page",
+      "viewport": "mobile",
+      "source": "landing_page_2",
+      "result": "landing-page-mobile.png",
+      "original": true
+    },
+    {
+      "name": "signup",
+      "viewport": "desktop",
+      "source": "signup_1",
+      "result": "signup-desktop.png",
+      "original": true
+    },
+    {
+      "name": "signup",
+      "viewport": "mobile",
+      "source": "signup_2",
+      "result": "signup-mobile.png",
+      "original": true
+    },
+    {
+      "name": "login",
+      "viewport": "desktop",
+      "source": "login_1",
+      "result": "login-desktop.png",
+      "original": true
+    },
+    {
+      "name": "login",
+      "viewport": "mobile",
+      "source": "login_2",
+      "result": "login-mobile.png",
+      "original": true
+    },
+    {
+      "name": "verify-email",
+      "viewport": "desktop",
+      "source": "verify_email_1",
+      "result": "verify-email-desktop.png",
+      "original": true
+    },
+    {
+      "name": "verify-email",
+      "viewport": "mobile",
+      "source": "verify_email_2",
+      "result": "verify-email-mobile.png",
+      "original": true
+    },
+    {
+      "name": "forgot-password",
+      "viewport": "desktop",
+      "source": "forgot_password_1",
+      "result": "forgot-password-desktop.png",
+      "original": true
+    },
+    {
+      "name": "forgot-password",
+      "viewport": "mobile",
+      "source": "forgot_password_2",
+      "result": "forgot-password-mobile.png",
+      "original": true
+    },
+    {
+      "name": "reset-password",
+      "viewport": "desktop",
+      "source": "reset_password_1",
+      "result": "reset-password-desktop.png",
+      "original": true
+    },
+    {
+      "name": "reset-password",
+      "viewport": "mobile",
+      "source": "reset_password_2",
+      "result": "reset-password-mobile.png",
+      "original": true
+    },
+    {
+      "name": "supervisors",
+      "viewport": "desktop",
+      "source": "supervisors_1",
+      "result": "supervisors-desktop.png",
+      "original": true
+    },
+    {
+      "name": "supervisors",
+      "viewport": "mobile",
+      "source": "supervisors_2",
+      "result": "supervisors-mobile.png",
+      "original": true
+    },
+    {
+      "name": "supervisor-profile",
+      "viewport": "desktop",
+      "source": "supervisor_profile_1",
+      "result": "supervisor-profile-desktop.png",
+      "original": true
+    },
+    {
+      "name": "supervisor-profile",
+      "viewport": "mobile",
+      "source": "supervisor_profile_2",
+      "result": "supervisor-profile-mobile.png",
+      "original": true
+    },
+    {
+      "name": "my-requests",
+      "viewport": "desktop",
+      "source": "my_requests_1",
+      "result": "my-requests-desktop.png",
+      "original": true
+    },
+    {
+      "name": "my-requests",
+      "viewport": "mobile",
+      "source": "my_requests_2",
+      "result": "my-requests-mobile.png",
+      "original": true
+    },
+    {
+      "name": "new-request",
+      "viewport": "desktop",
+      "source": "new_request_1",
+      "result": "new-request-desktop.png",
+      "original": true
+    },
+    {
+      "name": "new-request",
+      "viewport": "mobile",
+      "source": "new_request_2",
+      "result": "new-request-mobile.png",
+      "original": true
+    },
+    {
+      "name": "payments",
+      "viewport": "desktop",
+      "source": "payments_1",
+      "result": "payments-desktop.png",
+      "original": true
+    },
+    {
+      "name": "payments",
+      "viewport": "mobile",
+      "source": "payments_2",
+      "result": "payments-mobile.png",
+      "original": true
+    },
+    {
+      "name": "settings",
+      "viewport": "desktop",
+      "source": "settings_1",
+      "result": "settings-desktop.png",
+      "original": true
+    },
+    {
+      "name": "settings",
+      "viewport": "mobile",
+      "source": "settings_2",
+      "result": "settings-mobile.png",
+      "original": true
+    },
+    {
+      "name": "dashboard",
+      "viewport": "desktop",
+      "source": "dashboard_1",
+      "result": "dashboard-desktop.png",
+      "original": true
+    },
+    {
+      "name": "dashboard",
+      "viewport": "mobile",
+      "source": "dashboard_2",
+      "result": "dashboard-mobile.png",
+      "original": true
+    },
+    {
+      "name": "request-queue",
+      "viewport": "desktop",
+      "source": "request_queue_1",
+      "result": "request-queue-desktop.png",
+      "original": true
+    },
+    {
+      "name": "request-queue",
+      "viewport": "mobile",
+      "source": "request_queue_2",
+      "result": "request-queue-mobile.png",
+      "original": true
+    },
+    {
+      "name": "work-surface",
+      "viewport": "desktop",
+      "source": "work_surface_1",
+      "result": "work-surface-desktop.png",
+      "original": true
+    },
+    {
+      "name": "work-surface",
+      "viewport": "mobile",
+      "source": "work_surface_2",
+      "result": "work-surface-mobile.png",
+      "original": true
+    },
+    {
+      "name": "availability",
+      "viewport": "desktop",
+      "source": "availability_1",
+      "result": "availability-desktop.png",
+      "original": true
+    },
+    {
+      "name": "availability",
+      "viewport": "mobile",
+      "source": "availability_2",
+      "result": "availability-mobile.png",
+      "original": true
+    },
+    {
+      "name": "qualifications",
+      "viewport": "desktop",
+      "source": "qualifications_1",
+      "result": "qualifications-desktop.png",
+      "original": true
+    },
+    {
+      "name": "qualifications",
+      "viewport": "mobile",
+      "source": "qualifications_2",
+      "result": "qualifications-mobile.png",
+      "original": true
+    },
+    {
+      "name": "payouts",
+      "viewport": "desktop",
+      "source": "payouts_1",
+      "result": "payouts-desktop.png",
+      "original": true
+    },
+    {
+      "name": "payouts",
+      "viewport": "mobile",
+      "source": "payouts_2",
+      "result": "payouts-mobile.png",
+      "original": true
+    },
+    {
+      "name": "admin-dashboard",
+      "viewport": "desktop",
+      "source": "admin_dashboard_1",
+      "result": "admin-dashboard-desktop.png",
+      "original": true
+    },
+    {
+      "name": "admin-dashboard",
+      "viewport": "mobile",
+      "source": "admin_dashboard_2",
+      "result": "admin-dashboard-mobile.png",
+      "original": true
+    }
+  ]
+}

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>비밀번호 찾기 - ClinicalSup</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Theme Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-dim": "#cfdaf2",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "surface-tint": "#565e74",
+                        "error-container": "#ffdad6",
+                        "on-background": "#111c2d",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-primary-fixed": "#131b2e",
+                        "on-tertiary-fixed": "#151c23",
+                        "surface-bright": "#f9f9ff",
+                        "tertiary": "#000000",
+                        "tertiary-fixed": "#dce3ec",
+                        "on-surface-variant": "#45464d",
+                        "surface-container": "#e7eeff",
+                        "on-surface": "#111c2d",
+                        "primary-fixed": "#dae2fd",
+                        "on-tertiary-container": "#7d858d",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-fixed": "#001a42",
+                        "tertiary-container": "#151c23",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "inverse-surface": "#263143",
+                        "background": "#f9f9ff",
+                        "secondary": "#0058be",
+                        "primary-container": "#131b2e",
+                        "surface-container-low": "#f0f3ff",
+                        "surface": "#f9f9ff",
+                        "on-primary": "#ffffff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "on-primary-container": "#7c839b",
+                        "primary": "#000000",
+                        "on-secondary-fixed-variant": "#004395",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#bec6e0",
+                        "outline-variant": "#c6c6cd",
+                        "on-secondary-container": "#fefcff",
+                        "outline": "#76777d",
+                        "secondary-container": "#2170e4",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container-lowest": "#ffffff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "secondary-fixed": "#d8e2ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "surface-container-high": "#dee8ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "gutter": "24px",
+                        "container-max": "1280px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "md": "16px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-[884px] flex flex-col relative overflow-hidden font-body-md antialiased">
+<!-- Ambient Background Element -->
+<div class="absolute top-0 right-0 w-[300px] h-[300px] bg-primary-fixed rounded-full mix-blend-multiply filter blur-[80px] opacity-40 -translate-y-1/3 translate-x-1/3 pointer-events-none"></div>
+<!-- Main Content Container -->
+<main class="flex-1 flex flex-col justify-center px-margin-mobile py-xl w-full max-w-md mx-auto relative z-10">
+<!-- Brand Header -->
+<div class="flex items-center gap-2 mb-xl">
+<span class="material-symbols-outlined text-primary text-[28px]" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+<span class="font-headline-md text-headline-md font-bold text-primary">ClinicalSup</span>
+</div>
+<!-- Typography Context -->
+<div class="mb-lg">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-background mb-xs">비밀번호 찾기</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">가입 시 사용한 이메일 주소를 입력해 주세요. 안전한 비밀번호 재설정 링크를 보내드립니다.</p>
+</div>
+<!-- Form Canvas (Level 1 Surface) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md">
+<form action="#" class="flex flex-col gap-lg" method="POST">
+<!-- Email Input Group -->
+<div class="flex flex-col gap-xs">
+<label class="font-label-md text-label-md text-on-surface" for="email">이메일 주소</label>
+<div class="relative">
+<span class="absolute inset-y-0 left-0 flex items-center pl-sm pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">mail</span>
+</span>
+<input class="w-full pl-xl pr-md py-sm bg-surface font-body-md text-body-md text-on-surface border border-outline-variant rounded-DEFAULT focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-all placeholder:text-on-surface-variant/50" id="email" name="email" placeholder="name@example.com" required="" type="email"/>
+</div>
+</div>
+<!-- Security Helper Banner -->
+<div class="flex items-start gap-sm bg-surface-container-low p-sm rounded-lg border border-surface-variant">
+<span class="material-symbols-outlined text-secondary text-[20px] mt-0.5" style="font-variation-settings: 'FILL' 1;">shield_lock</span>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                        임상 데이터 보호를 위해 재설정 링크는 <strong class="text-on-surface font-medium">24시간 동안만 유효</strong>하며, 본인 인증 후 변경이 완료됩니다.
+                    </p>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-sm mt-xs">
+<button class="w-full flex items-center justify-center gap-2 bg-primary text-on-primary font-label-md text-label-md py-sm px-md rounded-lg hover:bg-on-background transition-colors active:scale-[0.98]" type="submit">
+<span>재설정 링크 전송</span>
+<span class="material-symbols-outlined text-[18px]">send</span>
+</button>
+<a class="w-full flex items-center justify-center gap-2 bg-transparent text-secondary font-label-md text-label-md py-sm px-md rounded-lg border border-transparent hover:bg-surface-container hover:border-surface-variant transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+<span>로그인으로 돌아가기</span>
+</a>
+</div>
+</form>
+</div>
+</main>
+<!-- Subtle interactive script for input focus effect (optional micro-interaction) -->
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const emailInput = document.getElementById('email');
+            const iconSpan = emailInput.previousElementSibling.querySelector('span');
+
+            emailInput.addEventListener('focus', () => {
+                iconSpan.classList.remove('text-on-surface-variant');
+                iconSpan.classList.add('text-secondary');
+            });
+
+            emailInput.addEventListener('blur', () => {
+                iconSpan.classList.remove('text-secondary');
+                iconSpan.classList.add('text-on-surface-variant');
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,167 @@
+[
+  {
+    "tag": "button",
+    "text": "menu",
+    "href": "",
+    "x": 16,
+    "y": 4,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "notifications",
+    "href": "",
+    "x": 334,
+    "y": 4,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "person 프로필 수정 chevron_right",
+    "href": "",
+    "x": 17,
+    "y": 108,
+    "w": 356,
+    "h": 59,
+    "disabled": false,
+    "classes": "w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors active:bg-surface-contain"
+  },
+  {
+    "tag": "button",
+    "text": "lock 비밀번호 변경 chevron_right",
+    "href": "",
+    "x": 17,
+    "y": 167,
+    "w": 356,
+    "h": 58,
+    "disabled": false,
+    "classes": "w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors active:bg-surface-contain"
+  },
+  {
+    "tag": "label",
+    "text": "",
+    "href": "",
+    "x": 313,
+    "y": 309,
+    "w": 44,
+    "h": 24,
+    "disabled": false,
+    "classes": "relative inline-flex items-center cursor-pointer"
+  },
+  {
+    "tag": "label",
+    "text": "",
+    "href": "",
+    "x": 313,
+    "y": 368,
+    "w": 44,
+    "h": 24,
+    "disabled": false,
+    "classes": "relative inline-flex items-center cursor-pointer"
+  },
+  {
+    "tag": "button",
+    "text": "shield 2단계 인증(TOTP) 미설정 chevron_right",
+    "href": "",
+    "x": 17,
+    "y": 476,
+    "w": 356,
+    "h": 59,
+    "disabled": false,
+    "classes": "w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors active:bg-surface-contain"
+  },
+  {
+    "tag": "label",
+    "text": "",
+    "href": "",
+    "x": 313,
+    "y": 552,
+    "w": 44,
+    "h": 24,
+    "disabled": false,
+    "classes": "relative inline-flex items-center cursor-pointer"
+  },
+  {
+    "tag": "button",
+    "text": "campaign 공지사항 chevron_right",
+    "href": "",
+    "x": 17,
+    "y": 661,
+    "w": 356,
+    "h": 59,
+    "disabled": false,
+    "classes": "w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors active:bg-surface-contain"
+  },
+  {
+    "tag": "button",
+    "text": "support_agent 1:1 문의 chevron_right",
+    "href": "",
+    "x": 17,
+    "y": 719,
+    "w": 356,
+    "h": 59,
+    "disabled": false,
+    "classes": "w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors active:bg-surface-contain"
+  },
+  {
+    "tag": "button",
+    "text": "policy 약관 및 정책 chevron_right",
+    "href": "",
+    "x": 17,
+    "y": 778,
+    "w": 356,
+    "h": 58,
+    "disabled": false,
+    "classes": "w-full flex items-center justify-between p-md hover:bg-surface-container-low transition-colors active:bg-surface-contain"
+  },
+  {
+    "tag": "a",
+    "text": "dashboard Dashboard",
+    "href": "http://localhost:3000/settings#",
+    "x": 29,
+    "y": 780,
+    "w": 64,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-container dark:hove"
+  },
+  {
+    "tag": "a",
+    "text": "assignment_late Requests",
+    "href": "http://localhost:3000/settings#",
+    "x": 118,
+    "y": 780,
+    "w": 64,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-container dark:hove"
+  },
+  {
+    "tag": "a",
+    "text": "calendar_today Schedule",
+    "href": "http://localhost:3000/settings#",
+    "x": 208,
+    "y": 780,
+    "w": 64,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-container dark:hove"
+  },
+  {
+    "tag": "a",
+    "text": "person Profile",
+    "href": "http://localhost:3000/settings#",
+    "x": 297,
+    "y": 780,
+    "w": 64,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed font-bold hover:bg-surface-container "
+  }
+]

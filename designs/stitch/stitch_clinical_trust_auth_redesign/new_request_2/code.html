@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicFlow - 새 수퍼비전 요청</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#151c23",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary": "#000000",
+                        "on-secondary": "#ffffff",
+                        "outline": "#76777d",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container-highest": "#d8e3fb",
+                        "background": "#f9f9ff",
+                        "primary-fixed": "#dae2fd",
+                        "on-secondary-container": "#fefcff",
+                        "inverse-surface": "#263143",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "error": "#ba1a1a",
+                        "surface-container": "#e7eeff",
+                        "on-surface-variant": "#45464d",
+                        "surface-container-lowest": "#ffffff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "on-surface": "#111c2d",
+                        "error-container": "#ffdad6",
+                        "surface": "#f9f9ff",
+                        "primary-container": "#131b2e",
+                        "outline-variant": "#c6c6cd",
+                        "inverse-primary": "#bec6e0",
+                        "on-background": "#111c2d",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "surface-tint": "#565e74",
+                        "on-secondary-fixed-variant": "#004395",
+                        "secondary-container": "#2170e4",
+                        "surface-dim": "#cfdaf2",
+                        "on-primary-container": "#7c839b",
+                        "tertiary-fixed": "#dce3ec",
+                        "surface-variant": "#d8e3fb",
+                        "on-error": "#ffffff",
+                        "surface-container-high": "#dee8ff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-tertiary-container": "#7d858d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "surface-container-low": "#f0f3ff",
+                        "on-secondary-fixed": "#001a42",
+                        "on-tertiary-fixed": "#151c23",
+                        "secondary": "#0058be",
+                        "tertiary": "#000000",
+                        "on-primary-fixed": "#131b2e",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "gutter": "24px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "sm": "12px",
+                        "md": "16px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "label-sm": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1;
+        }
+        
+        /* Hide steps initially */
+        .wizard-step { display: none; }
+        .wizard-step.active { display: block; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col max-w-[390px] mx-auto border-x border-outline-variant/30">
+<!-- Top Navigation for Wizard (Transactional/Task-Focused) -->
+<header class="w-full bg-surface-container-lowest px-margin-mobile flex items-center justify-between h-16 sticky top-0 z-50">
+<button aria-label="Cancel" class="text-on-surface-variant p-2 -ml-2 rounded-full hover:bg-surface-variant transition-colors" id="btn-cancel">
+<span class="material-symbols-outlined">close</span>
+</button>
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-primary text-center flex-1">새 요청</h1>
+<div class="w-10"></div> <!-- Placeholder for balance -->
+</header>
+<!-- Progress Indicator -->
+<div class="px-margin-mobile py-base bg-surface-container-lowest border-b border-outline-variant">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-sm text-label-sm text-secondary">Step <span id="current-step-display">1</span> of 3</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant" id="step-title-display">기본 정보</span>
+</div>
+<div class="w-full bg-surface-container-high h-2 rounded-full overflow-hidden">
+<div class="bg-secondary h-full rounded-full transition-all duration-300" id="progress-bar" style="width: 33.33%;"></div>
+</div>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-margin-mobile py-lg overflow-y-auto">
+<!-- Step 1: Service selection & Counselor info -->
+<div class="wizard-step active space-y-xl" id="step-1">
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">수퍼비전 유형</h2>
+<div class="grid grid-cols-1 gap-sm">
+<label class="relative flex p-md border border-outline-variant rounded-lg cursor-pointer bg-surface-container-lowest hover:bg-surface-variant transition-colors group has-[:checked]:border-secondary has-[:checked]:bg-surface-container">
+<input checked="" class="peer sr-only" name="supervision_type" type="radio" value="individual"/>
+<div class="flex-1">
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">개인 상담 수퍼비전</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">1:1 내담자 상담 사례 분석 및 지도</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+</label>
+<label class="relative flex p-md border border-outline-variant rounded-lg cursor-pointer bg-surface-container-lowest hover:bg-surface-variant transition-colors group has-[:checked]:border-secondary has-[:checked]:bg-surface-container">
+<input class="peer sr-only" name="supervision_type" type="radio" value="group"/>
+<div class="flex-1">
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">집단 상담 수퍼비전</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">집단 역동 및 리더십 코칭</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+</label>
+<label class="relative flex p-md border border-outline-variant rounded-lg cursor-pointer bg-surface-container-lowest hover:bg-surface-variant transition-colors group has-[:checked]:border-secondary has-[:checked]:bg-surface-container">
+<input class="peer sr-only" name="supervision_type" type="radio" value="assessment"/>
+<div class="flex-1">
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">심리 검사 해석</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">MMPI-2, TCI 등 검사 결과 분석</p>
+</div>
+<span class="material-symbols-outlined text-secondary opacity-0 peer-checked:opacity-100 transition-opacity">check_circle</span>
+</label>
+</div>
+</section>
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">상담사 정보</h2>
+<div class="space-y-md">
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">내담자 가명/코드</label>
+<input class="w-full bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-sm font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-shadow" placeholder="예: Client-A, 홍길동" type="text"/>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">상담 회기 수</label>
+<select class="w-full bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-sm font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-shadow appearance-none">
+<option>1~5회기</option>
+<option>6~10회기</option>
+<option>11회기 이상</option>
+</select>
+</div>
+<div>
+<label class="block font-label-sm text-label-sm text-on-surface-variant mb-xs">주요 호소 문제 (Brief)</label>
+<textarea class="w-full bg-surface-container-lowest border border-outline-variant rounded-DEFAULT p-sm font-body-md text-on-surface focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-shadow resize-none" placeholder="내담자의 주요 호소 문제를 간략히 적어주세요." rows="3"></textarea>
+</div>
+</div>
+</section>
+</div>
+<!-- Step 2: Case file upload & De-identification check -->
+<div class="wizard-step space-y-xl" id="step-2">
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">사례 파일 업로드</h2>
+<div class="border-2 border-dashed border-outline-variant rounded-xl p-xl text-center bg-surface-container-lowest flex flex-col items-center justify-center mb-md">
+<span class="material-symbols-outlined text-[48px] text-outline mb-sm">upload_file</span>
+<p class="font-label-md text-label-md text-on-surface mb-xs">여기를 눌러 파일을 선택하세요</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant">PDF, DOCX 지원 (최대 50MB)</p>
+<input class="hidden" id="file-upload" type="file"/>
+<button class="mt-sm px-md py-base border border-outline rounded-DEFAULT font-label-sm text-label-sm text-on-surface hover:bg-surface-variant transition-colors" onclick="document.getElementById('file-upload').click()">
+                        파일 찾기
+                    </button>
+</div>
+<div class="bg-surface-container rounded-lg p-md border border-outline-variant/50">
+<div class="flex items-start gap-sm mb-sm">
+<span class="material-symbols-outlined text-secondary">security</span>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">비식별화 필수 확인</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">업로드하는 모든 문서에서 내담자를 식별할 수 있는 개인정보(실명, 생년월일, 연락처 등)가 제거되었는지 확인해야 합니다.</p>
+</div>
+</div>
+<label class="flex items-center gap-sm cursor-pointer mt-md">
+<input class="w-5 h-5 rounded border-outline-variant text-secondary focus:ring-secondary" id="deid-check" type="checkbox"/>
+<span class="font-label-md text-label-md text-on-surface">모든 파일의 비식별화 처리를 완료했습니다.</span>
+</label>
+</div>
+</section>
+</div>
+<!-- Step 3: Terms & Consent (HIPAA/PHI) -->
+<div class="wizard-step space-y-xl" id="step-3">
+<section>
+<h2 class="font-headline-md text-headline-md text-on-surface mb-md">보안 규정 및 동의</h2>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg overflow-hidden flex flex-col h-[530px]">
+<div class="p-md border-b border-outline-variant bg-surface-container flex items-center gap-2">
+<span class="material-symbols-outlined text-secondary">policy</span>
+<h3 class="font-label-md text-label-md text-on-surface">HIPAA &amp; PHI 규정 준수 안내</h3>
+</div>
+<div class="p-md overflow-y-auto flex-1 font-body-sm text-body-sm text-on-surface-variant space-y-4">
+<p>본 플랫폼(ClinicFlow)은 의료정보보호법(HIPAA) 및 보호건강정보(PHI) 규정을 준수합니다. 귀하는 수퍼비전을 위해 제출하는 모든 자료가 관련 법령에 따라 적법하게 처리되었음을 보증합니다.</p>
+<p><strong>제 1조 (비밀유지 의무)</strong><br/>
+                        수퍼바이지와 수퍼바이저는 본 플랫폼을 통해 교환되는 모든 내담자 정보에 대해 엄격한 비밀유지 의무를 가집니다. 이를 제3자에게 누설하거나 목적 외의 용도로 사용해서는 안 됩니다.</p>
+<p><strong>제 2조 (데이터 보관 및 파기)</strong><br/>
+                        업로드된 자료는 암호화되어 안전하게 보관되며, 수퍼비전 종료 후 일정 기간이 지나면 규정에 따라 안전하게 파기됩니다.</p>
+<p><strong>제 3조 (책임 소재)</strong><br/>
+                        비식별화 조치가 미흡하여 발생하는 개인정보 유출 사고에 대한 책임은 자료를 업로드한 당사자에게 있습니다.</p>
+</div>
+</div>
+<label class="flex items-start gap-sm cursor-pointer mt-md p-md bg-surface-container-lowest border border-outline-variant rounded-lg">
+<input class="w-5 h-5 mt-0.5 rounded border-outline-variant text-secondary focus:ring-secondary" id="consent-check" type="checkbox"/>
+<span class="font-body-sm text-body-sm text-on-surface">위의 보안 규정 및 개인정보 처리 방침을 꼼꼼히 읽었으며, 이에 동의합니다.</span>
+</label>
+</section>
+</div>
+</main>
+<!-- Bottom Navigation Bar for Wizard Actions -->
+<footer class="w-full bg-surface-container-lowest border-t border-outline-variant p-margin-mobile sticky bottom-0 z-50 flex gap-sm">
+<button class="hidden flex-1 py-3 px-4 border border-outline rounded-DEFAULT font-label-md text-label-md text-on-surface bg-surface-container-lowest hover:bg-surface-variant transition-colors justify-center items-center" id="btn-back">
+            이전
+        </button>
+<button class="flex-1 py-3 px-4 rounded-DEFAULT font-label-md text-label-md text-on-primary bg-primary hover:bg-tertiary-container transition-colors justify-center items-center shadow-sm" id="btn-next">
+            다음
+        </button>
+<button class="hidden flex-1 py-3 px-4 rounded-DEFAULT font-label-md text-label-md text-on-primary bg-primary hover:bg-tertiary-container transition-colors justify-center items-center shadow-sm disabled:opacity-50 disabled:cursor-not-allowed" disabled="" id="btn-submit">
+            요청 제출
+        </button>
+</footer>
+<script>
+        document.addEventListener('DOMContentLoaded', () => {
+            let currentStep = 1;
+            const totalSteps = 3;
+            const stepTitles = ['기본 정보', '파일 업로드', '약관 동의'];
+
+            const steps = document.querySelectorAll('.wizard-step');
+            const btnNext = document.getElementById('btn-next');
+            const btnBack = document.getElementById('btn-back');
+            const btnSubmit = document.getElementById('btn-submit');
+            const progressBar = document.getElementById('progress-bar');
+            const stepDisplay = document.getElementById('current-step-display');
+            const stepTitleDisplay = document.getElementById('step-title-display');
+            
+            const deidCheck = document.getElementById('deid-check');
+            const consentCheck = document.getElementById('consent-check');
+
+            function updateUI() {
+                // Update Steps visibility
+                steps.forEach((step, index) => {
+                    if (index + 1 === currentStep) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
+
+                // Update Progress
+                progressBar.style.width = `${(currentStep / totalSteps) * 100}%`;
+                stepDisplay.textContent = currentStep;
+                stepTitleDisplay.textContent = stepTitles[currentStep - 1];
+
+                // Update Buttons
+                if (currentStep === 1) {
+                    btnBack.classList.add('hidden');
+                    btnNext.classList.remove('hidden');
+                    btnSubmit.classList.add('hidden');
+                } else if (currentStep === totalSteps) {
+                    btnBack.classList.remove('hidden');
+                    btnNext.classList.add('hidden');
+                    btnSubmit.classList.remove('hidden');
+                } else {
+                    btnBack.classList.remove('hidden');
+                    btnNext.classList.remove('hidden');
+                    btnSubmit.classList.add('hidden');
+                }
+                
+                validateStep();
+            }
+
+            function validateStep() {
+                if (currentStep === 2) {
+                    // Logic to disable next if deid check is required could go here
+                    // For now, let's just make it a UI hint
+                } else if (currentStep === 3) {
+                    btnSubmit.disabled = !consentCheck.checked;
+                }
+            }
+
+            btnNext.addEventListener('click', () => {
+                if (currentStep < totalSteps) {
+                    currentStep++;
+                    updateUI();
+                }
+            });
+
+            btnBack.addEventListener('click', () => {
+                if (currentStep > 1) {
+                    currentStep--;
+                    updateUI();
+                }
+            });
+            
+            consentCheck.addEventListener('change', validateStep);
+
+            // Cancel button interaction
+            document.getElementById('btn-cancel').addEventListener('click', () => {
+                if(confirm('작성을 취소하시겠습니까? 입력된 내용은 저장되지 않습니다.')) {
+                    // Navigate away logic
+                    alert('취소되었습니다.');
+                }
+            });
+            
+            // Submit action
+            btnSubmit.addEventListener('click', () => {
+                if(consentCheck.checked) {
+                    btnSubmit.innerHTML = '<span class="material-symbols-outlined animate-spin mr-2">autorenew</span> 처리중...';
+                    setTimeout(() => {
+                        alert('수퍼비전 요청이 성공적으로 제출되었습니다.');
+                    }, 1000);
+                }
+            });
+
+            updateUI();
+        });
+    </script>
+</body></html>

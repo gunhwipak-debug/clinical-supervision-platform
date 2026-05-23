@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>새 비밀번호 설정 - ClinicalSup</title>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Configuration -->
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "tertiary-fixed": "#dce3ec",
+                        "background": "#f9f9ff",
+                        "surface-tint": "#565e74",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-container": "#7d858d",
+                        "on-secondary-container": "#fefcff",
+                        "primary-container": "#131b2e",
+                        "on-tertiary-fixed": "#151c23",
+                        "on-primary-fixed": "#131b2e",
+                        "tertiary": "#000000",
+                        "secondary": "#0058be",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-dim": "#cfdaf2",
+                        "on-secondary-fixed-variant": "#004395",
+                        "inverse-surface": "#263143",
+                        "on-primary-container": "#7c839b",
+                        "secondary-container": "#2170e4",
+                        "surface-container-highest": "#d8e3fb",
+                        "outline-variant": "#c6c6cd",
+                        "primary": "#000000",
+                        "on-surface": "#111c2d",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface-variant": "#45464d",
+                        "surface": "#f9f9ff",
+                        "surface-variant": "#d8e3fb",
+                        "on-error-container": "#93000a",
+                        "outline": "#76777d",
+                        "error-container": "#ffdad6",
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#151c23",
+                        "surface-container-low": "#f0f3ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-secondary-fixed": "#001a42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "xl": "40px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "container-max": "1280px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background min-h-screen flex flex-col items-center justify-center p-margin-mobile md:p-gutter antialiased">
+<!-- Brand Header -->
+<div class="mb-lg text-center">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-surface-container-high mb-sm">
+<span class="material-symbols-outlined text-secondary text-2xl" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+</div>
+<h1 class="font-headline-md text-headline-md text-primary">ClinicalSup</h1>
+</div>
+<!-- Main Card -->
+<main class="w-full max-w-[440px] bg-surface-container-lowest border border-outline-variant rounded-xl p-lg md:p-xl shadow-sm">
+<!-- Header -->
+<header class="mb-lg">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-xs">새 비밀번호 설정</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                안전한 계정 관리를 위해 새로운 비밀번호를 입력해 주세요. 
+                <span class="block mt-1 font-body-sm text-body-sm text-error bg-error-container bg-opacity-20 p-2 rounded-md border border-error-container">
+<span class="material-symbols-outlined text-[16px] align-middle mr-1">info</span>
+                    보안을 위해 비밀번호 변경 시 현재 로그인된 모든 기기에서 자동으로 로그아웃 처리됩니다.
+                </span>
+</p>
+</header>
+<!-- Form -->
+<form action="#" class="flex flex-col gap-md" method="POST">
+<!-- New Password Input -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="new-password">새 비밀번호</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">lock</span>
+</div>
+<input class="w-full pl-10 pr-10 py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all placeholder-outline" id="new-password" name="new-password" placeholder="새 비밀번호 입력" required="" type="password"/>
+<button class="absolute inset-y-0 right-0 pr-sm flex items-center text-on-surface-variant hover:text-primary transition-colors focus:outline-none" type="button">
+<span class="material-symbols-outlined text-[20px]">visibility_off</span>
+</button>
+</div>
+</div>
+<!-- Confirm Password Input -->
+<div>
+<label class="block font-label-md text-label-md text-on-surface mb-xs" for="confirm-password">비밀번호 확인</label>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-sm flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]">lock_reset</span>
+</div>
+<input class="w-full pl-10 py-sm bg-surface-container-lowest border border-outline-variant rounded-lg font-body-md text-body-md text-on-surface focus:ring-2 focus:ring-secondary focus:border-secondary outline-none transition-all placeholder-outline" id="confirm-password" name="confirm-password" placeholder="새 비밀번호 다시 입력" required="" type="password"/>
+</div>
+</div>
+<!-- Validation Rules -->
+<div class="bg-surface-container-low p-sm rounded-lg border border-outline-variant">
+<p class="font-label-sm text-label-sm text-on-surface mb-xs">비밀번호 필수 조건:</p>
+<ul class="flex flex-col gap-2">
+<li class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline">check_circle</span>
+                        영문, 숫자, 특수문자 조합
+                    </li>
+<li class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline">check_circle</span>
+                        최소 8자 이상
+                    </li>
+<li class="flex items-center gap-2 font-body-sm text-body-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px] text-outline">check_circle</span>
+                        이전과 다른 비밀번호 사용
+                    </li>
+</ul>
+</div>
+<!-- Submit Button -->
+<button class="w-full py-sm mt-xs bg-primary text-on-primary rounded-lg font-label-md text-label-md hover:bg-surface-tint focus:ring-4 focus:ring-surface-variant transition-all flex justify-center items-center gap-2" type="submit">
+                비밀번호 변경 완료
+                <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</form>
+</main>
+<!-- Footer Links -->
+<div class="mt-lg text-center">
+<a class="inline-flex items-center gap-1 font-body-sm text-body-sm text-secondary hover:text-secondary-container transition-colors" href="/login">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+            로그인 화면으로 돌아가기
+        </a>
+</div>
+</body></html>

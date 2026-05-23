@@ -1,0 +1,1187 @@
+{
+  "generatedAt": "2026-05-21T22:34:03.102Z",
+  "pages": [
+    {
+      "name": "home",
+      "url": "http://localhost:3000/",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "CSClinical Supervision",
+          "href": "/",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "검색",
+          "href": "/supervisors",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "의뢰",
+          "href": "/requests",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "결제",
+          "href": "/payments",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "슈퍼바이저",
+          "href": "/supervisor",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "설정",
+          "href": "/settings",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "login",
+      "url": "http://localhost:3000/login",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "비밀번호를 잊으셨나요?",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "button",
+          "text": "로그인 arrow_forward",
+          "href": null,
+          "type": "submit",
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "button",
+          "text": "laptop_mac 데모 환경으로 체험하기",
+          "href": null,
+          "type": "button",
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "signup",
+      "url": "http://localhost:3000/signup",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "button",
+          "text": "전문 보기",
+          "href": null,
+          "type": "button",
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "button",
+          "text": "전문 보기",
+          "href": null,
+          "type": "button",
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "button",
+          "text": "회원가입 완료 arrow_forward",
+          "href": null,
+          "type": "submit",
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "로그인",
+          "href": "/login",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "supervisors",
+      "url": "http://localhost:3000/supervisors",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "Find Supervisors",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "My Requests",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "Resources",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "button",
+          "text": "security",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "button",
+          "text": "notifications",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "button",
+          "text": "Secure Login",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 6,
+          "tag": "button",
+          "text": "프로필 보기",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 7,
+          "tag": "button",
+          "text": "프로필 보기",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 8,
+          "tag": "button",
+          "text": "프로필 보기",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 9,
+          "tag": "button",
+          "text": "chevron_left",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 10,
+          "tag": "button",
+          "text": "1",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 11,
+          "tag": "button",
+          "text": "2",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 12,
+          "tag": "button",
+          "text": "3",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 13,
+          "tag": "button",
+          "text": "chevron_right",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 14,
+          "tag": "a",
+          "text": "Privacy Policy",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 15,
+          "tag": "a",
+          "text": "Terms of Service",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 16,
+          "tag": "a",
+          "text": "Security Standards",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 17,
+          "tag": "a",
+          "text": "Clinical Guidelines",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "supervisor-detail",
+      "url": "http://localhost:3000/supervisors/10000000-0000-4000-8000-000000000101",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "CSClinical Supervision",
+          "href": "/",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "검색",
+          "href": "/supervisors",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "의뢰",
+          "href": "/requests",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "결제",
+          "href": "/payments",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "슈퍼바이저",
+          "href": "/supervisor",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "설정",
+          "href": "/settings",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "request-new",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "CSClinical Supervision",
+          "href": "/",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "검색",
+          "href": "/supervisors",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "의뢰",
+          "href": "/requests",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "결제",
+          "href": "/payments",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "슈퍼바이저",
+          "href": "/supervisor",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "설정",
+          "href": "/settings",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "requests",
+      "url": "http://localhost:3000/requests",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "CSClinical Supervision",
+          "href": "/",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "검색",
+          "href": "/supervisors",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "의뢰",
+          "href": "/requests",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "결제",
+          "href": "/payments",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "슈퍼바이저",
+          "href": "/supervisor",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "설정",
+          "href": "/settings",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "payments",
+      "url": "http://localhost:3000/payments",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "Find Supervisors",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "My Requests",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "Resources",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "button",
+          "text": "security",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "button",
+          "text": "notifications",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "button",
+          "text": "Secure Login",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 6,
+          "tag": "button",
+          "text": "receipt_long 영수증 출력",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 7,
+          "tag": "button",
+          "text": "receipt_long 영수증 출력",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 8,
+          "tag": "button",
+          "text": "receipt_long 취소 내역",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": true,
+          "visible": true
+        },
+        {
+          "index": 9,
+          "tag": "button",
+          "text": "더 보기 expand_more",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 10,
+          "tag": "a",
+          "text": "Privacy Policy",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 11,
+          "tag": "a",
+          "text": "Terms of Service",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 12,
+          "tag": "a",
+          "text": "Security Standards",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 13,
+          "tag": "a",
+          "text": "Clinical Guidelines",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "settings",
+      "url": "http://localhost:3000/settings",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "dashboard Dashboard",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "clinical_notes Case Review",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "badge Profile",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "payments Services",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "calendar_month Schedule",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "button",
+          "text": "add New Feedback",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 6,
+          "tag": "a",
+          "text": "settings 설정 (Settings)",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 7,
+          "tag": "a",
+          "text": "logout Sign Out",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 9,
+          "tag": "button",
+          "text": "저장 (Save)",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 10,
+          "tag": "a",
+          "text": "프로필 설정",
+          "href": "#profile",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 11,
+          "tag": "a",
+          "text": "보안 및 인증",
+          "href": "#security",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 12,
+          "tag": "a",
+          "text": "세션 관리",
+          "href": "#sessions",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 13,
+          "tag": "a",
+          "text": "알림 설정",
+          "href": "#notifications",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 14,
+          "tag": "button",
+          "text": "사진 변경",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 15,
+          "tag": "button",
+          "text": "비밀번호 업데이트",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 16,
+          "tag": "button",
+          "text": "설정 변경",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 17,
+          "tag": "button",
+          "text": "로그아웃",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 18,
+          "tag": "button",
+          "text": "power_settings_new 모든 다른 세션 로그아웃",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "supervisor",
+      "url": "http://localhost:3000/supervisor",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "CSClinical Supervision",
+          "href": "/",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "검색",
+          "href": "/supervisors",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "의뢰",
+          "href": "/requests",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "결제",
+          "href": "/payments",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "슈퍼바이저",
+          "href": "/supervisor",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "설정",
+          "href": "/settings",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "supervisor-requests",
+      "url": "http://localhost:3000/supervisor/requests",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "button",
+          "text": "New Feedback",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "dashboard Dashboard",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "clinical_notes Case Review",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "badge Profile",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "payments Services",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "calendar_month Schedule",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 6,
+          "tag": "a",
+          "text": "settings Settings",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 7,
+          "tag": "a",
+          "text": "logout Sign Out",
+          "href": "#",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 8,
+          "tag": "button",
+          "text": "notifications",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 9,
+          "tag": "button",
+          "text": "help",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 10,
+          "tag": "button",
+          "text": "tune 필터",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 11,
+          "tag": "button",
+          "text": "신규 (5)",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 12,
+          "tag": "button",
+          "text": "검토 중 (3)",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 13,
+          "tag": "button",
+          "text": "완료 (4)",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 14,
+          "tag": "button",
+          "text": "반려 (0)",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 15,
+          "tag": "button",
+          "text": "자료 검토하기",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 16,
+          "tag": "button",
+          "text": "검토 시작",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 17,
+          "tag": "button",
+          "text": "검토 시작",
+          "href": null,
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    },
+    {
+      "name": "supervisor-detail-work",
+      "url": "http://localhost:3000/supervisor/requests/10000000-0000-4000-8000-000000000602",
+      "controls": [
+        {
+          "index": 0,
+          "tag": "a",
+          "text": "CSClinical Supervision",
+          "href": "/",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 1,
+          "tag": "a",
+          "text": "검색",
+          "href": "/supervisors",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 2,
+          "tag": "a",
+          "text": "의뢰",
+          "href": "/requests",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 3,
+          "tag": "a",
+          "text": "결제",
+          "href": "/payments",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 4,
+          "tag": "a",
+          "text": "슈퍼바이저",
+          "href": "/supervisor",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        },
+        {
+          "index": 5,
+          "tag": "a",
+          "text": "설정",
+          "href": "/settings",
+          "type": null,
+          "id": null,
+          "disabled": false,
+          "visible": true
+        }
+      ]
+    }
+  ]
+}

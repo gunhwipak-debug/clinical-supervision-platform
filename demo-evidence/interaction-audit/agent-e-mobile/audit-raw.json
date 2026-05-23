@@ -1,0 +1,437 @@
+{
+  "generatedAt": "2026-05-21T22:39:25.477Z",
+  "viewport": {
+    "width": 390,
+    "height": 844
+  },
+  "findings": [
+    {
+      "severity": "P1",
+      "area": "Mobile menu",
+      "title": "홈 모바일 메뉴 아이콘 탭 후 메뉴가 열리지 않음",
+      "repro": "/ → 우상단 menu 아이콘 탭",
+      "evidence": "28-home-mobile-final.png, 29-home-after-menu-final.png",
+      "notes": "DOM text/URL 변화 없음"
+    },
+    {
+      "severity": "P2",
+      "area": "Supervisors",
+      "title": "Supervisors 모바일 컨트롤 overflow",
+      "repro": "http://localhost:3000/supervisors 390px 폭 확인",
+      "evidence": "35-supervisors-mobile-final.png",
+      "notes": "[{\"text\":\"아동/청소년\",\"x\":323,\"w\":90,\"right\":414},{\"text\":\"가족상담\",\"x\":422,\"w\":76,\"right\":497}]"
+    },
+    {
+      "severity": "P2",
+      "area": "supervisors filter 필터",
+      "title": "텍스트 클릭 대상 없음: 필터",
+      "repro": "supervisors filter 필터에서 '필터' 검색",
+      "evidence": "not-captured",
+      "notes": ""
+    },
+    {
+      "severity": "P2",
+      "area": "supervisors filter Filter",
+      "title": "텍스트 클릭 대상 없음: Filter",
+      "repro": "supervisors filter Filter에서 'Filter' 검색",
+      "evidence": "not-captured",
+      "notes": ""
+    },
+    {
+      "severity": "P2",
+      "area": "Supervisors mobile",
+      "title": "모바일 필터/메뉴성 CTA가 열리지 않음",
+      "repro": "/supervisors → 필터/Filter/Tune 탭",
+      "evidence": "35-supervisors-mobile-final.png, 36-supervisors-after-filter-final.png",
+      "notes": "URL/DOM text 변화 없음"
+    },
+    {
+      "severity": "P1",
+      "area": "Supervisors",
+      "title": "프로필 보기 CTA가 상세로 이동하지 않음",
+      "repro": "/supervisors → 프로필 보기",
+      "evidence": "37-supervisor-profile-from-list-final.png",
+      "notes": "after=http://localhost:3000/supervisors"
+    },
+    {
+      "severity": "P2",
+      "area": "profile request",
+      "title": "텍스트 클릭 대상 없음: 의뢰",
+      "repro": "profile request에서 '의뢰' 검색",
+      "evidence": "not-captured",
+      "notes": ""
+    },
+    {
+      "severity": "P1",
+      "area": "Supervisor profile",
+      "title": "의뢰 CTA가 새 의뢰로 이동하지 않음",
+      "repro": "/supervisors/[id] → 의뢰 CTA",
+      "evidence": "38-supervisor-profile-request-final.png",
+      "notes": "after=http://localhost:3000/supervisors"
+    },
+    {
+      "severity": "P1",
+      "area": "New request wizard",
+      "title": "다음 버튼이 모바일 위저드 단계를 전혀 진행시키지 않음",
+      "repro": "/requests/new → 다음 탭 반복",
+      "evidence": "41-new-request-mobile-step1-final.png",
+      "notes": "DOM text 변화 없음"
+    },
+    {
+      "severity": "P1",
+      "area": "New request wizard",
+      "title": "제출 버튼이 의뢰 생성/상세 이동을 완료하지 못함",
+      "repro": "/requests/new → 다음 반복 → 제출",
+      "evidence": "45-new-request-submit-final.png",
+      "notes": "after=http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "severity": "P2",
+      "area": "supervisor requests 열기",
+      "title": "텍스트 클릭 대상 없음: 열기",
+      "repro": "supervisor requests 열기에서 '열기' 검색",
+      "evidence": "not-captured",
+      "notes": ""
+    },
+    {
+      "severity": "P2",
+      "area": "Supervisor requests",
+      "title": "모바일 의뢰 큐에서 상세로 들어가는 명확한 CTA를 찾기 어려움",
+      "repro": "/supervisor/requests → 검토/상세/열기/Review 텍스트 탭",
+      "evidence": "53-supervisor-requests-after-cta-final.png",
+      "notes": "상세 URL 이동 없음"
+    }
+  ],
+  "steps": [
+    {
+      "action": "goto",
+      "label": "home",
+      "url": "http://localhost:3000/"
+    },
+    {
+      "action": "clickText",
+      "label": "home mobile material menu",
+      "text": "menu",
+      "before": "http://localhost:3000/",
+      "after": "http://localhost:3000/",
+      "changed": false
+    },
+    {
+      "action": "goto",
+      "label": "login",
+      "url": "http://localhost:3000/login"
+    },
+    {
+      "action": "clickText",
+      "label": "login forgot Forgot",
+      "text": "Forgot",
+      "before": "http://localhost:3000/login",
+      "after": "http://localhost:3000/forgot-password",
+      "changed": true
+    },
+    {
+      "action": "goto",
+      "label": "signup",
+      "url": "http://localhost:3000/signup"
+    },
+    {
+      "action": "goto",
+      "label": "forgot-password",
+      "url": "http://localhost:3000/forgot-password"
+    },
+    {
+      "action": "goto",
+      "label": "reset-password",
+      "url": "http://localhost:3000/reset-password?token=demo-invalid-token"
+    },
+    {
+      "action": "goto",
+      "label": "verify-email",
+      "url": "http://localhost:3000/verify-email"
+    },
+    {
+      "action": "goto",
+      "label": "supervisors",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "action": "goto",
+      "label": "supervisors reset filter",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "action": "goto",
+      "label": "supervisors reset filter",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "action": "clickText",
+      "label": "supervisors filter Tune",
+      "text": "Tune",
+      "before": "http://localhost:3000/supervisors",
+      "after": "http://localhost:3000/supervisors",
+      "changed": false
+    },
+    {
+      "action": "goto",
+      "label": "supervisors reset filter",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "action": "goto",
+      "label": "supervisors profile",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "action": "goto",
+      "label": "supervisee login",
+      "url": "http://localhost:3000/login"
+    },
+    {
+      "action": "login",
+      "label": "supervisee",
+      "email": "supervisee@demo.local",
+      "before": "http://localhost:3000/login",
+      "after": "http://localhost:3000/supervisors",
+      "clicked": true
+    },
+    {
+      "action": "goto",
+      "label": "new request",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "action": "goto",
+      "label": "my-requests",
+      "url": "http://localhost:3000/requests"
+    },
+    {
+      "action": "goto",
+      "label": "payments",
+      "url": "http://localhost:3000/payments"
+    },
+    {
+      "action": "goto",
+      "label": "settings",
+      "url": "http://localhost:3000/settings"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor login",
+      "url": "http://localhost:3000/login"
+    },
+    {
+      "action": "login",
+      "label": "supervisor",
+      "email": "approved-sup@demo.local",
+      "before": "http://localhost:3000/login",
+      "after": "http://localhost:3000/supervisor",
+      "clicked": true
+    },
+    {
+      "action": "goto",
+      "label": "supervisor-dashboard",
+      "url": "http://localhost:3000/supervisor"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor-requests",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor requests cta",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor requests reset",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "action": "clickText",
+      "label": "supervisor requests 상세",
+      "text": "상세",
+      "before": "http://localhost:3000/supervisor/requests",
+      "after": "http://localhost:3000/requests/10000000-0000-4000-8000-000000000608",
+      "changed": true
+    },
+    {
+      "action": "goto",
+      "label": "supervisor requests reset",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor requests reset",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor requests reset",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor-availability",
+      "url": "http://localhost:3000/supervisor/availability"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor-qualifications",
+      "url": "http://localhost:3000/supervisor/qualifications"
+    },
+    {
+      "action": "goto",
+      "label": "supervisor-payouts",
+      "url": "http://localhost:3000/supervisor/payouts"
+    }
+  ],
+  "screenshots": [
+    {
+      "name": "home-mobile-final",
+      "file": "28-home-mobile-final.png",
+      "url": "http://localhost:3000/"
+    },
+    {
+      "name": "home-after-menu-final",
+      "file": "29-home-after-menu-final.png",
+      "url": "http://localhost:3000/"
+    },
+    {
+      "name": "login-mobile-final",
+      "file": "30-login-mobile-final.png",
+      "url": "http://localhost:3000/login"
+    },
+    {
+      "name": "signup-mobile-final",
+      "file": "31-signup-mobile-final.png",
+      "url": "http://localhost:3000/signup"
+    },
+    {
+      "name": "forgot-password-mobile-final",
+      "file": "32-forgot-password-mobile-final.png",
+      "url": "http://localhost:3000/forgot-password"
+    },
+    {
+      "name": "reset-password-mobile-final",
+      "file": "33-reset-password-mobile-final.png",
+      "url": "http://localhost:3000/reset-password?token=demo-invalid-token"
+    },
+    {
+      "name": "verify-email-mobile-final",
+      "file": "34-verify-email-mobile-final.png",
+      "url": "http://localhost:3000/verify-email"
+    },
+    {
+      "name": "supervisors-mobile-final",
+      "file": "35-supervisors-mobile-final.png",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "name": "supervisors-after-filter-final",
+      "file": "36-supervisors-after-filter-final.png",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "name": "supervisor-profile-from-list-final",
+      "file": "37-supervisor-profile-from-list-final.png",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "name": "supervisor-profile-request-final",
+      "file": "38-supervisor-profile-request-final.png",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "name": "supervisee-login-before",
+      "file": "39-supervisee-login-before.png",
+      "url": "http://localhost:3000/login"
+    },
+    {
+      "name": "supervisee-login-after",
+      "file": "40-supervisee-login-after.png",
+      "url": "http://localhost:3000/supervisors"
+    },
+    {
+      "name": "new-request-mobile-step1-final",
+      "file": "41-new-request-mobile-step1-final.png",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "name": "new-request-after-next-1-final",
+      "file": "42-new-request-after-next-1-final.png",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "name": "new-request-after-next-2-final",
+      "file": "43-new-request-after-next-2-final.png",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "name": "new-request-after-next-3-final",
+      "file": "44-new-request-after-next-3-final.png",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "name": "new-request-submit-final",
+      "file": "45-new-request-submit-final.png",
+      "url": "http://localhost:3000/requests/new?serviceProductId=10000000-0000-4000-8000-000000000301"
+    },
+    {
+      "name": "my-requests-mobile-final",
+      "file": "46-my-requests-mobile-final.png",
+      "url": "http://localhost:3000/requests"
+    },
+    {
+      "name": "payments-mobile-final",
+      "file": "47-payments-mobile-final.png",
+      "url": "http://localhost:3000/payments"
+    },
+    {
+      "name": "settings-mobile-final",
+      "file": "48-settings-mobile-final.png",
+      "url": "http://localhost:3000/settings"
+    },
+    {
+      "name": "supervisor-login-before",
+      "file": "49-supervisor-login-before.png",
+      "url": "http://localhost:3000/login"
+    },
+    {
+      "name": "supervisor-login-after",
+      "file": "50-supervisor-login-after.png",
+      "url": "http://localhost:3000/supervisor"
+    },
+    {
+      "name": "supervisor-dashboard-mobile-final",
+      "file": "51-supervisor-dashboard-mobile-final.png",
+      "url": "http://localhost:3000/supervisor"
+    },
+    {
+      "name": "supervisor-requests-mobile-final",
+      "file": "52-supervisor-requests-mobile-final.png",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "name": "supervisor-requests-after-cta-final",
+      "file": "53-supervisor-requests-after-cta-final.png",
+      "url": "http://localhost:3000/supervisor/requests"
+    },
+    {
+      "name": "supervisor-availability-mobile-final",
+      "file": "54-supervisor-availability-mobile-final.png",
+      "url": "http://localhost:3000/supervisor/availability"
+    },
+    {
+      "name": "supervisor-qualifications-mobile-final",
+      "file": "55-supervisor-qualifications-mobile-final.png",
+      "url": "http://localhost:3000/supervisor/qualifications"
+    },
+    {
+      "name": "supervisor-payouts-mobile-final",
+      "file": "56-supervisor-payouts-mobile-final.png",
+      "url": "http://localhost:3000/supervisor/payouts"
+    }
+  ]
+}

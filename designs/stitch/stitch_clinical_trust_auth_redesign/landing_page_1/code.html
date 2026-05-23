@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicalSup - 전문 임상 감독 플랫폼</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "inverse-primary": "#bec6e0",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "tertiary-fixed": "#dce3ec",
+                        "background": "#f9f9ff",
+                        "surface-tint": "#565e74",
+                        "surface-container-high": "#dee8ff",
+                        "on-tertiary-container": "#7d858d",
+                        "on-secondary-container": "#fefcff",
+                        "primary-container": "#131b2e",
+                        "on-tertiary-fixed": "#151c23",
+                        "on-primary-fixed": "#131b2e",
+                        "tertiary": "#000000",
+                        "secondary": "#0058be",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-fixed": "#dae2fd",
+                        "surface-dim": "#cfdaf2",
+                        "on-secondary-fixed-variant": "#004395",
+                        "inverse-surface": "#263143",
+                        "on-primary-container": "#7c839b",
+                        "secondary-container": "#2170e4",
+                        "surface-container-highest": "#d8e3fb",
+                        "outline-variant": "#c6c6cd",
+                        "primary": "#000000",
+                        "on-surface": "#111c2d",
+                        "error": "#ba1a1a",
+                        "inverse-on-surface": "#ecf1ff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "on-surface-variant": "#45464d",
+                        "surface": "#f9f9ff",
+                        "surface-variant": "#d8e3fb",
+                        "on-error-container": "#93000a",
+                        "outline": "#76777d",
+                        "error-container": "#ffdad6",
+                        "on-background": "#111c2d",
+                        "tertiary-container": "#151c23",
+                        "surface-container-low": "#f0f3ff",
+                        "on-error": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "on-secondary": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f9f9ff",
+                        "surface-container": "#e7eeff",
+                        "on-secondary-fixed": "#001a42"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "gutter": "24px",
+                        "xl": "40px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "container-max": "1280px",
+                        "xs": "4px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "label-md": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-md": ["Inter"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased font-body-md selection:bg-surface-container-highest selection:text-primary">
+<!-- TopNavBar (Shared Component) -->
+<nav class="bg-surface dark:bg-surface-container-lowest border-b border-outline-variant dark:border-outline docked full-width top-0 z-50 sticky">
+<div class="flex justify-between items-center w-full px-margin-mobile md:px-lg max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-lg">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight" href="/">
+                    ClinicalSup
+                </a>
+<div class="hidden md:flex items-center gap-md">
+<a class="text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200 px-sm py-base rounded font-label-md text-label-md" href="#">Features</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200 px-sm py-base rounded font-label-md text-label-md" href="#">Security</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200 px-sm py-base rounded font-label-md text-label-md" href="#">Pricing</a>
+<a class="text-on-surface-variant dark:text-outline hover:text-primary hover:bg-surface-container-low dark:hover:bg-surface-container-high transition-colors duration-200 px-sm py-base rounded font-label-md text-label-md" href="#">About</a>
+</div>
+</div>
+<div class="flex items-center gap-sm">
+<button class="hidden md:block font-label-md text-label-md text-on-surface hover:bg-surface-container-low px-md py-sm rounded transition-colors border border-outline-variant">
+                    Login
+                </button>
+<button class="font-label-md text-label-md bg-primary-container text-on-primary px-md py-sm rounded hover:opacity-90 transition-opacity whitespace-nowrap">
+                    Get Started
+                </button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="w-full px-margin-mobile md:px-lg py-xl md:py-[120px] max-w-container-max mx-auto">
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl items-center">
+<div class="lg:col-span-7 flex flex-col items-start gap-lg">
+<div class="inline-flex items-center gap-base px-sm py-xs rounded-full bg-surface-container border border-outline-variant">
+<span class="material-symbols-outlined icon-fill text-secondary text-[16px]" data-icon="verified_user">verified_user</span>
+<span class="font-label-sm text-label-sm text-on-surface">의료정보보호법(HIPAA) 및 국내 규제 완벽 준수</span>
+</div>
+<h1 class="font-display-lg text-display-lg text-primary leading-tight">
+                        전문 임상 감독을 위한<br/>
+<span class="text-primary-container">안전하고 체계적인 플랫폼</span>
+</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                        슈퍼바이저와 슈퍼바이지 모두의 성장을 지원합니다. 복잡한 서류 작업 없이 임상적 탁월함에만 집중할 수 있도록, 가장 안전하고 직관적인 운영 환경을 제공합니다.
+                    </p>
+<div class="flex flex-wrap items-center gap-sm pt-sm">
+<button class="font-label-md text-label-md bg-primary-container text-on-primary px-lg py-md rounded hover:bg-inverse-surface transition-colors flex items-center gap-sm">
+                            지금 시작하기
+                            <span class="material-symbols-outlined text-[18px]" data-icon="arrow_forward">arrow_forward</span>
+</button>
+<button class="font-label-md text-label-md bg-surface-container-lowest text-on-surface border border-outline-variant px-lg py-md rounded hover:bg-surface transition-colors">
+                            데모 신청
+                        </button>
+</div>
+</div>
+<!-- Abstract Operational Surface Graphic -->
+<div class="lg:col-span-5 relative w-full aspect-square md:aspect-[4/3] lg:aspect-square bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-[0px_10px_15px_-3px_rgba(15,23,42,0.08)] flex items-center justify-center">
+<!-- Subtle pattern background representing secure data -->
+<div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] opacity-40"></div>
+<!-- Faux UI Overlay to demonstrate "Dense but readable operational surface" -->
+<div class="relative z-10 w-3/4 flex flex-col gap-sm">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-sm shadow-sm flex items-start gap-md">
+<div class="w-10 h-10 rounded bg-secondary-container flex items-center justify-center text-on-primary">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+</div>
+<div class="flex-1">
+<p class="font-label-md text-label-md text-on-surface">암호화된 원자료 보관</p>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-1">담당 슈퍼바이저만 플랫폼 안에서 열람하고 피드백을 남깁니다.</p>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-sm shadow-sm flex items-center justify-between opacity-80 translate-x-4">
+<div class="flex items-center gap-sm">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="font-label-sm text-label-sm text-on-surface">접근 기록 및 다운로드 이력 저장</span>
+</div>
+<span class="material-symbols-outlined text-outline" data-icon="lock">lock</span>
+</div>
+<div class="bg-surface border border-outline-variant rounded-lg p-sm flex items-center gap-md opacity-60 translate-x-8">
+<div class="w-8 h-8 rounded-full bg-tertiary-container"></div>
+<span class="font-label-sm text-label-sm text-on-surface-variant">피드백 · 보완요청 · 승인도장</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Bento Grid Features Section -->
+<section class="w-full bg-surface-container-low py-xl md:py-[100px]">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-lg">
+<div class="flex flex-col items-center text-center mb-xl">
+<h2 class="font-headline-lg text-headline-lg text-primary mb-sm">플랫폼 핵심 역량</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-xl">
+                        엄격한 의료 기록 관리 기준을 충족하며, 임상 교육의 질을 높이는 데 필요한 모든 도구를 하나의 통합된 인터페이스에서 제공합니다.
+                    </p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-12 gap-md md:gap-gutter">
+<!-- Large Card: Clinical Excellence -->
+<div class="md:col-span-8 bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex flex-col justify-between overflow-hidden relative group hover:border-outline transition-colors">
+<div class="relative z-10 max-w-lg mb-xl">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded bg-surface-container text-secondary mb-md border border-surface-variant">
+<span class="material-symbols-outlined icon-fill text-[24px]" data-icon="psychology">psychology</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">임상적 탁월함 (Clinical Excellence)</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                                구조화된 피드백 루프와 목표 추적 시스템을 통해 슈퍼바이저와 슈퍼바이지 간의 심층적인 논의를 촉진합니다. 모든 세션은 체계적으로 기록되어 임상 역량 평가의 객관적 지표로 활용됩니다.
+                            </p>
+</div>
+<div class="relative z-10 flex gap-sm">
+<span class="bg-surface border border-outline-variant px-sm py-xs rounded font-label-sm text-label-sm text-on-surface-variant">구조화된 템플릿</span>
+<span class="bg-surface border border-outline-variant px-sm py-xs rounded font-label-sm text-label-sm text-on-surface-variant">역량 평가 추적</span>
+</div>
+<!-- Abstract Background Element -->
+<div class="absolute right-0 bottom-0 w-1/2 h-full opacity-10 bg-[linear-gradient(to_right_bottom,#0058be,#ffffff)] pointer-events-none"></div>
+</div>
+<!-- Medium Card: Secure Records -->
+<div class="md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex flex-col group hover:border-outline transition-colors">
+<div class="inline-flex items-center justify-center w-12 h-12 rounded bg-surface-container text-on-surface mb-md border border-surface-variant">
+<span class="material-symbols-outlined text-[24px]" data-icon="enhanced_encryption">enhanced_encryption</span>
+</div>
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">완벽한 보안 기록</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-auto pb-lg">
+                            엔드투엔드 암호화 및 철저한 접근 권한 통제를 통해 민감한 상담 데이터와 슈퍼비전 기록을 최고 수준의 보안 경계 내에서 안전하게 관리합니다.
+                        </p>
+<div class="pt-md border-t border-surface-variant flex items-center justify-between">
+<span class="font-label-sm text-label-sm text-on-surface">HIPAA 준수 시스템</span>
+<span class="material-symbols-outlined text-secondary text-[20px]" data-icon="check_circle">check_circle</span>
+</div>
+</div>
+<!-- Small Card: Streamlined Workflow -->
+<div class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex items-start gap-md group hover:border-outline transition-colors">
+<div class="shrink-0 w-10 h-10 rounded-full bg-surface flex items-center justify-center text-on-surface border border-outline-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="all_inclusive">all_inclusive</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">효율적인 워크플로우</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                                일정 조율부터 기록 승인, 그리고 청구까지 파편화된 행정 업무를 하나의 흐름으로 통합하여 본연의 임상 및 교육에 집중할 수 있는 시간을 확보합니다.
+                            </p>
+</div>
+</div>
+<!-- Small Card: Analytics -->
+<div class="md:col-span-6 bg-surface-container-lowest border border-outline-variant rounded-xl p-md md:p-lg flex items-start gap-md group hover:border-outline transition-colors">
+<div class="shrink-0 w-10 h-10 rounded-full bg-surface flex items-center justify-center text-on-surface border border-outline-variant">
+<span class="material-symbols-outlined text-[20px]" data-icon="query_stats">query_stats</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface mb-xs">데이터 기반 통찰력</h3>
+<p class="font-body-sm text-body-sm text-on-surface-variant">
+                                누적된 슈퍼비전 시간, 다루어진 주요 임상 주제 등 핵심 지표를 대시보드 형태로 제공하여 자격 취득 및 기관 감사에 대비할 수 있습니다.
+                            </p>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Trust / Boundary Section -->
+<section class="w-full bg-primary-container text-on-primary py-xl md:py-[80px]">
+<div class="max-w-container-max mx-auto px-margin-mobile md:px-lg grid grid-cols-1 md:grid-cols-2 gap-xl items-center">
+<div>
+<h2 class="font-headline-lg text-headline-lg mb-md">타협하지 않는 보안 경계</h2>
+<p class="font-body-md text-body-md text-on-primary-container mb-lg max-w-md">
+                        우리는 정신건강 및 임상 데이터의 특수성을 깊이 이해하고 있습니다. ClinicalSup은 단순한 소프트웨어가 아닌, 전문가의 윤리를 기술로 구현한 안전 지대입니다.
+                    </p>
+<ul class="space-y-sm">
+<li class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-[20px]" data-icon="check">check</span>
+<span class="font-body-sm text-body-sm text-surface-container-lowest">다중 인증(MFA) 기반 접근 제어</span>
+</li>
+<li class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-[20px]" data-icon="check">check</span>
+<span class="font-body-sm text-body-sm text-surface-container-lowest">모든 데이터의 유휴 및 전송 중 암호화 (AES-256)</span>
+</li>
+<li class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary-fixed-dim text-[20px]" data-icon="check">check</span>
+<span class="font-body-sm text-body-sm text-surface-container-lowest">변조 방지 감사 로그 (Audit Trail) 자동 기록</span>
+</li>
+</ul>
+</div>
+<div class="bg-inverse-surface rounded-xl p-lg border border-surface-tint shadow-lg relative overflow-hidden">
+<div class="absolute top-0 right-0 w-32 h-32 bg-secondary opacity-10 rounded-full blur-2xl -translate-y-1/2 translate-x-1/2"></div>
+<div class="flex justify-between items-center mb-md border-b border-surface-tint pb-sm">
+<span class="font-label-sm text-label-sm text-inverse-primary tracking-widest uppercase">System Status</span>
+<div class="flex items-center gap-xs">
+<div class="w-2 h-2 rounded-full bg-surface-container-lowest animate-pulse"></div>
+<span class="font-label-sm text-label-sm text-surface-container-lowest">Secure Active</span>
+</div>
+</div>
+<div class="space-y-sm font-mono text-[12px] text-on-primary-container">
+<p>&gt; Initializing secure perimeter...</p>
+<p>&gt; Validating encryption keys: <span class="text-secondary-fixed-dim">OK</span></p>
+<p>&gt; Access logs active.</p>
+<p>&gt; HIPAA compliance parameters: <span class="text-surface-container-lowest">ENFORCED</span></p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="bg-surface-container-lowest dark:bg-primary-container border-t border-outline-variant dark:border-outline full-width bottom">
+<div class="w-full py-lg px-margin-mobile md:px-xl grid grid-cols-1 md:grid-cols-2 lg:flex lg:justify-between items-start gap-gutter max-w-container-max mx-auto">
+<div class="flex flex-col gap-sm">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary tracking-tight" href="/">
+                    ClinicalSup
+                </a>
+<p class="font-body-sm text-body-sm text-on-surface dark:text-on-primary-container max-w-xs opacity-80">
+                    © 2024 Clinical Supervision Platform. HIPAA &amp; PHI Compliant.
+                </p>
+</div>
+<div class="flex flex-wrap gap-lg md:gap-xl">
+<div class="flex flex-col gap-sm">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-primary-container opacity-80 hover:text-secondary dark:hover:text-secondary-fixed transition-colors" href="#">Privacy Policy</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-primary-container opacity-80 hover:text-secondary dark:hover:text-secondary-fixed transition-colors" href="#">Terms of Service</a>
+</div>
+<div class="flex flex-col gap-sm">
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-primary-container opacity-80 hover:text-secondary dark:hover:text-secondary-fixed transition-colors" href="#">Security Standards</a>
+<a class="font-label-sm text-label-sm text-on-surface-variant dark:text-on-primary-container opacity-80 hover:text-secondary dark:hover:text-secondary-fixed transition-colors" href="#">Contact Support</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>

@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>사례 검토 워크스페이스 - Supervision Pro</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Hanken+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#dee8ff",
+                        "surface": "#f9f9ff",
+                        "secondary": "#0058be",
+                        "inverse-surface": "#263143",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container-highest": "#d8e3fb",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "on-background": "#111c2d",
+                        "on-primary-container": "#7c839b",
+                        "surface-tint": "#565e74",
+                        "tertiary": "#000000",
+                        "on-surface": "#111c2d",
+                        "inverse-primary": "#bec6e0",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-dim": "#cfdaf2",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-container": "#131b2e",
+                        "secondary-fixed": "#d8e2ff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary": "#ffffff",
+                        "primary": "#000000",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary-container": "#7d858d",
+                        "on-tertiary-fixed": "#151c23",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed": "#dce3ec",
+                        "outline-variant": "#c6c6cd",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#76777d",
+                        "on-secondary-container": "#fefcff",
+                        "tertiary-container": "#151c23",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#e7eeff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-container": "#2170e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dae2fd",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary-fixed-dim": "#bec6e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "xl": "40px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .icon-filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pattern-bg {
+            background-image: radial-gradient(var(--tw-colors-outline-variant) 1px, transparent 1px);
+            background-size: 16px 16px;
+            background-position: -8px -8px;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen font-body-md antialiased selection:bg-secondary-container selection:text-on-secondary-container">
+<header class="bg-surface-container-lowest dark:bg-primary-container border-b border-outline-variant dark:border-outline docked full-width top-0 sticky z-50">
+<div class="flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-16">
+<div class="flex items-center gap-md">
+<div class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Supervision Pro</div>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant dark:text-surface-variant">
+<button class="hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80 transition-opacity p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors cursor-pointer active:opacity-80 transition-opacity p-2 rounded-full flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-container-high border border-outline-variant overflow-hidden cursor-pointer ml-2">
+<img alt="Supervisor Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a clinical supervisor, neutral expression, soft studio lighting, modern minimalist background, conveying trust and medical authority." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCIdD5tDQPT5erTCI030N6xhVd-fm38Lmbf-nJYO5evkjbAgl1GQkSOdzzE7jT0COj_EjnFruFxGcfnLkFrhyTWs1_9-x0dmyqoWqJnfLEuk4H6eD3RgndhXIvxyeJhcbEornlnKb_AxUeG-XY-eYtuDLJuT7UQ781957CSG1hh1HnjzMtQM-rkClt_qWozMCKT2KYmOipkKYYJcuI_whr49AN18890M-nNuQlThmFa05EDoj9UOVlXmfKSuzv5WBYmGGjFM_bt388"/>
+</div>
+</div>
+</div>
+</header>
+<div class="bg-surface border-b border-outline-variant sticky top-16 z-40 bg-opacity-90 backdrop-blur-md">
+<div class="max-w-container-max mx-auto px-gutter py-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-sm">
+<div class="flex items-center gap-sm">
+<button class="text-on-surface-variant hover:text-on-surface flex items-center gap-xs font-label-md text-label-md transition-colors">
+<span class="material-symbols-outlined text-[18px]">arrow_back</span>
+                    목록으로
+                </button>
+<div class="w-[1px] h-4 bg-outline-variant mx-2"></div>
+<h1 class="font-headline-md text-headline-md text-on-surface m-0">REQ-2023-11-042</h1>
+<span class="bg-surface-container-high text-on-surface px-2 py-1 rounded-full font-label-sm text-label-sm ml-2 border border-outline-variant">검토 진행중</span>
+</div>
+<div class="flex items-center gap-sm w-full sm:w-auto">
+<button class="flex-1 sm:flex-none px-4 py-2 rounded-lg border border-outline font-label-md text-label-md text-on-surface hover:bg-surface-container-lowest transition-colors flex items-center justify-center gap-xs">
+<span class="material-symbols-outlined text-[18px]">edit_note</span>
+                    보완 요청
+                </button>
+<button class="flex-1 sm:flex-none px-4 py-2 rounded-lg bg-primary text-on-primary font-label-md text-label-md hover:opacity-90 transition-opacity flex items-center justify-center gap-xs shadow-sm">
+<span class="material-symbols-outlined text-[18px]">check_circle</span>
+                    승인 및 완료
+                </button>
+</div>
+</div>
+</div>
+<main class="max-w-container-max mx-auto px-gutter py-lg grid grid-cols-1 lg:grid-cols-12 gap-gutter items-start">
+<aside class="col-span-1 lg:col-span-3 flex flex-col gap-gutter">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden shadow-sm flex flex-col relative">
+<div class="bg-surface-container px-md py-sm border-b border-outline-variant flex items-center gap-xs relative z-10">
+<span class="material-symbols-outlined text-secondary icon-filled text-[18px]">shield_locked</span>
+<span class="font-label-md text-label-md text-secondary">보안 영역: PHI 비식별화 확인</span>
+</div>
+<div class="p-md flex flex-col gap-md pattern-bg relative z-0">
+<div class="bg-surface-container-lowest bg-opacity-90 backdrop-blur-sm p-sm rounded-lg border border-outline-variant">
+<div class="grid grid-cols-2 gap-sm">
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">환자 ID</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">PT-8921-A</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">연령/성별</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">28 / F</span>
+</div>
+<div class="flex flex-col col-span-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">주호소 (CC)</span>
+<span class="font-body-sm text-body-sm text-on-surface">반복적인 우울감 및 대인관계 불안</span>
+</div>
+<div class="flex flex-col col-span-2">
+<span class="font-label-sm text-label-sm text-on-surface-variant mb-xs">회기 수</span>
+<span class="font-body-sm text-body-sm text-on-surface">12회기 중 4회기</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-label-md text-label-md text-on-surface mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">folder_open</span>
+                    사례 패킷 (첨부파일)
+                </h3>
+<ul class="flex flex-col gap-sm">
+<li class="flex items-center justify-between p-sm rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-error-container text-on-error-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">picture_as_pdf</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface">사례보고서_PT8921.pdf</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">2.4 MB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary text-[18px]">download</span>
+</li>
+<li class="flex items-center justify-between p-sm rounded-lg border border-outline-variant hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex items-center gap-sm">
+<div class="w-8 h-8 rounded bg-surface-container-high text-on-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[16px]">description</span>
+</div>
+<div class="flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface">4회기_축어록.docx</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant text-[10px]">842 KB</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-secondary text-[18px]">download</span>
+</li>
+</ul>
+</div>
+</aside>
+<section class="col-span-1 lg:col-span-6 flex flex-col h-full min-h-[600px]">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl shadow-sm flex flex-col flex-grow overflow-hidden">
+<div class="bg-surface border-b border-outline-variant px-md py-sm flex justify-between items-center">
+<div class="flex gap-sm">
+<button class="bg-secondary-container text-on-secondary-container px-3 py-1.5 rounded-md font-label-sm text-label-sm transition-colors border border-transparent">
+                            지도 의견 작성
+                        </button>
+<button class="bg-transparent text-on-surface-variant hover:bg-surface-container-high px-3 py-1.5 rounded-md font-label-sm text-label-sm transition-colors border border-transparent">
+                            내부 메모 (비공개)
+                        </button>
+</div>
+<button class="text-on-surface-variant hover:text-primary transition-colors flex items-center gap-xs font-label-sm text-label-sm">
+<span class="material-symbols-outlined text-[16px]">magic_button</span>
+                        임상 템플릿
+                    </button>
+</div>
+<div class="border-b border-outline-variant bg-surface-container-lowest px-sm py-2 flex items-center gap-2 overflow-x-auto">
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">format_bold</span></button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">format_italic</span></button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">format_underlined</span></button>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">format_list_bulleted</span></button>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">format_list_numbered</span></button>
+<div class="w-[1px] h-4 bg-outline-variant mx-1"></div>
+<button class="p-1 rounded hover:bg-surface-container text-on-surface-variant"><span class="material-symbols-outlined text-[18px]">psychology</span></button>
+</div>
+<div class="flex-grow p-md relative">
+<textarea class="w-full h-full resize-none bg-transparent font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none border-none p-0 focus:ring-0" placeholder="수련생을 위한 지도 의견을 작성해주세요. 임상적 개입의 타당성, 전이/역전이 이슈, 향후 치료 계획에 대한 제언을 포함하는 것을 권장합니다."></textarea>
+</div>
+<div class="bg-surface px-md py-sm border-t border-outline-variant flex justify-between items-center text-on-surface-variant font-label-sm text-label-sm">
+<span>마지막 자동 저장: 방금 전</span>
+<span>0 자</span>
+</div>
+</div>
+</section>
+<aside class="col-span-1 lg:col-span-3">
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md shadow-sm">
+<h3 class="font-label-md text-label-md text-on-surface mb-md flex items-center gap-xs">
+<span class="material-symbols-outlined text-[18px] text-on-surface-variant">history</span>
+                    검토 이력
+                </h3>
+<div class="relative pl-4 border-l border-outline-variant space-y-lg ml-2">
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-secondary ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-secondary">현재 상태</span>
+<span class="font-body-sm text-body-sm text-on-surface font-medium">검토 진행중</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2023.11.04 14:30 - Dr. Kim</span>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-high border border-outline-variant ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">이전 상태</span>
+<span class="font-body-sm text-body-sm text-on-surface">지도 요청 접수</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2023.11.03 09:15 - 시스템</span>
+</div>
+</div>
+<div class="relative">
+<div class="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-surface-container-high border border-outline-variant ring-4 ring-surface-container-lowest"></div>
+<div class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">이전 상태</span>
+<span class="font-body-sm text-body-sm text-on-surface">PHI 비식별화 완료</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">2023.11.03 09:14 - 시스템 자동화</span>
+</div>
+</div>
+</div>
+</div>
+</aside>
+</main>
+</body></html>

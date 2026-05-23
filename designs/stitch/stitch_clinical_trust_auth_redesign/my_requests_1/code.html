@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ClinicFlow - My Requests</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "error-container": "#ffdad6",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#111c2d",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-container-highest": "#d8e3fb",
+                        "on-tertiary-container": "#7d858d",
+                        "inverse-on-surface": "#ecf1ff",
+                        "outline-variant": "#c6c6cd",
+                        "inverse-primary": "#bec6e0",
+                        "secondary": "#0058be",
+                        "on-secondary-fixed-variant": "#004395",
+                        "on-primary": "#ffffff",
+                        "surface": "#f9f9ff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "error": "#ba1a1a",
+                        "surface-container-low": "#f0f3ff",
+                        "tertiary-container": "#151c23",
+                        "surface-tint": "#565e74",
+                        "primary-container": "#131b2e",
+                        "surface-container-high": "#dee8ff",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "tertiary-fixed": "#dce3ec",
+                        "outline": "#76777d",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-container": "#e7eeff",
+                        "secondary-fixed": "#d8e2ff",
+                        "on-secondary-container": "#fefcff",
+                        "inverse-surface": "#263143",
+                        "surface-variant": "#d8e3fb",
+                        "primary": "#000000",
+                        "on-secondary-fixed": "#001a42",
+                        "primary-fixed": "#dae2fd",
+                        "surface-dim": "#cfdaf2",
+                        "tertiary": "#000000",
+                        "secondary-container": "#2170e4",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary-fixed": "#151c23",
+                        "on-error-container": "#93000a",
+                        "on-surface-variant": "#45464d",
+                        "on-error": "#ffffff",
+                        "on-background": "#111c2d",
+                        "on-primary-container": "#7c839b",
+                        "surface-bright": "#f9f9ff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "background": "#f9f9ff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "12px",
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "xl": "40px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Inter"],
+                        "label-sm": ["Inter"],
+                        "body-sm": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-surface antialiased flex flex-col min-h-screen">
+<!-- TopNavBar (Shared Component) -->
+<nav class="fixed top-0 w-full z-50 bg-surface dark:bg-inverse-surface px-gutter max-w-container-max mx-auto flex justify-between items-center h-16 border-b border-outline-variant dark:border-outline">
+<div class="flex items-center gap-lg">
+<a class="font-headline-md text-headline-md font-bold text-primary dark:text-inverse-primary" href="#">ClinicFlow</a>
+<!-- Desktop Navigation -->
+<div class="hidden md:flex gap-lg h-16">
+<a class="flex items-center h-full text-on-surface-variant dark:text-surface-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors cursor-pointer font-label-md text-label-md" href="#">Find Supervisors</a>
+<a class="flex items-center h-full text-secondary dark:text-secondary-fixed border-b-2 border-secondary dark:border-secondary-fixed cursor-pointer font-label-md text-label-md" href="#">My Requests</a>
+<a class="flex items-center h-full text-on-surface-variant dark:text-surface-variant hover:text-secondary dark:hover:text-secondary-fixed transition-colors cursor-pointer font-label-md text-label-md" href="#">Resources</a>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex gap-sm">
+<button aria-label="Notifications" class="p-2 text-on-surface-variant hover:text-secondary transition-colors cursor-pointer">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</div>
+<button class="hidden md:flex items-center gap-xs px-4 py-2 bg-primary text-on-primary rounded font-label-md text-label-md hover:opacity-90 transition-opacity">
+                Secure Login
+            </button>
+<div class="h-8 w-8 rounded-full bg-surface-container-high overflow-hidden border border-outline-variant cursor-pointer">
+<img alt="User profile" class="w-full h-full object-cover" data-alt="A professional headshot of a female clinician in a bright modern office. The lighting is soft and natural, emphasizing a clinical and trustworthy appearance. The image uses a light-mode aesthetic with clean white and subtle gray tones, fitting a corporate medical software interface." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA-AK0gPfKEvrvG_Pi20R573JFBY7aouYVuxjBWcEmvmiqyjhxKCyLvPnat9Kcpsp_v6ChnOTzW6NHj11YaKAqV8Ti3OMrn-o61xXNAd2dU44zRelXxtDeCmFeev1CVxxmeW1FhjwFQiIihEpJWbkgMNKYHOanYF1Q1dPkpiqY76PuptvizF1jQn-YvZdcCETMc_3R7n-20xJ1iNUIh4L77PZLIfKOS4X4FPfIbG5yeen2wYcLSLqrPFPdCT65WIwBq3HAmbRwLqIw"/>
+</div>
+<!-- Mobile Menu Toggle -->
+<button class="md:hidden p-2 text-on-surface-variant">
+<span class="material-symbols-outlined">menu</span>
+</button>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-grow pt-[88px] pb-xl px-margin-mobile md:px-gutter max-w-container-max mx-auto w-full">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-xl gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-surface mb-xs">My Requests</h1>
+<p class="font-body-md text-body-md text-on-surface-variant">Track and manage your clinical supervision submissions.</p>
+</div>
+<button class="flex items-center gap-sm px-md py-sm bg-primary text-on-primary rounded font-label-md text-label-md hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+<span class="material-symbols-outlined" style="font-size: 18px;">add</span>
+                New Request
+            </button>
+</div>
+<!-- Filters & Search Bar -->
+<div class="flex flex-col md:flex-row justify-between items-center mb-lg gap-md p-md bg-surface-container-lowest border border-outline-variant rounded-lg">
+<div class="relative w-full md:w-96">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant" style="font-size: 20px;">search</span>
+<input class="w-full pl-10 pr-4 py-2 border border-outline-variant rounded font-body-sm text-body-sm focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary transition-shadow bg-surface" placeholder="Search by supervisor or ID..." type="text"/>
+</div>
+<div class="flex gap-sm w-full md:w-auto overflow-x-auto pb-2 md:pb-0 hide-scrollbar">
+<button class="whitespace-nowrap px-sm py-xs rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm border border-secondary">All Requests</button>
+<button class="whitespace-nowrap px-sm py-xs rounded-full bg-surface text-on-surface-variant font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">검토 대기</button>
+<button class="whitespace-nowrap px-sm py-xs rounded-full bg-surface text-on-surface-variant font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">진행 중</button>
+<button class="whitespace-nowrap px-sm py-xs rounded-full bg-surface text-on-surface-variant font-label-sm text-label-sm border border-outline-variant hover:bg-surface-container-low transition-colors">피드백 완료</button>
+</div>
+</div>
+<!-- Requests Data List (Bento/Card Hybrid for modern feel) -->
+<div class="grid grid-cols-1 gap-md">
+<!-- Request Card 1 (Pending/Waiting) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col md:flex-row">
+<!-- Status Strip -->
+<div class="w-full md:w-2 bg-surface-variant md:rounded-l-lg rounded-t-lg md:rounded-tr-none flex-shrink-0"></div>
+<div class="p-md flex-grow flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div class="flex items-start gap-md w-full md:w-auto">
+<div class="h-12 w-12 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0">
+<img alt="Supervisor" class="w-full h-full object-cover" data-alt="A professional portrait of an older male doctor with a kind expression. He is wearing a white coat in a modern clinic setting with soft, high-key lighting. The style is clean, clinical, and reassuring, fitting the light-mode corporate aesthetic of a medical application." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB1V6_xf6wqqQT7pgX0YEAueFqhw9yF8LvM0JV7og5HFagbKuePCitXC4CfF9DS-OUc-sJYJr2KSFowuf0J6WCDuylK8Seh3cb4QMLGWaNEoSODzMfHK1C4hcVjfFF1oIzNzGuRCRvmFFUuLivbbo5JZif2RSDnudy7N1prXRRT-J_Cypkuo3UkVwXNs6TOKs8uw1iI1-tmUn7J1IDoNvSgIaSphdBH11apYndGPXxwIW04X5srLvx3hEJ659J7XkKy9iGgZlHLwiw"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">Dr. Kim Ji-hoon</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-surface-variant text-on-surface-variant border border-outline-variant">REQ-2024-089</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Case Review: Adult ADHD Assessment</p>
+<p class="font-label-sm text-label-sm text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">calendar_today</span>
+                                    Submitted Oct 24, 2024
+                                </p>
+</div>
+</div>
+<div class="flex flex-col md:items-end w-full md:w-auto gap-sm md:gap-2 border-t md:border-t-0 border-outline-variant pt-sm md:pt-0">
+<!-- Amber Badge for Feedback Needed / Waiting -->
+<div class="flex items-center gap-1.5 bg-error-container/30 text-on-surface border border-error-container px-sm py-1 rounded-full w-fit">
+<div class="w-2 h-2 rounded-full bg-[#D97706]"></div>
+<span class="font-label-sm text-label-sm">검토 대기</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">pending_actions</span>
+                                Next: Awaiting Supervisor Acceptance
+                            </div>
+</div>
+<div class="hidden md:flex flex-shrink-0 text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Request Card 2 (Ongoing) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg hover:bg-surface-container-low transition-colors cursor-pointer group">
+<div class="flex flex-col md:flex-row">
+<!-- Status Strip -->
+<div class="w-full md:w-2 bg-secondary md:rounded-l-lg rounded-t-lg md:rounded-tr-none flex-shrink-0"></div>
+<div class="p-md flex-grow flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div class="flex items-start gap-md w-full md:w-auto">
+<div class="h-12 w-12 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0">
+<img alt="Supervisor" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged female therapist in a well-lit modern office. The background is a soft, out-of-focus window showing daylight. The aesthetic is clinical yet approachable, maintaining a bright, professional light-mode look appropriate for a secure SaaS platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBAAtSsO0IFxlI46c_R8du8u8QV-xR7h0iwLXLx-0PWL_xfKupGFzbThBaRD-_L71_fXkJouwVzZXU6_rwXoTSPlDtq4IWFUm2VyrymADCj0KCTRtP0n7yxY9i3PkpTG_Lo2HoZ85yVMK4nTSfv7PQT9BQDmtPgBu8-YZ-hFYKHtbxT5FmzF7L9WxwoZOuqpG-UQOCLw5f-8lX-rEKZrvn7YvuEps6k_ekV2TpySmQ5P_Llu_qiC-Fs1ha6q1tBM5rS5nVxpDDhgwQ"/>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">Dr. Park Seo-yeon</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-surface-variant text-on-surface-variant border border-outline-variant">REQ-2024-082</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Clinical Ethics Consultation</p>
+<p class="font-label-sm text-label-sm text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">calendar_today</span>
+                                    Submitted Oct 18, 2024
+                                </p>
+</div>
+</div>
+<div class="flex flex-col md:items-end w-full md:w-auto gap-sm md:gap-2 border-t md:border-t-0 border-outline-variant pt-sm md:pt-0">
+<!-- Blue Badge for Ongoing -->
+<div class="flex items-center gap-1.5 bg-secondary-fixed text-on-secondary-fixed border border-secondary-fixed-dim px-sm py-1 rounded-full w-fit">
+<div class="w-2 h-2 rounded-full bg-secondary"></div>
+<span class="font-label-sm text-label-sm">진행 중</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">upload_file</span>
+                                Next: Upload Session Transcript
+                            </div>
+</div>
+<div class="hidden md:flex flex-shrink-0 text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Request Card 3 (Completed) -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg opacity-80 hover:opacity-100 hover:bg-surface-container-low transition-all cursor-pointer group">
+<div class="flex flex-col md:flex-row">
+<!-- Status Strip -->
+<div class="w-full md:w-2 bg-outline-variant md:rounded-l-lg rounded-t-lg md:rounded-tr-none flex-shrink-0"></div>
+<div class="p-md flex-grow flex flex-col md:flex-row justify-between items-start md:items-center gap-md">
+<div class="flex items-start gap-md w-full md:w-auto">
+<div class="h-12 w-12 rounded-full bg-surface-container-highest overflow-hidden border border-outline-variant flex-shrink-0">
+<span class="material-symbols-outlined w-full h-full flex items-center justify-center text-on-surface-variant">person</span>
+</div>
+<div class="flex flex-col">
+<div class="flex items-center gap-2 mb-1">
+<h3 class="font-label-md text-label-md text-on-surface">Dr. Lee Min-su</h3>
+<span class="px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider uppercase bg-surface-variant text-on-surface-variant border border-outline-variant">REQ-2024-075</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mb-1">Standard Weekly Log Review</p>
+<p class="font-label-sm text-label-sm text-on-tertiary-container flex items-center gap-1">
+<span class="material-symbols-outlined" style="font-size: 14px;">calendar_today</span>
+                                    Completed Oct 10, 2024
+                                </p>
+</div>
+</div>
+<div class="flex flex-col md:items-end w-full md:w-auto gap-sm md:gap-2 border-t md:border-t-0 border-outline-variant pt-sm md:pt-0">
+<!-- Green/Neutral Badge for Completed -->
+<div class="flex items-center gap-1.5 bg-surface-variant text-on-surface-variant border border-outline-variant px-sm py-1 rounded-full w-fit">
+<span class="material-symbols-outlined" style="font-size: 14px;">check_circle</span>
+<span class="font-label-sm text-label-sm">피드백 완료</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="material-symbols-outlined" style="font-size: 16px;">download</span>
+                                Action: Download Final Report
+                            </div>
+</div>
+<div class="hidden md:flex flex-shrink-0 text-on-surface-variant group-hover:text-primary transition-colors">
+<span class="material-symbols-outlined">chevron_right</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Footer (Shared Component) -->
+<footer class="w-full py-xl px-gutter flex flex-col md:flex-row justify-between items-center gap-md border-t border-outline-variant dark:border-outline bg-surface-container-lowest dark:bg-surface-container-low mt-auto">
+<div class="flex flex-col items-center md:items-start gap-xs">
+<span class="font-headline-sm text-headline-sm font-bold text-primary">ClinicFlow</span>
+<span class="font-body-sm text-body-sm text-on-surface dark:text-on-surface">© 2024 ClinicFlow Korea. HIPAA &amp; PHI Compliant Architecture.</span>
+</div>
+<div class="flex flex-wrap justify-center gap-md font-body-sm text-body-sm text-on-surface-variant dark:text-on-surface-variant">
+<a class="cursor-pointer hover:text-secondary transition-colors" href="#">Privacy Policy</a>
+<a class="cursor-pointer hover:text-secondary transition-colors" href="#">Terms of Service</a>
+<a class="cursor-pointer hover:text-secondary transition-colors" href="#">Security Standards</a>
+<a class="cursor-pointer hover:text-secondary transition-colors" href="#">Clinical Guidelines</a>
+</div>
+</footer>
+<style>
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</body></html>

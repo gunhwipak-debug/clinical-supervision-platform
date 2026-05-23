@@ -1,0 +1,178 @@
+[
+  {
+    "tag": "button",
+    "text": "clinical_notes",
+    "href": "",
+    "x": 16,
+    "y": 12,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-on-surface-variant hover:bg-surface-container-low active:scale-95 transition-transform rounded-full p-2 flex items-"
+  },
+  {
+    "tag": "button",
+    "text": "notifications",
+    "href": "",
+    "x": 390,
+    "y": 12,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-on-surface-variant hover:bg-surface-container-low active:scale-95 transition-transform rounded-full p-2 flex items-"
+  },
+  {
+    "tag": "button",
+    "text": "calendar_month 10월",
+    "href": "",
+    "x": 216,
+    "y": 126,
+    "w": 67,
+    "h": 42,
+    "disabled": false,
+    "classes": "bg-surface-container-lowest border border-outline-variant text-on-surface-variant px-3 py-1.5 rounded-lg flex items-cent"
+  },
+  {
+    "tag": "button",
+    "text": "월 14",
+    "href": "",
+    "x": 212,
+    "y": 628,
+    "w": 33,
+    "h": 58,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg active:scale-95 transition-transform hover:bg-surface-container-low"
+  },
+  {
+    "tag": "button",
+    "text": "화 15",
+    "href": "",
+    "x": 245,
+    "y": 628,
+    "w": 32,
+    "h": 58,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg active:scale-95 transition-transform hover:bg-surface-container-low"
+  },
+  {
+    "tag": "button",
+    "text": "수 16",
+    "href": "",
+    "x": 277,
+    "y": 628,
+    "w": 32,
+    "h": 58,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg active:scale-95 transition-transform hover:bg-surface-container-low"
+  },
+  {
+    "tag": "button",
+    "text": "목 17",
+    "href": "",
+    "x": 309,
+    "y": 624,
+    "w": 36,
+    "h": 65,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg bg-primary text-on-primary active:scale-95 transition-transform shadow-["
+  },
+  {
+    "tag": "button",
+    "text": "금 18",
+    "href": "",
+    "x": 345,
+    "y": 628,
+    "w": 32,
+    "h": 58,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg active:scale-95 transition-transform hover:bg-surface-container-low"
+  },
+  {
+    "tag": "button",
+    "text": "토 19",
+    "href": "",
+    "x": 378,
+    "y": 628,
+    "w": 32,
+    "h": 58,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg active:scale-95 transition-transform hover:bg-surface-container-low"
+  },
+  {
+    "tag": "button",
+    "text": "일 20",
+    "href": "",
+    "x": 410,
+    "y": 628,
+    "w": 36,
+    "h": 58,
+    "disabled": false,
+    "classes": "flex flex-col items-center gap-1 p-2 rounded-lg active:scale-95 transition-transform hover:bg-surface-container-low"
+  },
+  {
+    "tag": "label",
+    "text": "",
+    "href": "",
+    "x": 318,
+    "y": 930,
+    "w": 44,
+    "h": 24,
+    "disabled": false,
+    "classes": "relative inline-flex items-center cursor-pointer"
+  },
+  {
+    "tag": "button",
+    "text": "add",
+    "href": "",
+    "x": 374,
+    "y": 822,
+    "w": 56,
+    "h": 56,
+    "disabled": false,
+    "classes": "bg-primary text-on-primary rounded-full w-14 h-14 flex items-center justify-center shadow-[0px_10px_15px_-3px_rgba(15,23"
+  },
+  {
+    "tag": "button",
+    "text": "dashboard Dashboard",
+    "href": "",
+    "x": 32,
+    "y": 902,
+    "w": 79,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transi"
+  },
+  {
+    "tag": "button",
+    "text": "queue Requests",
+    "href": "",
+    "x": 142,
+    "y": 902,
+    "w": 69,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transi"
+  },
+  {
+    "tag": "button",
+    "text": "calendar_today Schedule",
+    "href": "",
+    "x": 244,
+    "y": 906,
+    "w": 86,
+    "h": 48,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 hove"
+  },
+  {
+    "tag": "button",
+    "text": "person Profile",
+    "href": "",
+    "x": 361,
+    "y": 902,
+    "w": 53,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high active:scale-90 transi"
+  }
+]

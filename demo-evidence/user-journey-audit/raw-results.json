@@ -1,0 +1,94 @@
+{
+  "generatedAt": "2026-05-22T20:21:43.105Z",
+  "steps": [
+    {
+      "actor": "supervisor",
+      "name": "모집 URL 랜딩 진입",
+      "route": "/",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisor",
+      "name": "회원가입 화면 진입",
+      "route": "/signup",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisor",
+      "name": "회원가입 제출",
+      "route": "/signup",
+      "status": "ok",
+      "evidence": "screenshots/supervisor-03-signup-filled.png"
+    },
+    {
+      "actor": "supervisor",
+      "name": "로그인",
+      "route": "/login",
+      "status": "ok",
+      "evidence": "screenshots/supervisor-login.png"
+    },
+    {
+      "actor": "supervisor",
+      "name": "프로필 작성 화면",
+      "route": "/supervisor/profile",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisor",
+      "name": "자격 관리 화면",
+      "route": "/supervisor/qualifications",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisor",
+      "name": "상품 관리 화면",
+      "route": "/supervisor/products",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisor",
+      "name": "가능시간 관리 화면",
+      "route": "/supervisor/availability",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisee",
+      "name": "로그인",
+      "route": "/login",
+      "status": "ok",
+      "evidence": "screenshots/supervisee-login.png"
+    },
+    {
+      "actor": "supervisee",
+      "name": "슈퍼바이저 검색",
+      "route": "/supervisors",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisee",
+      "name": "슈퍼바이저 상세 확인",
+      "route": "/supervisors/10000000-0000-4000-8000-000000000101",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisee",
+      "name": "결제/영수증 목록",
+      "route": "/payments",
+      "status": "ok"
+    },
+    {
+      "actor": "supervisor",
+      "name": "로그인",
+      "route": "/login",
+      "status": "ok",
+      "evidence": "screenshots/supervisor-login.png"
+    },
+    {
+      "actor": "supervisor",
+      "name": "슈퍼바이저 의뢰 큐",
+      "route": "/supervisor/requests",
+      "status": "ok"
+    }
+  ],
+  "issues": []
+}

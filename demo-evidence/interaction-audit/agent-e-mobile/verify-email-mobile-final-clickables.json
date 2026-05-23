@@ -1,0 +1,57 @@
+[
+  {
+    "tag": "a",
+    "text": "ClinicalSup",
+    "href": "http://localhost:3000/verify-email#",
+    "x": 16,
+    "y": 15,
+    "w": 122,
+    "h": 34,
+    "disabled": false,
+    "classes": "font-headline-md text-headline-md font-bold text-primary"
+  },
+  {
+    "tag": "button",
+    "text": "arrow_back",
+    "href": "",
+    "x": 334,
+    "y": 8,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "p-2 text-on-surface-variant hover:bg-surface-container-low rounded-full transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "open_in_new 이메일 앱 열기",
+    "href": "",
+    "x": 16,
+    "y": 445,
+    "w": 358,
+    "h": 56,
+    "disabled": false,
+    "classes": "w-full bg-primary text-on-primary font-label-md text-label-md py-4 rounded-lg flex items-center justify-center gap-2 hov"
+  },
+  {
+    "tag": "button",
+    "text": "refresh 인증 메일 다시 보내기",
+    "href": "",
+    "x": 16,
+    "y": 513,
+    "w": 358,
+    "h": 58,
+    "disabled": false,
+    "classes": "w-full bg-transparent border border-outline-variant text-on-surface font-label-md text-label-md py-4 rounded-lg flex ite"
+  },
+  {
+    "tag": "a",
+    "text": "고객센터",
+    "href": "http://localhost:3000/verify-email#",
+    "x": 124,
+    "y": 618,
+    "w": 48,
+    "h": 17,
+    "disabled": false,
+    "classes": "text-secondary font-medium hover:underline"
+  }
+]

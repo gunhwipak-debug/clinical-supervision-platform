@@ -1,0 +1,101 @@
+[
+  {
+    "tag": "label",
+    "text": "Email Address (이메일)",
+    "href": "",
+    "x": 41,
+    "y": 272,
+    "w": 308,
+    "h": 12,
+    "disabled": false,
+    "classes": "block font-label-sm text-label-sm text-on-surface mb-xs"
+  },
+  {
+    "tag": "label",
+    "text": "Password (비밀번호)",
+    "href": "",
+    "x": 41,
+    "y": 356,
+    "w": 110,
+    "h": 12,
+    "disabled": false,
+    "classes": "block font-label-sm text-label-sm text-on-surface"
+  },
+  {
+    "tag": "a",
+    "text": "Forgot password?",
+    "href": "http://localhost:3000/login#",
+    "x": 246,
+    "y": 356,
+    "w": 103,
+    "h": 12,
+    "disabled": false,
+    "classes": "font-label-sm text-label-sm text-secondary hover:underline"
+  },
+  {
+    "tag": "button",
+    "text": "visibility_off",
+    "href": "",
+    "x": 313,
+    "y": 382,
+    "w": 24,
+    "h": 32,
+    "disabled": false,
+    "classes": "absolute right-sm top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface"
+  },
+  {
+    "tag": "label",
+    "text": "Remember this device for 30 days",
+    "href": "",
+    "x": 65,
+    "y": 439,
+    "w": 226,
+    "h": 21,
+    "disabled": false,
+    "classes": "ml-2 font-body-sm text-body-sm text-on-surface-variant"
+  },
+  {
+    "tag": "button",
+    "text": "Sign In arrow_forward",
+    "href": "",
+    "x": 41,
+    "y": 484,
+    "w": 308,
+    "h": 42,
+    "disabled": false,
+    "classes": "w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded mt-lg hover:bg-opacity-90 transition-opacity"
+  },
+  {
+    "tag": "a",
+    "text": "Contact Administrator",
+    "href": "http://localhost:3000/login#",
+    "x": 149,
+    "y": 577,
+    "w": 153,
+    "h": 38,
+    "disabled": false,
+    "classes": "text-primary font-semibold hover:underline"
+  },
+  {
+    "tag": "a",
+    "text": "Privacy Policy",
+    "href": "http://localhost:3000/login#",
+    "x": 16,
+    "y": 805,
+    "w": 358,
+    "h": 21,
+    "disabled": false,
+    "classes": "hover:text-secondary transition-colors"
+  },
+  {
+    "tag": "a",
+    "text": "Terms of Service",
+    "href": "http://localhost:3000/login#",
+    "x": 16,
+    "y": 834,
+    "w": 358,
+    "h": 21,
+    "disabled": false,
+    "classes": "hover:text-secondary transition-colors"
+  }
+]

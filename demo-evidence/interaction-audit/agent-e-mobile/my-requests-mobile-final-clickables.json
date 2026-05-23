@@ -1,0 +1,90 @@
+[
+  {
+    "tag": "button",
+    "text": "add 새 요청",
+    "href": "",
+    "x": 280,
+    "y": 80,
+    "w": 94,
+    "h": 34,
+    "disabled": false,
+    "classes": "bg-primary text-on-primary font-label-md text-label-md px-4 py-2 rounded flex items-center gap-xs active:opacity-80 tran"
+  },
+  {
+    "tag": "button",
+    "text": "전체",
+    "href": "",
+    "x": 16,
+    "y": 130,
+    "w": 25,
+    "h": 20,
+    "disabled": false,
+    "classes": "font-label-md text-label-md text-secondary border-b-2 border-secondary pb-1 whitespace-nowrap"
+  },
+  {
+    "tag": "button",
+    "text": "대기 중",
+    "href": "",
+    "x": 57,
+    "y": 130,
+    "w": 40,
+    "h": 20,
+    "disabled": false,
+    "classes": "font-label-md text-label-md text-on-surface-variant pb-1 whitespace-nowrap"
+  },
+  {
+    "tag": "button",
+    "text": "진행 중",
+    "href": "",
+    "x": 113,
+    "y": 130,
+    "w": 40,
+    "h": 20,
+    "disabled": false,
+    "classes": "font-label-md text-label-md text-on-surface-variant pb-1 whitespace-nowrap"
+  },
+  {
+    "tag": "button",
+    "text": "완료됨",
+    "href": "",
+    "x": 169,
+    "y": 130,
+    "w": 37,
+    "h": 20,
+    "disabled": false,
+    "classes": "font-label-md text-label-md text-on-surface-variant pb-1 whitespace-nowrap"
+  },
+  {
+    "tag": "button",
+    "text": "상세 보기 chevron_right",
+    "href": "",
+    "x": 296,
+    "y": 257,
+    "w": 61,
+    "h": 16,
+    "disabled": false,
+    "classes": "text-secondary font-label-sm text-label-sm flex items-center"
+  },
+  {
+    "tag": "button",
+    "text": "상세 보기 chevron_right",
+    "href": "",
+    "x": 296,
+    "y": 390,
+    "w": 61,
+    "h": 16,
+    "disabled": false,
+    "classes": "text-secondary font-label-sm text-label-sm flex items-center"
+  },
+  {
+    "tag": "button",
+    "text": "기록 보기 chevron_right",
+    "href": "",
+    "x": 296,
+    "y": 523,
+    "w": 61,
+    "h": 16,
+    "disabled": false,
+    "classes": "text-on-surface-variant font-label-sm text-label-sm flex items-center"
+  }
+]

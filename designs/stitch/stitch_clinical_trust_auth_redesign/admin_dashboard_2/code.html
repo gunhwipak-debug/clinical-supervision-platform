@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>관리자 대시보드 - ClinicalSup</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "tertiary": "#000000",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-container": "#7c839b",
+                      "surface-container": "#e7eeff",
+                      "secondary-container": "#2170e4",
+                      "secondary": "#0058be",
+                      "on-surface-variant": "#45464d",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "outline-variant": "#c6c6cd",
+                      "inverse-surface": "#263143",
+                      "error-container": "#ffdad6",
+                      "background": "#f9f9ff",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "error": "#ba1a1a",
+                      "surface-container-low": "#f0f3ff",
+                      "surface-tint": "#565e74",
+                      "on-tertiary-fixed-variant": "#40484f",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-background": "#111c2d",
+                      "tertiary-fixed": "#dce3ec",
+                      "surface": "#f9f9ff",
+                      "inverse-on-surface": "#ecf1ff",
+                      "on-secondary-container": "#fefcff",
+                      "tertiary-container": "#151c23",
+                      "on-surface": "#111c2d",
+                      "tertiary-fixed-dim": "#c0c7d0",
+                      "on-secondary": "#ffffff",
+                      "surface-dim": "#cfdaf2",
+                      "primary": "#000000",
+                      "primary-container": "#131b2e",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed": "#131b2e",
+                      "on-secondary-fixed-variant": "#004395",
+                      "on-secondary-fixed": "#001a42",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#d8e3fb",
+                      "on-tertiary-container": "#7d858d",
+                      "outline": "#76777d",
+                      "on-tertiary": "#ffffff",
+                      "inverse-primary": "#bec6e0",
+                      "surface-bright": "#f9f9ff",
+                      "primary-fixed": "#dae2fd",
+                      "on-tertiary-fixed": "#151c23",
+                      "surface-variant": "#d8e3fb",
+                      "surface-container-high": "#dee8ff",
+                      "primary-fixed-dim": "#bec6e0",
+                      "on-primary": "#ffffff"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "sm": "12px",
+                      "xs": "4px",
+                      "xl": "40px",
+                      "margin-mobile": "16px",
+                      "gutter": "24px",
+                      "container-max": "1280px",
+                      "base": "8px",
+                      "lg": "24px",
+                      "md": "16px"
+              },
+              "fontFamily": {
+                      "headline-md": ["Hanken Grotesk"],
+                      "label-sm": ["Inter"],
+                      "display-lg": ["Hanken Grotesk"],
+                      "body-sm": ["Inter"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "label-md": ["Inter"],
+                      "headline-lg-mobile": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                      "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                      "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                      "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                      "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                      "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                      "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                      "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        body { background-color: #F8FAFC; }
+        .material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; }
+        .fill-icon { font-variation-settings: 'FILL' 1; }
+        
+        /* Utility for hiding scrollbar but keeping functionality */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased text-on-surface pb-24">
+<!-- TopAppBar -->
+<header class="w-full top-0 sticky z-40 bg-surface dark:bg-on-background border-b border-outline-variant dark:border-on-surface-variant transition-colors duration-200 ease-in-out">
+<div class="flex justify-between items-center px-margin-mobile py-base w-full">
+<button aria-label="Menu" class="text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-tertiary-container p-2 rounded-full transition-colors duration-200">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-secondary dark:text-secondary-fixed-dim">ClinicalSup</h1>
+<button aria-label="Notifications" class="text-on-surface-variant hover:bg-surface-container-low dark:hover:bg-tertiary-container p-2 rounded-full transition-colors duration-200 relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full"></span>
+</button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="px-margin-mobile pt-lg flex flex-col gap-xl">
+<!-- Welcome Section -->
+<section>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">환영합니다, 관리자님</h2>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">오늘의 주요 플랫폼 지표를 확인하세요.</p>
+</section>
+<!-- Metrics Bento Grid -->
+<section class="grid grid-cols-2 gap-sm">
+<!-- Pending Qualifications -->
+<div class="col-span-2 bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm">
+<div class="flex justify-between items-start">
+<div class="flex flex-col">
+<span class="font-label-md text-label-md text-on-surface-variant mb-xs">대기 중인 자격 심사</span>
+<span class="font-display-lg text-display-lg text-secondary">12<span class="font-headline-md text-headline-md text-on-surface-variant ml-xs">건</span></span>
+</div>
+<div class="bg-error-container text-on-error-container p-2 rounded-full">
+<span class="material-symbols-outlined">assignment_late</span>
+</div>
+</div>
+<div class="mt-sm pt-sm border-t border-surface-variant flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-error font-medium">+3 오늘 추가됨</span>
+<button class="text-secondary font-label-md text-label-md hover:underline flex items-center">
+                        바로가기 <span class="material-symbols-outlined text-[16px] ml-1">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Total Payouts -->
+<div class="col-span-1 bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">이달의 총 지급액</span>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">payments</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface mt-xs tracking-tight">₩4.2M</div>
+</div>
+<div class="mt-xs">
+<span class="font-label-sm text-label-sm text-secondary-container bg-surface-container py-1 px-2 rounded-full">+15% 전월 대비</span>
+</div>
+</div>
+<!-- Refund Requests -->
+<div class="col-span-1 bg-surface-container-lowest border border-outline-variant rounded-lg p-md shadow-sm flex flex-col justify-between">
+<div>
+<div class="flex justify-between items-center mb-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">환불 요청</span>
+<span class="material-symbols-outlined text-outline-variant text-[20px]">receipt_long</span>
+</div>
+<div class="font-headline-md text-headline-md text-on-surface mt-xs">5<span class="font-label-md text-label-md text-on-surface-variant ml-xs">건</span></div>
+</div>
+<div class="mt-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">처리 대기 중</span>
+</div>
+</div>
+</section>
+<!-- Recent Qualification Requests -->
+<section class="flex flex-col gap-sm">
+<div class="flex justify-between items-end mb-xs">
+<h3 class="font-headline-md text-headline-md text-on-surface">최근 자격 요청</h3>
+<button class="font-label-md text-label-md text-secondary hover:underline">전체 보기</button>
+</div>
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg shadow-sm overflow-hidden">
+<!-- Header -->
+<div class="bg-surface px-md py-sm border-b border-outline-variant flex text-label-sm font-label-sm text-on-surface-variant">
+<div class="flex-1">신청자 / 면허</div>
+<div class="w-20 text-right">상태</div>
+</div>
+<!-- List Items -->
+<div class="flex flex-col divide-y divide-outline-variant">
+<!-- Item 1 -->
+<div class="px-md py-sm flex justify-between items-center hover:bg-surface-container-low transition-colors duration-150 cursor-pointer">
+<div class="flex items-center gap-sm flex-1">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-primary-fixed-dim">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">김상담</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">임상심리전문가 1급</span>
+</div>
+</div>
+<div class="w-20 text-right flex flex-col items-end gap-1">
+<span class="bg-error-container text-on-error-container text-[10px] px-2 py-0.5 rounded-full font-medium">검토 대기</span>
+<span class="font-label-sm text-label-sm text-outline-variant">2시간 전</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="px-md py-sm flex justify-between items-center hover:bg-surface-container-low transition-colors duration-150 cursor-pointer">
+<div class="flex items-center gap-sm flex-1">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-primary-fixed-dim">
+<span class="material-symbols-outlined">person</span>
+</div>
+<div class="flex flex-col">
+<span class="font-body-md text-body-md text-on-surface font-medium">이치료</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">청소년상담사 2급</span>
+</div>
+</div>
+<div class="w-20 text-right flex flex-col items-end gap-1">
+<span class="bg-error-container text-on-error-container text-[10px] px-2 py-0.5 rounded-full font-medium">검토 대기</span>
+<span class="font-label-sm text-label-sm text-outline-variant">어제</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center pt-xs pb-sm px-base bg-surface-container-lowest dark:bg-on-background border-t border-outline-variant dark:border-on-surface-variant z-50">
+<!-- Active: Dashboard -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container dark:bg-secondary dark:text-on-secondary rounded-full px-4 py-1 scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined fill-icon">dashboard</span>
+<span class="font-label-sm text-label-sm mt-1">Dashboard</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-secondary dark:hover:text-secondary-fixed-dim scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">pending_actions</span>
+<span class="font-label-sm text-label-sm mt-1">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-secondary dark:hover:text-secondary-fixed-dim scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="font-label-sm text-label-sm mt-1">Schedule</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline-variant px-4 py-1 hover:text-secondary dark:hover:text-secondary-fixed-dim scale-95 active:scale-90 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

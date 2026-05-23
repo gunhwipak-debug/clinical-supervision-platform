@@ -1,0 +1,101 @@
+[
+  {
+    "tag": "button",
+    "text": "arrow_back",
+    "href": "",
+    "x": 8,
+    "y": 8,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-on-surface-variant dark:text-outline hover:bg-surface-container-low dark:hover:bg-surface-variant transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "전체",
+    "href": "",
+    "x": 16,
+    "y": 187,
+    "w": 59,
+    "h": 32,
+    "disabled": false,
+    "classes": "bg-surface-container-high text-on-surface text-label-md font-label-md px-4 py-2 rounded-full whitespace-nowrap border bo"
+  },
+  {
+    "tag": "button",
+    "text": "결제 완료",
+    "href": "",
+    "x": 87,
+    "y": 187,
+    "w": 87,
+    "h": 32,
+    "disabled": false,
+    "classes": "bg-surface-container-lowest text-on-surface-variant text-label-md font-label-md px-4 py-2 rounded-full whitespace-nowrap"
+  },
+  {
+    "tag": "button",
+    "text": "취소됨",
+    "href": "",
+    "x": 185,
+    "y": 187,
+    "w": 71,
+    "h": 32,
+    "disabled": false,
+    "classes": "bg-surface-container-lowest text-on-surface-variant text-label-md font-label-md px-4 py-2 rounded-full whitespace-nowrap"
+  },
+  {
+    "tag": "button",
+    "text": "더 보기 expand_more",
+    "href": "",
+    "x": 16,
+    "y": 766,
+    "w": 358,
+    "h": 44,
+    "disabled": false,
+    "classes": "w-full py-3 border border-outline-variant rounded-lg text-label-md font-label-md text-on-surface-variant mt-sm hover:bg-"
+  },
+  {
+    "tag": "button",
+    "text": "dashboard Dashboard",
+    "href": "",
+    "x": 25,
+    "y": 772,
+    "w": 79,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-container dark:hove"
+  },
+  {
+    "tag": "button",
+    "text": "assignment_late Requests",
+    "href": "",
+    "x": 120,
+    "y": 772,
+    "w": 69,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-container dark:hove"
+  },
+  {
+    "tag": "button",
+    "text": "calendar_today Schedule",
+    "href": "",
+    "x": 207,
+    "y": 772,
+    "w": 70,
+    "h": 56,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant dark:text-outline hover:bg-surface-container dark:hove"
+  },
+  {
+    "tag": "button",
+    "text": "person Profile",
+    "href": "",
+    "x": 293,
+    "y": 764,
+    "w": 72,
+    "h": 72,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-secondary dark:text-secondary-fixed font-bold hover:bg-surface-container "
+  }
+]

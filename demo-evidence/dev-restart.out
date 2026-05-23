@@ -1,0 +1,17 @@
+$ tsx scripts/demo-dev.ts
+[2026-05-22T21:28:44.258Z] Demo dev started at 2026-05-22T21:28:44.257Z
+[2026-05-22T21:28:44.258Z] DEV_DB_SEED_PATH=/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/dev-data/pglite
+[2026-05-22T21:28:44.561Z] web DEV_DB_PATH=/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/dev-data/runtime/33449/web
+[2026-05-22T21:28:44.687Z] admin DEV_DB_PATH=/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/dev-data/runtime/33449/admin
+[2026-05-22T21:28:44.687Z] Starting web: pnpm --filter @csp/web dev
+[2026-05-22T21:28:44.689Z] Starting admin: pnpm --filter @csp/admin dev
+[2026-05-22T21:28:44.900Z] admin $ next dev --port 3001
+[2026-05-22T21:28:44.901Z] web $ next dev --port 3000
+[2026-05-22T21:28:45.564Z] web    ▲ Next.js 15.5.18
+[2026-05-22T21:28:45.564Z] web    - Local:        http://localhost:3000
+[2026-05-22T21:28:45.564Z] web    - Network:      http://192.168.0.109:3000
+[2026-05-22T21:28:45.564Z] web  ✓ Starting...
+[2026-05-22T21:28:45.565Z] admin    ▲ Next.js 15.5.18
+[2026-05-22T21:28:45.565Z] admin    - Local:        http://localhost:3001
+[2026-05-22T21:28:45.565Z] admin    - Network:      http://192.168.0.109:3001
+[2026-05-22T21:28:45.565Z] admin  ✓ Starting...

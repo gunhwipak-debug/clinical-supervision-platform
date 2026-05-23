@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>일정 관리 - Supervision Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-secondary-fixed-variant": "#004395",
+                        "surface-container-low": "#f0f3ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#dee8ff",
+                        "surface": "#f9f9ff",
+                        "secondary": "#0058be",
+                        "inverse-surface": "#263143",
+                        "error": "#ba1a1a",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#d8e3fb",
+                        "surface-container-highest": "#d8e3fb",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "on-background": "#111c2d",
+                        "on-primary-container": "#7c839b",
+                        "surface-tint": "#565e74",
+                        "tertiary": "#000000",
+                        "on-surface": "#111c2d",
+                        "inverse-primary": "#bec6e0",
+                        "surface-bright": "#f9f9ff",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-dim": "#cfdaf2",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "primary-container": "#131b2e",
+                        "secondary-fixed": "#d8e2ff",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#001a42",
+                        "on-primary": "#ffffff",
+                        "primary": "#000000",
+                        "on-surface-variant": "#45464d",
+                        "on-tertiary-container": "#7d858d",
+                        "on-tertiary-fixed": "#151c23",
+                        "background": "#f9f9ff",
+                        "tertiary-fixed": "#dce3ec",
+                        "outline-variant": "#c6c6cd",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#76777d",
+                        "on-secondary-container": "#fefcff",
+                        "tertiary-container": "#151c23",
+                        "on-secondary": "#ffffff",
+                        "surface-container": "#e7eeff",
+                        "inverse-on-surface": "#ecf1ff",
+                        "secondary-container": "#2170e4",
+                        "on-error-container": "#93000a",
+                        "primary-fixed": "#dae2fd",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "primary-fixed-dim": "#bec6e0"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-mobile": "16px",
+                        "xs": "4px",
+                        "gutter": "24px",
+                        "md": "16px",
+                        "lg": "24px",
+                        "base": "8px",
+                        "sm": "12px",
+                        "xl": "40px",
+                        "container-max": "1280px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-sm": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "label-sm": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-md": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        /* Custom scrollbar for calendar grid */
+        .calendar-scroll::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .calendar-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .calendar-scroll::-webkit-scrollbar-thumb {
+            background-color: #c6c6cd;
+            border-radius: 10px;
+        }
+        .slot-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        .slot-available {
+            background-color: #2170e4; /* secondary-container */
+            color: #ffffff; /* on-secondary */
+            border-color: #2170e4;
+        }
+        .slot-empty {
+            background-color: #ffffff;
+            color: #45464d;
+            border-color: #c6c6cd;
+            border-style: dashed;
+        }
+        .slot-empty:hover {
+            background-color: #f0f3ff;
+            border-color: #0058be;
+            border-style: solid;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md antialiased flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest border-b border-outline-variant flat no shadows fixed docked full-width top-0 z-50 h-16 w-full flex justify-between items-center px-lg max-w-container-max mx-auto">
+<div class="flex items-center gap-sm cursor-pointer active:opacity-80 transition-opacity">
+<span class="font-headline-md text-headline-md font-bold text-primary">Supervision Pro</span>
+</div>
+<div class="flex items-center gap-md">
+<button class="p-xs rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-xs rounded-full hover:bg-surface-container-low transition-colors text-on-surface-variant flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<div class="w-8 h-8 rounded-full bg-surface-dim overflow-hidden border border-outline-variant cursor-pointer ml-sm">
+<img alt="Supervisor Profile" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged Asian clinical supervisor, wearing business casual attire, well-lit studio photography, soft neutral background, conveying trust and medical expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCDByzpgsg-yXsQaIE_AxICw6GRw7ih1W4aLrkIxdHcZj3DmooeHonBjH1V1M04yMiPRwlPuz86u4pf2L9F60AID_9hGF8iCsDoTkS9Tg01IFODnU_LRzZhSbDtiOYKpMlWGwE_R1Ptx1NFs8yIOvzyt_x4O0QFMQmYhqJqdmYsfjDqKma7M0L_FgSk4j1k18I-MljXGGHfKDfZoqEIE9vJN6BAM1Pp2NEn54edN4dP46ByE0Nj_YbRohIz5e2GCvjyhqhjhtpMg-E"/>
+</div>
+</div>
+</header>
+<div class="flex flex-1 pt-16">
+<!-- SideNavBar (Desktop) -->
+<aside class="hidden md:flex flex-col h-[calc(100vh-64px)] fixed left-0 w-64 p-md border-r border-outline-variant bg-surface z-40">
+<div class="mb-lg px-sm">
+<div class="flex items-center gap-sm mb-xs">
+<div class="w-10 h-10 rounded-full bg-surface-dim overflow-hidden border border-outline-variant">
+<img alt="Supervisor Avatar" class="w-full h-full object-cover" data-alt="A professional headshot of a middle-aged Asian clinical supervisor, wearing business casual attire, well-lit studio photography, soft neutral background, conveying trust and medical expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuALILOawBk_XJZYBYLYEfCquxXz8QEoc_Iv_QtCv33pJoIKzlvkiqLC55hdUuS62Rhl2aFsrCVLrdbIWD6SpfvD6-8OGPsm1Dfylk0KxL32ipghdu3nTu89rvmOGRcmi0ySUExmZw5FY6gMD4ycFulBT2moen3Z5_6yMMO-b9tRSNkX0nVGRHk-MceIIFvycyE23HOekSJ-XXLVbRl51xKQ5o3sUlrRtWkv-JxVznNWPZcbefkridOtFv8TvqH_5iHxDXI8V6E-Jck"/>
+</div>
+<div>
+<h2 class="font-label-md text-label-md text-on-background">Dr. Kim, PhD</h2>
+<p class="font-label-sm text-label-sm text-on-surface-variant">Clinical Supervisor</p>
+</div>
+</div>
+</div>
+<nav class="flex-1 space-y-xs">
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+<span class="font-label-md text-label-md">Case Review</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+<span class="font-label-md text-label-md">Profile</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+<span class="font-label-md text-label-md">Services</span>
+</a>
+<!-- Active Nav Item -->
+<a class="flex items-center gap-sm px-sm py-sm bg-secondary-container text-on-secondary-container font-bold rounded-lg transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month" data-weight="fill" style="font-variation-settings: 'FILL' 1;">calendar_month</span>
+<span class="font-label-md text-label-md">Schedule</span>
+</a>
+</nav>
+<div class="mt-auto space-y-xs pt-md border-t border-surface-container-high">
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+<a class="flex items-center gap-sm px-sm py-sm rounded-lg text-on-surface-variant hover:bg-surface-container transition-all scale-98 active:scale-95" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+<span class="font-label-md text-label-md">Sign Out</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="flex-1 md:ml-64 p-margin-mobile md:p-gutter max-w-container-max w-full mx-auto pb-24 md:pb-gutter">
+<!-- Page Header -->
+<div class="mb-xl flex flex-col md:flex-row justify-between items-start md:items-end gap-md">
+<div>
+<h1 class="font-headline-lg text-headline-lg md:text-display-lg md:font-display-lg text-on-background">일정 및 예약 관리</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-base">슈퍼비전 세션이 가능한 요일과 시간을 설정하세요.</p>
+</div>
+<div class="flex items-center gap-sm bg-surface-container-lowest border border-outline-variant rounded-full p-xs">
+<button class="p-xs rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_left">chevron_left</span>
+</button>
+<span class="font-label-md text-label-md px-sm">2023년 10월 넷째 주</span>
+<button class="p-xs rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface transition-colors">
+<span class="material-symbols-outlined" data-icon="chevron_right">chevron_right</span>
+</button>
+</div>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-lg">
+<!-- Main Calendar View (Span 8) -->
+<div class="xl:col-span-8 space-y-md">
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant overflow-hidden flex flex-col h-full">
+<!-- Calendar Header/Legend -->
+<div class="flex justify-between items-center p-md border-b border-outline-variant bg-surface-bright">
+<h3 class="font-label-md text-label-md text-on-background">주간 예약 슬롯</h3>
+<div class="flex items-center gap-md font-label-sm text-label-sm text-on-surface-variant">
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full border border-dashed border-outline-variant bg-surface-container-lowest"></div>
+<span>비어있음</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-secondary-container"></div>
+<span>예약 가능</span>
+</div>
+<div class="flex items-center gap-xs">
+<div class="w-3 h-3 rounded-full bg-surface-dim"></div>
+<span>예약 완료</span>
+</div>
+</div>
+</div>
+<!-- Grid -->
+<div class="p-md overflow-x-auto calendar-scroll">
+<div class="min-w-[600px] grid grid-cols-8 gap-xs">
+<!-- Time Column -->
+<div class="flex flex-col gap-sm pt-8 text-right pr-sm text-on-surface-variant font-label-sm text-label-sm">
+<div class="h-10 flex items-center justify-end">13:00</div>
+<div class="h-10 flex items-center justify-end">14:00</div>
+<div class="h-10 flex items-center justify-end">15:00</div>
+<div class="h-10 flex items-center justify-end">16:00</div>
+<div class="h-10 flex items-center justify-end">17:00</div>
+</div>
+<!-- Day Columns -->
+<!-- Mon -->
+<div class="flex flex-col gap-sm">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-on-background">월</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/23</div>
+</div>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+<div class="h-10 w-full rounded bg-surface-dim border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-on-surface-variant cursor-not-allowed opacity-80" title="예약 완료 (김서연 선생님)">예약됨</div>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+</div>
+<!-- Tue -->
+<div class="flex flex-col gap-sm">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-on-background">화</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/24</div>
+</div>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<div class="h-10 w-full rounded bg-surface-dim border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-on-surface-variant cursor-not-allowed opacity-80" title="예약 완료 (이준호 선생님)">예약됨</div>
+</div>
+<!-- Wed -->
+<div class="flex flex-col gap-sm">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-on-background">수</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/25</div>
+</div>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+</div>
+<!-- Thu, Fri, Sat, Sun Follow similar pattern, abbreviated for structural clarity -->
+<!-- Thu -->
+<div class="flex flex-col gap-sm">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-on-background">목</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/26</div>
+</div>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<div class="h-10 w-full rounded bg-surface-dim border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-on-surface-variant cursor-not-allowed opacity-80" title="예약 완료 (박지민 선생님)">예약됨</div>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+</div>
+<!-- Fri -->
+<div class="flex flex-col gap-sm">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-on-background">금</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/27</div>
+</div>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+<button class="slot-btn slot-available h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm shadow-sm" onclick="toggleSlot(this)">가능</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+<button class="slot-btn slot-empty h-10 w-full rounded border flex items-center justify-center font-label-sm text-label-sm" onclick="toggleSlot(this)">+ 추가</button>
+</div>
+<!-- Sat -->
+<div class="flex flex-col gap-sm opacity-50">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-on-background">토</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/28</div>
+</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+</div>
+<!-- Sun -->
+<div class="flex flex-col gap-sm opacity-50">
+<div class="text-center pb-sm border-b border-outline-variant mb-xs">
+<div class="font-label-md text-label-md text-error">일</div>
+<div class="font-body-sm text-body-sm text-on-surface-variant">10/29</div>
+</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+<div class="h-10 w-full rounded border-dashed border border-outline-variant flex items-center justify-center font-label-sm text-label-sm text-outline">휴무</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Settings & Integrations (Span 4) -->
+<div class="xl:col-span-4 space-y-md">
+<!-- Integration Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md">
+<h3 class="font-label-md text-label-md text-on-background mb-sm">외부 캘린더 연동</h3>
+<div class="flex items-center justify-between bg-surface p-sm rounded-lg border border-outline-variant">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-secondary" data-icon="calendar_today">calendar_today</span>
+<div>
+<p class="font-label-md text-label-md text-on-background">Google 캘린더</p>
+<p class="font-label-sm text-label-sm text-secondary flex items-center gap-xs">
+<span class="w-2 h-2 rounded-full bg-secondary block"></span> 연동됨
+                                    </p>
+</div>
+</div>
+<button class="text-label-sm font-label-sm text-on-surface-variant hover:text-on-background transition-colors">
+                                관리
+                            </button>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-sm">
+                            개인 일정이 있는 시간대는 자동으로 '예약 불가' 처리됩니다.
+                        </p>
+</div>
+<!-- Bulk Update Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-outline-variant p-md flex flex-col gap-md">
+<h3 class="font-label-md text-label-md text-on-background">반복 일정 설정</h3>
+<div class="space-y-sm">
+<label class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">적용 기간</span>
+<select class="bg-surface border border-outline-variant rounded-lg p-sm font-body-sm text-on-background focus:border-secondary focus:ring-1 focus:ring-secondary outline-none transition-all">
+<option>향후 4주간</option>
+<option>이번 학기 전체</option>
+<option>사용자 지정...</option>
+</select>
+</label>
+<label class="flex flex-col gap-xs">
+<span class="font-label-sm text-label-sm text-on-surface-variant">기본 요일 설정</span>
+<div class="flex gap-xs flex-wrap">
+<button class="px-sm py-xs rounded-full border border-secondary bg-secondary-container text-on-secondary-container font-label-sm">월</button>
+<button class="px-sm py-xs rounded-full border border-secondary bg-secondary-container text-on-secondary-container font-label-sm">화</button>
+<button class="px-sm py-xs rounded-full border border-outline-variant text-on-surface-variant font-label-sm">수</button>
+<button class="px-sm py-xs rounded-full border border-outline-variant text-on-surface-variant font-label-sm">목</button>
+<button class="px-sm py-xs rounded-full border border-secondary bg-secondary-container text-on-secondary-container font-label-sm">금</button>
+</div>
+</label>
+</div>
+<button class="w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-lg hover:opacity-90 transition-opacity mt-sm">
+                            일괄 적용 저장
+                        </button>
+</div>
+</div>
+</div>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="bg-surface-container-lowest border-t border-outline-variant shadow-lg docked full-width bottom-0 rounded-t-xl fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 md:hidden">
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors rounded-full active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors rounded-full active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+<span class="font-label-sm text-label-sm mt-1">Review</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant px-4 py-1 hover:bg-surface-container transition-colors rounded-full active:scale-95 duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm mt-1">Products</span>
+</a>
+<!-- Assuming Profile acts as settings container on mobile -->
+<a class="flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="person" data-weight="fill" style="font-variation-settings: 'FILL' 1;">person</span>
+<span class="font-label-sm text-label-sm mt-1 font-bold">Profile</span>
+</a>
+</nav>
+<script>
+        // Simple vanilla JS to demonstrate interactivity of slot toggling
+        function toggleSlot(button) {
+            if (button.classList.contains('slot-empty')) {
+                button.classList.remove('slot-empty');
+                button.classList.add('slot-available');
+                button.classList.add('shadow-sm');
+                button.innerText = '가능';
+            } else if (button.classList.contains('slot-available')) {
+                button.classList.remove('slot-available');
+                button.classList.remove('shadow-sm');
+                button.classList.add('slot-empty');
+                button.innerText = '+ 추가';
+            }
+        }
+    </script>
+</body></html>

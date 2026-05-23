@@ -1,0 +1,106 @@
+{
+  "checked": 10,
+  "failures": [],
+  "results": [
+    {
+      "viewport": "desktop",
+      "page": "catalog",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "desktop",
+      "page": "profile",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "desktop",
+      "page": "new-request",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "desktop",
+      "page": "availability",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "desktop",
+      "page": "work-surface-preview",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": 2,
+      "previewVisible": true
+    },
+    {
+      "viewport": "mobile",
+      "page": "catalog",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "mobile",
+      "page": "profile",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "mobile",
+      "page": "new-request",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "mobile",
+      "page": "availability",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": null,
+      "previewVisible": null
+    },
+    {
+      "viewport": "mobile",
+      "page": "work-surface-preview",
+      "hrefHashCount": 0,
+      "fakeHits": [],
+      "overflow": 0,
+      "verticalCount": 0,
+      "previewButtonCount": 2,
+      "previewVisible": true
+    }
+  ]
+}

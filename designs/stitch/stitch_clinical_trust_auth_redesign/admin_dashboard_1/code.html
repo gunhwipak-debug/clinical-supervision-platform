@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>운영자 대시보드 - Supervision Pro</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "primary-fixed": "#dae2fd",
+                      "on-secondary": "#ffffff",
+                      "on-tertiary-fixed-variant": "#40484f",
+                      "on-error": "#ffffff",
+                      "surface-variant": "#d8e3fb",
+                      "on-secondary-fixed-variant": "#004395",
+                      "surface-tint": "#565e74",
+                      "surface": "#f9f9ff",
+                      "on-primary-fixed": "#131b2e",
+                      "inverse-on-surface": "#ecf1ff",
+                      "secondary": "#0058be",
+                      "secondary-container": "#2170e4",
+                      "on-background": "#111c2d",
+                      "on-primary-container": "#7c839b",
+                      "surface-container-high": "#dee8ff",
+                      "primary": "#000000",
+                      "error": "#ba1a1a",
+                      "tertiary": "#000000",
+                      "primary-container": "#131b2e",
+                      "on-surface-variant": "#45464d",
+                      "on-primary": "#ffffff",
+                      "inverse-surface": "#263143",
+                      "tertiary-fixed": "#dce3ec",
+                      "on-primary-fixed-variant": "#3f465c",
+                      "surface-bright": "#f9f9ff",
+                      "secondary-fixed-dim": "#adc6ff",
+                      "on-error-container": "#93000a",
+                      "on-tertiary": "#ffffff",
+                      "surface-container-low": "#f0f3ff",
+                      "on-surface": "#111c2d",
+                      "on-tertiary-container": "#7d858d",
+                      "tertiary-container": "#151c23",
+                      "surface-container-lowest": "#ffffff",
+                      "on-secondary-container": "#fefcff",
+                      "on-secondary-fixed": "#001a42",
+                      "surface-dim": "#cfdaf2",
+                      "surface-container": "#e7eeff",
+                      "background": "#f9f9ff",
+                      "error-container": "#ffdad6",
+                      "primary-fixed-dim": "#bec6e0",
+                      "outline-variant": "#c6c6cd",
+                      "secondary-fixed": "#d8e2ff",
+                      "on-tertiary-fixed": "#151c23",
+                      "inverse-primary": "#bec6e0",
+                      "tertiary-fixed-dim": "#c0c7d0",
+                      "surface-container-highest": "#d8e3fb",
+                      "outline": "#76777d"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "sm": "12px",
+                      "base": "8px",
+                      "lg": "24px",
+                      "xs": "4px",
+                      "container-max": "1280px",
+                      "gutter": "24px",
+                      "xl": "40px",
+                      "margin-mobile": "16px"
+              },
+              "fontFamily": {
+                      "label-sm": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "headline-lg-mobile": [
+                              "Hanken Grotesk"
+                      ],
+                      "headline-md": [
+                              "Hanken Grotesk"
+                      ],
+                      "display-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "label-md": [
+                              "Inter"
+                      ],
+                      "headline-lg": [
+                              "Hanken Grotesk"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "label-sm": [
+                              "12px",
+                              {
+                                      "lineHeight": "1",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "body-md": [
+                              "16px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "1.5",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-md": [
+                              "24px",
+                              {
+                                      "lineHeight": "1.4",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "1.2",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "1",
+                                      "letterSpacing": "0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "1.3",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "1.6",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        .material-symbols-outlined {
+          font-variation-settings:
+          'FILL' 0,
+          'wght' 400,
+          'GRAD' 0,
+          'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:flex-row">
+<!-- SideNavBar (Desktop) -->
+<nav class="hidden md:flex flex-col h-full p-md border-r border-outline-variant dark:border-outline bg-surface dark:bg-primary-container docked h-screen fixed left-0 w-64 z-40">
+<div class="mb-lg">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Supervision Pro</h1>
+</div>
+<div class="flex items-center gap-sm mb-lg p-sm bg-surface-container-low dark:bg-surface-container-highest rounded-lg">
+<img alt="Supervisor Avatar" class="w-10 h-10 rounded-full object-cover border border-outline-variant" data-alt="A professional headshot of a confident clinical supervisor in a modern, well-lit medical office setting. The lighting is soft and bright, emphasizing a clean, trustworthy atmosphere. Deep navy blue and pristine white tones dominate the background, conveying clinical professionalism and security." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAC0Nv4_pk4cId-d5dRUsy1p1VfqU_nE7I_1K9afhU8srsaX9AZmMMCmzpJPQfQlPxyfUSOGmK4BIzcmXPCGI5s8l3Dx3NdnebkI2Qcj5vLGdsc8bxzStpmPP9IBxWTaOAOpZchFaM5pznyJ1KT0gvYO7vriEOugnNlt_hE0q38hxy5_wG9SEKhzqX4S7inRlHVJCIejj3svz0NFpX7DD9kcaVQ9hN-mllsqVjEbBFZiuiYfV6zCkfN4Nbumh63o27fiBt__yhnELs"/>
+<div>
+<div class="font-label-md text-label-md text-on-surface">Dr. Kim, PhD</div>
+<div class="font-label-sm text-label-sm text-on-surface-variant">Clinical Supervisor</div>
+</div>
+</div>
+<ul class="flex-1 space-y-base">
+<li>
+<a class="flex items-center gap-sm p-sm bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary font-bold rounded-lg hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined" data-icon="dashboard">dashboard</span>
+                    Dashboard
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="clinical_notes">clinical_notes</span>
+                    Case Review
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="badge">badge</span>
+                    Profile
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="payments">payments</span>
+                    Services
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="calendar_month">calendar_month</span>
+                    Schedule
+                </a>
+</li>
+</ul>
+<button class="mt-auto mb-md w-full bg-primary text-on-primary font-label-md text-label-md py-sm rounded-lg hover:bg-primary-container hover:text-on-primary-container transition-colors shadow-sm">
+            New Feedback
+        </button>
+<ul class="space-y-base border-t border-outline-variant pt-sm">
+<li>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="settings">settings</span>
+                    Settings
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-sm p-sm text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-surface-container-high transition-all scale-98 active:scale-95 transition-transform font-label-md text-label-md rounded-lg" href="#">
+<span class="material-symbols-outlined" data-icon="logout">logout</span>
+                    Sign Out
+                </a>
+</li>
+</ul>
+</nav>
+<!-- Main Content Area -->
+<div class="flex-1 md:ml-64 flex flex-col min-h-screen">
+<!-- TopAppBar -->
+<header class="bg-surface-container-lowest dark:bg-primary-container flex justify-between items-center w-full px-lg max-w-container-max mx-auto h-16 border-b border-outline-variant dark:border-outline sticky top-0 z-30">
+<div class="md:hidden">
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Supervision Pro</h1>
+</div>
+<div class="hidden md:flex items-center">
+<h2 class="font-headline-md text-headline-md text-on-surface">운영자 대시보드</h2>
+</div>
+<div class="flex items-center gap-sm">
+<div class="relative hidden sm:block">
+<span class="material-symbols-outlined absolute left-sm top-1/2 -translate-y-1/2 text-on-surface-variant" data-icon="search">search</span>
+<input class="pl-xl pr-sm py-xs border border-outline-variant rounded-full bg-surface text-body-sm font-body-sm focus:outline-none focus:border-secondary focus:ring-1 focus:ring-secondary w-64 transition-all" placeholder="검색..." type="text"/>
+</div>
+<button class="p-xs text-secondary dark:text-secondary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+<button class="p-xs text-secondary dark:text-secondary-fixed hover:bg-surface-container-low dark:hover:bg-surface-container-highest transition-colors rounded-full cursor-pointer active:opacity-80 transition-opacity">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+</button>
+<img alt="Supervisor Profile" class="w-8 h-8 rounded-full border border-outline-variant md:hidden" data-alt="A professional headshot of a confident clinical supervisor in a modern, well-lit medical office setting. The lighting is soft and bright, emphasizing a clean, trustworthy atmosphere. Deep navy blue and pristine white tones dominate the background, conveying clinical professionalism and security." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCtxViLCsylGUWSSKIFWUE2wvvLbl-SapNisgOOMdU7VPiTeVluVScUkFDqEFOVG-HLQQfhtGRYDfQwrA5egrhgHIo6pcTKEgdQldQRb5vPNVbraA486P1ll0KcpSf48WiCpSQoRz31YkUKM3Vwwdt-8GKF1bCffo5TU5TGHPNqeu0yprmKi5qFDTdJLLnGt_dlkTLayvFLNV83E4ImMnRKfP3z3OgT_IvF5sYuLkvHun6wn_UP-yt4b47hu_tNnANLQcM0Fvjz-vY"/>
+</div>
+</header>
+<!-- Canvas -->
+<main class="flex-1 p-margin-mobile md:p-gutter max-w-container-max mx-auto w-full space-y-xl overflow-y-auto pb-24 md:pb-lg">
+<!-- Bento Grid: Stats & Health -->
+<section class="grid grid-cols-1 md:grid-cols-12 gap-md md:gap-gutter">
+<!-- Stat Card 1: Pending Approvals -->
+<div class="col-span-1 md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:bg-surface transition-colors cursor-default">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined" data-icon="pending_actions">pending_actions</span>
+<h3 class="font-label-md text-label-md text-on-surface-variant">승인 대기 건수</h3>
+</div>
+<span class="px-2 py-1 bg-error-container text-on-error-container font-label-sm text-label-sm rounded-full">조치 필요</span>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface">24<span class="font-headline-md text-headline-md text-on-surface-variant ml-xs">건</span></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">+3 지난주 대비</p>
+</div>
+</div>
+<!-- Stat Card 2: Total Payout -->
+<div class="col-span-1 md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:bg-surface transition-colors cursor-default">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined" data-icon="account_balance">account_balance</span>
+<h3 class="font-label-md text-label-md text-on-surface-variant">이번 달 정산 예정액</h3>
+</div>
+</div>
+<div>
+<div class="font-display-lg text-display-lg text-on-surface">₩12.4<span class="font-headline-md text-headline-md text-on-surface-variant ml-xs">M</span></div>
+<p class="font-body-sm text-body-sm text-on-surface-variant mt-xs">정산일: 매월 15일</p>
+</div>
+</div>
+<!-- System Health Panel -->
+<div class="col-span-1 md:col-span-4 bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex flex-col justify-between hover:bg-surface transition-colors">
+<div class="flex justify-between items-start mb-sm">
+<div class="flex items-center gap-xs text-secondary">
+<span class="material-symbols-outlined" data-icon="monitor_heart">monitor_heart</span>
+<h3 class="font-label-md text-label-md text-on-surface-variant">시스템 상태</h3>
+</div>
+<span class="flex items-center gap-xs text-surface-tint font-label-sm text-label-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span> 정상
+                        </span>
+</div>
+<div class="space-y-sm mt-sm">
+<div class="flex justify-between items-center border-b border-outline-variant pb-xs">
+<span class="font-body-sm text-body-sm text-on-surface">서버 응답 속도</span>
+<span class="font-label-md text-label-md text-on-surface-variant">120ms</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline-variant pb-xs">
+<span class="font-body-sm text-body-sm text-on-surface">활성 사용자</span>
+<span class="font-label-md text-label-md text-on-surface-variant">1,432</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-sm text-body-sm text-on-surface">에러율 (24h)</span>
+<span class="font-label-md text-label-md text-on-surface-variant">0.02%</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Main View: Audit Logs / Recent Activity -->
+<section class="bg-surface-container-lowest border border-outline-variant rounded-xl overflow-hidden">
+<div class="p-md bg-surface border-b border-outline-variant flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">최근 시스템 활동</h3>
+<button class="text-secondary font-label-md text-label-md hover:underline">모두 보기</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low text-on-surface-variant font-label-sm text-label-sm border-b border-outline-variant">
+<th class="p-sm font-medium">시간</th>
+<th class="p-sm font-medium">이벤트 유형</th>
+<th class="p-sm font-medium">사용자 / 대상</th>
+<th class="p-sm font-medium">상태</th>
+<th class="p-sm font-medium text-right">작업</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant text-body-sm font-body-sm text-on-surface">
+<tr class="hover:bg-surface transition-colors">
+<td class="p-sm text-on-surface-variant">10:42 AM</td>
+<td class="p-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary" data-icon="policy" style="font-size: 16px;">policy</span>
+                                        새로운 사례 검토 승인
+                                    </div>
+</td>
+<td class="p-sm">Dr. Lee (Supervisee ID: 492)</td>
+<td class="p-sm"><span class="px-2 py-1 bg-inverse-on-surface text-secondary-container font-label-sm text-label-sm rounded-full">완료</span></td>
+<td class="p-sm text-right"><button class="text-secondary hover:text-secondary-container transition-colors">상세</button></td>
+</tr>
+<tr class="hover:bg-surface transition-colors">
+<td class="p-sm text-on-surface-variant">09:15 AM</td>
+<td class="p-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-error" data-icon="warning" style="font-size: 16px;">warning</span>
+                                        비정상적인 로그인 시도
+                                    </div>
+</td>
+<td class="p-sm">IP: 192.168.1.104</td>
+<td class="p-sm"><span class="px-2 py-1 bg-error-container text-on-error-container font-label-sm text-label-sm rounded-full">경고</span></td>
+<td class="p-sm text-right"><button class="text-secondary hover:text-secondary-container transition-colors">상세</button></td>
+</tr>
+<tr class="hover:bg-surface transition-colors">
+<td class="p-sm text-on-surface-variant">어제 16:30</td>
+<td class="p-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-surface-tint" data-icon="sync" style="font-size: 16px;">sync</span>
+                                        데이터베이스 백업 완료
+                                    </div>
+</td>
+<td class="p-sm">System (자동화)</td>
+<td class="p-sm"><span class="px-2 py-1 bg-inverse-on-surface text-secondary-container font-label-sm text-label-sm rounded-full">완료</span></td>
+<td class="p-sm text-right"><button class="text-secondary hover:text-secondary-container transition-colors">상세</button></td>
+</tr>
+<tr class="hover:bg-surface transition-colors">
+<td class="p-sm text-on-surface-variant">어제 14:10</td>
+<td class="p-sm">
+<div class="flex items-center gap-xs">
+<span class="material-symbols-outlined text-secondary" data-icon="person_add" style="font-size: 16px;">person_add</span>
+                                        신규 상담사 등록
+                                    </div>
+</td>
+<td class="p-sm">Park Ji-min (ID: 501)</td>
+<td class="p-sm"><span class="px-2 py-1 bg-surface-container-high text-on-surface font-label-sm text-label-sm rounded-full">검토 대기</span></td>
+<td class="p-sm text-right"><button class="text-secondary hover:text-secondary-container transition-colors">상세</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</div>
+<!-- BottomNavBar (Mobile) -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-2 md:hidden bg-surface-container-lowest dark:bg-primary-container border-t border-outline-variant dark:border-outline rounded-t-xl shadow-lg dark:shadow-none">
+<a class="flex flex-col items-center justify-center bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full px-4 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-sm text-label-sm mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-transform duration-150 rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="rate_review">rate_review</span>
+<span class="font-label-sm text-label-sm mt-1">Review</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-transform duration-150 rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="inventory_2">inventory_2</span>
+<span class="font-label-sm text-label-sm mt-1">Products</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant px-4 py-1 hover:bg-surface-container dark:hover:bg-surface-container-high active:scale-95 transition-transform duration-150 rounded-full" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-sm text-label-sm mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

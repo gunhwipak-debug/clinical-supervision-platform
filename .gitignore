@@ -1,0 +1,16 @@
+node_modules
+.next
+dist
+coverage
+.env
+.env.*
+!.env.example
+*.log
+*.tsbuildinfo
+.DS_Store
+dev-data/
+demo-evidence/*.log
+demo-evidence/run*.json
+demo-evidence/ops-smoke.json
+demo-evidence/real-db-smoke.json
+test-results/

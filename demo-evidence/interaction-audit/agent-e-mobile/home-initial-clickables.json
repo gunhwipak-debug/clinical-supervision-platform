@@ -1,0 +1,35 @@
+[
+  {
+    "tag": "button",
+    "text": "menu",
+    "href": "",
+    "x": 334,
+    "y": 8,
+    "w": 40,
+    "h": 48,
+    "disabled": false,
+    "classes": "md:hidden text-primary focus:outline-none p-2"
+  },
+  {
+    "tag": "button",
+    "text": "Start Free Trial arrow_forward",
+    "href": "",
+    "x": 16,
+    "y": 350,
+    "w": 358,
+    "h": 42,
+    "disabled": false,
+    "classes": "w-full bg-primary text-on-primary font-label-md text-label-md py-3 px-4 rounded-lg flex items-center justify-center gap-"
+  },
+  {
+    "tag": "button",
+    "text": "Request a Demo",
+    "href": "",
+    "x": 16,
+    "y": 404,
+    "w": 358,
+    "h": 40,
+    "disabled": false,
+    "classes": "w-full border border-outline-variant text-on-background font-label-md text-label-md py-3 px-4 rounded-lg flex items-cent"
+  }
+]

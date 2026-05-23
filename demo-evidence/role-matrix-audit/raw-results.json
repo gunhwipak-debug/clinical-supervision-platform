@@ -1,0 +1,536 @@
+{
+  "generatedAt": "2026-05-22T21:42:01.737Z",
+  "count": 53,
+  "results": [
+    {
+      "id": "public-home",
+      "actor": "public",
+      "url": "/",
+      "title": "홈",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-home.png"
+    },
+    {
+      "id": "public-supervisors",
+      "actor": "public",
+      "url": "/supervisors",
+      "title": "슈퍼바이저 검색",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisors.png"
+    },
+    {
+      "id": "public-supervisors-query",
+      "actor": "public",
+      "url": "/supervisors?q=인지",
+      "title": "검색어 필터",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisors-query.png"
+    },
+    {
+      "id": "public-supervisors-qualification",
+      "actor": "public",
+      "url": "/supervisors?qualification=정신건강임상심리사%201급",
+      "title": "자격 필터",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisors-qualification.png"
+    },
+    {
+      "id": "public-supervisors-specialty",
+      "actor": "public",
+      "url": "/supervisors?specialty=neuropsych",
+      "title": "전문분야 필터",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisors-specialty.png"
+    },
+    {
+      "id": "public-supervisors-availability",
+      "actor": "public",
+      "url": "/supervisors?availability=this_week",
+      "title": "가능 일정 필터",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisors-availability.png"
+    },
+    {
+      "id": "public-supervisors-page-2",
+      "actor": "public",
+      "url": "/supervisors?page=2",
+      "title": "검색 페이지네이션",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisors-page-2.png"
+    },
+    {
+      "id": "public-supervisor-1",
+      "actor": "public",
+      "url": "/supervisors/10000000-0000-4000-8000-000000000101",
+      "title": "공개 프로필 1",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisor-1.png"
+    },
+    {
+      "id": "public-supervisor-2",
+      "actor": "public",
+      "url": "/supervisors/10000000-0000-4000-8000-000000000103",
+      "title": "공개 프로필 2",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisor-2.png"
+    },
+    {
+      "id": "public-supervisor-3",
+      "actor": "public",
+      "url": "/supervisors/10000000-0000-4000-8000-000000000104",
+      "title": "공개 프로필 3",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisor-3.png"
+    },
+    {
+      "id": "public-supervisor-4",
+      "actor": "public",
+      "url": "/supervisors/10000000-0000-4000-8000-000000000105",
+      "title": "공개 프로필 4",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisor-4.png"
+    },
+    {
+      "id": "public-supervisor-5",
+      "actor": "public",
+      "url": "/supervisors/10000000-0000-4000-8000-000000000106",
+      "title": "공개 프로필 5",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisor-5.png"
+    },
+    {
+      "id": "public-supervisor-6",
+      "actor": "public",
+      "url": "/supervisors/10000000-0000-4000-8000-000000000107",
+      "title": "공개 프로필 6",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-supervisor-6.png"
+    },
+    {
+      "id": "public-resources",
+      "actor": "public",
+      "url": "/resources",
+      "title": "자료실",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-resources.png"
+    },
+    {
+      "id": "public-privacy",
+      "actor": "public",
+      "url": "/privacy",
+      "title": "개인정보",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-privacy.png"
+    },
+    {
+      "id": "public-terms",
+      "actor": "public",
+      "url": "/terms",
+      "title": "이용약관",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-terms.png"
+    },
+    {
+      "id": "public-sensitive-consent",
+      "actor": "public",
+      "url": "/sensitive-consent",
+      "title": "민감정보 처리 동의",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-sensitive-consent.png"
+    },
+    {
+      "id": "public-security",
+      "actor": "public",
+      "url": "/security",
+      "title": "보안",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-security.png"
+    },
+    {
+      "id": "public-guidelines",
+      "actor": "public",
+      "url": "/clinical-guidelines",
+      "title": "임상 가이드",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-guidelines.png"
+    },
+    {
+      "id": "public-login",
+      "actor": "public",
+      "url": "/login",
+      "title": "로그인",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-login.png"
+    },
+    {
+      "id": "public-signup",
+      "actor": "public",
+      "url": "/signup",
+      "title": "가입",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/public-signup.png"
+    },
+    {
+      "id": "supervisee-requests",
+      "actor": "supervisee",
+      "url": "/requests",
+      "title": "내 의뢰",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-requests.png"
+    },
+    {
+      "id": "supervisee-new-basic",
+      "actor": "supervisee",
+      "url": "/requests/new",
+      "title": "새 의뢰",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-new-basic.png"
+    },
+    {
+      "id": "supervisee-new-prefilled",
+      "actor": "supervisee",
+      "url": "/requests/new?supervisorId=10000000-0000-4000-8000-000000000101&serviceProductId=10000000-0000-4000-8000-000000000301&slot=2032-03-22%20%EC%9B%94%2010%3A21-11%3A21&slotStart=2032-03-22T01%3A21%3A00.000Z&slotEnd=2032-03-22T02%3A21%3A00.000Z",
+      "title": "일정 선택 후 의뢰",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-new-prefilled.png"
+    },
+    {
+      "id": "supervisee-request-1",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000601",
+      "title": "슈퍼바이지 의뢰 상세 1",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-1.png"
+    },
+    {
+      "id": "supervisee-request-2",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000602",
+      "title": "슈퍼바이지 의뢰 상세 2",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-2.png"
+    },
+    {
+      "id": "supervisee-request-3",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000603",
+      "title": "슈퍼바이지 의뢰 상세 3",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-3.png"
+    },
+    {
+      "id": "supervisee-request-4",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000604",
+      "title": "슈퍼바이지 의뢰 상세 4",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-4.png"
+    },
+    {
+      "id": "supervisee-request-5",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000605",
+      "title": "슈퍼바이지 의뢰 상세 5",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-5.png"
+    },
+    {
+      "id": "supervisee-request-6",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000606",
+      "title": "슈퍼바이지 의뢰 상세 6",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-6.png"
+    },
+    {
+      "id": "supervisee-request-7",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000607",
+      "title": "슈퍼바이지 의뢰 상세 7",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-7.png"
+    },
+    {
+      "id": "supervisee-request-8",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000608",
+      "title": "슈퍼바이지 의뢰 상세 8",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-8.png"
+    },
+    {
+      "id": "supervisee-request-9",
+      "actor": "supervisee",
+      "url": "/requests/10000000-0000-4000-8000-000000000609",
+      "title": "슈퍼바이지 의뢰 상세 9",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-request-9.png"
+    },
+    {
+      "id": "supervisee-payments",
+      "actor": "supervisee",
+      "url": "/payments",
+      "title": "결제 목록",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-payments.png"
+    },
+    {
+      "id": "supervisee-paid-payment",
+      "actor": "supervisee",
+      "url": "/payments/10000000-0000-4000-8000-000000000701",
+      "title": "결제 상세",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-paid-payment.png"
+    },
+    {
+      "id": "supervisee-settings",
+      "actor": "supervisee",
+      "url": "/settings",
+      "title": "설정",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisee-settings.png"
+    },
+    {
+      "id": "supervisor-home",
+      "actor": "supervisor",
+      "url": "/supervisor",
+      "title": "슈퍼바이저 홈",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-home.png"
+    },
+    {
+      "id": "supervisor-profile",
+      "actor": "supervisor",
+      "url": "/supervisor/profile",
+      "title": "프로필 관리",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-profile.png"
+    },
+    {
+      "id": "supervisor-qualifications",
+      "actor": "supervisor",
+      "url": "/supervisor/qualifications",
+      "title": "자격 관리",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-qualifications.png"
+    },
+    {
+      "id": "supervisor-products",
+      "actor": "supervisor",
+      "url": "/supervisor/products",
+      "title": "상품 관리",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-products.png"
+    },
+    {
+      "id": "supervisor-availability",
+      "actor": "supervisor",
+      "url": "/supervisor/availability",
+      "title": "일정 관리",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-availability.png"
+    },
+    {
+      "id": "supervisor-requests",
+      "actor": "supervisor",
+      "url": "/supervisor/requests",
+      "title": "받은 의뢰",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-requests.png"
+    },
+    {
+      "id": "supervisor-payouts",
+      "actor": "supervisor",
+      "url": "/supervisor/payouts",
+      "title": "슈퍼바이저 정산",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-payouts.png"
+    },
+    {
+      "id": "supervisor-request-1",
+      "actor": "supervisor",
+      "url": "/supervisor/requests/10000000-0000-4000-8000-000000000602",
+      "title": "슈퍼바이저 의뢰 상세 1",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-request-1.png"
+    },
+    {
+      "id": "supervisor-request-2",
+      "actor": "supervisor",
+      "url": "/supervisor/requests/10000000-0000-4000-8000-000000000603",
+      "title": "슈퍼바이저 의뢰 상세 2",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-request-2.png"
+    },
+    {
+      "id": "supervisor-request-3",
+      "actor": "supervisor",
+      "url": "/supervisor/requests/10000000-0000-4000-8000-000000000604",
+      "title": "슈퍼바이저 의뢰 상세 3",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-request-3.png"
+    },
+    {
+      "id": "supervisor-request-4",
+      "actor": "supervisor",
+      "url": "/supervisor/requests/10000000-0000-4000-8000-000000000608",
+      "title": "슈퍼바이저 의뢰 상세 4",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/supervisor-request-4.png"
+    },
+    {
+      "id": "admin-home",
+      "actor": "admin",
+      "url": "http://localhost:3001/admin",
+      "title": "관리자 홈",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/admin-home.png"
+    },
+    {
+      "id": "admin-qualifications",
+      "actor": "admin",
+      "url": "http://localhost:3001/admin/qualifications",
+      "title": "자격 승인",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/admin-qualifications.png"
+    },
+    {
+      "id": "admin-refunds",
+      "actor": "admin",
+      "url": "http://localhost:3001/admin/refunds",
+      "title": "환불",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/admin-refunds.png"
+    },
+    {
+      "id": "admin-payouts",
+      "actor": "admin",
+      "url": "http://localhost:3001/admin/payouts",
+      "title": "정산",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/admin-payouts.png"
+    },
+    {
+      "id": "admin-audit",
+      "actor": "admin",
+      "url": "http://localhost:3001/admin/audit",
+      "title": "감사 로그",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/admin-audit.png"
+    },
+    {
+      "id": "admin-root",
+      "actor": "admin",
+      "url": "http://localhost:3001/",
+      "title": "관리자 루트",
+      "status": "ok",
+      "httpStatus": 200,
+      "findings": [],
+      "screenshot": "screenshots/admin-root.png"
+    }
+  ]
+}

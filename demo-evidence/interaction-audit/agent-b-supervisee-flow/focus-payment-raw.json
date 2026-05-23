@@ -1,0 +1,20 @@
+{
+  "before": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19",
+  "after": "http://localhost:3000/requests/227b935b-706a-46de-8ca4-815f7e2e0f19",
+  "calls": [
+    {
+      "method": "POST",
+      "url": "http://localhost:3000/api/payments/intent",
+      "postData": "{\"supervisionRequestId\":\"227b935b-706a-46de-8ca4-815f7e2e0f19\"}"
+    },
+    {
+      "status": 200,
+      "url": "http://localhost:3000/api/payments/intent"
+    },
+    {
+      "method": "POST",
+      "url": "http://localhost:3000/api/payments/confirm",
+      "postData": "{\"paymentId\":\"8444969e-54d8-4fdb-b739-3b5260f7d0ca\",\"pgPaymentKey\":\"dev_8444969e-54d8-4fdb-b739-3b5260f7d0ca\",\"amount\":120000}"
+    }
+  ]
+}

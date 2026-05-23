@@ -1,0 +1,964 @@
+@import "@fontsource/hanken-grotesk/400.css";
+@import "@fontsource/hanken-grotesk/500.css";
+@import "@fontsource/hanken-grotesk/600.css";
+@import "@fontsource/hanken-grotesk/700.css";
+@import "@fontsource/inter/400.css";
+@import "@fontsource/inter/500.css";
+@import "@fontsource/inter/600.css";
+@import "@fontsource/inter/700.css";
+@import "@fontsource/pretendard/400.css";
+@import "@fontsource/pretendard/500.css";
+@import "@fontsource/pretendard/600.css";
+@import "@fontsource/pretendard/700.css";
+@import "@fontsource/material-symbols-outlined/400.css";
+@import "tailwindcss";
+@import "@csp/design-tokens/css";
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-height: 100%;
+    background: var(--color-background);
+  }
+
+  body {
+    min-height: 100%;
+    margin: 0;
+    background: var(--color-background);
+    color: var(--color-on-background);
+    font-family: var(--font-body-md);
+    font-size: var(--text-body-md);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  :focus-visible {
+    outline: 3px solid var(--color-secondary);
+    outline-offset: 3px;
+  }
+}
+
+@layer components {
+  .docked {
+    position: sticky;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .flat {
+    box-shadow: none;
+  }
+
+  .no {
+    box-shadow: none;
+  }
+
+  .shadows {
+    box-shadow: none;
+  }
+
+  .rounded-DEFAULT {
+    border-radius: var(--radius);
+  }
+
+  .bg-opacity-20 {
+    --tw-bg-opacity: 0.2;
+  }
+
+  .bg-opacity-90 {
+    --tw-bg-opacity: 0.9;
+  }
+
+  .hover\:bg-opacity-90:hover {
+    --tw-bg-opacity: 0.9;
+  }
+
+  .border-opacity-50 {
+    --tw-border-opacity: 0.5;
+  }
+
+  .card-shadow {
+    box-shadow:
+      0 10px 15px -3px rgba(17, 28, 45, 0.08),
+      0 4px 6px -4px rgba(17, 28, 45, 0.08);
+  }
+
+  .glass-card {
+    backdrop-filter: blur(18px);
+    background-color: color-mix(
+      in srgb,
+      var(--color-surface-container-lowest) 84%,
+      transparent
+    );
+  }
+
+  .bg-pattern {
+    background-color: var(--color-background);
+    background-image: radial-gradient(
+      var(--color-surface-variant) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+  }
+
+  .pattern-bg {
+    background-color: var(--color-background);
+    background-image: radial-gradient(
+      var(--color-surface-variant) 1px,
+      transparent 1px
+    );
+    background-size: 24px 24px;
+  }
+
+  .bento-grid {
+    display: grid;
+    gap: var(--spacing-lg);
+  }
+
+  .bento-card {
+    border: 1px solid var(--color-outline-variant);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface-container-lowest);
+  }
+
+  .bento-header {
+    border-bottom: 1px solid var(--color-outline-variant);
+  }
+
+  .calendar-scroll,
+  .no-scrollbar,
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .calendar-scroll::-webkit-scrollbar,
+  .no-scrollbar::-webkit-scrollbar,
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .fill-icon,
+  .icon-fill,
+  .icon-filled {
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+
+  .mobile-only {
+    display: none;
+  }
+
+  .slot-available,
+  .slot-btn {
+    cursor: pointer;
+  }
+
+  .slot-empty {
+    opacity: 0.55;
+  }
+
+  /*
+   * Legacy design tokens use named spacing classes like p-md, gap-lg, and py-xl.
+   * Tailwind v4 also derives max-w-md/lg/xl from the spacing namespace, so those
+   * tokens can collapse standard text containers to 16-40px.
+   * Restore Tailwind's standard container widths while keeping design spacing.
+   */
+  .max-w-xs {
+    max-width: 20rem;
+  }
+
+  .max-w-sm {
+    max-width: 24rem;
+  }
+
+  .max-w-md {
+    max-width: 28rem;
+  }
+
+  .max-w-lg {
+    max-width: 32rem;
+  }
+
+  .max-w-xl {
+    max-width: 36rem;
+  }
+
+  .max-w-2xl {
+    max-width: 42rem;
+  }
+
+  .max-w-3xl {
+    max-width: 48rem;
+  }
+
+  .max-w-4xl {
+    max-width: 56rem;
+  }
+
+  .max-w-5xl {
+    max-width: 64rem;
+  }
+
+  .max-w-6xl {
+    max-width: 72rem;
+  }
+
+  .max-w-7xl {
+    max-width: 80rem;
+  }
+
+  .toggle-password {
+    cursor: pointer;
+  }
+
+  .wizard-step {
+    transition:
+      background-color 200ms ease,
+      color 200ms ease,
+      border-color 200ms ease;
+  }
+
+  /* Material Symbols Outlined variable axes. */
+  .material-symbols-outlined {
+    font-family: "Material Symbols Outlined";
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px;
+    line-height: 1;
+    letter-spacing: normal;
+    text-transform: none;
+    display: inline-block;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
+    font-variation-settings:
+      "FILL" 0,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+
+  .material-symbols-outlined.filled {
+    font-variation-settings:
+      "FILL" 1,
+      "wght" 400,
+      "GRAD" 0,
+      "opsz" 24;
+  }
+}
+
+@layer utilities {
+  /*
+   * Legacy design tokens use named spacing classes like p-md, gap-lg, and py-xl.
+   * Tailwind v4 also derives max-w-md/lg/xl from the spacing namespace, so those
+   * tokens can collapse standard text containers to 16-40px.
+   * Restore Tailwind's standard container widths while keeping design spacing.
+   */
+  .max-w-xs {
+    max-width: 20rem;
+  }
+
+  .max-w-sm {
+    max-width: 24rem;
+  }
+
+  .max-w-md {
+    max-width: 28rem;
+  }
+
+  .max-w-lg {
+    max-width: 32rem;
+  }
+
+  .max-w-xl {
+    max-width: 36rem;
+  }
+
+  .max-w-2xl {
+    max-width: 42rem;
+  }
+
+  .max-w-3xl {
+    max-width: 48rem;
+  }
+
+  .max-w-4xl {
+    max-width: 56rem;
+  }
+
+  .max-w-5xl {
+    max-width: 64rem;
+  }
+
+  .max-w-6xl {
+    max-width: 72rem;
+  }
+
+  .max-w-7xl {
+    max-width: 80rem;
+  }
+}
+
+/* === page-specific support styles === */
+
+/* === signup === */
+.custom-checkbox {
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+.custom-checkbox::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em white;
+  background-color: white;
+  transform-origin: center;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+.custom-checkbox:checked {
+  background-color: #0f172a;
+  border-color: #0f172a;
+}
+.custom-checkbox:checked::before {
+  transform: scale(1);
+}
+
+/* === reset_password === */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c6c6cd;
+  border-radius: 4px;
+}
+
+/* === supervisors, request_queue, settings (horizontal chip scrollers) === */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === shared interaction styles === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === admin_dashboard_2 === */
+body {
+  background-color: #f8fafc;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.fill-icon {
+  font-variation-settings: "FILL" 1;
+}
+
+/* Utility for hiding scrollbar but keeping functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === admin_dashboard_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === availability_1 === */
+/* Custom scrollbar for calendar grid */
+.calendar-scroll::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.calendar-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.calendar-scroll::-webkit-scrollbar-thumb {
+  background-color: #c6c6cd;
+  border-radius: 10px;
+}
+.slot-btn {
+  transition: all 0.2s ease-in-out;
+}
+.slot-available {
+  background-color: #2170e4; /* secondary-container */
+  color: #ffffff; /* on-secondary */
+  border-color: #2170e4;
+}
+.slot-empty {
+  background-color: #ffffff;
+  color: #45464d;
+  border-color: #c6c6cd;
+  border-style: dashed;
+}
+.slot-empty:hover {
+  background-color: #f0f3ff;
+  border-color: #0058be;
+  border-style: solid;
+}
+
+/* === availability_2 === */
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === availability_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === clinicalsup_authentication_flow === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.icon-fill {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === dashboard_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === dashboard_2 === */
+body {
+  background-color: #f8fafc; /* Enforced Level 0 Background */
+}
+.bento-card {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 0.75rem;
+}
+.bento-header {
+  background-color: #f8fafc;
+  border-bottom: 1px solid #e2e8f0;
+  border-top-left-radius: 0.75rem;
+  border-top-right-radius: 0.75rem;
+}
+
+/* === dashboard_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === forgot_password_1 === */
+body {
+  font-family: "Inter", sans-serif;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: "Hanken Grotesk", sans-serif;
+}
+
+/* === forgot_password_2 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === forgot_password_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === landing_page_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.icon-fill {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === landing_page_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === login_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+/* Custom subtle pattern background for a professional SaaS feel */
+.bg-pattern {
+  background-color: #f9f9ff;
+  background-image: radial-gradient(#d8e3fb 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+/* === login_2 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === login_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === my_requests_1 === */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === my_requests_2 === */
+body {
+  background-color: #f8fafc;
+}
+
+/* === my_requests_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === new_request_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: "FILL" 1;
+}
+
+/* === new_request_2 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: "FILL" 1;
+}
+
+/* Hide steps initially */
+.wizard-step {
+  display: none;
+}
+.wizard-step.active {
+  display: block;
+}
+
+/* === new_request_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === payments_2 === */
+body {
+  background-color: #f8fafc;
+} /* Level 0 Background */
+/* Hide scrollbar for clean look */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* === payments_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === payouts_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.material-symbols-outlined[data-weight="fill"] {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === payouts_2 === */
+body {
+  background-color: #f8fafc; /* Theme fallback */
+}
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+/* Mobile specific layout hide/show */
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+@media (max-width: 767px) {
+  .desktop-only {
+    display: none !important;
+  }
+}
+
+/* === payouts_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === qualifications_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === qualifications_2 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === qualifications_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === request_queue_1 === */
+/* Hide scrollbar for clean UI but keep functionality */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === request_queue_2 === */
+/* Smooth scrolling and hide scrollbar for horizontal lists */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+body {
+  background-color: #f8fafc; /* Level 0 Background */
+}
+/* Tonal Layer Level 1 Custom Box Shadow */
+.card-shadow {
+  box-shadow: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+}
+
+/* === request_queue_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === reset_password_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === reset_password_2 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+/* Custom scrollbar for webkit to match aesthetics */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #c6c6cd;
+  border-radius: 4px;
+}
+
+/* === reset_password_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === settings_2 === */
+body {
+  background-color: #f9f9ff;
+  color: #111c2d;
+}
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === settings_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === signup_2 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.material-symbols-outlined.fill {
+  font-variation-settings: "FILL" 1;
+}
+
+/* Checkbox styling */
+.custom-checkbox {
+  appearance: none;
+  background-color: #fff;
+  margin: 0;
+  font: inherit;
+  color: currentColor;
+  width: 24px;
+  height: 24px;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  display: grid;
+  place-content: center;
+  cursor: pointer;
+}
+
+.custom-checkbox::before {
+  content: "";
+  width: 14px;
+  height: 14px;
+  transform: scale(0);
+  transition: 120ms transform ease-in-out;
+  box-shadow: inset 1em 1em white;
+  background-color: white;
+  transform-origin: center;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+}
+
+.custom-checkbox:checked {
+  background-color: #0f172a;
+  border-color: #0f172a;
+}
+
+.custom-checkbox:checked::before {
+  transform: scale(1);
+}
+
+body {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* === signup_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === supervisor_profile_1 === */
+.glass-card {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+.bento-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 24px;
+}
+
+/* === supervisor_profile_2 === */
+/* Utility to hide scrollbar for horizontal scrolling tabs */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === supervisor_profile_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === supervisors_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* === supervisors_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === supervisors_2 === */
+/* Utility for hiding scrollbar in horizontal scroll containers */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* === verify_email_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}
+
+/* === work_surface_1 === */
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.icon-filled {
+  font-variation-settings:
+    "FILL" 1,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+.pattern-bg {
+  background-image: radial-gradient(
+    var(--tw-colors-outline-variant) 1px,
+    transparent 1px
+  );
+  background-size: 16px 16px;
+  background-position: -8px -8px;
+}
+
+/* === work_surface_2 === */
+body {
+  min-height: max(884px, 100dvh);
+}

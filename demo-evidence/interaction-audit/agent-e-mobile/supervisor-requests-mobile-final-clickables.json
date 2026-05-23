@@ -1,0 +1,156 @@
+[
+  {
+    "tag": "button",
+    "text": "clinical_notes",
+    "href": "",
+    "x": 16,
+    "y": 12,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 transition-tra"
+  },
+  {
+    "tag": "button",
+    "text": "notifications",
+    "href": "",
+    "x": 334,
+    "y": 12,
+    "w": 40,
+    "h": 40,
+    "disabled": false,
+    "classes": "text-on-surface-variant hover:bg-surface-container-low transition-colors rounded-full p-2 active:scale-95 transition-tra"
+  },
+  {
+    "tag": "button",
+    "text": "tune 필터",
+    "href": "",
+    "x": 288,
+    "y": 179,
+    "w": 87,
+    "h": 40,
+    "disabled": false,
+    "classes": "h-10 px-4 rounded-lg border border-outline-variant bg-surface hover:bg-surface-container-low text-on-surface font-label-"
+  },
+  {
+    "tag": "button",
+    "text": "전체보기",
+    "href": "",
+    "x": 16,
+    "y": 231,
+    "w": 76,
+    "h": 30,
+    "disabled": false,
+    "classes": "px-4 py-2 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm whitespace-nowrap "
+  },
+  {
+    "tag": "button",
+    "text": "신규 (3)",
+    "href": "",
+    "x": 100,
+    "y": 231,
+    "w": 74,
+    "h": 30,
+    "disabled": false,
+    "classes": "px-4 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-low f"
+  },
+  {
+    "tag": "button",
+    "text": "진행중 (5)",
+    "href": "",
+    "x": 182,
+    "y": 231,
+    "w": 84,
+    "h": 30,
+    "disabled": false,
+    "classes": "px-4 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-low f"
+  },
+  {
+    "tag": "button",
+    "text": "완료됨",
+    "href": "",
+    "x": 274,
+    "y": 231,
+    "w": 65,
+    "h": 30,
+    "disabled": false,
+    "classes": "px-4 py-2 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-low f"
+  },
+  {
+    "tag": "button",
+    "text": "수락하기",
+    "href": "",
+    "x": 33,
+    "y": 451,
+    "w": 157,
+    "h": 40,
+    "disabled": false,
+    "classes": "flex-1 bg-primary text-on-primary font-label-md text-label-md h-10 rounded-lg hover:bg-surface-tint transition-colors"
+  },
+  {
+    "tag": "button",
+    "text": "상세 보기",
+    "href": "",
+    "x": 198,
+    "y": 451,
+    "w": 159,
+    "h": 40,
+    "disabled": false,
+    "classes": "flex-1 bg-surface border border-outline-variant text-on-surface font-label-md text-label-md h-10 rounded-lg hover:bg-sur"
+  },
+  {
+    "tag": "button",
+    "text": "기록지 작성",
+    "href": "",
+    "x": 33,
+    "y": 674,
+    "w": 324,
+    "h": 40,
+    "disabled": false,
+    "classes": "flex-1 bg-surface border border-outline-variant text-on-surface font-label-md text-label-md h-10 rounded-lg hover:bg-sur"
+  },
+  {
+    "tag": "a",
+    "text": "dashboard Dashboard",
+    "href": "http://localhost:3000/supervisor/requests#",
+    "x": 19,
+    "y": 788,
+    "w": 95,
+    "h": 48,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all duratio"
+  },
+  {
+    "tag": "a",
+    "text": "queue Requests",
+    "href": "http://localhost:3000/supervisor/requests#",
+    "x": 119,
+    "y": 788,
+    "w": 85,
+    "h": 48,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center bg-secondary-container text-on-secondary-container rounded-full px-4 py-1 tran"
+  },
+  {
+    "tag": "a",
+    "text": "calendar_today Schedule",
+    "href": "http://localhost:3000/supervisor/requests#",
+    "x": 211,
+    "y": 788,
+    "w": 86,
+    "h": 48,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all duratio"
+  },
+  {
+    "tag": "a",
+    "text": "person Profile",
+    "href": "http://localhost:3000/supervisor/requests#",
+    "x": 302,
+    "y": 788,
+    "w": 69,
+    "h": 48,
+    "disabled": false,
+    "classes": "flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-high transition-all duratio"
+  }
+]

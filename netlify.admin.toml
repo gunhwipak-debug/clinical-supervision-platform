@@ -1,0 +1,15 @@
+# Optional Netlify deploy target for the admin console.
+# Use only for a separate Netlify site with strict access controls and the
+# required ADMIN_IP_ALLOWLIST / database / storage / payment environment values.
+
+[build]
+  command = "pnpm --filter @csp/admin build"
+  publish = "apps/admin/.next"
+
+[build.environment]
+  NODE_VERSION = "22"
+  PNPM_VERSION = "11.1.2"
+  NEXT_TELEMETRY_DISABLED = "1"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+
+<html lang="ko"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>이메일 인증 안내 - Clinical Supervision Platform</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Hanken+Grotesk:wght@600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-low": "#f0f3ff",
+                        "on-error-container": "#93000a",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed-variant": "#40484f",
+                        "on-secondary-fixed-variant": "#004395",
+                        "outline": "#76777d",
+                        "tertiary": "#000000",
+                        "on-background": "#111c2d",
+                        "outline-variant": "#c6c6cd",
+                        "tertiary-container": "#151c23",
+                        "surface-container-high": "#dee8ff",
+                        "primary-fixed": "#dae2fd",
+                        "on-surface": "#111c2d",
+                        "background": "#f9f9ff",
+                        "on-primary-fixed": "#131b2e",
+                        "surface-dim": "#cfdaf2",
+                        "surface-container": "#e7eeff",
+                        "on-tertiary-container": "#7d858d",
+                        "surface-variant": "#d8e3fb",
+                        "inverse-on-surface": "#ecf1ff",
+                        "surface": "#f9f9ff",
+                        "primary": "#000000",
+                        "on-primary-container": "#7c839b",
+                        "secondary": "#0058be",
+                        "on-secondary": "#ffffff",
+                        "secondary-container": "#2170e4",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#fefcff",
+                        "surface-container-highest": "#d8e3fb",
+                        "surface-bright": "#f9f9ff",
+                        "secondary-fixed": "#d8e2ff",
+                        "primary-container": "#131b2e",
+                        "surface-tint": "#565e74",
+                        "error": "#ba1a1a",
+                        "on-primary-fixed-variant": "#3f465c",
+                        "tertiary-fixed": "#dce3ec",
+                        "on-primary": "#ffffff",
+                        "primary-fixed-dim": "#bec6e0",
+                        "inverse-surface": "#263143",
+                        "inverse-primary": "#bec6e0",
+                        "on-tertiary-fixed": "#151c23",
+                        "on-surface-variant": "#45464d",
+                        "secondary-fixed-dim": "#adc6ff",
+                        "tertiary-fixed-dim": "#c0c7d0",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#001a42",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "base": "8px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "margin-mobile": "16px",
+                        "container-max": "1280px",
+                        "md": "16px",
+                        "xl": "40px",
+                        "gutter": "24px",
+                        "lg": "24px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter", "sans-serif"],
+                        "headline-lg": ["Hanken Grotesk", "sans-serif"],
+                        "display-lg": ["Hanken Grotesk", "sans-serif"],
+                        "label-md": ["Inter", "sans-serif"],
+                        "headline-md": ["Hanken Grotesk", "sans-serif"],
+                        "label-sm": ["Inter", "sans-serif"],
+                        "body-sm": ["Inter", "sans-serif"],
+                        "body-lg": ["Inter", "sans-serif"],
+                        "headline-lg-mobile": ["Hanken Grotesk", "sans-serif"]
+                    },
+                    "fontSize": {
+                        "body-md": ["16px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "label-md": ["14px", { "lineHeight": "1", "letterSpacing": "0.01em", "fontWeight": "600" }],
+                        "headline-md": ["24px", { "lineHeight": "1.4", "fontWeight": "600" }],
+                        "label-sm": ["12px", { "lineHeight": "1", "fontWeight": "500" }],
+                        "body-sm": ["14px", { "lineHeight": "1.5", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "1.6", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "1.3", "fontWeight": "600" }]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col justify-center items-center p-md">
+<!-- TopNavBar (Suppressed due to Transactional Nature, but keeping a minimal brand presence) -->
+<div class="fixed top-0 left-0 w-full p-md flex justify-center lg:justify-start lg:px-lg">
+<a class="font-headline-md text-headline-md font-bold text-primary flex items-center gap-xs" href="#">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">medical_services</span>
+            ClinicalSup
+        </a>
+</div>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-[520px] mx-auto z-10 relative">
+<!-- Glassmorphism Card Effect -->
+<div class="bg-surface-container-lowest border border-outline-variant/30 rounded-xl p-xl shadow-[0px_10px_15px_-3px_rgba(15,23,42,0.08)] backdrop-blur-md flex flex-col items-center text-center">
+<!-- Icon -->
+<div class="w-16 h-16 bg-surface-container rounded-full flex items-center justify-center mb-md text-secondary">
+<span class="material-symbols-outlined text-display-lg" style="font-variation-settings: 'FILL' 1;">mark_email_unread</span>
+</div>
+<!-- Header -->
+<h1 class="font-headline-lg text-headline-lg text-on-surface mb-sm">이메일 인증 안내</h1>
+<p class="font-body-md text-body-md text-on-surface-variant mb-xl">
+                안전한 서비스 이용을 위해 인증 메일이 발송되었습니다.<br/>
+                입력하신 이메일의 수신함을 확인해 주세요.
+            </p>
+<!-- User Email Display -->
+<div class="bg-surface py-sm px-md rounded-lg border border-outline-variant w-full mb-lg">
+<span class="font-label-md text-label-md text-on-surface">user.doctor@example.com</span>
+</div>
+<!-- Instructions -->
+<ul class="text-left font-body-sm text-body-sm text-on-surface-variant w-full space-y-sm mb-xl bg-surface-container-low p-md rounded-lg border border-outline-variant/50">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-on-tertiary-container mt-xs text-[18px]">info</span>
+<span>메일이 도착하지 않았나요? <strong>스팸 메일함</strong>을 확인해 보시거나, 5분 후 다시 시도해 주세요.</span>
+</li>
+</ul>
+<!-- Actions -->
+<div class="flex flex-col w-full gap-md">
+<button class="w-full bg-[#0F172A] text-on-primary font-label-md text-label-md py-sm rounded-lg hover:bg-[#1E293B] transition-colors shadow-sm">
+                    이메일 앱 열기
+                </button>
+<button class="w-full bg-transparent text-secondary font-label-md text-label-md py-sm rounded-lg hover:bg-surface-variant transition-colors">
+                    인증 메일 다시 보내기
+                </button>
+</div>
+<!-- Footer / Security Note -->
+<div class="mt-xl flex items-center justify-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[16px]">verified_user</span>
+<span class="font-label-sm text-label-sm">HIPAA &amp; PHI Compliant Security</span>
+</div>
+</div>
+</main>
+<!-- Ambient Background Elements (Subtle SaaS texture) -->
+<div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
+<div class="absolute top-[-10%] right-[-5%] w-[50vw] h-[50vw] bg-surface-container-high rounded-full blur-[100px] opacity-40"></div>
+<div class="absolute bottom-[-10%] left-[-5%] w-[40vw] h-[40vw] bg-surface-variant rounded-full blur-[100px] opacity-30"></div>
+</div>
+</body></html>
