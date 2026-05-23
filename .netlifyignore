@@ -1,0 +1,13 @@
+node_modules/
+.next/
+apps/*/.next/
+dist/
+coverage/
+.npm-cache/
+.netlify/
+dev-data/
+test-results/
+interim_reports/
+*.log
+*.tsbuildinfo
+deploy-*.zip
