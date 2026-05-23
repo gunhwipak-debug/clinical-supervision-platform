@@ -1,5 +1,6 @@
 import { PGlite } from "@electric-sql/pglite";
 import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
+import { getConnectionString } from "@netlify/database";
 import { drizzle as drizzlePglite } from "drizzle-orm/pglite";
 import { drizzle as drizzlePostgres } from "drizzle-orm/postgres-js";
 import postgres from "postgres";
@@ -24,11 +25,9 @@ export function createDatabase(connectionString = process.env["DATABASE_URL"]) {
     return pgliteDatabase;
   }
 
-  if (!connectionString) {
-    throw new Error("DATABASE_URL is required to create the database client");
-  }
+  const resolvedConnectionString = resolveConnectionString(connectionString);
 
-  const client = postgres(connectionString, {
+  const client = postgres(resolvedConnectionString, {
     max: 10,
     prepare: false
   });
@@ -37,6 +36,18 @@ export function createDatabase(connectionString = process.env["DATABASE_URL"]) {
 }
 
 export type Database = ReturnType<typeof createDatabase>;
+
+function resolveConnectionString(connectionString: string | undefined): string {
+  if (connectionString) return connectionString;
+
+  try {
+    return getConnectionString();
+  } catch {
+    throw new Error(
+      "DATABASE_URL or Netlify Database connection string is required to create the database client"
+    );
+  }
+}
 
 export async function closeDevDatabase(): Promise<void> {
   if (pgliteClient) {
