@@ -3,6 +3,8 @@ import Link from "next/link";
 import { profiles } from "@csp/db";
 import { Star } from "lucide-react";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
+import { getCurrentUser } from "../../../lib/auth/current-user";
+import { isSupervisor } from "../../../lib/auth/guards";
 
 type ProductSummary = {
   id: string;
@@ -33,6 +35,7 @@ export default async function Page({
 }: {
   searchParams: Promise<SearchParams>;
 }) {
+  const current = await getCurrentUser();
   const params = await searchParams;
   const keyword = params.keyword?.trim() || params.q?.trim() || null;
   const specialty = params.specialty?.trim() || "";
@@ -65,62 +68,218 @@ export default async function Page({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-background">
-      <header className="fixed top-0 z-50 mx-auto flex h-16 w-full max-w-container-max items-center justify-between border-b border-outline-variant bg-surface px-gutter dark:border-outline dark:bg-inverse-surface">
-        <div className="flex items-center gap-lg">
-          <Link
-            className="cursor-pointer font-headline-md text-headline-md font-bold text-primary active:opacity-80 dark:text-inverse-primary"
-            href="/"
-          >
-            ClinicFlow
-          </Link>
-          <nav className="ml-xl hidden items-center gap-md md:flex">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant bg-surface dark:border-outline dark:bg-inverse-surface">
+        <div className="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-gutter">
+          <div className="flex items-center gap-lg">
             <Link
-              className="cursor-pointer border-b-2 border-secondary pb-1 font-label-md text-label-md text-secondary active:opacity-80 dark:border-secondary-fixed dark:text-secondary-fixed"
-              href="/supervisors"
+              className="cursor-pointer font-headline-md text-headline-md font-bold text-primary active:opacity-80 dark:text-inverse-primary"
+              href="/"
             >
-              슈퍼바이저 찾기
+              ClinicFlow
             </Link>
-            <Link
-              className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
-              href="/requests"
-            >
-              내 의뢰
-            </Link>
-            <Link
-              className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
-              href="/resources"
-            >
-              자료실
-            </Link>
-          </nav>
-        </div>
-        <div className="flex items-center gap-md">
-          <Link
-            className="hidden cursor-pointer rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80 md:block"
-            href="/login"
-          >
-            보안 로그인
-          </Link>
-          <Link
-            className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container-highest active:opacity-80 md:hidden"
-            href="/login"
-          >
-            <span className="material-symbols-outlined text-on-surface-variant">
-              person
-            </span>
-          </Link>
+            <nav className="ml-xl hidden items-center gap-md md:flex">
+              <Link
+                className="cursor-pointer border-b-2 border-secondary pb-1 font-label-md text-label-md text-secondary active:opacity-80 dark:border-secondary-fixed dark:text-secondary-fixed"
+                href="/supervisors"
+              >
+                슈퍼바이저 찾기
+              </Link>
+              <Link
+                className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                href="/requests"
+              >
+                내 의뢰
+              </Link>
+              <Link
+                className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                href="/resources"
+              >
+                자료실
+              </Link>
+              {current && !isSupervisor(current) ? (
+                <Link
+                  className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                  href="/settings"
+                >
+                  슈퍼바이저 신청
+                </Link>
+              ) : null}
+              {current && isSupervisor(current) ? (
+                <Link
+                  className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                  href="/supervisor"
+                >
+                  슈퍼바이저 전용
+                </Link>
+              ) : null}
+            </nav>
+          </div>
+          <div className="flex items-center gap-md">
+            {current ? (
+              <div className="flex items-center gap-sm">
+                <Link
+                  className="hidden cursor-pointer rounded-lg border border-outline bg-surface px-md py-2 font-label-md text-label-md text-on-surface transition-all hover:bg-surface-container active:opacity-80 md:block"
+                  href="/settings"
+                >
+                  계정 설정
+                </Link>
+                <Link
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline bg-surface-container-highest active:opacity-80 md:hidden"
+                  href="/settings"
+                >
+                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">
+                    settings
+                  </span>
+                </Link>
+              </div>
+            ) : (
+              <>
+                <Link
+                  className="hidden cursor-pointer rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80 md:block"
+                  href="/login"
+                >
+                  보안 로그인
+                </Link>
+                <Link
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container-highest active:opacity-80 md:hidden"
+                  href="/login"
+                >
+                  <span className="material-symbols-outlined text-on-surface-variant">
+                    person
+                  </span>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-container-max flex-grow px-margin-mobile pb-xl pt-[88px] md:px-gutter">
         <section className="mb-xl">
-          <h1 className="mb-base font-display-lg text-display-lg tracking-tight text-on-surface">
-            임상 심리 전문가 찾기
-          </h1>
-          <p className="max-w-2xl font-body-lg text-body-lg text-on-surface-variant">
-            신뢰할 수 있는 검증된 수퍼바이저와 함께 당신의 임상 역량을 한 단계 높이세요.
-            조건에 맞는 전문가를 검색하고 의뢰를 시작할 수 있습니다.
-          </p>
+          <div className="flex flex-col gap-md md:flex-row md:items-end md:justify-between mb-lg">
+            <div>
+              <h1 className="mb-xs font-display-lg text-display-lg tracking-tight text-on-surface">
+                임상 심리 전문가 찾기
+              </h1>
+              <p className="max-w-2xl font-body-lg text-body-lg text-on-surface-variant">
+                신뢰할 수 있는 검증된 수퍼바이저와 함께 당신의 임상 역량을 한 단계 높이세요.
+                조건에 맞는 전문가를 검색하고 의뢰를 시작할 수 있습니다.
+              </p>
+            </div>
+          </div>
+
+          {/* 프리미엄 온보딩 배너 (Glassmorphism & Gradient) */}
+          <div className="relative overflow-hidden rounded-2xl border border-outline-variant bg-gradient-to-br from-primary/10 via-secondary/5 to-surface p-6 shadow-sm dark:border-outline dark:from-inverse-surface/25 md:p-8">
+            <div className="relative z-10 grid gap-lg lg:grid-cols-[1fr_320px]">
+              {/* 왼쪽: 3단계 비대면 슈퍼비전 매뉴얼 */}
+              <div className="flex flex-col justify-between gap-md">
+                <div>
+                  <span className="inline-flex rounded-full bg-secondary/15 px-3 py-1 font-label-sm text-xs font-bold text-secondary dark:bg-secondary-fixed/20 dark:text-secondary-fixed">
+                    ClinicFlow 이용 방법
+                  </span>
+                  <h2 className="mt-xs font-headline-lg text-headline-lg text-on-surface">
+                    복잡한 인증 없는 비대면 임상 슈퍼비전
+                  </h2>
+                  <p className="mt-xs max-w-xl font-body-md text-sm text-on-surface-variant">
+                    후배 임상가(슈퍼바이지)는 검색을 통해 최적의 슈퍼바이저를 찾고, 
+                    고령의 슈퍼바이저는 회원가입만으로 작동하는 간편한 내장 캘린더로 즉각 매칭됩니다.
+                  </p>
+                </div>
+
+                <div className="grid gap-sm sm:grid-cols-3 mt-md">
+                  <div className="rounded-xl border border-outline-variant/50 bg-surface/60 p-md shadow-2xs backdrop-blur-xs">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                      <span className="material-symbols-outlined text-[24px]">person_search</span>
+                    </div>
+                    <h3 className="mt-base font-title-sm text-sm font-bold text-on-surface">1. 전문가 탐색</h3>
+                    <p className="mt-xs font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                      전문 분야, 자격, 최소 및 최대 요금 필터를 사용하여 최적의 슈퍼바이저를 찾습니다.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-outline-variant/50 bg-surface/60 p-md shadow-2xs backdrop-blur-xs">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-secondary/10 text-secondary">
+                      <span className="material-symbols-outlined text-[24px]">calendar_month</span>
+                    </div>
+                    <h3 className="mt-base font-title-sm text-sm font-bold text-on-surface">2. 일정 선택 & 결제</h3>
+                    <p className="mt-xs font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                      내장 캘린더에서 예약 가능한 시간을 확인하고 안전하게 매칭 비용을 결제합니다.
+                    </p>
+                  </div>
+
+                  <div className="rounded-xl border border-outline-variant/50 bg-surface/60 p-md shadow-2xs backdrop-blur-xs">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-tertiary/10 text-tertiary">
+                      <span className="material-symbols-outlined text-[24px]">video_chat</span>
+                    </div>
+                    <h3 className="mt-base font-title-sm text-sm font-bold text-on-surface">3. 화상 슈퍼비전</h3>
+                    <p className="mt-xs font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                      슈퍼바이저의 수락이 완료되면 제공되는 고정 줌(Zoom) 링크를 통해 손쉽게 지도를 시작합니다.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* 오른쪽: 사용자 상태별 신청 및 가이드 동선 카드 */}
+              <div className="flex flex-col justify-center rounded-xl border border-outline-variant/60 bg-surface-container-lowest/80 p-lg shadow-sm backdrop-blur-sm dark:bg-inverse-surface/40">
+                {current ? (
+                  !isSupervisor(current) ? (
+                    <div>
+                      <h3 className="font-title-md text-base font-bold text-on-surface">
+                        슈퍼바이저로 활동하기
+                      </h3>
+                      <p className="mt-base font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                        상위 전문가 권한을 획득하고 후배들을 양성해보세요. 1분 만에 자격 증빙을 업로드하여 권한을 신청할 수 있습니다.
+                      </p>
+                      <Link
+                        className="mt-lg flex w-full justify-center rounded-lg bg-primary px-md py-2.5 font-label-md text-xs font-bold text-on-primary shadow-xs transition-all hover:bg-opacity-90 active:scale-98"
+                        href="/settings"
+                      >
+                        자격 승인 신청하기
+                      </Link>
+                    </div>
+                  ) : (
+                    <div>
+                      <h3 className="font-title-md text-base font-bold text-on-surface">
+                        슈퍼바이저 업무 대시보드
+                      </h3>
+                      <p className="mt-base font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                        전문가 권한이 활성화되어 있습니다. 대시보드에서 예약 현황 확인, 서비스 요금 상품 구성 및 가능 요일/시간을 관리하세요.
+                      </p>
+                      <Link
+                        className="mt-lg flex w-full justify-center rounded-lg bg-secondary px-md py-2.5 font-label-md text-xs font-bold text-on-primary shadow-xs transition-all hover:bg-opacity-90 active:scale-98"
+                        href="/supervisor"
+                      >
+                        내 업무 관리 바로가기
+                      </Link>
+                    </div>
+                  )
+                ) : (
+                  <div>
+                    <h3 className="font-title-md text-base font-bold text-on-surface">
+                      전문가 자격 획득 및 신청
+                    </h3>
+                    <p className="mt-base font-body-sm text-xs text-on-surface-variant leading-relaxed">
+                      임상 전문가 등급으로의 승급 신청은 가입 후 설정 페이지에서 가능합니다. 지금 로그인하여 슈퍼바이저 자격을 신청해 보세요.
+                    </p>
+                    <Link
+                      className="mt-lg flex w-full justify-center rounded-lg bg-primary px-md py-2.5 font-label-md text-xs font-bold text-on-primary shadow-xs transition-all hover:bg-opacity-90 active:scale-98"
+                      href="/login"
+                    >
+                      로그인하고 자격 신청하기
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* 데모/검토 유저를 위한 신속 데이터 세팅 Affordance 배너 하단 바 */}
+            <div className="mt-md flex items-center gap-xs border-t border-outline-variant/40 pt-md text-on-surface-variant">
+              <span className="material-symbols-outlined text-[18px] text-secondary">info</span>
+              <span className="font-body-sm text-xs leading-none">
+                <strong>데모 검토 안내:</strong> 검색 결과가 비어 있거나 검증용 더미 계정을 등록하고 싶다면, 터미널에서 <code>pnpm demo:setup</code> 명령어를 실행하여 풍부한 데모 데이터를 즉시 생성할 수 있습니다.
+              </span>
+            </div>
+          </div>
         </section>
 
         <form

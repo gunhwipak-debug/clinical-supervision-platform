@@ -59,22 +59,24 @@ export default async function Page({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-background font-body-md antialiased">
-      <header className="fixed top-0 z-50 mx-auto flex h-16 w-full max-w-container-max items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-lg">
-        <Link
-          className="font-headline-md text-headline-md font-bold text-primary"
-          href="/supervisor"
-        >
-          ClinicFlow
-        </Link>
-        <div className="flex items-center gap-md">
+      <header className="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant bg-surface-container-lowest">
+        <div className="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-lg">
           <Link
-            className="flex h-8 w-8 items-center justify-center rounded-full border border-outline-variant bg-surface-dim"
-            href="/supervisor/profile"
+            className="font-headline-md text-headline-md font-bold text-primary"
+            href="/supervisor"
           >
-            <span className="material-symbols-outlined text-on-surface-variant">
-              person
-            </span>
+            ClinicFlow
           </Link>
+          <div className="flex items-center gap-md">
+            <Link
+              className="flex h-8 w-8 items-center justify-center rounded-full border border-outline-variant bg-surface-dim"
+              href="/supervisor/profile"
+            >
+              <span className="material-symbols-outlined text-on-surface-variant">
+                person
+              </span>
+            </Link>
+          </div>
         </div>
       </header>
       <div className="flex flex-1 pt-16">

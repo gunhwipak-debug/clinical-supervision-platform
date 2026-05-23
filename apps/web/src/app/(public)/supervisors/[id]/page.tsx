@@ -3,6 +3,8 @@ import Link from "next/link";
 import { calendar, profiles, supervision, withUserContext } from "@csp/db";
 import { Star } from "lucide-react";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
+import { getCurrentUser } from "../../../../lib/auth/current-user";
+import { isSupervisor } from "../../../../lib/auth/guards";
 import {
   type BusyInterval,
   getGoogleCalendarConfig,
@@ -31,6 +33,7 @@ export default async function Page({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ week?: string }>;
 }) {
+  const current = await getCurrentUser();
   const { id } = await params;
   const query = await searchParams;
   const weekOffset = parseWeekOffset(query.week, new Date());
@@ -80,42 +83,89 @@ export default async function Page({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-surface antialiased">
-      <nav className="fixed top-0 z-50 mx-auto flex h-16 w-full max-w-container-max items-center justify-between border-b border-outline-variant bg-surface px-gutter dark:bg-inverse-surface">
-        <div className="flex items-center gap-gutter">
-          <Link
-            className="font-headline-md text-headline-md font-bold text-primary"
-            href="/"
-          >
-            ClinicFlow
-          </Link>
-          <div className="hidden items-center gap-md md:flex">
+      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant bg-surface dark:border-outline dark:bg-inverse-surface">
+        <div className="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-gutter">
+          <div className="flex items-center gap-lg">
             <Link
-              className="cursor-pointer border-b-2 border-secondary pb-1 font-label-md text-label-md text-secondary active:opacity-80"
-              href="/supervisors"
+              className="cursor-pointer font-headline-md text-headline-md font-bold text-primary active:opacity-80 dark:text-inverse-primary"
+              href="/"
             >
-              슈퍼바이저 찾기
+              ClinicFlow
             </Link>
-            <Link
-              className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80"
-              href="/requests"
-            >
-              내 의뢰
-            </Link>
-            <Link
-              className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80"
-              href="/resources"
-            >
-              자료실
-            </Link>
+            <nav className="ml-xl hidden items-center gap-md md:flex">
+              <Link
+                className="cursor-pointer border-b-2 border-secondary pb-1 font-label-md text-label-md text-secondary active:opacity-80 dark:border-secondary-fixed dark:text-secondary-fixed"
+                href="/supervisors"
+              >
+                슈퍼바이저 찾기
+              </Link>
+              <Link
+                className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                href="/requests"
+              >
+                내 의뢰
+              </Link>
+              <Link
+                className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                href="/resources"
+              >
+                자료실
+              </Link>
+              {current && !isSupervisor(current) ? (
+                <Link
+                  className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                  href="/settings"
+                >
+                  슈퍼바이저 신청
+                </Link>
+              ) : null}
+              {current && isSupervisor(current) ? (
+                <Link
+                  className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
+                  href="/supervisor"
+                >
+                  슈퍼바이저 전용
+                </Link>
+              ) : null}
+            </nav>
           </div>
-        </div>
-        <div className="flex items-center gap-md">
-          <Link
-            className="rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80"
-            href="/login"
-          >
-            보안 로그인
-          </Link>
+          <div className="flex items-center gap-md">
+            {current ? (
+              <div className="flex items-center gap-sm">
+                <Link
+                  className="hidden cursor-pointer rounded-lg border border-outline bg-surface px-md py-2 font-label-md text-label-md text-on-surface transition-all hover:bg-surface-container active:opacity-80 md:block"
+                  href="/settings"
+                >
+                  계정 설정
+                </Link>
+                <Link
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline bg-surface-container-highest active:opacity-80 md:hidden"
+                  href="/settings"
+                >
+                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">
+                    settings
+                  </span>
+                </Link>
+              </div>
+            ) : (
+              <>
+                <Link
+                  className="hidden cursor-pointer rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80 md:block"
+                  href="/login"
+                >
+                  보안 로그인
+                </Link>
+                <Link
+                  className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container-highest active:opacity-80 md:hidden"
+                  href="/login"
+                >
+                  <span className="material-symbols-outlined text-on-surface-variant">
+                    person
+                  </span>
+                </Link>
+              </>
+            )}
+          </div>
         </div>
       </nav>
 
