@@ -6,10 +6,15 @@ coverage
 .env.*
 !.env.example
 .netlify/
+.npm-cache/
+.playwright-cli/
+.codex/
+.omo/
 *.log
 *.tsbuildinfo
 .DS_Store
 dev-data/
+promo-video/
 demo-evidence/*.log
 demo-evidence/run*.json
 demo-evidence/ops-smoke.json
