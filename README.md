@@ -49,9 +49,10 @@ Figma 변수까지 초기화하려면 빈 Figma 파일을 만든 뒤 `.env.local
 `FIGMA_ACCESS_TOKEN`, `FIGMA_FILE_KEY`를 넣고 `pnpm figma:push`를 실행합니다.
 토큰이 없으면 Figma 스크립트는 건너뛰며 로컬 데모는 그대로 동작합니다.
 
-Netlify 배포는 `netlify.toml`을 사용합니다. 공개 웹 앱은 `apps/web`을 배포하고,
-관리자 콘솔은 별도 Netlify site로 분리하세요. 자세한 환경변수와 배포 절차는
-`docs/NETLIFY_DEPLOYMENT.md`를 확인합니다.
+현재 공개 웹 앱 배포 기준은 Vercel입니다. 프로젝트명은 `clinicflow-web`이고,
+빌드 대상은 `apps/web`입니다. Node/install/build/output 설정과 환경변수 취급
+절차는 `docs/VERCEL_DEPLOYMENT.md`를 확인합니다. 기존 Netlify 문서는 이전/대안
+배포 기록으로 보존합니다.
 
 ## 구글 캘린더 예약 연동
 
