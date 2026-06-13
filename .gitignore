@@ -16,3 +16,4 @@ demo-evidence/ops-smoke.json
 demo-evidence/real-db-smoke.json
 test-results/
 docs/OPERATIONS_STATE.md
+.vercel
