@@ -15,7 +15,7 @@ export function AppShell({
 }) {
   return (
     <main className="min-h-screen bg-surface-base">
-      <SiteHeader active={active} />
+      <SiteHeader {...(active ? { active } : {})} />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-8">
         <PageIntro action={action} subtitle={subtitle} title={title} />
         {children}
