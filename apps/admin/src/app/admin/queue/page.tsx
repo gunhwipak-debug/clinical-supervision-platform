@@ -20,6 +20,12 @@ type QueueCounts = {
   reviewRequests: number;
 };
 
+type AdminQueueHref =
+  | "/admin/qualifications"
+  | "/admin/refunds"
+  | "/admin/payouts"
+  | "/admin/audit";
+
 export default async function AdminQueuePage() {
   const current = await getCurrentAdmin();
 
@@ -41,7 +47,12 @@ export default async function AdminQueuePage() {
     (tx) => loadCounts(tx)
   );
 
-  const items = [
+  const items: Array<{
+    href: AdminQueueHref;
+    label: string;
+    count: number;
+    body: string;
+  }> = [
     {
       href: "/admin/qualifications",
       label: "자격 승인",
