@@ -19,7 +19,7 @@ export default async function ResetPasswordPage({
           로그인으로 돌아가기
         </Link>
       }
-      subtitle="메일로 받은 토큰과 새 비밀번호를 입력합니다."
+      subtitle="메일로 받은 확인 정보와 새 비밀번호를 입력합니다."
       title="새 비밀번호 설정"
     >
       <AuthPanel

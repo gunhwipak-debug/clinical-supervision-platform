@@ -132,7 +132,7 @@ export default async function AdminQualificationsPage({
           ))}
         </div>
 
-        <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-start gap-3">
               <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
@@ -151,7 +151,7 @@ export default async function AdminQualificationsPage({
 
         <section className="grid gap-4">
           {queue.length === 0 ? (
-            <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+            <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
               <strong className="text-xl text-ink-900">
                 표시할 자격 신청이 없습니다
               </strong>
@@ -163,7 +163,7 @@ export default async function AdminQualificationsPage({
             queue.map((item) => (
               <AdminCard
                 key={item.id}
-                className="grid gap-4 rounded-3xl border-line bg-surface-elevated p-6 shadow-card"
+                className="grid gap-4 rounded-xl border-line bg-surface-elevated p-6 shadow-card"
               >
                 <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
                   <div className="flex items-start gap-3">
@@ -226,8 +226,8 @@ export default async function AdminQualificationsPage({
                   <BadgePill>{qualificationStatusLabel(item.status)}</BadgePill>
                 </div>
                 {item.status === "pending" ? (
-                    <AdminActionPanel
-                      actions={[
+                  <AdminActionPanel
+                    actions={[
                       {
                         label: "승인",
                         tone: "primary",
@@ -245,9 +245,9 @@ export default async function AdminQualificationsPage({
                         tone: "secondary",
                         url: `/api/admin/qualifications/${item.id}/reject`
                       }
-                      ]}
-                      reasonPlaceholder="예: 제출된 자격 증빙, 발급기관, 프로필 기재 내용을 확인했고 승인/반려합니다."
-                    />
+                    ]}
+                    reasonPlaceholder="예: 제출된 자격 증빙, 발급기관, 프로필 기재 내용을 확인했고 승인/반려합니다."
+                  />
                 ) : (
                   <p className="rounded-2xl bg-surface-sunken px-4 py-3 text-sm text-ink-600">
                     이미 {qualificationStatusLabel(item.status)} 처리된 자격입니다.

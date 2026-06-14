@@ -306,8 +306,8 @@ export function AvailabilityForm({
           ) : null}
           {!calendarConfigReady ? (
             <p className="mt-sm font-label-sm text-label-sm text-error">
-              운영 설정에 구글 OAuth 정보가 없어 새 계정 인증을 시작할 수 없습니다.
-              기존 연동 토큰이 살아 있으면 예약 충돌 확인은 계속 반영됩니다.
+              현재는 새 캘린더 연결을 시작할 수 없습니다. 이미 연결된 캘린더가 있으면
+              예약 충돌 확인은 계속 반영됩니다.
             </p>
           ) : null}
         </div>

@@ -77,7 +77,7 @@ export default async function RequestDetailPage({
       </header>
 
       <div className="mx-auto grid max-w-5xl gap-5 px-5 py-5">
-        <section className="rounded-2xl border border-brand-100 bg-brand-50 p-4 text-ink-800">
+        <section className="rounded-xl border border-brand-100 bg-brand-50 p-4 text-ink-800">
           <div className="flex gap-3">
             <ShieldCheck
               aria-hidden
@@ -85,16 +85,15 @@ export default async function RequestDetailPage({
               size={22}
             />
             <div>
-              <h2 className="font-bold">보안 모드 활성화</h2>
+              <h2 className="font-bold">자료 열람 범위</h2>
               <p className="mt-1 text-sm leading-relaxed text-ink-700">
-                민감 자료는 검토 목적 안에서만 열람합니다. 접근과 변경 이력은 안전하게
-                기록됩니다.
+                제출한 자료와 피드백은 이 의뢰의 슈퍼비전 흐름 안에서 확인합니다.
               </p>
             </div>
           </div>
         </section>
 
-        <Card className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+        <Card className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
           <div className="mb-3 flex items-start justify-between gap-4">
             <Badge tone="brand">슈퍼비전 의뢰</Badge>
             <Badge tone="neutral">{statusLabel(basic.status)}</Badge>
@@ -104,7 +103,7 @@ export default async function RequestDetailPage({
           </h2>
           <p className="mt-3 text-sm text-ink-700">
             요청일 · 보관 {String(basic.retentionDays)}일 ·{" "}
-            {basic.productTitle ?? "상품 확인 필요"}
+            {basic.productTitle ?? "제공 항목 확인 필요"}
           </p>
           <p className="mt-2 text-sm font-semibold text-ink-800">
             예약 일정 · {formatBookingSlot(basic)}
@@ -191,27 +190,37 @@ export default async function RequestDetailPage({
               {timelineSteps.map((stepItem, idx) => {
                 const isFinished = checkFinished(stepItem.key, basic.status);
                 const isActive = checkActive(stepItem.key, basic.status);
-                
+
                 return (
                   <div className="relative pl-6" key={stepItem.key}>
                     {/* 커스텀 타임라인 도트 */}
-                    <div className={`absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full border-2 text-[12px] transition-all duration-200 ${
-                      isFinished 
-                        ? "bg-primary border-primary text-on-primary"
-                        : isActive
-                          ? "bg-surface-elevated border-secondary text-secondary animate-pulse ring-4 ring-secondary/15"
-                          : "bg-surface-elevated border-outline-variant text-on-surface-variant"
-                    }`}>
+                    <div
+                      className={`absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full border-2 text-[12px] transition-all duration-200 ${
+                        isFinished
+                          ? "bg-primary border-primary text-on-primary"
+                          : isActive
+                            ? "bg-surface-elevated border-secondary text-secondary animate-pulse ring-4 ring-secondary/15"
+                            : "bg-surface-elevated border-outline-variant text-on-surface-variant"
+                      }`}
+                    >
                       {isFinished ? (
-                        <span className="material-symbols-outlined text-[16px] font-bold">check</span>
+                        <span className="material-symbols-outlined text-[16px] font-bold">
+                          check
+                        </span>
                       ) : (
                         <span>{idx + 1}</span>
                       )}
                     </div>
                     <div>
-                      <h3 className={`font-label-md text-sm font-bold ${
-                        isActive ? "text-secondary" : isFinished ? "text-primary" : "text-on-surface-variant"
-                      }`}>
+                      <h3
+                        className={`font-label-md text-sm font-bold ${
+                          isActive
+                            ? "text-secondary"
+                            : isFinished
+                              ? "text-primary"
+                              : "text-on-surface-variant"
+                        }`}
+                      >
                         {stepItem.label}
                       </h3>
                       <p className="mt-xs font-body-sm text-[11px] text-on-surface-variant leading-relaxed">
@@ -222,7 +231,7 @@ export default async function RequestDetailPage({
                 );
               })}
             </div>
-            
+
             {/* 상태별 상세 수치 요약 */}
             <div className="mt-md border-t border-outline-variant/40 pt-md grid gap-2 text-xs">
               <div className="flex items-center justify-between">
@@ -244,15 +253,20 @@ export default async function RequestDetailPage({
 }
 
 const timelineSteps = [
-  { key: "draft", label: "작성 및 자료 점검", desc: "케이스 패킷 정보 입력 및 파일 비식별화" },
-  { key: "payment", label: "결제 완료", desc: "Toss 결제 완료 후 매칭 성사" },
-  { key: "supervision", label: "슈퍼비전 진행", desc: "전문가 검토 및 1:1 세션 진행" },
+  {
+    key: "draft",
+    label: "작성 및 자료 점검",
+    desc: "사례 정보 입력 및 제출 자료 확인"
+  },
+  { key: "payment", label: "결제 완료", desc: "결제 완료 후 슈퍼바이저 확인" },
+  { key: "supervision", label: "슈퍼비전 진행", desc: "슈퍼바이저 검토 및 세션 진행" },
   { key: "completed", label: "최종 완료", desc: "완료 기록 및 피드백 발급 완료" }
 ] as const;
 
 function checkFinished(stepKey: string, status: string): boolean {
-  if (status === "rejected" || status === "cancelled" || status === "refunded") return false;
-  
+  if (status === "rejected" || status === "cancelled" || status === "refunded")
+    return false;
+
   if (stepKey === "draft") {
     return status !== "draft";
   }
@@ -273,8 +287,9 @@ function checkFinished(stepKey: string, status: string): boolean {
 }
 
 function checkActive(stepKey: string, status: string): boolean {
-  if (status === "rejected" || status === "cancelled" || status === "refunded") return false;
-  
+  if (status === "rejected" || status === "cancelled" || status === "refunded")
+    return false;
+
   if (stepKey === "draft") {
     return status === "draft";
   }

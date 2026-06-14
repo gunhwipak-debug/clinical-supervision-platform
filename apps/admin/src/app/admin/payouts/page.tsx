@@ -59,19 +59,19 @@ export default async function PayoutsPage() {
         </div>
 
         <section className="grid gap-4 md:grid-cols-2">
-          <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+          <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
             <p className="text-lg font-bold text-ink-700">총 지급 예정 금액</p>
             <p className="mt-4 text-4xl font-bold">
               ₩{totalNet.toLocaleString("ko-KR")}
             </p>
           </AdminCard>
-          <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+          <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
             <p className="text-lg font-bold text-ink-700">총 건수</p>
             <p className="mt-4 text-4xl font-bold">{String(payouts.length)}건</p>
           </AdminCard>
         </section>
 
-        <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
           <div className="flex items-start gap-3">
             <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
               <Banknote aria-hidden size={22} />
@@ -90,7 +90,7 @@ export default async function PayoutsPage() {
 
         <section className="grid gap-4" aria-label="정산 항목">
           {payouts.length === 0 ? (
-            <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+            <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
               <div className="flex items-start gap-3">
                 <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
                   <ShieldCheck aria-hidden size={20} />
@@ -108,7 +108,7 @@ export default async function PayoutsPage() {
           ) : (
             payouts.map((payout) => (
               <AdminCard
-                className="grid gap-4 rounded-3xl border-line bg-surface-elevated p-6 shadow-card"
+                className="grid gap-4 rounded-xl border-line bg-surface-elevated p-6 shadow-card"
                 key={payout.id}
               >
                 <div className="flex items-start justify-between gap-3">

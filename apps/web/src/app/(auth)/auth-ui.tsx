@@ -1,7 +1,8 @@
-import { ShieldCheck } from "lucide-react";
+import { GraduationCap } from "lucide-react";
 import Link from "next/link";
 import { Badge } from "../../components/ui/badge";
 import { Card } from "../../components/ui/card";
+import { SiteHeader } from "../../components/clinicflow-shell";
 
 export function AuthScaffold({
   action,
@@ -18,10 +19,11 @@ export function AuthScaffold({
 
   return (
     <main className="min-h-screen bg-surface-base text-ink-900">
-      <div className="mx-auto flex min-h-screen w-full max-w-[640px] flex-col px-6 py-9">
+      <SiteHeader active="" actionHref="/supervisors" actionLabel="둘러보기" />
+      <div className="mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-[640px] flex-col px-6 py-9">
         <Link className="mb-10 grid justify-items-center text-center" href="/">
-          <div className="mb-5 grid size-12 place-items-center rounded-2xl bg-ink-900 text-surface-elevated">
-            <ShieldCheck aria-hidden size={24} />
+          <div className="mb-5 grid size-12 place-items-center rounded-xl bg-ink-900 text-surface-elevated">
+            <GraduationCap aria-hidden size={24} />
           </div>
           <h1 className="text-4xl font-bold leading-tight text-ink-900">{title}</h1>
           <p className="mt-3 text-lg leading-relaxed text-ink-700">{subtitle}</p>
@@ -35,8 +37,8 @@ export function AuthScaffold({
         </div>
 
         <div className="mt-10 flex items-center justify-center gap-3 text-sm font-medium text-ink-500">
-          <ShieldCheck aria-hidden className="text-brand-500" size={22} />
-          <span>민감정보 보호 연결</span>
+          <GraduationCap aria-hidden className="text-brand-500" size={22} />
+          <span>슈퍼비전 흐름으로 이어집니다</span>
         </div>
 
         <footer className="mt-10 border-t border-line pt-8 text-ink-500">
@@ -44,11 +46,11 @@ export function AuthScaffold({
           <nav className="flex flex-wrap gap-x-4 gap-y-2 text-sm">
             <Link className="hover:text-brand-600 transition-colors" href="/privacy">개인정보 처리방침</Link>
             <Link className="hover:text-brand-600 transition-colors" href="/terms">서비스 이용약관</Link>
-            <Link className="hover:text-brand-600 transition-colors" href="/security">보안 기준</Link>
+            <Link className="hover:text-brand-600 transition-colors" href="/guide">진행 방식</Link>
             <Link className="hover:text-brand-600 transition-colors" href="/forgot-password">계정 지원</Link>
           </nav>
           <p className="mt-6 text-sm leading-relaxed">
-            © {currentYear} ClinicFlow. 민감정보 보호 아키텍처를 기준으로 운영됩니다.
+            © {currentYear} ClinicFlow. 슈퍼바이저 선택부터 학습 기록까지 이어지는 온라인 슈퍼비전 플랫폼입니다.
           </p>
         </footer>
       </div>
@@ -75,7 +77,7 @@ export function AuthPanel({
 
   return (
     <section className={`mx-auto grid w-full ${maxWidth} gap-5`}>
-      <Card className="rounded-2xl border-line bg-surface-elevated p-6 shadow-card md:p-10">
+      <Card className="rounded-xl border-line bg-surface-elevated p-6 shadow-card md:p-10">
         <div className="mb-6 grid gap-3 text-center">
           {badge ? (
             <Badge className="mx-auto w-fit" tone="accent">
@@ -98,7 +100,7 @@ export function AuthPanel({
         <ul className="grid gap-3 text-sm text-ink-700">
           {notes.map((note) => (
             <li
-              className="rounded-2xl border border-line bg-surface-elevated px-4 py-3"
+              className="rounded-xl border border-line bg-surface-elevated px-4 py-3"
               key={note}
             >
               {note}

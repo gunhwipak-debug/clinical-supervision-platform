@@ -90,9 +90,9 @@ export default async function SettingsPage() {
 
           <Card>
             <CardHeader>
-              <CardTitle>[의뢰자 전용] 슈퍼바이지 프로필 설정</CardTitle>
+              <CardTitle>슈퍼바이지 프로필</CardTitle>
               <CardDescription>
-                후배 임상가(의뢰자)로서 선배 슈퍼바이저에게 슈퍼비전을 신청할 때 전달되는 정보입니다.
+                슈퍼비전을 신청할 때 슈퍼바이저에게 전달되는 기본 정보입니다.
               </CardDescription>
             </CardHeader>
             <SettingsProfileForm profile={superviseeProfile} />
@@ -155,38 +155,17 @@ export default async function SettingsPage() {
                 </div>
               </div>
             ) : (
-              <div className="grid gap-md rounded-xl border border-secondary/20 bg-gradient-to-r from-secondary/5 via-surface to-surface p-md text-sm text-on-surface">
-                <div className="flex flex-col gap-sm">
-                  <span className="inline-flex max-w-fit rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold text-secondary">
-                    슈퍼바이저 매칭 안내
-                  </span>
+              <div className="grid gap-md rounded-xl border border-line bg-surface-sunken p-md text-sm text-on-surface">
+                <div>
                   <h4 className="font-title-md text-base font-bold text-on-surface">
-                    회원가입만으로 간편하게 시작하는 지도교수 업무 절차
+                    슈퍼바이저로 활동하려면 자격 확인이 필요합니다.
                   </h4>
-                  <p className="font-body-sm text-xs text-on-surface-variant leading-relaxed">
-                    복잡한 인증 절차 없이, 본인만의 임상 프로필과 예약 가능한 시간 슬롯을 지정하여 후배 임상가(슈퍼바이지)와 매칭을 즉각 시작하세요.
+                  <p className="mt-sm font-body-sm text-sm leading-relaxed text-on-surface-variant">
+                    신청 후 프로필, 자격 증빙, 가능 일정을 차례로 등록합니다. 승인
+                    전에는 공개 목록에 노출되지 않습니다.
                   </p>
-                  
-                  <div className="mt-sm grid gap-sm sm:grid-cols-2 md:grid-cols-4 text-xs">
-                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
-                      <strong className="block text-secondary">1. 권한 신청 시작</strong>
-                      <p className="mt-xs text-on-surface-variant text-[11px]">아래 [신청 시작] 버튼을 누르고 약관에 동의합니다.</p>
-                    </div>
-                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
-                      <strong className="block text-secondary">2. 프로필 및 캘린더 등록</strong>
-                      <p className="mt-xs text-on-surface-variant text-[11px]">이름, 주요 학력 및 예약 가능한 시간 슬롯을 지정합니다.</p>
-                    </div>
-                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
-                      <strong className="block text-secondary">3. 상품 구성</strong>
-                      <p className="mt-xs text-on-surface-variant text-[11px]">대면, 비대면(화상), 서면 등 제공할 상품 단가를 등록합니다.</p>
-                    </div>
-                    <div className="rounded-lg border border-outline-variant/60 bg-surface/50 p-sm shadow-2xs">
-                      <strong className="block text-secondary">4. 매칭 및 자동 정산</strong>
-                      <p className="mt-xs text-on-surface-variant text-[11px]">매칭 건당 수수료를 제외한 금액이 본인 계좌로 자동 정산됩니다.</p>
-                    </div>
-                  </div>
                 </div>
-                <div className="mt-md flex justify-end border-t border-outline-variant/30 pt-sm">
+                <div className="flex justify-end border-t border-outline-variant/30 pt-sm">
                   <SupervisorApplicationButton />
                 </div>
               </div>
@@ -197,9 +176,9 @@ export default async function SettingsPage() {
         <aside className="grid content-start gap-6">
           <Card>
             <CardHeader>
-              <CardTitle>보안</CardTitle>
+              <CardTitle>계정 확인</CardTitle>
               <CardDescription>
-                민감자료 접근 기록과 2단계 인증은 운영 정책의 핵심 항목입니다.
+                공개 프로필과 운영 업무에 필요한 계정 확인 상태입니다.
               </CardDescription>
             </CardHeader>
             <div className="grid gap-3 text-sm">

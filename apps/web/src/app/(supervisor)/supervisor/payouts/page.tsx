@@ -136,7 +136,7 @@ export default async function SupervisorPayoutsPage() {
             <CardHeader>
               <CardTitle>최근 결제</CardTitle>
               <CardDescription>
-                내 슈퍼비전 상품에 결제된 최근 항목입니다.
+                내 슈퍼비전 제공 항목에 결제된 최근 내역입니다.
               </CardDescription>
             </CardHeader>
             <div className="grid gap-2">

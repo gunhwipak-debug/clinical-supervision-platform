@@ -195,7 +195,7 @@ const statusCopy: Record<
   rejected: {
     label: "반려",
     title: "슈퍼바이저가 의뢰를 반려했습니다",
-    description: "필요하면 다른 상품으로 새 의뢰를 시작하세요.",
+    description: "필요하면 다른 제공 항목으로 새 의뢰를 시작하세요.",
     tone: "danger"
   },
   cancelled: {
@@ -496,7 +496,9 @@ export function RequestDetailClient({
 
   async function savePacket(values: PacketFormValues) {
     if (phiDisabled) {
-      setMessage("현재 DB 환경에서 PHI 암호화 저장 경로를 사용할 수 없습니다.");
+      setMessage(
+        "현재 사례 자료를 안전하게 저장할 수 없습니다. 잠시 후 다시 시도하거나 운영자에게 문의해주세요."
+      );
       return;
     }
     const response = await fetch(`/api/supervision-requests/${requestId}/case-packet`, {
@@ -755,7 +757,8 @@ export function RequestDetailClient({
             </div>
             {phiDisabled ? (
               <p className="rounded-lg bg-warn/10 p-3 text-sm text-ink-700">
-                현재 DB 환경에서 케이스 패킷 PHI 암호화 저장 경로를 사용할 수 없습니다.
+                현재 사례 자료를 안전하게 저장할 수 없습니다. 잠시 후 다시 시도하거나
+                운영자에게 문의해주세요.
               </p>
             ) : null}
             <Field>
@@ -865,7 +868,8 @@ export function RequestDetailClient({
               >
                 <AlertTriangle className="mt-0.5 shrink-0" aria-hidden size={16} />
                 <span>
-                  개인정보 의심 패턴: {phiMatches.map((match) => match.kind).join(", ")}
+                  개인정보로 보이는 내용이 남아 있습니다. 이름, 연락처, 주민등록번호 등
+                  직접 식별 정보를 다시 확인해주세요.
                 </span>
               </p>
             ) : null}
@@ -1135,9 +1139,8 @@ export function RequestDetailClient({
               </div>
             ) : null}
             <p className="text-xs leading-relaxed text-ink-500">
-              이 기록은 플랫폼 안에서 확인되는 슈퍼비전 완료 기록입니다. 공식
-              증명서나 법적 제출용 문서처럼 오해되지 않도록 검토 범위와 한계를 함께
-              확인하세요.
+              이 기록은 플랫폼 안에서 확인되는 슈퍼비전 완료 기록입니다. 공식 증명서나
+              법적 제출용 문서처럼 오해되지 않도록 검토 범위와 한계를 함께 확인하세요.
             </p>
           </section>
         ) : null}
@@ -1170,7 +1173,10 @@ export function RequestDetailClient({
                 label="도움 정도"
                 registration={reviewForm.register("helpfulness")}
               />
-              <ScoreSelect label="윤리성" registration={reviewForm.register("ethics")} />
+              <ScoreSelect
+                label="윤리성"
+                registration={reviewForm.register("ethics")}
+              />
               <ScoreSelect
                 label="응답 속도"
                 registration={reviewForm.register("responseSpeed")}
@@ -1466,13 +1472,7 @@ function ScoreSelect({
   );
 }
 
-function CompletionRecordList({
-  label,
-  values
-}: {
-  label: string;
-  values: string[];
-}) {
+function CompletionRecordList({ label, values }: { label: string; values: string[] }) {
   return (
     <div>
       <p className="text-sm font-semibold text-ink-900">{label}</p>

@@ -5,7 +5,6 @@ import {
   ArrowRight,
   BadgeCheck,
   Banknote,
-  ClipboardList,
   FileClock,
   Menu,
   ReceiptText,
@@ -65,49 +64,19 @@ export default async function AdminPage() {
         <section>
           <h1 className="text-4xl font-bold">환영합니다, 관리자님</h1>
           <p className="mt-3 text-xl text-ink-700">
-            오늘의 주요 플랫폼 지표를 확인하세요.
+            처리가 필요한 운영 업무를 먼저 확인합니다.
           </p>
         </section>
 
-        <section
-          className="grid gap-4 md:grid-cols-2 xl:grid-cols-4"
-          aria-label="운영 지표"
-        >
-          <MetricCard
-            description="운영자 검증 필요"
-            icon={<BadgeCheck aria-hidden size={22} />}
-            label="대기 중인 자격 심사"
-            value={stats.pendingQualifications}
-          />
-          <MetricCard
-            description="실제 결제 완료 기준"
-            icon={<Banknote aria-hidden size={22} />}
-            label="이달 결제 완료액"
-            valueLabel={formatKrw(stats.paidGrossThisMonth)}
-          />
-          <MetricCard
-            description="환불 검토 필요"
-            icon={<ReceiptText aria-hidden size={22} />}
-            label="환불 요청"
-            value={stats.requestedRefunds}
-          />
-          <MetricCard
-            description="슈퍼바이저 검토 대기"
-            icon={<ClipboardList aria-hidden size={22} />}
-            label="열린 의뢰"
-            value={stats.openRequests}
-          />
-        </section>
-
         <section className="grid gap-5 lg:grid-cols-[1fr_360px]">
-          <AdminCard className="overflow-hidden rounded-3xl border-line bg-surface-elevated p-0 shadow-card">
+          <AdminCard className="overflow-hidden rounded-xl border-line bg-surface-elevated p-0 shadow-card">
             <div className="flex items-center justify-between border-b border-line px-6 py-5">
-              <h2 className="text-2xl font-bold">최근 자격 요청</h2>
+              <h2 className="text-2xl font-bold">먼저 확인할 운영 업무</h2>
               <a
                 className="text-sm font-bold text-brand-600"
                 href="/admin/qualifications"
               >
-                전체 보기
+                자격 심사 보기
               </a>
             </div>
             <div className="grid divide-y divide-line">
@@ -136,70 +105,39 @@ export default async function AdminPage() {
                 description="관리자 조치와 자료 접근 이력을 확인합니다."
                 href="/admin/audit"
                 icon={<FileClock aria-hidden size={22} />}
-                label="감사 로그"
+                label="처리 기록"
                 value={stats.auditLogCount}
               />
             </div>
           </AdminCard>
 
-          <AdminCard className="h-fit rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+          <AdminCard className="h-fit rounded-xl border-line bg-surface-elevated p-6 shadow-card">
             <div className="flex items-start gap-3">
-              <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+              <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600">
                 <ShieldCheck aria-hidden size={22} />
               </span>
               <div>
-                <h2 className="text-xl font-bold">운영 원칙</h2>
+                <h2 className="text-xl font-bold">처리 기준</h2>
                 <p className="mt-2 text-sm leading-relaxed text-ink-500">
-                  관리자 화면은 PHI 본문을 노출하지 않습니다. 상태 변경 작업은 항상 30자
-                  이상의 사유와 2단계 인증 세션을 요구합니다.
+                  관리자 홈에서는 먼저 처리할 업무만 모아 보여줍니다. 세부 검토와 상태
+                  변경은 각 대기열에서 이어갑니다.
                 </p>
               </div>
             </div>
             <div className="mt-5 grid gap-2 text-sm text-ink-700">
               <span className="rounded-2xl bg-brand-50 px-3 py-2">
-                권한 정책을 우회하지 않고 운영 권한 컨텍스트로 조회
+                자격 승인, 환불, 정산은 각각 독립된 대기열에서 처리
               </span>
               <span className="rounded-2xl bg-brand-50 px-3 py-2">
-                승인·환불·정산 작업은 사유와 감사 로그 기준으로 추적
+                처리 기록은 운영 확인이 필요할 때 다시 조회
               </span>
             </div>
           </AdminCard>
         </section>
       </div>
 
-      <AdminBottomNav active="대시보드" />
+      <AdminBottomNav active="운영 홈" />
     </main>
-  );
-}
-
-function MetricCard({
-  description,
-  icon,
-  label,
-  value,
-  valueLabel
-}: {
-  description: string;
-  icon: ReactNode;
-  label: string;
-  value?: number;
-  valueLabel?: string;
-}) {
-  return (
-    <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <span className="text-sm font-semibold text-ink-500">{label}</span>
-          <strong className="mt-2 block text-4xl text-ink-900">
-            {valueLabel ?? value?.toLocaleString("ko-KR") ?? "0"}
-          </strong>
-        </div>
-        <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
-          {icon}
-        </span>
-      </div>
-      <p className="mt-3 text-sm text-ink-500">{description}</p>
-    </AdminCard>
   );
 }
 
@@ -252,11 +190,11 @@ function AdminBottomNav({ active }: { active: string }) {
       <div className="mx-auto grid max-w-6xl grid-cols-5 gap-2 text-center text-sm font-medium text-ink-700">
         {(
           [
-            { href: "/admin", label: "대시보드", icon: UsersRound },
+            { href: "/admin", label: "운영 홈", icon: UsersRound },
             { href: "/admin/qualifications", label: "자격", icon: BadgeCheck },
             { href: "/admin/payouts", label: "정산", icon: Banknote },
             { href: "/admin/refunds", label: "환불", icon: ReceiptText },
-            { href: "/admin/audit", label: "감사", icon: FileClock }
+            { href: "/admin/audit", label: "기록", icon: FileClock }
           ] as const
         ).map((item) => {
           const Icon = item.icon;
@@ -287,13 +225,7 @@ async function dashboardStats(db: StatsDatabase) {
       (select count(*)::int from supervision_requests where status in ('submitted', 'awaiting_supervisor_review')) as "openRequests",
       (select count(*)::int from users where status = 'active') as "activeUsers",
       (select count(*)::int from payouts where status = 'scheduled') as "scheduledPayouts",
-      (select count(*)::int from audit_logs) as "auditLogCount",
-      (
-        select coalesce(sum(amount_krw), 0)::int
-        from payments
-        where status in ('paid', 'partially_refunded')
-          and paid_at >= date_trunc('month', now())
-      ) as "paidGrossThisMonth"
+      (select count(*)::int from audit_logs) as "auditLogCount"
   `);
   return (
     rowsOf<{
@@ -303,25 +235,15 @@ async function dashboardStats(db: StatsDatabase) {
       activeUsers: number;
       scheduledPayouts: number;
       auditLogCount: number;
-      paidGrossThisMonth: number;
     }>(result)[0] ?? {
       pendingQualifications: 0,
       requestedRefunds: 0,
       openRequests: 0,
       activeUsers: 0,
       scheduledPayouts: 0,
-      auditLogCount: 0,
-      paidGrossThisMonth: 0
+      auditLogCount: 0
     }
   );
-}
-
-function formatKrw(value: number): string {
-  return new Intl.NumberFormat("ko-KR", {
-    currency: "KRW",
-    maximumFractionDigits: 0,
-    style: "currency"
-  }).format(value);
 }
 
 function rowsOf<TRow>(result: unknown): TRow[] {

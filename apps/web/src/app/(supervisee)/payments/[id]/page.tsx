@@ -60,12 +60,9 @@ export default async function PaymentDetailPage({
       </header>
 
       <div className="mx-auto grid max-w-4xl gap-5 px-5 py-7">
-        <Card className="relative overflow-hidden rounded-3xl border border-outline-variant/80 bg-surface-container-lowest p-7 shadow-xl shadow-secondary/5 dark:bg-inverse-surface/10">
-          {/* 장식용 프리미엄 탑 그라데이션 라인 */}
-          <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary via-secondary to-primary" />
-          
+        <Card className="rounded-xl border border-outline-variant/80 bg-surface-container-lowest p-7 shadow-card dark:bg-inverse-surface/10">
           <div className="mb-5 flex items-start justify-between gap-4">
-            <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-secondary/10 text-secondary">
+            <span className="grid size-12 shrink-0 place-items-center rounded-xl bg-secondary/10 text-secondary">
               <ReceiptText aria-hidden size={24} />
             </span>
             <Badge tone={paymentTone(payment.status)}>
@@ -92,7 +89,7 @@ export default async function PaymentDetailPage({
         </Card>
 
         <section className="grid gap-5 lg:grid-cols-[1fr_360px]">
-          <Card className="rounded-3xl border border-outline-variant/80 bg-surface-container-lowest p-6 shadow-lg shadow-outline-variant/5">
+          <Card className="rounded-xl border border-outline-variant/80 bg-surface-container-lowest p-6 shadow-card">
             <div className="mb-5 flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-xl font-bold text-ink-900">금액 상세</h2>
@@ -127,7 +124,7 @@ export default async function PaymentDetailPage({
                 </div>
               ))}
             </dl>
-            <p className="mt-5 inline-flex items-start gap-2 rounded-2xl bg-brand-50 px-4 py-3 text-sm leading-relaxed text-ink-700">
+            <p className="mt-5 inline-flex items-start gap-2 rounded-lg bg-brand-50 px-4 py-3 text-sm leading-relaxed text-ink-700">
               <ShieldCheck aria-hidden className="mt-0.5 text-brand-600" size={17} />
               환불 요청은 접수만 생성하며, 실제 처리와 정산 반영은 관리자 검토 후
               진행됩니다.
@@ -137,7 +134,7 @@ export default async function PaymentDetailPage({
             <RefundRequestForm maxAmount={payment.amountKrw} paymentId={payment.id} />
           ) : payment.status === "pending" &&
             payment.requestStatus === "awaiting_payment" ? (
-            <Card className="h-fit rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+            <Card className="h-fit rounded-xl border-line bg-surface-elevated p-6 shadow-card">
               <h2 className="text-xl font-bold text-ink-900">결제 다시 시도</h2>
               <p className="mt-2 text-sm leading-relaxed text-ink-500">
                 결제창이 닫혔거나 중단된 경우 의뢰 상세에서 같은 결제를 다시 이어갈 수
@@ -151,7 +148,7 @@ export default async function PaymentDetailPage({
               </Link>
             </Card>
           ) : (
-            <Card className="h-fit rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+            <Card className="h-fit rounded-xl border-line bg-surface-elevated p-6 shadow-card">
               <h2 className="text-xl font-bold text-ink-900">환불 요청</h2>
               <p className="mt-2 text-sm leading-relaxed text-ink-500">
                 결제 완료 상태가 되면 환불 요청을 만들 수 있습니다.

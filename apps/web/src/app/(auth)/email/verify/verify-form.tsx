@@ -11,7 +11,7 @@ import { Field, Input, Label } from "../../../../components/ui/form";
 import { InlineMessage } from "../../auth-ui";
 
 const verifySchema = z.object({
-  token: z.string().min(20, "메일 토큰을 입력해주세요.")
+  mailCode: z.string().min(20, "메일 확인 정보를 입력해주세요.")
 });
 
 type VerifyValues = z.infer<typeof verifySchema>;
@@ -20,14 +20,14 @@ export function VerifyForm() {
   const [message, setMessage] = useState("");
   const form = useForm<VerifyValues>({
     resolver: zodResolver(verifySchema),
-    defaultValues: { token: "" }
+    defaultValues: { mailCode: "" }
   });
 
   async function submit(values: VerifyValues) {
     const response = await fetch("/api/auth/email/verify", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify(values)
+      body: JSON.stringify({ token: values.mailCode })
     });
     const body = (await response.json()) as { error?: { code: string } };
     const nextMessage = response.ok
@@ -47,9 +47,9 @@ export function VerifyForm() {
         <div className="mx-auto mb-6 grid size-48 place-items-center rounded-full bg-brand-100 text-brand-600">
           <MailCheck aria-hidden size={88} />
         </div>
-        <h2 className="text-5xl font-bold leading-tight">이메일 토큰 확인</h2>
-        <p className="mt-6 text-2xl leading-relaxed text-ink-700">
-          메일에 담긴 인증 토큰을 입력해 계정의 이메일 검증 상태를 완료합니다.
+        <h2 className="text-4xl font-bold leading-tight">이메일 확인</h2>
+        <p className="mt-6 text-lg leading-relaxed text-ink-700">
+          메일에 담긴 확인 정보를 입력하면 계정을 사용할 수 있습니다.
         </p>
       </div>
 
@@ -58,18 +58,20 @@ export function VerifyForm() {
         onSubmit={form.handleSubmit(submit)}
       >
         <Field className="gap-3">
-          <Label className="text-2xl font-bold" htmlFor="token">
-            인증 토큰
+          <Label className="text-2xl font-bold" htmlFor="mail-code">
+            메일 확인 정보
           </Label>
           <Input
             autoComplete="one-time-code"
             className="h-20 rounded-none bg-surface-base px-6 text-xl"
-            id="token"
-            placeholder="인증 토큰"
-            {...form.register("token")}
+            id="mail-code"
+            placeholder="메일 확인 정보"
+            {...form.register("mailCode")}
           />
-          {form.formState.errors.token ? (
-            <p className="text-sm text-danger">{form.formState.errors.token.message}</p>
+          {form.formState.errors.mailCode ? (
+            <p className="text-sm text-danger">
+              {form.formState.errors.mailCode.message}
+            </p>
           ) : null}
         </Field>
 

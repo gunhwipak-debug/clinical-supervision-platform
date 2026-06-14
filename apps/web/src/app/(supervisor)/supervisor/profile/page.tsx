@@ -2,13 +2,12 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { profiles, withUserContext } from "@csp/db";
 import {
-  ArrowLeft,
   CalendarClock,
   ClipboardList,
-  Eye,
   ShieldCheck,
   User
 } from "lucide-react";
+import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
@@ -64,15 +63,11 @@ export default async function SupervisorProfilePage() {
 
   return (
     <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-5 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <Link aria-label="대시보드" href="/supervisor">
-            <ArrowLeft aria-hidden className="text-ink-900" size={28} />
-          </Link>
-          <h1 className="text-2xl font-bold">수퍼바이저 프로필</h1>
-          <Eye aria-hidden className="text-ink-700" size={26} />
-        </div>
-      </header>
+      <SiteHeader
+        active="supervisor"
+        actionHref="/supervisor/requests"
+        actionLabel="의뢰 큐"
+      />
 
       <div className="mx-auto grid max-w-5xl gap-5 px-5 py-6">
         <section className="grid gap-5 lg:grid-cols-1">
@@ -87,16 +82,11 @@ export default async function SupervisorProfilePage() {
 
           <div className="grid gap-4">
             <InfoCard
-              icon={<Eye aria-hidden size={21} />}
-              title="노출 기준"
-              body="공개 전환은 2FA와 승인 자격이 모두 충족될 때만 가능합니다."
-            />
-            <InfoCard
               icon={<ShieldCheck aria-hidden size={21} />}
-              title="작성 톤"
-              body="공개 소개에는 내담자 식별 가능 정보가 들어가면 안 됩니다."
+              title="공개 전 확인"
+              body="자격 승인과 계정 확인이 완료되어야 공개 목록에 노출됩니다. 소개에는 식별 가능한 사례 정보를 적지 마세요."
             />
-            <Card className="rounded-3xl border-line bg-surface-elevated p-5 shadow-card">
+            <Card className="rounded-xl border-line bg-surface-elevated p-5 shadow-card">
               <SupervisorVisibilityForm
                 canPublish={canPublish}
                 initialVisibility={profile?.visibility ?? null}
@@ -112,8 +102,6 @@ export default async function SupervisorProfilePage() {
   );
 }
 
-
-
 function publishBlockReason({
   profile,
   totpEnabled
@@ -122,14 +110,12 @@ function publishBlockReason({
   totpEnabled: boolean;
 }): string | null {
   if (!profile) return "먼저 공개 표시명과 소개 정보를 저장해주세요.";
-  if (!totpEnabled) return "검색 공개 전환 전에 2단계 인증을 설정해주세요.";
+  if (!totpEnabled) return "검색 공개 전환 전에 계정 확인을 완료해주세요.";
   if (profile.verificationStatus !== "approved") {
     return "운영자가 자격 정보를 승인한 뒤 검색 공개로 전환할 수 있습니다.";
   }
   return null;
 }
-
-
 
 function InfoCard({
   icon,
@@ -141,7 +127,7 @@ function InfoCard({
   body: string;
 }) {
   return (
-    <Card className="rounded-3xl border-line bg-surface-elevated p-5 shadow-card">
+    <Card className="rounded-xl border-line bg-surface-elevated p-5 shadow-card">
       <div className="flex items-start gap-3">
         <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
           {icon}
@@ -161,7 +147,7 @@ function SupervisorBottomNav({ active }: { active: string }) {
       <div className="mx-auto grid max-w-5xl grid-cols-4 gap-2 text-center text-sm font-medium text-ink-700">
         {(
           [
-            { href: "/supervisor", label: "대시보드", icon: ClipboardList },
+            { href: "/supervisor", label: "업무 홈", icon: ClipboardList },
             { href: "/supervisor/requests", label: "의뢰 검토", icon: ShieldCheck },
             {
               href: "/supervisor/availability",

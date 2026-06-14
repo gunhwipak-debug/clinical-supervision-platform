@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
+import { SiteHeader } from "../../../components/clinicflow-shell";
 import { EmptyState } from "../../../components/ui/state";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
@@ -44,44 +45,7 @@ export default async function Page() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-background">
-      <header className="sticky top-0 z-50 border-b border-outline-variant bg-surface">
-        <div className="mx-auto flex h-16 max-w-container-max items-center justify-between px-gutter">
-          <Link
-            className="font-headline-md text-headline-md font-bold text-primary"
-            href="/"
-          >
-            ClinicFlow
-          </Link>
-          <nav className="hidden items-center gap-md md:flex">
-            <Link
-              className="font-label-md text-label-md text-on-surface-variant hover:text-secondary"
-              href="/supervisors"
-            >
-              슈퍼바이저 찾기
-            </Link>
-            <Link
-              className="border-b-2 border-secondary pb-1 font-label-md text-label-md text-secondary"
-              href="/requests"
-            >
-              내 의뢰
-            </Link>
-            {current.user.role === "supervisor" ? (
-              <Link
-                className="font-label-md text-label-md text-on-surface-variant hover:text-secondary"
-                href="/supervisor"
-              >
-                슈퍼바이저 업무
-              </Link>
-            ) : null}
-          </nav>
-          <Link
-            className="rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary"
-            href="/supervisors"
-          >
-            새 의뢰
-          </Link>
-        </div>
-      </header>
+      <SiteHeader active="requests" actionHref="/supervisors" actionLabel="새 의뢰" />
 
       <main className="mx-auto w-full max-w-container-max flex-1 px-margin-mobile py-xl md:px-gutter">
         <section className="mb-xl">

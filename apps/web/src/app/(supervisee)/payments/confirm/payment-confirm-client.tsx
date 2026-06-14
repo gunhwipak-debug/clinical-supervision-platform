@@ -67,7 +67,7 @@ export function PaymentConfirmClient({
 
   return (
     <AppShell title="결제 승인 확인" subtitle="토스페이먼츠 승인 결과를 확인합니다.">
-      <Card className="mx-auto grid max-w-xl gap-5 rounded-3xl p-8 text-center">
+      <Card className="mx-auto grid max-w-xl gap-5 rounded-xl p-8 text-center">
         <div
           className={`mx-auto grid size-14 place-items-center rounded-2xl ${
             state === "failed"

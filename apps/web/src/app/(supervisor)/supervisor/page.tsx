@@ -1,10 +1,15 @@
 import Link from "next/link";
 import { profiles, supervision, withUserContext } from "@csp/db";
+import { SiteHeader } from "../../../components/clinicflow-shell";
 import { EmptyState } from "../../../components/ui/state";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 
 export const dynamic = "force-dynamic";
+
+type SupervisorRequestItem = Awaited<
+  ReturnType<typeof supervision.listSupervisionRequests>
+>[number];
 
 export default async function Page() {
   const current = await getCurrentUser();
@@ -35,48 +40,18 @@ export default async function Page() {
   const assigned = requests.filter(
     (request) => request.supervisorId === current.session.userId
   );
-  const actionable = assigned.filter((request) =>
-    isSupervisorActionable(request.status)
-  );
-  const waiting = assigned.filter(
-    (request) => request.status === "awaiting_supervisor_review"
-  ).length;
-  const active = assigned.filter((request) =>
-    [
-      "accepted",
-      "in_review",
-      "feedback_submitted",
-      "additional_info_requested"
-    ].includes(request.status)
-  ).length;
-  const completed = assigned.filter((request) => request.status === "completed").length;
+  const workQueue = assigned
+    .filter((request) => isSupervisorActionable(request.status))
+    .sort(compareSupervisorWork);
+  const nextRequest = workQueue[0] ?? null;
 
   return (
     <div className="min-h-screen bg-background text-on-background">
-      <header className="sticky top-0 z-50 flex h-16 items-center justify-between border-b border-outline-variant bg-surface-container-lowest px-lg">
-        <Link
-          className="font-headline-md text-headline-md font-bold text-primary"
-          href="/"
-        >
-          ClinicFlow
-        </Link>
-        <div className="flex items-center gap-md">
-          <Link
-            className="rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary"
-            href="/supervisor/requests"
-          >
-            의뢰 검토
-          </Link>
-          <Link
-            className="grid h-8 w-8 place-items-center rounded-full border border-outline-variant bg-surface-container-high"
-            href="/supervisor/profile"
-          >
-            <span className="material-symbols-outlined text-on-surface-variant">
-              person
-            </span>
-          </Link>
-        </div>
-      </header>
+      <SiteHeader
+        active="supervisor"
+        actionHref="/supervisor/requests"
+        actionLabel="의뢰 큐"
+      />
 
       <main className="mx-auto grid max-w-container-max gap-lg px-gutter py-xl">
         <section className="grid gap-md md:grid-cols-[1fr_auto] md:items-end">
@@ -88,7 +63,7 @@ export default async function Page() {
               {profile?.displayName ?? "슈퍼바이저 콘솔"}
             </h1>
             <p className="mt-sm max-w-2xl font-body-md text-body-md text-on-surface-variant">
-              지금 처리할 의뢰와 프로필, 상품, 가능시간을 관리합니다.
+              지금 처리할 의뢰와 프로필, 제공 항목, 가능시간을 관리합니다.
             </p>
           </div>
           <Link
@@ -99,10 +74,38 @@ export default async function Page() {
           </Link>
         </section>
 
-        <section className="grid gap-md md:grid-cols-3">
-          <KpiCard icon="clinical_notes" label="새 의뢰" value={waiting} />
-          <KpiCard icon="rate_review" label="검토 중" value={active} />
-          <KpiCard icon="task_alt" label="완료" value={completed} />
+        <section className="grid gap-4 rounded-xl border border-outline-variant bg-surface-container-lowest p-lg md:grid-cols-[1fr_auto] md:items-center">
+          <div>
+            <p className="font-label-sm text-label-sm text-secondary">
+              다음에 처리할 요청
+            </p>
+            <h2 className="mt-xs font-headline-lg text-headline-lg text-on-surface">
+              {nextRequest
+                ? nextActionTitle(nextRequest.status)
+                : "현재 바로 처리할 요청은 없습니다"}
+            </h2>
+            <p className="mt-sm max-w-2xl font-body-md text-body-md text-on-surface-variant">
+              {nextRequest
+                ? `${nextRequest.productTitle ?? "슈퍼비전 의뢰"} · ${statusLabel(
+                    nextRequest.status
+                  )} 상태입니다.`
+                : "새 요청이 들어오면 자료 확인, 수락, 피드백 작성 순서로 이곳에 먼저 표시됩니다."}
+            </p>
+          </div>
+          <Link
+            className={`rounded-lg px-md py-2 font-label-md text-label-md ${
+              nextRequest
+                ? "bg-primary text-on-primary"
+                : "border border-outline-variant bg-surface text-on-surface"
+            }`}
+            href={
+              nextRequest
+                ? (`/supervisor/requests/${nextRequest.id}` as never)
+                : "/supervisor/requests"
+            }
+          >
+            {nextRequest ? "요청 열기" : "의뢰 큐 보기"}
+          </Link>
         </section>
 
         <section className="grid gap-lg lg:grid-cols-[1fr_360px]">
@@ -119,14 +122,17 @@ export default async function Page() {
               </Link>
             </div>
             <div className="grid gap-sm">
-              {actionable.slice(0, 5).map((request) => (
+              {workQueue.slice(0, 5).map((request) => (
                 <Link
-                  className="flex items-center justify-between rounded-lg border border-outline-variant bg-surface p-md hover:bg-surface-container-low"
+                  className="grid gap-3 rounded-lg border border-outline-variant bg-surface p-md hover:bg-surface-container-low md:grid-cols-[1fr_auto] md:items-center"
                   href={`/supervisor/requests/${request.id}`}
                   key={request.id}
                 >
                   <div>
-                    <p className="font-label-md text-label-md text-on-surface">
+                    <p className="font-label-sm text-label-sm text-secondary">
+                      {statusActionLabel(request.status)}
+                    </p>
+                    <p className="mt-xs font-label-md text-label-md text-on-surface">
                       {request.productTitle ?? "슈퍼비전 의뢰"}
                     </p>
                     <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
@@ -139,7 +145,7 @@ export default async function Page() {
                   </span>
                 </Link>
               ))}
-              {actionable.length === 0 ? (
+              {workQueue.length === 0 ? (
                 <p className="rounded-lg border border-outline-variant p-md font-body-sm text-body-sm text-on-surface-variant">
                   현재 슈퍼바이저가 처리해야 할 의뢰가 없습니다.
                 </p>
@@ -152,9 +158,9 @@ export default async function Page() {
               ["/supervisor/profile", "프로필", "badge", "소개와 공개 프로필 관리"],
               [
                 "/supervisor/products",
-                "서비스 상품",
+                "제공 항목",
                 "payments",
-                "서비스 상품과 가격 관리"
+                "지도 방식과 가격 관리"
               ],
               [
                 "/supervisor/availability",
@@ -170,7 +176,7 @@ export default async function Page() {
               ]
             ].map(([href, label, icon, body]) => (
               <Link
-                className="flex items-center gap-sm rounded-xl border border-outline-variant bg-surface-container-lowest p-md transition-all duration-250 hover:scale-[1.015] hover:border-secondary hover:bg-surface-bright active:scale-[0.985] shadow-2xs hover:shadow-sm"
+                className="flex items-center gap-sm rounded-lg border border-outline-variant bg-surface-container-lowest p-md transition-colors hover:border-secondary hover:bg-surface-bright"
                 href={href as never}
                 key={href}
               >
@@ -192,28 +198,6 @@ export default async function Page() {
   );
 }
 
-function KpiCard({
-  icon,
-  label,
-  value
-}: {
-  icon: string;
-  label: string;
-  value: number;
-}) {
-  return (
-    <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-lg transition-all duration-300 hover:scale-[1.025] hover:border-secondary hover:shadow-lg hover:shadow-secondary/5 cursor-default">
-      <span className="material-symbols-outlined text-secondary">{icon}</span>
-      <p className="mt-md font-label-md text-label-md text-on-surface-variant">
-        {label}
-      </p>
-      <p className="mt-xs font-display-lg text-display-lg text-on-background">
-        {String(value)}
-      </p>
-    </div>
-  );
-}
-
 function isSupervisorActionable(status: string): boolean {
   return [
     "awaiting_supervisor_review",
@@ -223,6 +207,48 @@ function isSupervisorActionable(status: string): boolean {
     "additional_info_requested",
     "completion_record_issued"
   ].includes(status);
+}
+
+function compareSupervisorWork(
+  a: SupervisorRequestItem,
+  b: SupervisorRequestItem
+): number {
+  const priority = (status: string) =>
+    ({
+      additional_info_requested: 0,
+      awaiting_supervisor_review: 1,
+      accepted: 2,
+      in_review: 3,
+      feedback_submitted: 4,
+      completion_record_issued: 5
+    })[status] ?? 10;
+  const priorityGap = priority(a.status) - priority(b.status);
+  if (priorityGap !== 0) return priorityGap;
+  return new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime();
+}
+
+function nextActionTitle(status: string): string {
+  const labels: Record<string, string> = {
+    additional_info_requested: "보완 자료가 들어왔습니다",
+    awaiting_supervisor_review: "수락 여부를 확인해야 합니다",
+    accepted: "슈퍼비전 준비 상태를 확인하세요",
+    in_review: "피드백 작성을 이어가세요",
+    feedback_submitted: "제출한 피드백을 마무리하세요",
+    completion_record_issued: "완료 기록을 확인하세요"
+  };
+  return labels[status] ?? "요청 상태를 확인하세요";
+}
+
+function statusActionLabel(status: string): string {
+  const labels: Record<string, string> = {
+    additional_info_requested: "자료 보완 확인",
+    awaiting_supervisor_review: "수락 여부 결정",
+    accepted: "검토 준비",
+    in_review: "피드백 작성",
+    feedback_submitted: "피드백 제출됨",
+    completion_record_issued: "완료 기록 확인"
+  };
+  return labels[status] ?? "상태 확인";
 }
 
 function statusLabel(status: string): string {

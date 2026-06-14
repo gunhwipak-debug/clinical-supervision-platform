@@ -119,7 +119,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                 shield_locked
               </span>
               <span className="font-label-md text-label-md text-secondary">
-                보안 영역: 검토 목적 내 조회
+                검토 화면
               </span>
             </div>
             <div className="pattern-bg relative z-0 flex flex-col gap-md p-md">
@@ -128,7 +128,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
                   <Info label="의뢰 번호" value={shortRequestId(detail.id)} />
                   <Info label="상태" value={statusLabel(detail.status)} />
                   <Info
-                    label="상품"
+                    label="세션 유형"
                     value={detail.productTitle ?? "슈퍼비전 의뢰"}
                     wide
                   />

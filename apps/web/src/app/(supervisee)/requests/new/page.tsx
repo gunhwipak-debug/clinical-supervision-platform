@@ -49,7 +49,7 @@ export default async function Page({
   return (
     <AppShell
       title="새 슈퍼비전 의뢰"
-      subtitle="상품과 희망 일정을 확인한 뒤 초안을 만들고, 자료 제출과 선택 점검을 이어갑니다."
+      subtitle="제공 항목과 희망 일정을 확인한 뒤 초안을 만들고, 자료 제출과 선택 점검을 이어갑니다."
     >
       <NewRequestForm
         serviceProductId={serviceProductId}

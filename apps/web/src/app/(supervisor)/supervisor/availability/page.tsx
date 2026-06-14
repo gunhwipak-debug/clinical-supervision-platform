@@ -15,10 +15,10 @@ import { AvailabilityForm } from "./availability-form";
 export const dynamic = "force-dynamic";
 
 const navItems = [
-  { href: "/supervisor", icon: LayoutDashboard, label: "대시보드" },
+  { href: "/supervisor", icon: LayoutDashboard, label: "업무 홈" },
   { href: "/supervisor/requests", icon: ClipboardList, label: "의뢰 검토" },
   { href: "/supervisor/profile", icon: BadgeCheck, label: "프로필" },
-  { href: "/supervisor/products", icon: CreditCard, label: "서비스 상품" },
+  { href: "/supervisor/products", icon: CreditCard, label: "제공 항목" },
   { href: "/supervisor/availability", icon: CalendarClock, label: "일정" }
 ] as const;
 

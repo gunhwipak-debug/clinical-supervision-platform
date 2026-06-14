@@ -20,7 +20,7 @@ const resetPasswordSchema = z
       .max(256)
       .regex(/\d/u, "숫자를 포함해야 합니다.")
       .regex(/[^A-Za-z0-9]/u, "특수문자를 포함해야 합니다."),
-    token: z.string().min(20, "메일의 재설정 토큰을 입력해주세요.").max(256)
+    mailCode: z.string().min(20, "메일의 확인 정보를 입력해주세요.").max(256)
   })
   .refine((value) => value.password === value.confirmPassword, {
     message: "비밀번호가 서로 다릅니다.",
@@ -37,7 +37,7 @@ export function ResetPasswordForm({ initialToken }: { initialToken: string }) {
     defaultValues: {
       confirmPassword: "",
       password: "",
-      token: initialToken
+      mailCode: initialToken
     }
   });
 
@@ -45,7 +45,7 @@ export function ResetPasswordForm({ initialToken }: { initialToken: string }) {
     const response = await fetch("/api/auth/password/reset", {
       method: "POST",
       headers: { "content-type": "application/json" },
-      body: JSON.stringify({ password: values.password, token: values.token })
+      body: JSON.stringify({ password: values.password, token: values.mailCode })
     });
     const body = (await response.json()) as { error?: { code?: string } };
 
@@ -65,15 +65,17 @@ export function ResetPasswordForm({ initialToken }: { initialToken: string }) {
   return (
     <form className="grid gap-4" onSubmit={form.handleSubmit(submit)}>
       <Field>
-        <Label htmlFor="reset-token">재설정 토큰</Label>
+        <Label htmlFor="reset-code">메일 확인 정보</Label>
         <Input
           autoComplete="one-time-code"
-          id="reset-token"
-          placeholder="메일의 토큰"
-          {...form.register("token")}
+          id="reset-code"
+          placeholder="메일 확인 정보"
+          {...form.register("mailCode")}
         />
-        {form.formState.errors.token ? (
-          <p className="text-sm text-danger">{form.formState.errors.token.message}</p>
+        {form.formState.errors.mailCode ? (
+          <p className="text-sm text-danger">
+            {form.formState.errors.mailCode.message}
+          </p>
         ) : null}
       </Field>
       <Field>
@@ -123,7 +125,7 @@ export function ResetPasswordForm({ initialToken }: { initialToken: string }) {
 function resetError(code: string | undefined): string {
   const labels: Record<string, string> = {
     invalid_request: "입력값을 확인해주세요.",
-    invalid_token: "재설정 토큰이 만료되었거나 이미 사용되었습니다."
+    invalid_token: "메일 확인 정보가 만료되었거나 이미 사용되었습니다."
   };
   return labels[code ?? ""] ?? "비밀번호를 변경하지 못했습니다.";
 }

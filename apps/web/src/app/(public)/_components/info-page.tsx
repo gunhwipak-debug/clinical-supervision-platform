@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { PageIntro, SiteHeader } from "../../../components/clinicflow-shell";
 
 export function InfoPage({
   children,
@@ -10,44 +11,34 @@ export function InfoPage({
   title: string;
 }) {
   return (
-    <main className="min-h-screen bg-background px-margin-mobile py-xl text-on-surface md:px-gutter">
-      <section className="mx-auto grid w-full max-w-3xl gap-lg rounded-xl border border-outline-variant bg-surface-container-lowest p-lg">
-        <Link
-          className="font-headline-md text-headline-md font-bold text-primary"
-          href="/"
-        >
-          ClinicFlow
-        </Link>
-        <div>
-          <p className="font-label-md text-label-md text-secondary">{eyebrow}</p>
-          <h1 className="mt-sm font-headline-lg text-headline-lg text-primary">
-            {title}
-          </h1>
-        </div>
-        <div className="grid gap-md font-body-md text-body-md leading-relaxed text-on-surface-variant">
+    <main className="min-h-screen bg-surface-base text-ink-900">
+      <SiteHeader active="resources" />
+      <div className="mx-auto grid w-full max-w-4xl gap-8 px-5 py-10">
+        <PageIntro eyebrow={eyebrow} title={title} />
+        <section className="grid gap-5 rounded-xl border border-line bg-surface-elevated p-6 text-base leading-relaxed text-ink-700 shadow-card">
           {children}
-        </div>
-        <nav className="flex flex-wrap gap-sm border-t border-outline-variant pt-md font-label-md text-label-md">
-          <Link className="text-secondary hover:underline" href="/resources">
-            자료실
+        </section>
+        <nav className="flex flex-wrap gap-2 border-t border-line pt-5 text-sm font-semibold text-ink-600">
+          <Link className="rounded-md px-3 py-2 hover:bg-surface-sunken" href="/guide">
+            진행 방식
           </Link>
-          <Link className="text-secondary hover:underline" href="/privacy">
+          <Link className="rounded-md px-3 py-2 hover:bg-surface-sunken" href="/resources">
+            가이드·자료
+          </Link>
+          <Link className="rounded-md px-3 py-2 hover:bg-surface-sunken" href="/privacy">
             개인정보 처리방침
           </Link>
-          <Link className="text-secondary hover:underline" href="/terms">
+          <Link className="rounded-md px-3 py-2 hover:bg-surface-sunken" href="/terms">
             서비스 이용약관
           </Link>
-          <Link className="text-secondary hover:underline" href="/sensitive-consent">
-            민감정보 처리 동의
+          <Link className="rounded-md px-3 py-2 hover:bg-surface-sunken" href="/security">
+            자료 관리 기준
           </Link>
-          <Link className="text-secondary hover:underline" href="/security">
-            보안 기준
-          </Link>
-          <Link className="text-secondary hover:underline" href="/clinical-guidelines">
+          <Link className="rounded-md px-3 py-2 hover:bg-surface-sunken" href="/clinical-guidelines">
             임상 가이드라인
           </Link>
         </nav>
-      </section>
+      </div>
     </main>
   );
 }

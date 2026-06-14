@@ -9,6 +9,7 @@ import {
   ShieldCheck
 } from "lucide-react";
 import { AppShell } from "../../../../components/app-shell";
+import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { Badge } from "../../../../components/ui/badge";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
@@ -23,10 +24,10 @@ export default async function SupervisorProductsPage() {
 
   if (!current || current.user.role !== "supervisor") {
     return (
-      <AppShell title="상품 관리" subtitle="슈퍼바이저 계정으로 로그인해주세요.">
+      <AppShell title="제공 항목 관리" subtitle="슈퍼바이저 계정으로 로그인해주세요.">
         <EmptyState
           title="로그인이 필요합니다"
-          description="상품은 슈퍼바이저만 관리할 수 있습니다."
+          description="제공 항목은 슈퍼바이저만 관리할 수 있습니다."
         />
       </AppShell>
     );
@@ -41,26 +42,17 @@ export default async function SupervisorProductsPage() {
 
   return (
     <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-6 py-6 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <Link className="flex items-center gap-3" href="/supervisor">
-            <PackageCheck aria-hidden size={30} />
-            <span className="text-3xl font-bold">ClinicFlow</span>
-          </Link>
-          <Link
-            className="rounded-2xl text-sm font-semibold text-brand-700"
-            href="/supervisor/products#new-product"
-          >
-            상품 추가
-          </Link>
-        </div>
-      </header>
+      <SiteHeader
+        active="supervisor"
+        actionHref="/supervisor/products#new-product"
+        actionLabel="항목 추가"
+      />
 
       <div className="mx-auto grid max-w-5xl gap-6 px-6 py-8">
         <section>
-          <h1 className="text-4xl font-bold">서비스 상품</h1>
+          <h1 className="text-4xl font-bold">제공 항목</h1>
           <p className="mt-3 text-xl text-ink-700">
-            검색 상세에서 슈퍼바이지가 직접 선택하는 가격과 검토 유형입니다.
+            슈퍼바이지가 의뢰 전에 확인하는 세션 유형, 가격, 응답 기준입니다.
           </p>
         </section>
 
@@ -70,21 +62,21 @@ export default async function SupervisorProductsPage() {
 
         {products.length === 0 ? (
           <EmptyState
-            title="등록된 상품이 없습니다"
-            description="검색 상세에서 선택할 수 있는 상품을 하나 이상 준비해주세요."
+            title="등록된 제공 항목이 없습니다"
+            description="검색 상세에서 선택할 수 있는 세션 유형을 하나 이상 준비해주세요."
           />
         ) : (
           <>
-            <Card className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+            <Card className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
               <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                 <div className="flex items-start gap-3">
                   <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
                     <PackageCheck aria-hidden size={22} />
                   </span>
                   <div>
-                    <h2 className="text-xl font-bold">상품 운영 상태</h2>
+                    <h2 className="text-xl font-bold">제공 항목 상태</h2>
                     <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                      현재 공개 상세에 노출될 서비스 상품을 확인합니다.
+                      공개 프로필에 노출될 세션 유형과 운영 상태를 확인합니다.
                     </p>
                   </div>
                 </div>
@@ -101,7 +93,7 @@ export default async function SupervisorProductsPage() {
               {products.map((product) => (
                 <Card
                   key={product.id}
-                  className="grid gap-4 rounded-3xl border-line bg-surface-elevated p-6 shadow-card"
+                  className="grid gap-4 rounded-xl border-line bg-surface-elevated p-6 shadow-card"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -149,7 +141,7 @@ export default async function SupervisorProductsPage() {
           </>
         )}
       </div>
-      <SupervisorBottomNav active="서비스 상품" />
+      <SupervisorBottomNav active="제공 항목" />
     </main>
   );
 }
@@ -171,14 +163,14 @@ function SupervisorBottomNav({ active }: { active: string }) {
       <div className="mx-auto grid max-w-5xl grid-cols-4 gap-2 text-center text-sm font-medium text-ink-700">
         {(
           [
-            { href: "/supervisor", label: "대시보드", icon: LayoutGrid },
+            { href: "/supervisor", label: "업무 홈", icon: LayoutGrid },
             { href: "/supervisor/requests", label: "의뢰 검토", icon: ClipboardList },
             {
               href: "/supervisor/availability",
               label: "일정",
               icon: CalendarClock
             },
-            { href: "/supervisor/products", label: "서비스 상품", icon: PackageCheck }
+            { href: "/supervisor/products", label: "제공 항목", icon: PackageCheck }
           ] as const
         ).map((item) => {
           const Icon = item.icon;

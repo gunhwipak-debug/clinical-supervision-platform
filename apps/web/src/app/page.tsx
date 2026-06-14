@@ -3,6 +3,12 @@ import { supervision, withUserContext } from "@csp/db";
 import { Badge } from "../components/ui/badge";
 import { Button } from "../components/ui/button";
 import { Card } from "../components/ui/card";
+import {
+  FlowStepNav,
+  PageIntro,
+  PrimaryActionPanel,
+  SiteHeader
+} from "../components/clinicflow-shell";
 import { getCurrentUser } from "../lib/auth/current-user";
 import { createRuntimeDatabase } from "../lib/auth/database";
 import { isSupervisor } from "../lib/auth/guards";
@@ -36,53 +42,17 @@ export default async function HomePage() {
 
   return (
     <main className="min-h-screen bg-surface-base text-ink-900">
-      <header className="sticky top-0 z-30 border-b border-line bg-surface-base/90 backdrop-blur">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5">
-          <Link className="font-headline-md text-headline-md font-bold" href="/">
-            ClinicFlow
-          </Link>
-          <nav className="hidden items-center gap-4 text-sm font-semibold text-ink-700 md:flex">
-            <Link href="/supervisors">슈퍼바이저 찾기</Link>
-            <Link href="/requests">내 의뢰</Link>
-            <Link href="/payments">결제</Link>
-            <Link href="/resources">자료실</Link>
-            {current && isSupervisor(current) ? (
-              <Link href="/supervisor">슈퍼바이저 업무</Link>
-            ) : null}
-          </nav>
-          <div className="flex items-center gap-2">
-            {current ? (
-              <Button asChild size="sm" variant="secondary">
-                <Link href="/settings">설정</Link>
-              </Button>
-            ) : (
-              <>
-                <Button asChild size="sm" variant="secondary">
-                  <Link href="/login">로그인</Link>
-                </Button>
-                <Button asChild size="sm">
-                  <Link href="/signup">가입</Link>
-                </Button>
-              </>
-            )}
-          </div>
-        </div>
-      </header>
+      <SiteHeader active="" actionHref="/supervisors" actionLabel="시작하기" />
 
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-12 md:grid-cols-[1fr_420px] md:items-center md:py-20">
         <div className="grid gap-6">
           <Badge className="w-fit" tone="accent">
-            임상 슈퍼비전 자료 검토 플랫폼
+            온라인 임상 슈퍼비전
           </Badge>
-          <div className="grid gap-4">
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-normal md:text-6xl">
-              민감한 임상자료를 안전하게 전달하고, 검토하고, 피드백까지 남깁니다.
-            </h1>
-            <p className="max-w-2xl text-lg leading-relaxed text-ink-700">
-              슈퍼바이지는 필요한 슈퍼바이저와 일정을 선택해 의뢰하고, 슈퍼바이저는 받은
-              자료를 웹에서 미리보기하며 주석과 피드백을 작성합니다.
-            </p>
-          </div>
+          <PageIntro
+            title="슈퍼바이저를 찾고, 사례를 제출하고, 피드백을 학습 기록으로 남깁니다."
+            subtitle="ClinicFlow는 병원과 센터 실무자가 슈퍼비전을 의뢰하고, 받은 피드백을 이후 학습에 다시 꺼내볼 수 있게 돕는 온라인 교육 플랫폼입니다."
+          />
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
               <Link href="/supervisors">슈퍼바이저 찾기</Link>
@@ -95,10 +65,10 @@ export default async function HomePage() {
           </div>
         </div>
 
-        <Card className="grid gap-4 p-6">
+        <Card className="grid gap-4 rounded-xl p-6">
           <div className="flex items-center justify-between">
             <p className="text-sm font-semibold text-ink-500">
-              {current ? "현재 작업" : "핵심 흐름"}
+              {current ? "이어갈 작업" : "진행 흐름"}
             </p>
             <span className="material-symbols-outlined text-brand-600">
               clinical_notes
@@ -119,7 +89,7 @@ export default async function HomePage() {
                 />
               ) : null}
               <StatusLink
-                body="예약 가능한 전문가 검색"
+                body="예약 가능한 슈퍼바이저 검색"
                 href="/supervisors"
                 label="새 의뢰"
               />
@@ -127,34 +97,59 @@ export default async function HomePage() {
           ) : (
             <ol className="grid gap-3 text-sm text-ink-700">
               <li className="rounded-md border border-line bg-surface-sunken p-3">
-                1. 슈퍼바이저 프로필과 가능 일정을 확인합니다.
+                1. 슈퍼바이저의 사진, 자격, 전문 분야, 소개를 확인합니다.
               </li>
               <li className="rounded-md border border-line bg-surface-sunken p-3">
-                2. 비식별화된 자료와 요청 내용을 제출합니다.
+                2. 세션 유형과 일정을 고른 뒤 사례 자료를 제출합니다.
               </li>
               <li className="rounded-md border border-line bg-surface-sunken p-3">
-                3. 웹 미리보기에서 주석, 피드백, 완료 기록을 확인합니다.
+                3. 피드백과 보완 요청을 확인하고 학습 기록으로 보관합니다.
               </li>
             </ol>
           )}
         </Card>
       </section>
 
+      <section className="mx-auto grid max-w-7xl gap-8 px-5 pb-16">
+        <FlowStepNav
+          current="슈퍼바이저 선택"
+          steps={[
+            "슈퍼바이저 선택",
+            "세션 선택",
+            "일정 선택",
+            "자료 제출",
+            "피드백 확인",
+            "학습 기록"
+          ]}
+        />
+        <PrimaryActionPanel
+          action={
+            <Button asChild className="bg-white text-ink-900 hover:bg-slate-100">
+              <Link href="/guide">진행 방식 보기</Link>
+            </Button>
+          }
+          title="처음이라면 슈퍼바이저 선택부터 시작하세요"
+        >
+          가격표를 먼저 보는 구조가 아니라, 내 사례에 맞는 슈퍼바이저와 슈퍼비전 방식을
+          고른 뒤 필요한 자료를 제출하는 흐름입니다.
+        </PrimaryActionPanel>
+      </section>
+
       <section className="mx-auto grid max-w-7xl gap-4 px-5 pb-16 md:grid-cols-3">
         <FeatureCard
-          body="슈퍼바이저별 가능시간과 구글 캘린더 바쁜 시간을 함께 반영해 예약 충돌을 줄입니다."
+          body="프로필에서 자격, 전문 분야, 소개, 제공 항목을 함께 보고 선택합니다."
           icon="calendar_month"
-          title="일정 동기화"
+          title="슈퍼바이저 비교"
         />
         <FeatureCard
-          body="보고서, 원자료, 축어록을 웹에서 미리보기하고 필요한 위치에 직접 주석을 남깁니다."
+          body="주호소, 의뢰 사유, 검사자료, 확인받고 싶은 질문을 한 흐름에서 정리합니다."
           icon="rate_review"
-          title="자료 미리보기와 주석"
+          title="사례 자료 제출"
         />
         <FeatureCard
-          body="의뢰, 결제, 환불, 정산, 완료 기록을 상태 흐름에 맞춰 추적합니다."
+          body="완료된 슈퍼비전은 슈퍼바이저와 사례 단위의 학습 기록으로 다시 확인합니다."
           icon="verified_user"
-          title="업무 기록"
+          title="피드백 보관"
         />
       </section>
     </main>

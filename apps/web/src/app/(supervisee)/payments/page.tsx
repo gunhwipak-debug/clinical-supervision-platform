@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { payments, withUserContext } from "@csp/db";
-import { ArrowRight, CreditCard, ReceiptText, WalletCards } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { AppShell } from "../../../components/app-shell";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
@@ -40,12 +40,10 @@ export default async function PaymentsPage() {
   const ownPayments = allPayments.filter(
     (payment) => payment.superviseeId === current.session.userId
   );
-  const paidTotal = ownPayments
-    .filter((payment) => payment.status === "paid")
-    .reduce((total, payment) => total + payment.amountKrw, 0);
-  const pendingCount = ownPayments.filter(
-    (payment) => payment.status === "pending"
-  ).length;
+  const pendingPayments = ownPayments.filter((payment) => payment.status === "pending");
+  const latestPayment = [...ownPayments].sort(
+    (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+  )[0];
 
   return (
     <AppShell
@@ -60,7 +58,7 @@ export default async function PaymentsPage() {
       {ownPayments.length === 0 ? (
         <EmptyState
           title="아직 결제 내역이 없습니다"
-          description="슈퍼바이저 프로필에서 일정과 상품을 선택해 의뢰를 만들면 결제 내역이 이곳에 표시됩니다."
+          description="슈퍼바이저 프로필에서 일정과 제공 항목을 선택해 의뢰를 만들면 결제 내역이 이곳에 표시됩니다."
           action={
             <Button asChild>
               <Link href="/supervisors">슈퍼바이저 찾기</Link>
@@ -69,22 +67,36 @@ export default async function PaymentsPage() {
         />
       ) : (
         <div className="grid gap-5">
-          <section className="grid gap-4 md:grid-cols-3">
-            <SummaryCard
-              icon={<WalletCards aria-hidden size={22} />}
-              label="결제 건수"
-              value={`${ownPayments.length.toLocaleString("ko-KR")}건`}
-            />
-            <SummaryCard
-              icon={<CreditCard aria-hidden size={22} />}
-              label="결제 완료 금액"
-              value={`₩${paidTotal.toLocaleString("ko-KR")}`}
-            />
-            <SummaryCard
-              icon={<ReceiptText aria-hidden size={22} />}
-              label="결제 대기"
-              value={`${pendingCount.toLocaleString("ko-KR")}건`}
-            />
+          <section className="grid gap-3 rounded-xl border border-line bg-surface-elevated p-5 shadow-card md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p className="text-sm font-semibold text-brand-700">현재 결제 상태</p>
+              <h2 className="mt-2 text-2xl font-bold text-ink-900">
+                {pendingPayments.length > 0
+                  ? "완료해야 할 결제가 있습니다"
+                  : "대기 중인 결제는 없습니다"}
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink-600">
+                {pendingPayments.length > 0
+                  ? "의뢰 상세에서 결제를 이어서 진행하면 슈퍼바이저 확인 단계로 넘어갑니다."
+                  : latestPayment
+                    ? `가장 최근 결제는 ${paymentLabel(latestPayment.status)} 상태입니다.`
+                    : "새 의뢰를 만들면 결제 상태가 이곳에 정리됩니다."}
+              </p>
+            </div>
+            <Button
+              asChild
+              variant={pendingPayments.length > 0 ? "primary" : "secondary"}
+            >
+              <Link
+                href={
+                  pendingPayments[0]
+                    ? (`/payments/${pendingPayments[0].id}` as never)
+                    : "/supervisors"
+                }
+              >
+                {pendingPayments.length > 0 ? "결제 이어가기" : "슈퍼바이저 찾기"}
+              </Link>
+            </Button>
           </section>
 
           <section className="grid gap-3">
@@ -95,28 +107,6 @@ export default async function PaymentsPage() {
         </div>
       )}
     </AppShell>
-  );
-}
-
-function SummaryCard({
-  icon,
-  label,
-  value
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string;
-}) {
-  return (
-    <Card className="flex items-center justify-between gap-4">
-      <div>
-        <p className="text-sm font-semibold text-ink-500">{label}</p>
-        <p className="mt-2 text-2xl font-bold text-ink-900">{value}</p>
-      </div>
-      <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600">
-        {icon}
-      </span>
-    </Card>
   );
 }
 

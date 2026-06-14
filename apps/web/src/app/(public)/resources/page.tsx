@@ -2,16 +2,26 @@ import { InfoPage } from "../_components/info-page";
 
 export default function ResourcesPage() {
   return (
-    <InfoPage eyebrow="자료실" title="ClinicFlow 사용 자료">
+    <InfoPage eyebrow="가이드·자료" title="슈퍼비전 준비 자료">
       <p>
-        ClinicFlow는 슈퍼바이지가 비식별화된 임상자료를 안전하게 전달하고, 슈퍼바이저가
-        웹에서 자료를 검토하며 주석과 피드백을 남기는 업무 흐름을 지원합니다.
+        이 페이지는 별도의 자료 창고가 아니라, 의뢰를 시작하기 전에 필요한 준비물을
+        짧게 확인하는 곳입니다.
       </p>
-      <ul className="grid gap-sm">
-        <li>1. 슈퍼바이저 프로필에서 상품과 가능 일정을 먼저 확인합니다.</li>
-        <li>2. 의뢰서 작성 후 필요한 자료를 비식별화해 업로드합니다.</li>
-        <li>3. 슈퍼바이저는 미리보기 화면에서 자료별 주석과 피드백을 작성합니다.</li>
-        <li>4. 완료 기록은 검토 범위와 책임 경계를 함께 남깁니다.</li>
+      <ul className="grid gap-3">
+        <li className="rounded-lg border border-line bg-surface-sunken p-4">
+          <strong className="block text-ink-900">사례 요약</strong>
+          주호소, 의뢰 사유, 이미 시행한 평가나 상담 내용을 한 문단으로 정리합니다.
+        </li>
+        <li className="rounded-lg border border-line bg-surface-sunken p-4">
+          <strong className="block text-ink-900">검토받을 자료</strong>
+          보고서 초안, 검사 결과, 축어록, 상담 기록처럼 슈퍼바이저가 실제로 볼 자료를
+          준비합니다.
+        </li>
+        <li className="rounded-lg border border-line bg-surface-sunken p-4">
+          <strong className="block text-ink-900">확인받고 싶은 질문</strong>
+          “진단 가설을 어떻게 정리할지”, “보고서 문장을 어떻게 수정할지”처럼 구체적인
+          질문을 적어두면 피드백이 명확해집니다.
+        </li>
       </ul>
     </InfoPage>
   );

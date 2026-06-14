@@ -3,12 +3,13 @@ import {
   Banknote,
   ClipboardList,
   Gauge,
+  ListChecks,
   RotateCcw,
-  ShieldCheck
 } from "lucide-react";
 
 const navItems = [
-  { href: "/admin", label: "대시보드", icon: Gauge },
+  { href: "/admin", label: "운영 홈", icon: Gauge },
+  { href: "/admin/queue", label: "대기열", icon: ListChecks },
   { href: "/admin/qualifications", label: "자격 승인", icon: BadgeCheck },
   { href: "/admin/refunds", label: "환불 큐", icon: RotateCcw },
   { href: "/admin/payouts", label: "정산", icon: Banknote }
@@ -40,12 +41,11 @@ export function AdminShell({
           </a>
           <div className="mt-5 rounded-lg bg-brand-50 p-3 text-sm text-brand-700">
             <div className="flex items-center gap-2 font-semibold">
-              <ShieldCheck aria-hidden size={17} />
-              2단계 인증 관리자 세션
+              <ClipboardList aria-hidden size={17} />
+              처리할 업무부터 확인
             </div>
             <p className="mt-1 text-xs leading-relaxed text-ink-500">
-              관리자 콘솔은 허용된 네트워크, 2단계 인증, 30자 이상의 처리 사유를 모두
-              요구합니다.
+              자격 승인, 환불, 정산, 처리 기록을 대기열 기준으로 확인합니다.
             </p>
           </div>
           <nav

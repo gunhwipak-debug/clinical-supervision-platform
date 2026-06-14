@@ -7,7 +7,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 
 const requestSchema = z.object({
-  serviceProductId: z.uuid("상품 ID가 필요합니다."),
+  serviceProductId: z.uuid("제공 항목 선택이 필요합니다."),
   retentionDays: z.coerce
     .number()
     .refine((value) => value === 7 || value === 30 || value === 90, {
@@ -22,8 +22,8 @@ const requestSchema = z.object({
 type RequestInput = z.input<typeof requestSchema>;
 type RequestValues = z.output<typeof requestSchema>;
 
-const steps = ["선택 확인", "상품·일정 확인", "보관기간", "긴급도 확인"] as const;
-const asyncSteps = ["선택 확인", "상품 방식 확인", "보관기간", "긴급도 확인"] as const;
+const steps = ["선택 확인", "제공 항목·일정 확인", "보관기간", "긴급도 확인"] as const;
+const asyncSteps = ["선택 확인", "슈퍼비전 방식 확인", "보관기간", "긴급도 확인"] as const;
 
 export function NewRequestForm({
   selectedSlot,
@@ -99,11 +99,11 @@ export function NewRequestForm({
       <div className="mx-auto max-w-container-max md:px-gutter">
         <div className="mb-xl text-center md:text-left">
           <h1 className="mb-sm font-headline-lg text-headline-lg text-on-surface">
-            새로운 수퍼비전 요청
+            새로운 슈퍼비전 요청
           </h1>
           <p className="max-w-2xl font-body-lg text-body-lg text-on-surface-variant">
-            안전하고 체계적인 임상 수퍼비전을 위한 요청서를 작성합니다. 입력된 모든
-            정보는 암호화되어 안전하게 보관됩니다.
+            선택한 슈퍼바이저와 세션 유형을 확인한 뒤, 사례 자료를 제출할 초안을
+            만듭니다.
           </p>
         </div>
 
@@ -155,8 +155,8 @@ export function NewRequestForm({
                   </h3>
                   <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
                     {requiresSelectedSlot
-                      ? "프로필 캘린더에서 선택한 상품과 일정을 확인한 뒤 초안을 생성합니다."
-                      : "비동기 상품은 일정 예약 없이 자료 제출 초안을 먼저 생성합니다."}
+                      ? "프로필 캘린더에서 선택한 제공 항목과 일정을 확인한 뒤 초안을 생성합니다."
+                      : "비동기 항목은 일정 예약 없이 자료 제출 초안을 먼저 생성합니다."}
                   </p>
                 </div>
                 <span className="material-symbols-outlined text-[32px] font-light text-secondary">
@@ -175,12 +175,12 @@ export function NewRequestForm({
                           </span>
                           <div>
                             <p className="font-label-md text-label-md text-on-surface">
-                              선택한 슈퍼비전 상품
+                              선택한 슈퍼비전 제공 항목
                             </p>
                             <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
                               {requiresSelectedSlot
-                                ? "슈퍼바이저 프로필의 일정 캘린더에서 고른 상품과 시간으로 요청서를 작성합니다."
-                                : "비동기 검토 상품은 자료를 제출하면 슈퍼바이저가 작업 화면에서 검토합니다."}
+                                ? "슈퍼바이저 프로필의 일정 캘린더에서 고른 항목과 시간으로 요청서를 작성합니다."
+                                : "비동기 검토 항목은 자료를 제출하면 슈퍼바이저가 작업 화면에서 검토합니다."}
                             </p>
                           </div>
                         </div>
@@ -192,11 +192,13 @@ export function NewRequestForm({
                       </div>
                       {!hasSelectedProduct ? (
                         <p className="mt-md rounded-lg border border-outline-variant bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                          아직 선택된 상품이 없습니다. 슈퍼바이저 프로필에서 가능 일정을
-                          먼저 선택해주세요.
+                          아직 선택된 제공 항목이 없습니다. 슈퍼바이저 프로필에서 가능
+                          일정을 먼저 선택해주세요.
                         </p>
                       ) : null}
-                      {hasSelectedProduct && requiresSelectedSlot && !hasSelectedSlot ? (
+                      {hasSelectedProduct &&
+                      requiresSelectedSlot &&
+                      !hasSelectedSlot ? (
                         <p className="mt-md rounded-lg border border-outline-variant bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
                           신청 전에 슈퍼바이저의 가능 일정에서 시간대를 먼저 선택해야
                           합니다.
@@ -204,7 +206,7 @@ export function NewRequestForm({
                       ) : null}
                       {hasSelectedProduct && !requiresSelectedSlot ? (
                         <p className="mt-md rounded-lg border border-secondary bg-surface-container p-sm font-body-sm text-body-sm text-secondary">
-                          이 상품은 비동기 검토 방식이라 시간대를 고르지 않고 초안을
+                          이 항목은 비동기 검토 방식이라 시간대를 고르지 않고 초안을
                           만들 수 있습니다.
                         </p>
                       ) : null}
@@ -226,7 +228,7 @@ export function NewRequestForm({
                           {selection.productTitle ? (
                             <p>
                               <span className="font-label-md text-label-md text-on-surface">
-                                상품
+                                제공 항목
                               </span>
                               : {selection.productTitle}
                             </p>
@@ -254,13 +256,13 @@ export function NewRequestForm({
                   <div className="grid gap-md">
                     <label className="grid gap-xs">
                       <span className="font-label-md text-label-md text-on-surface">
-                        선택한 상품
+                        선택한 제공 항목
                       </span>
                       {hasSelectedProduct ? (
                         <>
                           <input type="hidden" {...form.register("serviceProductId")} />
                           <span className="rounded-lg border border-outline-variant bg-surface p-sm font-body-sm text-body-sm text-on-surface-variant">
-                            {selection.productTitle ?? "프로필에서 선택한 상품"}
+                            {selection.productTitle ?? "프로필에서 선택한 제공 항목"}
                             {selection.productPriceKrw !== null
                               ? ` · ₩ ${selection.productPriceKrw.toLocaleString("ko-KR")}`
                               : ""}
@@ -273,7 +275,7 @@ export function NewRequestForm({
                         </>
                       ) : (
                         <span className="rounded-lg border border-outline-variant bg-surface p-sm font-body-sm text-body-sm text-on-surface-variant">
-                          선택된 상품이 없습니다.
+                          선택된 제공 항목이 없습니다.
                         </span>
                       )}
                     </label>
@@ -295,7 +297,7 @@ export function NewRequestForm({
                       </p>
                     ) : (
                       <p className="rounded-lg bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                        비동기 상품입니다. 자료 제출 후 슈퍼바이저가 검토 작업을
+                        비동기 검토 항목입니다. 자료 제출 후 슈퍼바이저가 검토 작업을
                         시작합니다.
                       </p>
                     )}
@@ -431,7 +433,7 @@ function requestErrorMessage(code: string | undefined): string {
       "구글 캘린더와 예약 시간을 확인하지 못했습니다. 캘린더 확인 전까지 이 시간대는 예약할 수 없습니다.",
     invalid_request: "요청 형식이 올바르지 않습니다.",
     invalid_slot: "선택한 일정이 올바르지 않습니다.",
-    product_unavailable: "선택한 상품을 이용할 수 없습니다.",
+    product_unavailable: "선택한 제공 항목을 이용할 수 없습니다.",
     slot_required: "희망 일정을 먼저 선택해주세요.",
     slot_unavailable: "이미 예약되었거나 선택할 수 없는 시간입니다."
   };

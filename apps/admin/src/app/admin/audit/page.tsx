@@ -14,7 +14,7 @@ export default async function AuditPage() {
 
   if (!current) {
     return (
-      <AdminShell title="감사 로그" subtitle="관리자 로그인이 필요합니다.">
+      <AdminShell title="처리 기록" subtitle="관리자 로그인이 필요합니다.">
         <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
       </AdminShell>
     );
@@ -26,7 +26,7 @@ export default async function AuditPage() {
     {
       userId: current.session.userId,
       role: "admin",
-      adminReason: "운영 감사 로그 조회를 위한 관리자 사유입니다."
+      adminReason: "운영 처리 기록 조회를 위한 관리자 사유입니다."
     },
     async (tx) => ({
       accessLogs: await audit.listAccessLogs(tx, { limit: 80 }),
@@ -41,23 +41,23 @@ export default async function AuditPage() {
           <a aria-label="관리자 대시보드" href="/admin">
             <ArrowLeft aria-hidden className="text-ink-700" size={30} />
           </a>
-          <h1 className="text-2xl font-bold">감사 로그</h1>
+          <h1 className="text-2xl font-bold">처리 기록</h1>
           <ShieldCheck aria-hidden className="text-ink-700" size={26} />
         </div>
       </header>
 
       <div className="mx-auto grid max-w-6xl gap-6 px-5 py-7">
-        <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-start gap-3">
-              <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+              <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600">
                 <FileClock aria-hidden size={22} />
               </span>
               <div>
                 <h2 className="text-xl font-bold">운영 추적 상태</h2>
                 <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  관리자 조치와 자료 접근 이력을 함께 확인합니다. 본문 PHI는 이 화면에
-                  노출하지 않습니다.
+                  관리자 조치와 자료 접근 이력을 함께 확인합니다. 사례 자료 본문은 이
+                  화면에 노출하지 않습니다.
                 </p>
               </div>
             </div>
@@ -73,16 +73,16 @@ export default async function AuditPage() {
         </AdminCard>
 
         <section className="grid gap-6 xl:grid-cols-2">
-          <AdminCard className="rounded-3xl border-line bg-surface-elevated p-0 shadow-card">
+          <AdminCard className="rounded-xl border-line bg-surface-elevated p-0 shadow-card">
             <div className="border-b border-line px-6 py-5">
-              <h2 className="text-xl font-bold">관리자 조치 로그</h2>
+              <h2 className="text-xl font-bold">관리자 조치 기록</h2>
               <p className="mt-1 text-sm text-ink-500">
-                승인, 반려, URL 발급, 운영 조회 같은 관리자 행위입니다.
+                승인, 반려, 접근 링크 발급, 운영 조회 같은 관리자 행위입니다.
               </p>
             </div>
             <div className="grid divide-y divide-line">
               {logs.auditLogs.length === 0 ? (
-                <EmptyLog message="표시할 관리자 조치 로그가 없습니다." />
+                <EmptyLog message="표시할 관리자 조치 기록이 없습니다." />
               ) : (
                 logs.auditLogs.map((row) => (
                   <article className="grid gap-3 p-5" key={row.id}>
@@ -106,7 +106,7 @@ export default async function AuditPage() {
                       <LogItem label="사유" value={row.reason ?? "사유 없음"} />
                     </dl>
                     {contextSummary(row.context) ? (
-                      <p className="rounded-2xl bg-surface-sunken px-4 py-3 text-xs leading-relaxed text-ink-500">
+                      <p className="rounded-lg bg-surface-sunken px-4 py-3 text-xs leading-relaxed text-ink-500">
                         {contextSummary(row.context)}
                       </p>
                     ) : null}
@@ -116,16 +116,16 @@ export default async function AuditPage() {
             </div>
           </AdminCard>
 
-          <AdminCard className="rounded-3xl border-line bg-surface-elevated p-0 shadow-card">
+          <AdminCard className="rounded-xl border-line bg-surface-elevated p-0 shadow-card">
             <div className="border-b border-line px-6 py-5">
-              <h2 className="text-xl font-bold">자료 접근 로그</h2>
+              <h2 className="text-xl font-bold">자료 접근 기록</h2>
               <p className="mt-1 text-sm text-ink-500">
                 파일 미리보기, 다운로드, 업로드, 삭제 이력을 확인합니다.
               </p>
             </div>
             <div className="grid divide-y divide-line">
               {logs.accessLogs.length === 0 ? (
-                <EmptyLog message="표시할 자료 접근 로그가 없습니다." />
+                <EmptyLog message="표시할 자료 접근 기록이 없습니다." />
               ) : (
                 logs.accessLogs.map((row) => (
                   <article className="grid gap-3 p-5" key={row.id}>
@@ -144,7 +144,7 @@ export default async function AuditPage() {
                       <LogItem label="파일" value={row.fileId.slice(0, 8)} />
                       <LogItem label="사용자" value={row.userId.slice(0, 8)} />
                       <LogItem
-                        label="서명 URL"
+                        label="접근 링크"
                         value={row.signedUrlId ? row.signedUrlId.slice(0, 8) : "없음"}
                       />
                     </dl>
@@ -161,7 +161,7 @@ export default async function AuditPage() {
 
 function Badge({ children }: { children: ReactNode }) {
   return (
-    <span className="rounded-xl bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600">
+    <span className="rounded-lg bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600">
       {children}
     </span>
   );
@@ -173,7 +173,7 @@ function EmptyLog({ message }: { message: string }) {
 
 function LogItem({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 rounded-2xl bg-brand-50 px-4 py-3">
+    <div className="flex justify-between gap-4 rounded-lg bg-brand-50 px-4 py-3">
       <dt className="shrink-0 font-semibold text-ink-500">{label}</dt>
       <dd className="min-w-0 break-all text-right font-semibold text-ink-900">
         {value}
@@ -184,7 +184,7 @@ function LogItem({ label, value }: { label: string; value: string }) {
 
 function actionLabel(value: string): string {
   const labels: Record<string, string> = {
-    signed_url_issue: "서명 URL 발급"
+    signed_url_issue: "접근 링크 발급"
   };
   return labels[value] ?? value;
 }

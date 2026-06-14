@@ -46,7 +46,7 @@ export default async function RefundsPage() {
       </header>
 
       <div className="mx-auto grid max-w-5xl gap-6 px-5 py-7">
-        <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-start gap-3">
               <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
@@ -67,7 +67,7 @@ export default async function RefundsPage() {
 
         <section className="grid gap-4" aria-label="환불 요청">
           {refunds.length === 0 ? (
-            <AdminCard className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card">
+            <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
               <div className="flex items-start gap-3">
                 <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
                   <ShieldCheck aria-hidden size={20} />
@@ -84,7 +84,7 @@ export default async function RefundsPage() {
             refunds.map((refund) => (
               <AdminCard
                 key={refund.id}
-                className="rounded-3xl border-line bg-surface-elevated p-6 shadow-card"
+                className="rounded-xl border-line bg-surface-elevated p-6 shadow-card"
               >
                 <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
                   <div className="flex items-start gap-3">
@@ -125,8 +125,8 @@ export default async function RefundsPage() {
                   </div>
                 </div>
                 <div className="mt-5">
-                    <AdminActionPanel
-                      actions={[
+                  <AdminActionPanel
+                    actions={[
                       {
                         label: "환불 승인",
                         tone: "primary",
@@ -137,9 +137,9 @@ export default async function RefundsPage() {
                         tone: "secondary",
                         url: `/api/admin/refunds/${refund.id}/reject`
                       }
-                      ]}
-                      reasonPlaceholder="예: 환불 요청 사유, 결제 상태, 환불 가능 금액을 확인했고 정책상 승인/거절합니다."
-                    />
+                    ]}
+                    reasonPlaceholder="예: 환불 요청 사유, 결제 상태, 환불 가능 금액을 확인했고 정책상 승인/거절합니다."
+                  />
                 </div>
               </AdminCard>
             ))

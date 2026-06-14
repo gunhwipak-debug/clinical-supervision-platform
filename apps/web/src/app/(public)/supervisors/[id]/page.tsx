@@ -2,9 +2,8 @@
 import Link from "next/link";
 import { calendar, profiles, supervision, withUserContext } from "@csp/db";
 import { Star } from "lucide-react";
+import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
-import { getCurrentUser } from "../../../../lib/auth/current-user";
-import { isSupervisor } from "../../../../lib/auth/guards";
 import {
   type BusyInterval,
   getGoogleCalendarConfig,
@@ -33,7 +32,6 @@ export default async function Page({
   params: Promise<{ id: string }>;
   searchParams: Promise<{ week?: string }>;
 }) {
-  const current = await getCurrentUser();
   const { id } = await params;
   const query = await searchParams;
   const weekOffset = parseWeekOffset(query.week, new Date());
@@ -83,93 +81,9 @@ export default async function Page({
 
   return (
     <div className="flex min-h-screen flex-col bg-background text-on-surface antialiased">
-      <nav className="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant bg-surface dark:border-outline dark:bg-inverse-surface">
-        <div className="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-gutter">
-          <div className="flex items-center gap-lg">
-            <Link
-              className="cursor-pointer font-headline-md text-headline-md font-bold text-primary active:opacity-80 dark:text-inverse-primary"
-              href="/"
-            >
-              ClinicFlow
-            </Link>
-            <nav className="ml-xl hidden items-center gap-md md:flex">
-              <Link
-                className="cursor-pointer border-b-2 border-secondary pb-1 font-label-md text-label-md text-secondary active:opacity-80 dark:border-secondary-fixed dark:text-secondary-fixed"
-                href="/supervisors"
-              >
-                슈퍼바이저 찾기
-              </Link>
-              <Link
-                className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
-                href="/requests"
-              >
-                내 의뢰
-              </Link>
-              <Link
-                className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
-                href="/resources"
-              >
-                자료실
-              </Link>
-              {current && !isSupervisor(current) ? (
-                <Link
-                  className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
-                  href="/settings"
-                >
-                  슈퍼바이저 신청
-                </Link>
-              ) : null}
-              {current && isSupervisor(current) ? (
-                <Link
-                  className="cursor-pointer font-label-md text-label-md text-on-surface-variant transition-colors hover:text-secondary active:opacity-80 dark:text-surface-variant dark:hover:text-secondary-fixed"
-                  href="/supervisor"
-                >
-                  슈퍼바이저 전용
-                </Link>
-              ) : null}
-            </nav>
-          </div>
-          <div className="flex items-center gap-md">
-            {current ? (
-              <div className="flex items-center gap-sm">
-                <Link
-                  className="hidden cursor-pointer rounded-lg border border-outline bg-surface px-md py-2 font-label-md text-label-md text-on-surface transition-all hover:bg-surface-container active:opacity-80 md:block"
-                  href="/settings"
-                >
-                  계정 설정
-                </Link>
-                <Link
-                  className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline bg-surface-container-highest active:opacity-80 md:hidden"
-                  href="/settings"
-                >
-                  <span className="material-symbols-outlined text-on-surface-variant text-[20px]">
-                    settings
-                  </span>
-                </Link>
-              </div>
-            ) : (
-              <>
-                <Link
-                  className="hidden cursor-pointer rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary transition-all hover:bg-opacity-90 active:opacity-80 md:block"
-                  href="/login"
-                >
-                  보안 로그인
-                </Link>
-                <Link
-                  className="flex h-8 w-8 cursor-pointer items-center justify-center overflow-hidden rounded-full border border-outline-variant bg-surface-container-highest active:opacity-80 md:hidden"
-                  href="/login"
-                >
-                  <span className="material-symbols-outlined text-on-surface-variant">
-                    person
-                  </span>
-                </Link>
-              </>
-            )}
-          </div>
-        </div>
-      </nav>
+      <SiteHeader active="supervisors" actionHref="/supervisors" actionLabel="목록 보기" />
 
-      <main className="mx-auto w-full max-w-container-max flex-grow px-margin-mobile pb-xl pt-[88px] md:px-gutter">
+      <main className="mx-auto w-full max-w-container-max flex-grow px-margin-mobile py-xl md:px-gutter">
         <div className="mb-md">
           <Link
             className="flex items-center gap-xs font-label-sm text-label-sm text-secondary hover:underline"
@@ -268,17 +182,19 @@ export default async function Page({
                       }
                     >
                       <span className="material-symbols-outlined">calendar_month</span>
-                      {timedProducts.length > 0 ? "가능 일정 선택하기" : "의뢰 신청하기"}
+                      {timedProducts.length > 0
+                        ? "가능 일정 선택하기"
+                        : "의뢰 신청하기"}
                     </Link>
                     <p className="mt-xs font-label-sm text-label-sm text-on-surface-variant">
                       {timedProducts.length > 0
-                        ? "일정 예약 상품은 가능 시간을 먼저 선택합니다."
-                        : "비동기 상품은 일정 예약 없이 신청서를 시작합니다."}
+                        ? "일정 예약 항목은 가능 시간을 먼저 선택합니다."
+                        : "비동기 항목은 일정 예약 없이 신청서를 시작합니다."}
                     </p>
                   </>
                 ) : (
                   <div className="flex w-full items-center justify-center gap-sm rounded-lg bg-surface-dim py-sm font-label-md text-label-md text-on-surface-variant">
-                    의뢰 가능한 상품 없음
+                    의뢰 가능한 제공 항목 없음
                   </div>
                 )}
               </div>
@@ -309,7 +225,10 @@ export default async function Page({
                       </li>
                     ) : (
                       supervisor.qualifications.map((qualification) => (
-                        <li className="flex items-start gap-sm" key={qualification.name}>
+                        <li
+                          className="flex items-start gap-sm"
+                          key={qualification.name}
+                        >
                           <span className="material-symbols-outlined mt-1 text-[20px] text-secondary">
                             check_circle
                           </span>
@@ -338,10 +257,14 @@ export default async function Page({
                       </span>
                       <div>
                         <p className="font-label-md text-label-md">
-                          임상 심리 실무 경력 {supervisor.yearsOfExperience ? `${String(supervisor.yearsOfExperience)}년 이상` : "등록 진행 중"}
+                          임상 심리 실무 경력{" "}
+                          {supervisor.yearsOfExperience
+                            ? `${String(supervisor.yearsOfExperience)}년 이상`
+                            : "등록 진행 중"}
                         </p>
                         <p className="mt-xs font-body-sm text-xs text-on-surface-variant leading-relaxed">
-                          본 전문가의 학력, 자격 증빙 및 활동 이력은 플랫폼 관리자 승인을 완료했습니다.
+                          이 슈퍼바이저의 학력, 자격 증빙 및 활동 이력은 플랫폼 관리자
+                          승인을 완료했습니다.
                         </p>
                       </div>
                     </li>
@@ -356,12 +279,12 @@ export default async function Page({
             >
               <h2 className="mb-md flex items-center gap-sm font-headline-md text-headline-md text-primary">
                 <span className="material-symbols-outlined">inventory_2</span>
-                서비스 상품
+                제공 항목
               </h2>
               <div className="space-y-md">
                 {products.length === 0 ? (
                   <p className="font-body-sm text-body-sm text-on-surface-variant">
-                    공개 상품이 아직 없습니다.
+                    공개된 제공 항목이 아직 없습니다.
                   </p>
                 ) : (
                   products.map((product) => (
@@ -375,7 +298,9 @@ export default async function Page({
                             {product.title}
                           </h3>
                           <span className="rounded bg-surface-container px-2 py-1 text-[10px] font-bold text-secondary">
-                            {isTimedBookingProduct(product.kind) ? "일정 예약" : "비동기"}
+                            {isTimedBookingProduct(product.kind)
+                              ? "일정 예약"
+                              : "비동기"}
                           </span>
                         </div>
                         <p className="font-body-sm text-body-sm text-on-surface-variant">
@@ -394,7 +319,9 @@ export default async function Page({
                               : (`/requests/new?supervisorId=${supervisor.id}&serviceProductId=${product.id}` as never)
                           }
                         >
-                          {isTimedBookingProduct(product.kind) ? "일정 선택" : "바로 의뢰"}
+                          {isTimedBookingProduct(product.kind)
+                            ? "일정 선택"
+                            : "바로 의뢰"}
                         </Link>
                       </div>
                     </div>
@@ -445,8 +372,8 @@ export default async function Page({
                         {weekTitle}
                       </p>
                       <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
-                        일정 예약 상품만 표시합니다. 비동기 상품은 서비스 상품에서 바로
-                        의뢰하세요.
+                        일정 예약이 필요한 항목만 표시합니다. 비동기 항목은 제공
+                        항목에서 바로 의뢰할 수 있습니다.
                       </p>
                     </div>
                     <span className="font-label-sm text-label-sm text-on-surface-variant">
@@ -480,17 +407,18 @@ export default async function Page({
                           busyIntervals: availabilityState.busyIntervals,
                           day,
                           now,
-                          products: availabilityState.bookingDisabled ? [] : timedProducts,
+                          products: availabilityState.bookingDisabled
+                            ? []
+                            : timedProducts,
                           slots: slotsByWeekday.get(day.weekday) ?? []
                         });
-                        const emptyLabel =
-                          availabilityState.bookingDisabled
-                            ? "캘린더 확인 필요"
-                            : timedProducts.length === 0
-                            ? "예약 상품 없음"
+                        const emptyLabel = availabilityState.bookingDisabled
+                          ? "캘린더 확인 필요"
+                          : timedProducts.length === 0
+                            ? "예약 항목 없음"
                             : products.length === 0
-                            ? "의뢰 가능한 상품 없음"
-                            : "가능 일정 없음";
+                              ? "의뢰 가능한 제공 항목 없음"
+                              : "가능 일정 없음";
                         return (
                           <div
                             className="min-h-40 border-r border-outline-variant p-xs last:border-r-0"
@@ -538,7 +466,9 @@ export default async function Page({
         <div className="fixed bottom-0 left-0 right-0 z-40 border-t border-outline-variant bg-surface/80 px-gutter py-sm backdrop-blur-md dark:border-outline dark:bg-inverse-surface/80 md:hidden">
           <div className="mx-auto flex w-full max-w-container-max items-center justify-between gap-md">
             <div className="flex flex-col">
-              <span className="font-label-sm text-[11px] text-on-surface-variant">대표 요금</span>
+              <span className="font-label-sm text-[11px] text-on-surface-variant">
+                대표 요금
+              </span>
               <span className="font-headline-sm text-base font-bold text-primary dark:text-inverse-primary">
                 ₩ {firstProduct.priceKrw.toLocaleString("ko-KR")}~
               </span>
@@ -551,7 +481,9 @@ export default async function Page({
                   : (`/requests/new?supervisorId=${supervisor.id}&serviceProductId=${firstProduct.id}` as never)
               }
             >
-              <span className="material-symbols-outlined text-[18px]">calendar_month</span>
+              <span className="material-symbols-outlined text-[18px]">
+                calendar_month
+              </span>
               {timedProducts.length > 0 ? "예약 일정 선택" : "의뢰 신청"}
             </Link>
           </div>
@@ -745,8 +677,7 @@ async function loadAvailabilityState(
     return {
       busyIntervals: localIntervals,
       bookingDisabled: false,
-      calendarNotice:
-        "플랫폼 예약 및 설정된 가용 시간표 기준으로 예약을 접수합니다."
+      calendarNotice: "플랫폼 예약 및 설정된 가용 시간표 기준으로 예약을 접수합니다."
     };
   }
 
