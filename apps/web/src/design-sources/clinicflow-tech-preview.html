@@ -90,13 +90,14 @@
       }
 
       .nav-links {
-        gap: 34px;
+        gap: 28px;
         color: #667085;
         font-size: 12px;
         font-weight: 600;
       }
 
       .nav-menu {
+        display: none;
         position: relative;
       }
 
@@ -253,6 +254,10 @@
         color: var(--blue);
       }
 
+      .nowrap {
+        white-space: nowrap;
+      }
+
       .blue-word::after {
         position: absolute;
         left: 0;
@@ -347,6 +352,108 @@
       .flow-step {
         border-left: 1px solid rgba(255, 255, 255, 0.16);
         padding-left: 18px;
+      }
+
+      .home-story {
+        display: grid;
+        grid-template-columns: 0.86fr 1.14fr;
+        gap: 56px;
+        padding: 96px 0 30px;
+      }
+
+      .home-story h2,
+      .home-cta h2 {
+        margin: 14px 0 0;
+        font-size: clamp(36px, 4vw, 58px);
+        line-height: 1.05;
+        letter-spacing: -0.04em;
+      }
+
+      .home-story-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+      }
+
+      .home-story-card {
+        min-height: 190px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fff;
+        padding: 24px;
+        box-shadow: 0 12px 26px rgba(15, 23, 42, 0.05);
+      }
+
+      .home-story-card h3 {
+        margin: 18px 0 0;
+        font-size: 21px;
+        letter-spacing: -0.025em;
+      }
+
+      .home-story-card p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.7;
+      }
+
+      .home-story-number {
+        display: inline-flex;
+        width: 32px;
+        height: 32px;
+        align-items: center;
+        justify-content: center;
+        border-radius: 10px;
+        background: var(--blue-soft);
+        color: var(--blue);
+        font-size: 12px;
+        font-weight: 900;
+      }
+
+      .home-proof {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        padding: 26px 0 86px;
+      }
+
+      .home-proof-card {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: #fbfcff;
+        padding: 24px;
+      }
+
+      .home-proof-card h3 {
+        margin: 0;
+        font-size: 20px;
+        letter-spacing: -0.02em;
+      }
+
+      .home-proof-card p {
+        margin: 10px 0 0;
+        color: var(--muted);
+        font-size: 14px;
+        line-height: 1.65;
+      }
+
+      .home-cta-band {
+        background: #f7f9fc;
+      }
+
+      .home-cta {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) auto;
+        gap: 32px;
+        align-items: center;
+        padding: 72px 0;
+      }
+
+      .home-cta p {
+        max-width: 620px;
+        color: var(--muted);
+        font-size: 15px;
+        line-height: 1.75;
       }
 
       .step-kicker {
@@ -1226,6 +1333,10 @@
         .task-points,
         .filters,
         .flow-steps,
+        .home-story,
+        .home-story-grid,
+        .home-proof,
+        .home-cta,
         .supervisor-grid,
         .two {
           grid-template-columns: 1fr;
@@ -1239,6 +1350,27 @@
 
         .pad {
           padding: 64px 0;
+        }
+
+        .home-story {
+          gap: 28px;
+          padding: 62px 0 18px;
+        }
+
+        .home-story h2,
+        .home-cta h2 {
+          font-size: 34px;
+          line-height: 1.12;
+        }
+
+        .home-proof {
+          padding: 18px 0 54px;
+        }
+
+        .home-cta {
+          gap: 22px;
+          align-items: start;
+          padding: 54px 0;
         }
 
         h1 {
@@ -1332,16 +1464,18 @@
       <a class="brand" href="#home"><span class="brand-dot"></span>ClinicFlow</a>
       <div class="nav-links">
         <a href="#supervisors">슈퍼바이저 찾기</a>
-        <a href="#guide">이용 가이드</a>
+        <a href="#guide">진행 방식</a>
+        <a href="#material-upload">자료 제출</a>
+        <a href="#case-archive">학습 기록</a>
       </div>
       <div class="nav-menu">
-        <button class="nav-trigger" type="button" aria-haspopup="true">메뉴</button>
+        <button class="nav-trigger" type="button" aria-haspopup="true">전체</button>
         <div class="nav-dropdown" role="menu" aria-label="주요 화면">
           <div class="nav-group">
             <h3>안내</h3>
             <a href="#home" role="menuitem">홈</a>
             <a href="#supervisors" role="menuitem">슈퍼바이저 찾기</a>
-            <a href="#guide" role="menuitem">이용 가이드</a>
+            <a href="#guide" role="menuitem">진행 방식</a>
             <a href="#login" role="menuitem">로그인</a>
           </div>
           <div class="nav-group">
@@ -1373,7 +1507,8 @@
         <div>
           <span class="eyebrow">온라인 슈퍼비전</span>
           <h1>
-            슈퍼비전 의뢰와 피드백을 <span class="blue-word">한곳에서</span> 관리합니다
+            슈퍼비전 의뢰와 피드백을 <span class="blue-word">한곳에서</span>
+            <span class="nowrap">관리합니다</span>
           </h1>
           <p class="lead">
             병원과 센터 실무자가 슈퍼바이저를 찾고, 사례 자료를 정리해 제출한 뒤, 받은
@@ -1440,6 +1575,82 @@
             <div class="step-desc">
               완료된 슈퍼비전 기록과 피드백을 이후 학습 기록으로 다시 확인합니다.
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="wrap home-story" aria-label="ClinicFlow가 도와주는 일">
+        <div>
+          <span class="eyebrow">서비스 소개</span>
+          <h2>
+            사례 준비부터 학습 기록까지 흐름을 <span class="nowrap">끊지 않습니다</span>
+          </h2>
+          <p class="lead">
+            ClinicFlow는 병원과 센터 실무자가 슈퍼비전을 의뢰할 때 필요한 선택, 자료
+            제출, 피드백 확인을 한 흐름으로 정리합니다.
+          </p>
+        </div>
+        <div class="home-story-grid">
+          <article class="home-story-card">
+            <span class="home-story-number">01</span>
+            <h3>맞는 슈퍼바이저를 고릅니다</h3>
+            <p>사진, 자격, 전문분야, 자기소개를 보고 사례에 맞는 사람을 비교합니다.</p>
+          </article>
+          <article class="home-story-card">
+            <span class="home-story-number">02</span>
+            <h3>자료를 한곳에 모읍니다</h3>
+            <p>
+              주호소, 의뢰 사유, 보고서 초안, 검사 결과를 제출 흐름 안에서 정리합니다.
+            </p>
+          </article>
+          <article class="home-story-card">
+            <span class="home-story-number">03</span>
+            <h3>피드백을 바로 확인합니다</h3>
+            <p>
+              보완 요청과 최종 피드백을 구분하고, 다음에 해야 할 일을 분명하게 봅니다.
+            </p>
+          </article>
+          <article class="home-story-card">
+            <span class="home-story-number">04</span>
+            <h3>학습 기록으로 남깁니다</h3>
+            <p>
+              완료된 슈퍼비전은 슈퍼바이저와 사례별 폴더에서 다시 찾아볼 수 있습니다.
+            </p>
+          </article>
+        </div>
+      </div>
+      <div class="wrap home-proof" aria-label="ClinicFlow 사용 이유">
+        <article class="home-proof-card">
+          <h3>처음 이용해도 다음 단계가 보입니다</h3>
+          <p>
+            신청, 자료 제출, 수락 대기, 피드백 확인이 같은 진행선 위에서 이어집니다.
+          </p>
+        </article>
+        <article class="home-proof-card">
+          <h3>자료 제출 전에 빠뜨린 것을 줄입니다</h3>
+          <p>
+            의뢰 사유, 참고 자료, 질문을 한 화면에서 확인하고 필요한 내용만 보냅니다.
+          </p>
+        </article>
+        <article class="home-proof-card">
+          <h3>교육 이력이 흩어지지 않습니다</h3>
+          <p>
+            받은 피드백과 완료 기록을 나중에 다시 볼 수 있는 학습 기록으로 보관합니다.
+          </p>
+        </article>
+      </div>
+      <div class="home-cta-band">
+        <div class="wrap home-cta">
+          <div>
+            <span class="eyebrow">시작하기</span>
+            <h2>지금 필요한 슈퍼비전을 찾아보세요</h2>
+            <p>
+              슈퍼바이저의 전문분야와 진행 방식을 비교한 뒤, 사례 자료를 준비해
+              온라인으로 의뢰를 시작할 수 있습니다.
+            </p>
+          </div>
+          <div class="actions" style="margin-top: 0">
+            <a class="button primary" href="#supervisors">슈퍼바이저 찾기 →</a>
+            <a class="button secondary" href="#guide">진행 방식 보기</a>
           </div>
         </div>
       </div>
@@ -1588,7 +1799,7 @@
     <section class="screen pad" id="guide">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">이용 가이드</span>
+          <span class="eyebrow">진행 방식</span>
           <h2>슈퍼비전 신청부터 기록까지 한 흐름으로</h2>
           <p>
             슈퍼바이저를 고르고, 자료를 업로드하고, 피드백을 받아 학습 기록으로
