@@ -13,11 +13,17 @@ export function AppShell({
   action?: React.ReactNode;
   children: React.ReactNode;
 }) {
+  const introProps = {
+    ...(action ? { action } : {}),
+    ...(subtitle ? { subtitle } : {}),
+    title
+  };
+
   return (
     <main className="min-h-screen bg-surface-base">
       <SiteHeader {...(active ? { active } : {})} />
       <div className="mx-auto grid max-w-7xl gap-8 px-5 py-8">
-        <PageIntro action={action} subtitle={subtitle} title={title} />
+        <PageIntro {...introProps} />
         {children}
       </div>
     </main>
