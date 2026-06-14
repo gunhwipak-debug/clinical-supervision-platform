@@ -82,10 +82,6 @@
         font-weight: 700;
       }
 
-      .brand-menu-label {
-        display: none;
-      }
-
       .brand-dot {
         width: 16px;
         height: 16px;
@@ -102,10 +98,6 @@
 
       .nav-menu {
         position: relative;
-      }
-
-      .mobile-menu-button {
-        display: none;
       }
 
       .nav-trigger {
@@ -132,26 +124,26 @@
 
       .nav-dropdown {
         position: absolute;
-        top: calc(100% + 14px);
+        top: calc(100% + 10px);
         left: 50%;
-        width: min(680px, calc(100vw - 48px));
+        z-index: 110;
+        width: min(560px, calc(100vw - 48px));
         transform: translate(-50%, -6px);
         display: grid;
         grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
+        gap: 12px;
         border: 1px solid var(--line);
-        border-radius: 20px;
-        background: rgba(255, 255, 255, 0.96);
-        padding: 18px;
+        border-radius: 16px;
+        background: #fff;
+        padding: 14px;
         opacity: 0;
         pointer-events: none;
-        box-shadow: 0 14px 28px rgba(15, 23, 42, 0.1);
+        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
         transition:
           opacity 0.16s ease,
           transform 0.16s ease;
       }
 
-      .nav:hover .nav-dropdown,
       .nav-menu:hover .nav-dropdown,
       .nav-menu:focus-within .nav-dropdown {
         transform: translate(-50%, 0);
@@ -169,8 +161,8 @@
 
       .nav-group a {
         display: block;
-        border-radius: 12px;
-        padding: 9px 10px;
+        border-radius: 10px;
+        padding: 8px 10px;
         color: #344054;
         font-size: 13px;
         font-weight: 700;
@@ -491,40 +483,41 @@
 
       .guide-flow {
         display: grid;
-        grid-template-columns: repeat(9, minmax(138px, 1fr));
-        overflow: hidden;
+        grid-template-columns: 1fr 1fr;
+        gap: 18px;
+      }
+
+      .guide-phase {
         border: 1px solid var(--line);
-        border-radius: 20px;
+        border-radius: 18px;
         background: #fff;
+        padding: 18px;
         box-shadow: 0 12px 24px rgba(15, 23, 42, 0.05);
       }
 
-      .guide-step {
-        position: relative;
-        min-height: 190px;
-        border-right: 1px solid var(--line);
-        padding: 22px 16px;
-      }
-
-      .guide-step:last-child {
-        border-right: 0;
-      }
-
-      .guide-step:not(:last-child)::after {
-        position: absolute;
-        top: 28px;
-        right: -10px;
-        z-index: 2;
-        display: grid;
-        width: 20px;
-        height: 20px;
-        place-items: center;
-        border-radius: 10px;
-        background: var(--blue);
-        color: #fff;
-        content: "→";
-        font-size: 12px;
+      .guide-phase-label {
+        margin: 0 0 14px;
+        color: #98a2b3;
+        font-size: 11px;
         font-weight: 800;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .guide-phase-grid {
+        display: grid;
+        gap: 10px;
+      }
+
+      .guide-step {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+        border: 1px solid #eef1f5;
+        border-radius: 14px;
+        background: #fbfcff;
+        padding: 15px;
       }
 
       .guide-index {
@@ -541,7 +534,7 @@
       }
 
       .guide-step h3 {
-        margin: 18px 0 0;
+        margin: 0;
         font-size: 17px;
         line-height: 1.35;
         letter-spacing: -0.02em;
@@ -666,8 +659,12 @@
       }
 
       .person-card img {
+        display: block;
         width: 100%;
         height: 220px;
+        background:
+          linear-gradient(135deg, rgba(37, 99, 255, 0.14), rgba(8, 18, 37, 0.08)),
+          #f3f6fb;
         object-fit: cover;
       }
 
@@ -791,6 +788,49 @@
         color: var(--muted);
         font-size: 14px;
         line-height: 1.65;
+      }
+
+      .current-task-card {
+        border: 1px solid #c8d8ff;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #fbfdff 0%, #eef4ff 100%);
+        padding: 26px;
+      }
+
+      .current-task-card h3 {
+        margin: 10px 0 0;
+        font-size: 28px;
+        letter-spacing: -0.03em;
+      }
+
+      .task-points {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin: 20px 0 0;
+        padding: 0;
+        list-style: none;
+      }
+
+      .task-points li {
+        border: 1px solid rgba(37, 99, 255, 0.16);
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.72);
+        padding: 12px;
+        color: #344054;
+        font-size: 13px;
+        font-weight: 800;
+      }
+
+      .completed-summary {
+        display: grid;
+        gap: 10px;
+        margin-top: 16px;
+      }
+
+      .completed-summary .panel-row {
+        background: #fbfcff;
+        padding: 16px 18px;
       }
 
       .upload-board {
@@ -1034,8 +1074,14 @@
         letter-spacing: -0.01em;
       }
 
-      .case-header span {
-        color: var(--blue);
+      .record-status {
+        display: inline-flex;
+        align-items: center;
+        border: 1px solid #dbe5f3;
+        border-radius: 10px;
+        background: #f8fafc;
+        padding: 5px 8px;
+        color: #475467;
         font-size: 12px;
         font-weight: 800;
         white-space: nowrap;
@@ -1137,34 +1183,6 @@
           min-width: 0;
         }
 
-        .brand-menu-label {
-          display: inline-flex !important;
-          margin-left: 6px;
-          border: 1px solid var(--line);
-          border-radius: 11px;
-          padding: 7px 10px;
-          color: #344054;
-          font-size: 12px;
-          font-weight: 800;
-        }
-
-        .mobile-menu-button {
-          position: absolute;
-          top: 15px;
-          right: 16px;
-          display: inline-flex !important;
-          min-height: 34px;
-          align-items: center;
-          justify-content: center;
-          border: 1px solid var(--line);
-          border-radius: 11px;
-          background: #fff;
-          padding: 0 12px;
-          color: var(--ink);
-          font-size: 12px;
-          font-weight: 800;
-        }
-
         .nav-links {
           display: none;
         }
@@ -1186,14 +1204,14 @@
         }
 
         .nav-dropdown {
+          top: calc(100% + 8px);
           left: auto;
           right: 0;
-          width: min(340px, calc(100vw - 32px));
+          width: min(320px, calc(100vw - 32px));
           grid-template-columns: 1fr;
           transform: translate(0, -6px);
         }
 
-        .nav:hover .nav-dropdown,
         .nav-menu:hover .nav-dropdown,
         .nav-menu:focus-within .nav-dropdown {
           transform: translate(0, 0);
@@ -1204,6 +1222,8 @@
         .upload-board,
         .upload-meta-grid,
         .record-browser,
+        .guide-flow,
+        .task-points,
         .filters,
         .flow-steps,
         .supervisor-grid,
@@ -1215,6 +1235,10 @@
           min-height: auto;
           gap: 34px;
           padding: 120px 0 58px;
+        }
+
+        .pad {
+          padding: 64px 0;
         }
 
         h1 {
@@ -1257,13 +1281,7 @@
         }
 
         .guide-flow {
-          grid-template-columns: repeat(9, 220px);
-          overflow-x: auto;
-          scroll-snap-type: x proximity;
-        }
-
-        .guide-step {
-          scroll-snap-align: start;
+          grid-template-columns: 1fr;
         }
 
         .guide-materials {
@@ -1273,15 +1291,34 @@
         .stepper {
           border-radius: 24px;
           grid-template-columns: 1fr;
+          margin-bottom: 22px;
         }
 
         .step {
+          padding: 8px 12px;
           text-align: left;
         }
 
         .workflow-title {
           align-items: flex-start;
           flex-direction: column;
+          gap: 16px;
+          margin-bottom: 18px;
+        }
+
+        .workflow-title h2,
+        .section-head h2 {
+          font-size: 38px;
+          line-height: 1.1;
+          letter-spacing: -0.03em;
+        }
+
+        .current-task-card {
+          padding: 22px 20px;
+        }
+
+        .current-task-card h3 {
+          font-size: 28px;
         }
 
         .case-list {
@@ -1292,10 +1329,7 @@
   </head>
   <body>
     <header class="nav" aria-label="ClinicFlow 주요 메뉴">
-      <a class="brand" href="#home"
-        ><span class="brand-dot"></span>ClinicFlow<span class="brand-menu-label">메뉴</span></a
-      >
-      <a class="mobile-menu-button" href="#guide">메뉴</a>
+      <a class="brand" href="#home"><span class="brand-dot"></span>ClinicFlow</a>
       <div class="nav-links">
         <a href="#supervisors">슈퍼바이저 찾기</a>
         <a href="#guide">이용 가이드</a>
@@ -1338,10 +1372,12 @@
       <div class="wrap hero">
         <div>
           <span class="eyebrow">온라인 슈퍼비전</span>
-          <h1>슈퍼비전 의뢰와 피드백을 <span class="blue-word">한곳에서</span> 관리합니다</h1>
+          <h1>
+            슈퍼비전 의뢰와 피드백을 <span class="blue-word">한곳에서</span> 관리합니다
+          </h1>
           <p class="lead">
-            병원과 센터 실무자가 슈퍼바이저를 찾고, 사례 자료를 정리해 제출한 뒤,
-            받은 피드백을 학습 기록으로 남기는 온라인 교육 플랫폼입니다.
+            병원과 센터 실무자가 슈퍼바이저를 찾고, 사례 자료를 정리해 제출한 뒤, 받은
+            피드백을 학습 기록으로 남기는 온라인 교육 플랫폼입니다.
           </p>
           <div class="actions">
             <a class="button primary" href="#supervisors">슈퍼바이저 찾기 →</a>
@@ -1352,10 +1388,10 @@
           <div class="request-preview-card">
             <div style="display: flex; justify-content: space-between">
               <div>
-                <div class="label">현재 의뢰</div>
-                <h3 style="margin: 6px 0 0; font-size: 22px">REQ-1042</h3>
+                <div class="label">진행 예시</div>
+                <h3 style="margin: 6px 0 0; font-size: 22px">사례 자료 제출 중</h3>
               </div>
-              <span class="status">자료 제출 중</span>
+              <span class="status">현재 단계</span>
             </div>
             <div class="preview-stack">
               <div class="preview-row">
@@ -1368,12 +1404,12 @@
               </div>
               <div class="preview-row">
                 <strong>다음 행동</strong>
-                <p>자료를 확인하고 최종 제출 전 선택 내용을 다시 봅니다.</p>
+                <p>올린 자료와 질문을 확인한 뒤 신청 내용을 한 번 더 봅니다.</p>
               </div>
             </div>
           </div>
           <div class="tiny-card">
-            <strong style="font-size: 36px">다음</strong><br />최종 확인
+            <strong style="font-size: 32px">다음 단계</strong><br />최종 확인
           </div>
         </div>
       </div>
@@ -1396,9 +1432,7 @@
           <div class="flow-step">
             <span class="step-kicker">피드백 확인</span>
             <div class="step-title">피드백을 확인합니다</div>
-            <div class="step-desc">
-              보완 요청과 최종 피드백을 구분해 확인합니다.
-            </div>
+            <div class="step-desc">보완 요청과 최종 피드백을 구분해 확인합니다.</div>
           </div>
           <div class="flow-step">
             <span class="step-kicker">학습 기록</span>
@@ -1537,7 +1571,11 @@
             <dt>비밀번호</dt>
             <dd style="height: 48px; border-radius: 16px; background: #f8fafc"></dd>
           </div>
-          <button class="button primary" type="button" style="margin-top: 24px; width: 100%">
+          <button
+            class="button primary"
+            type="button"
+            style="margin-top: 24px; width: 100%"
+          >
             로그인
           </button>
           <p style="color: var(--muted); font-size: 13px; text-align: center">
@@ -1558,59 +1596,83 @@
           </p>
         </div>
         <div class="guide-flow" aria-label="ClinicFlow 이용 흐름">
-          <div class="guide-step">
-            <span class="guide-index">1</span>
-            <h3>슈퍼바이저 찾기</h3>
-            <p>사진, 자격, 전문분야, 소개를 보고 내 사례에 맞는 사람을 고릅니다.</p>
+          <div class="guide-phase">
+            <p class="guide-phase-label">신청 준비</p>
+            <div class="guide-phase-grid">
+              <div class="guide-step">
+                <span class="guide-index">1</span>
+                <div>
+                  <h3>슈퍼바이저 찾기</h3>
+                  <p>
+                    사진, 자격, 전문분야, 소개를 보고 내 사례에 맞는 사람을 고릅니다.
+                  </p>
+                </div>
+              </div>
+              <div class="guide-step">
+                <span class="guide-index">2</span>
+                <div>
+                  <h3>세션 선택</h3>
+                  <p>
+                    사례 개념화, 평가 자문, 보고서 피드백 중 필요한 방식을 정합니다.
+                  </p>
+                </div>
+              </div>
+              <div class="guide-step">
+                <span class="guide-index">3</span>
+                <div>
+                  <h3>일정 선택</h3>
+                  <p>가능한 시간을 확인하고 무리 없는 일정으로 예약합니다.</p>
+                </div>
+              </div>
+              <div class="guide-step">
+                <span class="guide-index">4</span>
+                <div>
+                  <h3>사례 자료 업로드</h3>
+                  <p>주호소, 의뢰 사유, 참고 자료를 필요한 항목에 맞춰 정리합니다.</p>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="guide-step">
-            <span class="guide-index">2</span>
-            <h3>세션 선택</h3>
-            <p>사례 개념화, 평가 자문, 보고서 피드백 중 필요한 방식을 정합니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">3</span>
-            <h3>일정 선택</h3>
-            <p>가능한 시간을 확인하고 무리 없는 일정으로 예약합니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">4</span>
-            <h3>사례 자료 업로드</h3>
-            <p>주호소, 의뢰 사유, 참고 자료를 필요한 항목에 맞춰 정리합니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">5</span>
-            <h3>확인·결제</h3>
-            <p>선택한 슈퍼바이저, 세션, 일정, 자료를 확인하고 신청을 확정합니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">6</span>
-            <h3>수락 대기</h3>
-            <p>슈퍼바이저가 일정과 자료를 확인할 때까지 현재 상태를 봅니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">7</span>
-            <h3>슈퍼비전·검토</h3>
-            <p>필요한 경우 보완 자료를 보내고 슈퍼바이저의 검토를 이어갑니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">8</span>
-            <h3>피드백 확인</h3>
-            <p>최종 피드백과 보완 의견을 구분해 확인합니다.</p>
-          </div>
-          <div class="guide-step">
-            <span class="guide-index">9</span>
-            <h3>학습 기록</h3>
-            <p>완료된 슈퍼비전 내용과 피드백을 학습 기록으로 보관합니다.</p>
+          <div class="guide-phase">
+            <p class="guide-phase-label">진행 이후</p>
+            <div class="guide-phase-grid">
+              <div class="guide-step">
+                <span class="guide-index">5</span>
+                <div>
+                  <h3>확인·결제</h3>
+                  <p>
+                    선택한 슈퍼바이저, 세션, 일정, 자료를 확인하고 신청을 확정합니다.
+                  </p>
+                </div>
+              </div>
+              <div class="guide-step">
+                <span class="guide-index">6</span>
+                <div>
+                  <h3>수락 대기</h3>
+                  <p>슈퍼바이저가 일정과 자료를 확인할 때까지 현재 상태를 봅니다.</p>
+                </div>
+              </div>
+              <div class="guide-step">
+                <span class="guide-index">7</span>
+                <div>
+                  <h3>슈퍼비전·검토</h3>
+                  <p>필요한 경우 보완 자료를 보내고 슈퍼바이저의 검토를 이어갑니다.</p>
+                </div>
+              </div>
+              <div class="guide-step">
+                <span class="guide-index">8</span>
+                <div>
+                  <h3>피드백과 학습 기록</h3>
+                  <p>최종 피드백을 확인하고 완료된 내용을 학습 기록으로 보관합니다.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
         <div class="guide-materials" aria-label="신청 전 확인할 것">
           <div class="guide-materials-intro">
             <h3>신청 전 확인할 것</h3>
-            <p>
-              자료 준비와 작성 기준은 별도 페이지로 흩어두지 않고, 신청 과정 안에서
-              바로 확인합니다.
-            </p>
+            <p>자료를 준비할 때 자주 막히는 기준만 짧게 모았습니다.</p>
           </div>
           <article class="guide-material">
             <h3>자료 작성 기준</h3>
@@ -1637,10 +1699,10 @@
             <span class="status">초안 작성</span>
             <h2>새 슈퍼비전 의뢰</h2>
             <p class="lead">
-              한 번에 한 단계만 선택합니다. 선택 내용은 오른쪽 요약에 바로 쌓입니다.
+              한 번에 한 단계씩 진행합니다. 현재 선택 내용은 선택 요약에 정리됩니다.
             </p>
           </div>
-          <a class="button primary" href="#material-upload">자료 업로드하기 →</a>
+          <a class="button primary" href="#material-upload">사례자료 작성하기 →</a>
         </div>
         <div class="stepper">
           <div class="step">슈퍼바이저 선택</div>
@@ -1651,33 +1713,47 @@
         </div>
         <div class="workspace">
           <div>
-            <div class="panel-row">
-              <div>
-                <h3>1. 슈퍼바이저</h3>
-                <p>이민서 · 성인 평가</p>
+            <div class="current-task-card">
+              <span class="status">현재 단계</span>
+              <h3>사례자료를 올리고 질문을 남깁니다</h3>
+              <p class="lead" style="margin-top: 12px">
+                주호소, 의뢰 사유, 참고 자료를 정리하면 슈퍼바이저가 검토를 시작할 수
+                있습니다.
+              </p>
+              <ul class="task-points">
+                <li>주호소</li>
+                <li>의뢰 사유</li>
+                <li>첨부 문서</li>
+              </ul>
+              <div class="actions">
+                <a class="button primary" href="#material-upload"
+                  >자료 업로드로 이동 →</a
+                >
+                <a class="button secondary" href="#guide">작성 기준 보기</a>
               </div>
-              <strong>완료</strong>
             </div>
-          <div class="panel-row">
-              <div>
-                <h3>2. 세션</h3>
-                <p>사례 개념화 50분</p>
+            <div class="completed-summary" aria-label="완료된 선택">
+              <div class="panel-row">
+                <div>
+                  <h3>슈퍼바이저</h3>
+                  <p>이민서 · 성인 평가</p>
+                </div>
+                <strong>완료</strong>
               </div>
-              <strong>완료</strong>
-            </div>
-            <div class="panel-row">
-              <div>
-                <h3>3. 일정</h3>
-                <p>6월 18일 목요일 19:00</p>
+              <div class="panel-row">
+                <div>
+                  <h3>세션</h3>
+                  <p>사례 개념화 50분</p>
+                </div>
+                <strong>완료</strong>
               </div>
-              <strong>완료</strong>
-            </div>
-            <div class="panel-row">
-              <div>
-                <h3>4. 사례자료 업로드</h3>
-                <p>주호소, 의뢰 사유, 첨부 문서</p>
+              <div class="panel-row">
+                <div>
+                  <h3>일정</h3>
+                  <p>6월 18일 목요일 19:00</p>
+                </div>
+                <strong>완료</strong>
               </div>
-              <strong>다음</strong>
             </div>
           </div>
           <aside class="panel">
@@ -1725,8 +1801,8 @@
               <span class="eyebrow">업로드 준비</span>
               <h3>질문과 자료를 같은 화면에서 정리합니다</h3>
               <p>
-                보고서 초안, 검사 결과, 면담 요약을 올리고 이번 슈퍼비전에서 꼭
-                확인받고 싶은 질문을 함께 남깁니다.
+                보고서 초안, 검사 결과, 면담 요약을 올리고 이번 슈퍼비전에서 꼭 확인받고
+                싶은 질문을 함께 남깁니다.
               </p>
             </div>
             <div class="upload-board">
@@ -1805,7 +1881,7 @@
             <h3>자료 요약</h3>
             <div class="field">
               <dt>의뢰</dt>
-              <dd>REQ-1042 · 사례 개념화 50분</dd>
+              <dd>신청 번호 1042 · 사례 개념화 50분</dd>
             </div>
             <div class="field">
               <dt>현재 단계</dt>
@@ -1826,7 +1902,7 @@
           <div>
             <span class="status">추가자료 요청</span>
             <h2>의뢰 상세</h2>
-            <p class="lead">REQ-1042 · 필요한 자료를 먼저 보완하세요.</p>
+            <p class="lead">신청 번호 1042 · 필요한 자료를 먼저 보완하세요.</p>
           </div>
           <a class="button primary" href="#material-upload">추가자료 업로드 →</a>
         </div>
@@ -1880,7 +1956,9 @@
           <div>
             <span class="status">최종 확인</span>
             <h2>선택 내용을 확인하고 결제합니다</h2>
-            <p class="lead">슈퍼바이저, 세션, 일정, 자료를 한 번 더 확인한 뒤 신청을 확정합니다.</p>
+            <p class="lead">
+              슈퍼바이저, 세션, 일정, 자료를 한 번 더 확인한 뒤 신청을 확정합니다.
+            </p>
           </div>
           <a class="button primary" href="#waiting">결제하고 신청 완료 →</a>
         </div>
@@ -1945,8 +2023,8 @@
             <span class="eyebrow">현재 상태</span>
             <h3>슈퍼바이저가 자료를 확인 중입니다</h3>
             <p>
-              지금은 추가로 입력할 내용이 없습니다. 요청이 수락되거나 보완 자료가 필요하면
-              의뢰 상세에서 바로 확인할 수 있습니다.
+              지금은 추가로 입력할 내용이 없습니다. 요청이 수락되거나 보완 자료가
+              필요하면 의뢰 상세에서 바로 확인할 수 있습니다.
             </p>
           </div>
           <aside class="panel">
@@ -1996,7 +2074,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>김OO</strong>
-                    <span>최종 피드백 완료</span>
+                    <span class="record-status">최종 피드백 완료</span>
                   </div>
                   <p>종합심리평가 보고서 · 핵심 피드백과 보완 자료가 저장됨</p>
                   <div class="record-leaves">
@@ -2008,7 +2086,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>이OO</strong>
-                    <span>학습기록 발급</span>
+                    <span class="record-status">학습기록 발급</span>
                   </div>
                   <p>초기 상담 구조화 · 회기 목표와 질문 순서 정리</p>
                   <div class="record-leaves">
@@ -2020,7 +2098,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>최OO</strong>
-                    <span>보완 자료 있음</span>
+                    <span class="record-status">보완 자료 있음</span>
                   </div>
                   <p>평가 면담 요약 · 보호자 면담과 해석 가설 정리</p>
                   <div class="record-leaves">
@@ -2043,7 +2121,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>박OO</strong>
-                    <span>검토 완료</span>
+                    <span class="record-status">검토 완료</span>
                   </div>
                   <p>아동 평가 보고서 · 검사 행동관찰과 보호자 설명 문장 저장</p>
                   <div class="record-leaves">
@@ -2054,7 +2132,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>정OO</strong>
-                    <span>복습 필요</span>
+                    <span class="record-status">복습 필요</span>
                   </div>
                   <p>발달 평가 자문 · 추가 검사 선택과 의뢰 문장 정리</p>
                   <div class="record-leaves">
@@ -2077,7 +2155,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>한OO</strong>
-                    <span>기록 보관</span>
+                    <span class="record-status">기록 보관</span>
                   </div>
                   <p>위기 사례 의사소통 · 위험도 판단과 기관 공유 문장 저장</p>
                   <div class="record-leaves">
@@ -2105,7 +2183,10 @@
                 슈퍼바이저 이름으로 먼저 찾고, 사례명을 열어 필요한 기록만 확인합니다.
               </dd>
             </div>
-            <a class="button secondary" href="#request-detail" style="margin-top: 22px; width: 100%"
+            <a
+              class="button secondary"
+              href="#request-detail"
+              style="margin-top: 22px; width: 100%"
               >기록 열기</a
             >
           </aside>
@@ -2129,8 +2210,8 @@
           <div>
             <strong>지금 이어갈 요청</strong>
             <p>
-              새 자료 확인, 수락 여부 결정, 피드백 초안 마무리처럼 바로 처리할 일을
-              한 줄로 정리합니다.
+              새 자료 확인, 수락 여부 결정, 피드백 초안 마무리처럼 바로 처리할 일을 한
+              줄로 정리합니다.
             </p>
           </div>
           <div class="queue-tabs" aria-label="슈퍼바이저 요청 필터">
@@ -2143,7 +2224,7 @@
         <div class="priority-list" aria-label="검토할 의뢰 목록">
           <div class="priority-item">
             <div>
-              <strong>REQ-1042 · 김OO 사례</strong>
+              <strong>신청 번호 1042 · 김OO 사례</strong>
               <p>
                 추가자료가 도착했습니다. 새 자료를 확인한 뒤 피드백 초안을 이어 씁니다.
               </p>
@@ -2221,7 +2302,7 @@
             <h3>검토 요약</h3>
             <div class="field">
               <dt>의뢰</dt>
-              <dd>REQ-1042</dd>
+              <dd>신청 번호 1042</dd>
             </div>
             <div class="field">
               <dt>상태</dt>
@@ -2316,8 +2397,8 @@
           <aside class="dark-panel">
             <h3>운영 확인</h3>
             <p>
-              승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 먼저 확인하고 처리
-              사유를 남깁니다.
+              승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 먼저 확인하고 처리 사유를
+              남깁니다.
             </p>
           </aside>
         </div>
