@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   UsersRound
 } from "lucide-react";
-import { AdminCard, AdminShell } from "../components/admin-shell";
+import { AdminCard, AdminLockedState, AdminShell } from "../components/admin-shell";
 import { createRuntimeDatabase, getCurrentAdmin } from "../lib/auth/current-admin";
 
 export const dynamic = "force-dynamic";
@@ -30,7 +30,16 @@ export default async function AdminPage() {
         title="운영 대시보드"
         subtitle="관리자 로그인과 2단계 인증이 필요합니다."
       >
-        <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
+        <AdminLockedState
+          title="운영 업무는 관리자 계정에서 이어집니다"
+          description="자격 승인, 환불, 정산, 처리 기록은 관리자 권한이 확인된 뒤 열립니다."
+          returnPath="/admin"
+          previewItems={[
+            "오늘 먼저 확인할 운영 대기열",
+            "자격 승인, 환불, 정산 상태",
+            "처리 기록과 운영 조치 내역"
+          ]}
+        />
       </AdminShell>
     );
   }

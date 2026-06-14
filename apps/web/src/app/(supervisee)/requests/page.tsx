@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
 import { SiteHeader } from "../../../components/clinicflow-shell";
-import { EmptyState } from "../../../components/ui/state";
+import { DemoRequestsPreview } from "../../../components/workflow-preview-pages";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { contextFor } from "../../../lib/supervision/authz";
@@ -14,22 +14,7 @@ export default async function Page() {
   const current = await getCurrentUser();
 
   if (!current) {
-    return (
-      <main className="min-h-screen bg-background p-gutter">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="의뢰와 받은 자료를 보려면 먼저 로그인하세요."
-          action={
-            <Link
-              className="rounded-lg bg-primary px-md py-2 font-label-md text-label-md text-on-primary"
-              href="/login"
-            >
-              로그인하기
-            </Link>
-          }
-        />
-      </main>
-    );
+    return <DemoRequestsPreview />;
   }
 
   const db = createRuntimeDatabase();

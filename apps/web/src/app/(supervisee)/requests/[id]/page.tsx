@@ -6,6 +6,7 @@ import { CaseFilesPanel } from "../../../../components/case-files-panel";
 import { Badge } from "../../../../components/ui/badge";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
+import { DemoRequestDetailPreview } from "../../../../components/workflow-preview-pages";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { contextFor, isRequestOwner } from "@/lib/supervision/authz";
@@ -25,14 +26,7 @@ export default async function RequestDetailPage({
     !current ||
     (current.user.role !== "supervisee" && current.user.role !== "supervisor")
   ) {
-    return (
-      <AppShell title="의뢰 상세" subtitle="슈퍼바이지 로그인이 필요합니다.">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="의뢰 내용을 보려면 먼저 로그인하세요."
-        />
-      </AppShell>
-    );
+    return <DemoRequestDetailPreview />;
   }
 
   const db = createRuntimeDatabase();

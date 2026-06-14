@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle
 } from "../../../../components/ui/card";
-import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorPayoutsPreview } from "../../../../components/workflow-preview-pages";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { isSupervisor } from "../../../../lib/auth/guards";
@@ -23,14 +23,7 @@ export default async function SupervisorPayoutsPage() {
   const current = await getCurrentUser();
 
   if (!isSupervisor(current)) {
-    return (
-      <main className="min-h-screen bg-background p-gutter">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="정산 내역은 슈퍼바이저 계정으로 로그인해야 확인할 수 있습니다."
-        />
-      </main>
-    );
+    return <DemoSupervisorPayoutsPreview />;
   }
 
   const db = createRuntimeDatabase();

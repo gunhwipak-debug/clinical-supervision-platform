@@ -8,11 +8,11 @@ import {
   PackageCheck,
   ShieldCheck
 } from "lucide-react";
-import { AppShell } from "../../../../components/app-shell";
 import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { Badge } from "../../../../components/ui/badge";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorProductsPreview } from "../../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { ProductForm, ProductManageForm } from "./product-form";
@@ -23,14 +23,7 @@ export default async function SupervisorProductsPage() {
   const current = await getCurrentUser();
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <AppShell title="제공 항목 관리" subtitle="슈퍼바이저 계정으로 로그인해주세요.">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="제공 항목은 슈퍼바이저만 관리할 수 있습니다."
-        />
-      </AppShell>
-    );
+    return <DemoSupervisorProductsPreview />;
   }
 
   const db = createRuntimeDatabase();

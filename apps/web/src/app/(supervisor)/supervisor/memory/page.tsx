@@ -7,7 +7,7 @@ import {
 } from "../../../../components/clinicflow-shell";
 import { Button } from "../../../../components/ui/button";
 import { Card } from "../../../../components/ui/card";
-import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorMemoryPreview } from "../../../../components/workflow-preview-pages";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 
@@ -17,18 +17,7 @@ export default async function SupervisorMemoryPage() {
   const current = await getCurrentUser();
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <AppShell
-        active="supervisor"
-        title="슈퍼비전 노트"
-        subtitle="슈퍼바이저 계정으로 로그인해야 사용할 수 있습니다."
-      >
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="반복되는 슈퍼비전 맥락과 완료 기록은 슈퍼바이저 계정에서 확인합니다."
-        />
-      </AppShell>
-    );
+    return <DemoSupervisorMemoryPreview />;
   }
 
   const requests = await withUserContext(

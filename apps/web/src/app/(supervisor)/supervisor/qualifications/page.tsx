@@ -3,6 +3,7 @@ import { AppShell } from "../../../../components/app-shell";
 import { Badge } from "../../../../components/ui/badge";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorQualificationsPreview } from "../../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { QualificationForm } from "./qualification-form";
@@ -13,14 +14,7 @@ export default async function Page() {
   const current = await getCurrentUser();
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <AppShell title="자격 관리" subtitle="슈퍼바이저 계정으로 로그인해주세요.">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="자격 제출은 슈퍼바이저만 사용할 수 있습니다."
-        />
-      </AppShell>
-    );
+    return <DemoSupervisorQualificationsPreview />;
   }
 
   const qualifications = await withUserContext(

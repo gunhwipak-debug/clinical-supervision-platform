@@ -5,6 +5,7 @@ import { AppShell } from "../../../../components/app-shell";
 import { Badge } from "../../../../components/ui/badge";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
+import { DemoPaymentDetailPreview } from "../../../../components/workflow-preview-pages";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
@@ -21,14 +22,7 @@ export default async function PaymentDetailPage({
   const current = await getCurrentUser();
   const { id } = await params;
   if (!current || !isSupervisee(current)) {
-    return (
-      <AppShell title="영수증 상세" subtitle="슈퍼바이지 로그인이 필요합니다.">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="영수증은 로그인 후 확인할 수 있습니다."
-        />
-      </AppShell>
-    );
+    return <DemoPaymentDetailPreview />;
   }
 
   const payment = await withUserContext(

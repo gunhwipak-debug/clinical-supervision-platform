@@ -3,6 +3,7 @@ import { files, supervision, withUserContext } from "@csp/db";
 import { History } from "lucide-react";
 import { CaseFilesPanel } from "../../../../../components/case-files-panel";
 import { EmptyState } from "../../../../../components/ui/state";
+import { DemoSupervisorRequestDetailPreview } from "../../../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../../lib/auth/current-user";
 import { RequestWorkflow } from "./request-workflow";
@@ -14,14 +15,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const { id } = await params;
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <main className="min-h-screen bg-background p-gutter">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="의뢰 검토는 배정된 슈퍼바이저만 사용할 수 있습니다."
-        />
-      </main>
-    );
+    return <DemoSupervisorRequestDetailPreview />;
   }
 
   const db = createRuntimeDatabase();

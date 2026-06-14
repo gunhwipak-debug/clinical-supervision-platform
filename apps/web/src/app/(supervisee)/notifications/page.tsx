@@ -1,13 +1,13 @@
 import { notifications, withUserContext } from "@csp/db";
-import { redirect } from "next/navigation";
 import { AppShell } from "@/components/app-shell";
+import { DemoNotificationsPreview } from "@/components/workflow-preview-pages";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { contextFor } from "@/lib/supervision/authz";
 
 export default async function NotificationsPage() {
   const current = await getCurrentUser();
-  if (!current) redirect("/login");
+  if (!current) return <DemoNotificationsPreview />;
 
   const db = createRuntimeDatabase();
   const items = await withUserContext(db, contextFor(current), (tx) =>

@@ -4,7 +4,11 @@ import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
 import { FileCheck2, Menu, Search, ShieldCheck } from "lucide-react";
 import { AdminActionPanel } from "../../../components/admin-action-panel";
-import { AdminCard, AdminShell } from "../../../components/admin-shell";
+import {
+  AdminCard,
+  AdminLockedState,
+  AdminShell
+} from "../../../components/admin-shell";
 import { AdminDownloadLink } from "../../../components/admin-download-link";
 import {
   createRuntimeDatabase,
@@ -49,7 +53,16 @@ export default async function AdminQualificationsPage({
   if (!current) {
     return (
       <AdminShell title="자격 승인" subtitle="관리자 로그인과 2단계 인증이 필요합니다.">
-        <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
+        <AdminLockedState
+          title="슈퍼바이저 자격 검토는 관리자 전용입니다"
+          description="공개 목록에 오르기 전 자격 증빙, 전문 분야, 승인 상태를 확인합니다."
+          returnPath="/admin/qualifications"
+          previewItems={[
+            "제출된 자격 증빙과 발급 기관",
+            "승인, 반려, 보완 요청 상태",
+            "공개 프로필 반영 여부"
+          ]}
+        />
       </AdminShell>
     );
   }

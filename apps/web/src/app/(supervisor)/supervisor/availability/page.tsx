@@ -7,7 +7,7 @@ import {
   CreditCard,
   LayoutDashboard
 } from "lucide-react";
-import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorAvailabilityPreview } from "../../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { AvailabilityForm } from "./availability-form";
@@ -31,14 +31,7 @@ export default async function Page({
   const params = await searchParams;
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <main className="min-h-screen bg-background p-gutter">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="가능시간은 슈퍼바이저만 관리할 수 있습니다."
-        />
-      </main>
-    );
+    return <DemoSupervisorAvailabilityPreview />;
   }
 
   const db = createRuntimeDatabase();

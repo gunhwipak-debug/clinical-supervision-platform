@@ -5,6 +5,7 @@ import { AppShell } from "../../../components/app-shell";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { EmptyState } from "../../../components/ui/state";
+import { DemoPaymentsPreview } from "../../../components/workflow-preview-pages";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
@@ -17,19 +18,7 @@ type PaymentRecord = payments.PaymentRecord;
 export default async function PaymentsPage() {
   const current = await getCurrentUser();
   if (!current || !isSupervisee(current)) {
-    return (
-      <AppShell title="결제 내역" subtitle="결제 내역을 보려면 로그인이 필요합니다.">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="슈퍼비전 의뢰 결제와 환불 상태는 로그인 후 확인할 수 있습니다."
-          action={
-            <Button asChild>
-              <Link href="/login">로그인</Link>
-            </Button>
-          }
-        />
-      </AppShell>
-    );
+    return <DemoPaymentsPreview />;
   }
 
   const db = createRuntimeDatabase();

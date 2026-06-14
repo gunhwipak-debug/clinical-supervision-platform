@@ -1,7 +1,11 @@
 import { payments, withUserContext } from "@csp/db";
 import { ArrowLeft, Clock3, ReceiptText, RotateCcw, ShieldCheck } from "lucide-react";
 import { AdminActionPanel } from "../../../components/admin-action-panel";
-import { AdminCard, AdminShell } from "../../../components/admin-shell";
+import {
+  AdminCard,
+  AdminLockedState,
+  AdminShell
+} from "../../../components/admin-shell";
 import {
   createRuntimeDatabase,
   getCurrentAdmin
@@ -15,7 +19,16 @@ export default async function RefundsPage() {
   if (!current) {
     return (
       <AdminShell title="환불 큐" subtitle="관리자 로그인이 필요합니다.">
-        <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
+        <AdminLockedState
+          title="환불 검토는 관리자 계정에서 진행합니다"
+          description="요청 사유, 결제 상태, 슈퍼비전 진행 단계를 함께 보고 승인 여부를 결정합니다."
+          returnPath="/admin/refunds"
+          previewItems={[
+            "환불 요청 사유와 연결 의뢰",
+            "결제 금액과 진행 상태",
+            "승인 또는 반려 처리"
+          ]}
+        />
       </AdminShell>
     );
   }

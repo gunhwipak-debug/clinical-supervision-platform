@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { profiles, supervision, withUserContext } from "@csp/db";
 import { SiteHeader } from "../../../components/clinicflow-shell";
-import { EmptyState } from "../../../components/ui/state";
+import { DemoSupervisorHomePreview } from "../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 
@@ -15,14 +15,7 @@ export default async function Page() {
   const current = await getCurrentUser();
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <main className="min-h-screen bg-background p-gutter">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="슈퍼바이저 콘솔은 슈퍼바이저 계정으로 로그인해야 사용할 수 있습니다."
-        />
-      </main>
-    );
+    return <DemoSupervisorHomePreview />;
   }
 
   const db = createRuntimeDatabase();

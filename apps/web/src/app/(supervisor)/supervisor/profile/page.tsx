@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { Card } from "../../../../components/ui/card";
-import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorProfilePreview } from "../../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { SupervisorProfileEditor, SupervisorVisibilityForm } from "./profile-form";
@@ -20,14 +20,7 @@ export default async function SupervisorProfilePage() {
   const current = await getCurrentUser();
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <main className="min-h-screen bg-surface-base p-6 text-ink-900">
-        <EmptyState
-          title="슈퍼바이저 로그인이 필요합니다"
-          description="공개 프로필을 작성하려면 슈퍼바이저 계정으로 로그인하세요."
-        />
-      </main>
-    );
+    return <DemoSupervisorProfilePreview />;
   }
 
   const db = createRuntimeDatabase();

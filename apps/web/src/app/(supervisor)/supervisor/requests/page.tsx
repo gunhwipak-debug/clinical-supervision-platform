@@ -6,6 +6,7 @@ import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { Card } from "../../../../components/ui/card";
 import { EmptyState } from "../../../../components/ui/state";
+import { DemoSupervisorRequestsPreview } from "../../../../components/workflow-preview-pages";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 
@@ -15,14 +16,7 @@ export default async function Page() {
   const current = await getCurrentUser();
 
   if (!current || current.user.role !== "supervisor") {
-    return (
-      <AppShell title="의뢰 큐" subtitle="슈퍼바이저 계정으로 로그인해주세요.">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="의뢰 큐는 슈퍼바이저만 확인할 수 있습니다."
-        />
-      </AppShell>
-    );
+    return <DemoSupervisorRequestsPreview />;
   }
 
   const requests = await withUserContext(

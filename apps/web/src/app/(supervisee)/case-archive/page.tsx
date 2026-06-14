@@ -8,6 +8,7 @@ import {
 import { AppShell } from "../../../components/app-shell";
 import { Button } from "../../../components/ui/button";
 import { EmptyState } from "../../../components/ui/state";
+import { DemoCaseArchivePreview } from "../../../components/workflow-preview-pages";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { isSupervisee } from "../../../lib/auth/guards";
@@ -30,23 +31,7 @@ export default async function CaseArchivePage() {
   const current = await getCurrentUser();
 
   if (!current || !isSupervisee(current)) {
-    return (
-      <AppShell
-        active="case-archive"
-        title="학습 기록"
-        subtitle="완료된 슈퍼비전 기록은 로그인 후 확인할 수 있습니다."
-      >
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="내 슈퍼비전 기록을 보려면 먼저 로그인하세요."
-          action={
-            <Button asChild>
-              <Link href="/login">로그인</Link>
-            </Button>
-          }
-        />
-      </AppShell>
-    );
+    return <DemoCaseArchivePreview />;
   }
 
   const requests = await withUserContext(

@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle
 } from "../../../components/ui/card";
-import { EmptyState } from "../../../components/ui/state";
+import { DemoSettingsPreview } from "../../../components/workflow-preview-pages";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { isSupervisor } from "../../../lib/auth/guards";
@@ -23,14 +23,7 @@ export default async function SettingsPage() {
   const current = await getCurrentUser();
 
   if (!current) {
-    return (
-      <main className="min-h-screen bg-background p-gutter">
-        <EmptyState
-          title="로그인이 필요합니다"
-          description="계정과 프로필 설정을 보려면 먼저 로그인하세요."
-        />
-      </main>
-    );
+    return <DemoSettingsPreview />;
   }
 
   const db = createRuntimeDatabase();

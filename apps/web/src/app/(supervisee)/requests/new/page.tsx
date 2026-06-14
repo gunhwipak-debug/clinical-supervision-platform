@@ -1,10 +1,10 @@
 import { AppShell } from "../../../../components/app-shell";
 import { EmptyState } from "../../../../components/ui/state";
+import { DemoNewRequestPreview } from "../../../../components/workflow-preview-pages";
 import { profiles } from "@csp/db";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
-import { redirect } from "next/navigation";
 import { NewRequestForm } from "./new-request-form";
 
 export default async function Page({
@@ -23,7 +23,7 @@ export default async function Page({
   const params = await searchParams;
   const current = await getCurrentUser();
   if (!current) {
-    redirect(`/login?returnTo=${encodeURIComponent(returnTo(params))}`);
+    return <DemoNewRequestPreview />;
   }
 
   if (!isSupervisee(current)) {
@@ -104,21 +104,4 @@ async function loadSelectionSummary(
     productTitle: selectedProduct?.title ?? null,
     supervisorName: supervisor?.displayName ?? null
   };
-}
-
-function returnTo(params: {
-  productId?: string;
-  serviceProductId?: string;
-  slot?: string;
-  slotEnd?: string;
-  slotId?: string;
-  slotStart?: string;
-  supervisorId?: string;
-}): string {
-  const query = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value) query.set(key, value);
-  }
-  const suffix = query.toString();
-  return suffix ? `/requests/new?${suffix}` : "/requests/new";
 }

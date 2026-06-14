@@ -1,9 +1,11 @@
 import {
+  ArrowRight,
   BadgeCheck,
   Banknote,
   ClipboardList,
   Gauge,
   ListChecks,
+  LockKeyhole,
   RotateCcw,
 } from "lucide-react";
 
@@ -95,5 +97,63 @@ export function AdminCard({
     >
       {children}
     </article>
+  );
+}
+
+export function AdminLockedState({
+  description,
+  previewItems,
+  returnPath,
+  title
+}: {
+  description: string;
+  previewItems: string[];
+  returnPath: string;
+  title: string;
+}) {
+  const webOrigin =
+    process.env["NEXT_PUBLIC_WEB_APP_URL"] ?? "https://clinicflow-web-beta.vercel.app";
+  const adminOrigin =
+    process.env["NEXT_PUBLIC_ADMIN_APP_URL"] ?? "https://clinicflow-admin-six.vercel.app";
+  const loginHref = `${webOrigin}/login?returnTo=${encodeURIComponent(
+    `${adminOrigin}${returnPath}`
+  )}`;
+
+  return (
+    <AdminCard className="overflow-hidden p-0">
+      <div className="grid gap-0 lg:grid-cols-[0.95fr_1.05fr]">
+        <div className="grid content-center gap-5 border-b border-line p-6 lg:border-b-0 lg:border-r">
+          <span className="grid size-12 place-items-center rounded-lg bg-brand-50 text-brand-700">
+            <LockKeyhole aria-hidden size={22} />
+          </span>
+          <div>
+            <h2 className="text-2xl font-bold text-ink-900">{title}</h2>
+            <p className="mt-2 max-w-xl text-sm leading-relaxed text-ink-600">
+              {description}
+            </p>
+          </div>
+          <a
+            className="inline-flex w-fit items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-surface-elevated transition hover:bg-brand-700"
+            href={loginHref}
+          >
+            관리자 로그인
+            <ArrowRight aria-hidden size={16} />
+          </a>
+        </div>
+        <div className="grid content-start gap-3 bg-surface-sunken/50 p-6">
+          <p className="text-sm font-bold text-ink-700">
+            로그인 후 확인하는 운영 업무
+          </p>
+          {previewItems.map((item) => (
+            <div
+              className="rounded-lg border border-line bg-surface-elevated px-4 py-3 text-sm font-semibold text-ink-700"
+              key={item}
+            >
+              {item}
+            </div>
+          ))}
+        </div>
+      </div>
+    </AdminCard>
   );
 }

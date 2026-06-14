@@ -1,7 +1,11 @@
 import type { ReactNode } from "react";
 import { audit, withUserContext } from "@csp/db";
 import { ArrowLeft, Eye, FileClock, ShieldCheck } from "lucide-react";
-import { AdminCard, AdminShell } from "../../../components/admin-shell";
+import {
+  AdminCard,
+  AdminLockedState,
+  AdminShell
+} from "../../../components/admin-shell";
 import {
   createRuntimeDatabase,
   getCurrentAdmin
@@ -15,7 +19,16 @@ export default async function AuditPage() {
   if (!current) {
     return (
       <AdminShell title="처리 기록" subtitle="관리자 로그인이 필요합니다.">
-        <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
+        <AdminLockedState
+          title="처리 기록은 관리자 로그인 후 확인합니다"
+          description="운영 조치와 자료 접근 기록을 필요한 범위 안에서 다시 확인하는 화면입니다."
+          returnPath="/admin/audit"
+          previewItems={[
+            "관리자 조치 기록",
+            "자료 접근 기록",
+            "운영 확인을 위한 검색과 필터"
+          ]}
+        />
       </AdminShell>
     );
   }

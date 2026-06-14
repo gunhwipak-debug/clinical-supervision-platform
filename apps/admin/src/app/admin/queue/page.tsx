@@ -1,7 +1,10 @@
 import Link from "next/link";
 import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
-import { AdminCard, AdminShell } from "../../../components/admin-shell";
+import {
+  AdminLockedState,
+  AdminShell
+} from "../../../components/admin-shell";
 import {
   createRuntimeDatabase,
   getCurrentAdmin
@@ -32,7 +35,16 @@ export default async function AdminQueuePage() {
   if (!current) {
     return (
       <AdminShell title="운영 대기열" subtitle="관리자 로그인이 필요합니다.">
-        <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
+        <AdminLockedState
+          title="운영 대기열은 로그인 후 열립니다"
+          description="처리해야 할 자격 승인, 환불, 정산 항목을 한곳에서 확인하는 관리자 화면입니다."
+          returnPath="/admin/queue"
+          previewItems={[
+            "자격 승인 대기 항목",
+            "환불 검토 요청",
+            "정산 확인과 처리 기록"
+          ]}
+        />
       </AdminShell>
     );
   }

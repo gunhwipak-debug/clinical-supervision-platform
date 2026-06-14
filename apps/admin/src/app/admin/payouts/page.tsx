@@ -6,7 +6,11 @@ import {
   ShieldCheck,
   WalletCards
 } from "lucide-react";
-import { AdminCard, AdminShell } from "../../../components/admin-shell";
+import {
+  AdminCard,
+  AdminLockedState,
+  AdminShell
+} from "../../../components/admin-shell";
 import {
   createRuntimeDatabase,
   getCurrentAdmin
@@ -21,7 +25,16 @@ export default async function PayoutsPage() {
   if (!current) {
     return (
       <AdminShell title="정산 요약" subtitle="관리자 로그인이 필요합니다.">
-        <AdminCard>관리자 계정으로 로그인해주세요.</AdminCard>
+        <AdminLockedState
+          title="정산 관리는 관리자 권한이 필요합니다"
+          description="완료된 슈퍼비전의 지급 예정액과 보류 사유를 확인하는 운영 화면입니다."
+          returnPath="/admin/payouts"
+          previewItems={[
+            "정산 예정 금액과 지급 상태",
+            "슈퍼바이저별 지급 내역",
+            "정산 산출과 보류 사유"
+          ]}
+        />
       </AdminShell>
     );
   }
