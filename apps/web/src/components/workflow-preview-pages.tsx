@@ -33,9 +33,8 @@ const flowSteps = [
 
 export function PreviewNotice() {
   return (
-    <div className="rounded-md border border-brand-100 bg-brand-50 px-4 py-3 text-sm font-semibold text-brand-700">
-      로그인 전에는 흐름을 먼저 볼 수 있도록 예시 화면을 보여드립니다. 로그인
-      후에는 실제 의뢰와 기록이 표시됩니다.
+    <div className="rounded-md border border-line bg-surface-elevated px-4 py-3 text-xs font-semibold text-ink-500">
+      예시 화면 · 실제 계정에서는 내 의뢰와 기록이 표시됩니다.
     </div>
   );
 }
@@ -97,8 +96,8 @@ export function DemoNewRequestPreview() {
       title="새 슈퍼비전 의뢰"
       subtitle="슈퍼바이저, 세션, 일정, 자료를 순서대로 선택합니다."
       action={
-        <Button asChild>
-          <a href="#case-material">자료 제출로 이동</a>
+        <Button asChild variant="secondary">
+          <a href="#case-material">자료 업로드</a>
         </Button>
       }
     >
@@ -143,12 +142,26 @@ export function DemoNewRequestPreview() {
               <InputPreview label="사용 검사" value="K-WISC-V, SCT, CBCL" />
               <InputPreview label="희망 피드백" value="진단 가설, 보완 자료, 상담 우선순위" />
             </div>
+            <div className="grid gap-2 rounded-md border border-line bg-surface-sunken p-4 text-sm text-ink-700">
+              {[
+                ["필수", "사례 요약"],
+                ["필수", "검사 결과"],
+                ["필수", "슈퍼바이저에게 묻고 싶은 질문"],
+                ["선택", "보호자 면담 요약"]
+              ].map(([type, label]) => (
+                <div className="flex items-center justify-between gap-4" key={label}>
+                  <span className="font-semibold text-ink-900">{label}</span>
+                  <Badge tone={type === "필수" ? "accent" : "neutral"}>{type}</Badge>
+                </div>
+              ))}
+            </div>
             <div className="grid place-items-center gap-3 rounded-md border border-dashed border-brand-200 bg-surface-base p-8 text-center">
               <Upload aria-hidden className="text-brand-600" size={28} />
               <p className="font-bold text-ink-900">PDF, 문서, 이미지 파일을 추가</p>
               <p className="text-sm text-ink-500">
-                기존 자료 업로드 흐름은 이 단계에 유지됩니다.
+                사례를 이해하는 데 필요한 자료만 올립니다.
               </p>
+              <Button type="button">파일 추가</Button>
             </div>
           </Card>
         </section>
@@ -164,8 +177,8 @@ export function DemoNewRequestPreview() {
               ]}
             />
           </Card>
-          <Button asChild size="lg">
-            <Link href="/requests/demo-additional-info">의뢰 초안 저장</Link>
+          <Button asChild size="lg" variant="secondary">
+            <Link href="/requests/demo-additional-info">임시 저장</Link>
           </Button>
         </aside>
       </div>
@@ -203,24 +216,46 @@ export function DemoRequestDetailPreview() {
               </div>
             </div>
             {[
-              ["사례요약 1건", "제출 완료"],
-              ["검사결과 PDF 2건", "제출 완료"],
-              ["보호자 면담 요약", "추가 필요"]
-            ].map(([title, status]) => (
+              {
+                title: "사례요약 1건",
+                status: "제출 완료",
+                meta: "6월 14일 업로드"
+              },
+              {
+                title: "검사결과 PDF 2건",
+                status: "제출 완료",
+                meta: "K-WISC-V, CBCL 확인됨"
+              },
+              {
+                title: "보호자 면담 요약",
+                status: "추가 자료 요청됨",
+                meta: "요청자 이민서 · 요청일 6월 14일 · 제출 기한 6월 17일"
+              }
+            ].map(({ meta, status, title }) => (
               <div
-                className="flex items-center justify-between rounded-md border border-line bg-surface-base px-4 py-3"
+                className="grid gap-3 rounded-md border border-line bg-surface-base px-4 py-3 md:grid-cols-[1fr_auto] md:items-center"
                 key={title}
               >
-                <span className="font-semibold text-ink-900">{title}</span>
-                <Badge tone={status === "추가 필요" ? "accent" : "brand"}>{status}</Badge>
+                <div>
+                  <span className="font-semibold text-ink-900">{title}</span>
+                  <p className="mt-1 text-xs font-semibold text-ink-500">{meta}</p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge tone={status === "추가 자료 요청됨" ? "accent" : "brand"}>{status}</Badge>
+                  {status === "추가 자료 요청됨" ? (
+                    <Button size="sm" type="button">
+                      파일 추가
+                    </Button>
+                  ) : null}
+                </div>
               </div>
             ))}
           </Card>
           <Card>
             <h2 className="text-xl font-bold text-ink-900">최근 피드백</h2>
             <p className="mt-2 text-sm leading-relaxed text-ink-600">
-              진단 가설은 유지하되, 면담 기록을 보완한 뒤 개입 우선순위를 다시
-              정리해 주세요.
+              요청 사유: 진단 가설은 유지하되, 면담 기록을 보완한 뒤 개입
+              우선순위를 다시 정리해야 합니다.
             </p>
           </Card>
         </section>
@@ -288,7 +323,7 @@ export function DemoCaseArchivePreview() {
     <AppShell
       active="case-archive"
       title="학습 기록"
-      subtitle="완료된 슈퍼비전을 원노트처럼 슈퍼바이저와 사례 단위로 정리합니다."
+      subtitle="완료된 슈퍼비전을 슈퍼바이저, 사례, 회차 단위로 접어 보관합니다."
       action={
         <Button asChild>
           <Link href="/supervisors">새 슈퍼비전 시작</Link>
@@ -299,9 +334,49 @@ export function DemoCaseArchivePreview() {
       <FlowStepNav current="학습 기록" steps={flowSteps} />
       <SectionBlock title="슈퍼비전 노트">
         <div className="grid gap-3">
-          <Folder title="이민서 슈퍼바이저" items={["김OO · 종합심리평가 보고서", "이OO · 초기 상담 구조화"]} />
-          <Folder title="최유나 슈퍼바이저" items={["박OO · 위기 사례 의사소통"]} />
-          <Folder title="한지우 슈퍼바이저" items={["정OO · 부모 상담 피드백"]} />
+          <LearningFolder
+            title="이민서 슈퍼바이저"
+            cases={[
+              {
+                person: "김OO",
+                topic: "종합심리평가 보고서",
+                session: "1회차",
+                updated: "6월 20일",
+                records: ["핵심 피드백", "보완 자료", "이수 기록"]
+              },
+              {
+                person: "이OO",
+                topic: "초기 상담 구조화",
+                session: "2회차",
+                updated: "6월 12일",
+                records: ["회기 목표", "다음 상담 질문", "학습 노트"]
+              }
+            ]}
+          />
+          <LearningFolder
+            title="최유나 슈퍼바이저"
+            cases={[
+              {
+                person: "박OO",
+                topic: "위기 사례 의사소통",
+                session: "1회차",
+                updated: "5월 29일",
+                records: ["위험도 판단", "기관 공유 문장", "이수 기록"]
+              }
+            ]}
+          />
+          <LearningFolder
+            title="한지우 슈퍼바이저"
+            cases={[
+              {
+                person: "정OO",
+                topic: "부모 상담 피드백",
+                session: "3회차",
+                updated: "5월 18일",
+                records: ["상담 흐름", "보호자 설명 문장", "학습 노트"]
+              }
+            ]}
+          />
         </div>
       </SectionBlock>
     </AppShell>
@@ -391,10 +466,28 @@ export function DemoSupervisorHomePreview() {
       <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
         <section className="grid gap-3">
           {[
-            ["추가 자료 도착", "종합심리평가 보고서", "먼저 확인"],
-            ["피드백 초안 작성 중", "초기 상담 구조화", "이어 쓰기"],
-            ["수락 여부 확인 필요", "부모 상담 피드백", "결정 필요"]
-          ].map(([status, title, action]) => (
+            [
+              "추가 자료 도착",
+              "종합심리평가 보고서",
+              "먼저 확인",
+              "오늘 09:20 업데이트",
+              "요청했던 보호자 면담 요약이 올라왔습니다."
+            ],
+            [
+              "피드백 초안 작성 중",
+              "초기 상담 구조화",
+              "이어 쓰기",
+              "마감 6월 18일 18:00",
+              "초안에 보완 자료와 다음 상담 질문을 추가해야 합니다."
+            ],
+            [
+              "수락 여부 확인 필요",
+              "부모 상담 피드백",
+              "결정 필요",
+              "내일 12:00 전 응답",
+              "수락 여부가 확정되어야 신청자가 일정을 준비할 수 있습니다."
+            ]
+          ].map(([status, title, action, meta, reason]) => (
             <Card
               className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center"
               key={title}
@@ -403,8 +496,9 @@ export function DemoSupervisorHomePreview() {
                 <Badge tone="accent">{status}</Badge>
                 <h2 className="mt-3 text-xl font-bold text-ink-900">{title}</h2>
                 <p className="mt-1 text-sm text-ink-600">
-                  현재 상태와 다음 행동이 연결된 업무입니다.
+                  {reason}
                 </p>
+                <p className="mt-2 text-xs font-bold text-ink-500">{meta}</p>
               </div>
               <Button asChild variant="secondary">
                 <Link href="/supervisor/requests/demo-review">{action}</Link>
@@ -478,13 +572,26 @@ export function DemoSupervisorRequestDetailPreview() {
               <h2 className="text-xl font-bold">사례 자료 검토</h2>
             </div>
             <div className="mt-5 grid gap-3">
-              {["사례요약.pdf", "검사결과.pdf", "보호자면담요약.docx"].map((name) => (
+              {[
+                ["사례요약.pdf", "확인 완료"],
+                ["검사결과.pdf", "보완 필요"],
+                ["보호자면담요약.docx", "미열람"]
+              ].map(([name, status]) => (
                 <div
-                  className="flex items-center justify-between rounded-md border border-line bg-surface-base p-4"
+                  className="grid gap-3 rounded-md border border-line bg-surface-base p-4 md:grid-cols-[1fr_auto] md:items-center"
                   key={name}
                 >
-                  <span className="font-semibold">{name}</span>
-                  <Button size="sm" variant="secondary">열람</Button>
+                  <div>
+                    <span className="font-semibold">{name}</span>
+                    <div className="mt-2">
+                      <Badge tone={status === "보완 필요" ? "accent" : status === "미열람" ? "neutral" : "brand"}>
+                        {status}
+                      </Badge>
+                    </div>
+                  </div>
+                  <Button size="sm" variant="secondary">
+                    열람
+                  </Button>
                 </div>
               ))}
             </div>
@@ -493,6 +600,17 @@ export function DemoSupervisorRequestDetailPreview() {
               <p className="mt-2 text-sm leading-relaxed text-ink-600">
                 강점, 보완 자료, 다음 상담에서 확인할 질문을 짧게 정리합니다.
               </p>
+              <div className="mt-4 grid gap-2 sm:grid-cols-2">
+                {["강점", "보완 자료", "다음 상담 질문", "위험·주의 사항 없음"].map((item) => (
+                  <div
+                    className="flex items-center gap-2 rounded-md border border-line bg-surface-base px-3 py-2 text-sm font-semibold text-ink-700"
+                    key={item}
+                  >
+                    <CheckCircle2 aria-hidden className="text-brand-600" size={16} />
+                    {item}
+                  </div>
+                ))}
+              </div>
             </div>
           </Card>
           <Card className="h-fit">
@@ -687,6 +805,72 @@ function Folder({ items, title }: { items: string[]; title: string }) {
           >
             ㄴ {item}
           </Link>
+        ))}
+      </div>
+    </details>
+  );
+}
+
+function LearningFolder({
+  cases,
+  title
+}: {
+  cases: Array<{
+    person: string;
+    topic: string;
+    session: string;
+    updated: string;
+    records: string[];
+  }>;
+  title: string;
+}) {
+  const recordCount = cases.reduce((total, item) => total + item.records.length, 0);
+
+  return (
+    <details className="rounded-md border border-line bg-surface-elevated p-5 shadow-card" open>
+      <summary className="cursor-pointer list-none">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <FolderOpen aria-hidden className="text-brand-600" size={20} />
+            <span className="text-lg font-bold text-ink-900">{title}</span>
+          </div>
+          <span className="text-xs font-bold text-ink-500">
+            사례 {cases.length}건 · 기록 {recordCount}개
+          </span>
+        </div>
+      </summary>
+      <div className="mt-4 grid gap-3 border-l border-line pl-4">
+        {cases.map((item) => (
+          <details className="rounded-md border border-line bg-surface-base p-4" key={`${title}-${item.person}`}>
+            <summary className="cursor-pointer list-none">
+              <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
+                <div>
+                  <h3 className="font-bold text-ink-900">
+                    {item.person} · {item.topic}
+                  </h3>
+                  <p className="mt-1 text-xs font-semibold text-ink-500">
+                    {item.session} · 마지막 정리 {item.updated}
+                  </p>
+                </div>
+                <Badge tone="neutral">{item.records.length}개 기록</Badge>
+              </div>
+            </summary>
+            <div className="mt-3 grid gap-2 border-l border-line pl-4">
+              {item.records.map((record) => (
+                <Link
+                  className="flex items-center justify-between rounded-md px-3 py-2 text-sm font-semibold text-ink-700 hover:bg-surface-sunken"
+                  href="/requests/demo-additional-info"
+                  key={record}
+                >
+                  <span className="flex items-center gap-2">
+                    <FileText aria-hidden size={15} />
+                    {record}
+                  </span>
+                  <span className="text-xs text-ink-500">열기</span>
+                </Link>
+              ))}
+            </div>
+          </details>
         ))}
       </div>
     </details>
