@@ -4,7 +4,6 @@ import { ArrowRight } from "lucide-react";
 import { AppShell } from "../../../components/app-shell";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
-import { Card } from "../../../components/ui/card";
 import { EmptyState } from "../../../components/ui/state";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
