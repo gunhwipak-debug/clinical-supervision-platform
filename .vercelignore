@@ -9,7 +9,9 @@ node_modules
 .npm-cache
 dev-data
 output
-demo-evidence
+demo-evidence/*
+!demo-evidence/rebuild-tech-ui/
+!demo-evidence/rebuild-tech-ui/**
 promo-video
 designs
 interim_reports

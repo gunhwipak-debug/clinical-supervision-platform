@@ -1,0 +1,114 @@
+[
+  {
+    "file": "01-home-home.png",
+    "id": "home",
+    "width": 1440,
+    "height": 992,
+    "sourceY": 0,
+    "sectionHeight": 960
+  },
+  {
+    "file": "02-supervisors-supervisors.png",
+    "id": "supervisors",
+    "width": 1440,
+    "height": 1064,
+    "sourceY": 959,
+    "sectionHeight": 1032
+  },
+  {
+    "file": "03-login-login.png",
+    "id": "login",
+    "width": 1440,
+    "height": 564,
+    "sourceY": 1990,
+    "sectionHeight": 532
+  },
+  {
+    "file": "04-guide-guide.png",
+    "id": "guide",
+    "width": 1440,
+    "height": 875,
+    "sourceY": 2522,
+    "sectionHeight": 843
+  },
+  {
+    "file": "05-request-new-request-new.png",
+    "id": "request-new",
+    "width": 1440,
+    "height": 956,
+    "sourceY": 3365,
+    "sectionHeight": 924
+  },
+  {
+    "file": "06-material-upload-material-upload.png",
+    "id": "material-upload",
+    "width": 1440,
+    "height": 1316,
+    "sourceY": 4288,
+    "sectionHeight": 1284
+  },
+  {
+    "file": "07-request-detail-request-detail.png",
+    "id": "request-detail",
+    "width": 1440,
+    "height": 818,
+    "sourceY": 5571,
+    "sectionHeight": 786
+  },
+  {
+    "file": "08-payments-payments.png",
+    "id": "payments",
+    "width": 1440,
+    "height": 981,
+    "sourceY": 6357,
+    "sectionHeight": 949
+  },
+  {
+    "file": "09-waiting-waiting.png",
+    "id": "waiting",
+    "width": 1440,
+    "height": 767,
+    "sourceY": 7305,
+    "sectionHeight": 735
+  },
+  {
+    "file": "10-case-archive-case-archive.png",
+    "id": "case-archive",
+    "width": 1440,
+    "height": 1320,
+    "sourceY": 8039,
+    "sectionHeight": 1288
+  },
+  {
+    "file": "11-supervisor-dashboard-supervisor-dashboard.png",
+    "id": "supervisor-dashboard",
+    "width": 1440,
+    "height": 916,
+    "sourceY": 9326,
+    "sectionHeight": 884
+  },
+  {
+    "file": "12-supervisor-workspace-supervisor-workspace.png",
+    "id": "supervisor-workspace",
+    "width": 1440,
+    "height": 763,
+    "sourceY": 10210,
+    "sectionHeight": 731
+  },
+  {
+    "file": "13-admin-qualifications-admin-qualifications.png",
+    "id": "admin-qualifications",
+    "width": 1440,
+    "height": 736,
+    "sourceY": 10940,
+    "sectionHeight": 704
+  },
+  {
+    "file": "14-admin-admin.png",
+    "id": "admin",
+    "width": 1440,
+    "height": 902,
+    "sourceY": 11644,
+    "sectionHeight": 870
+  }
+]
