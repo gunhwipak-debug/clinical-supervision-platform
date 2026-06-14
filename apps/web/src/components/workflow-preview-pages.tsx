@@ -18,6 +18,8 @@ type SectionId =
   | "admin";
 
 const sourceCandidates = [
+  join(process.cwd(), "src/design-sources/clinicflow-tech-preview.html"),
+  join(process.cwd(), "apps/web/src/design-sources/clinicflow-tech-preview.html"),
   join(process.cwd(), "demo-evidence/rebuild-tech-ui/clinicflow-tech-preview.html"),
   join(process.cwd(), "../demo-evidence/rebuild-tech-ui/clinicflow-tech-preview.html"),
   join(process.cwd(), "../../demo-evidence/rebuild-tech-ui/clinicflow-tech-preview.html")
