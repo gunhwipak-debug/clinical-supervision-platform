@@ -52,6 +52,22 @@ export function PreviewNotice() {
   return null;
 }
 
+export function DemoHomePreview() {
+  return <StaticTechPreview sections={["home"]} />;
+}
+
+export function DemoSupervisorsPreview() {
+  return <StaticTechPreview sections={["supervisors"]} />;
+}
+
+export function DemoLoginPreview() {
+  return <StaticTechPreview sections={["login"]} />;
+}
+
+export function DemoGuidePreview() {
+  return <StaticTechPreview sections={["guide"]} />;
+}
+
 export function DemoRequestsPreview() {
   return <StaticTechPreview sections={["login"]} />;
 }
