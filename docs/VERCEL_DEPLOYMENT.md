@@ -39,27 +39,67 @@ Minimum production groups to review before deploying:
 
 ## Deployment Verification
 
-Use the web target command for Vercel parity:
+## Fast Codex Release Path
+
+Use this path for UI/copy/layout changes after the page has already been
+checked in the Codex browser. It avoids spending time on the current Mac's
+known local `next build` hang and lets Vercel's cloud build be the parity gate.
+
+1. Check the changed files quickly:
+
+   ```bash
+   pnpm release:web:fast-check
+   ```
+
+2. Commit the verified change.
+
+3. Create a preview deployment when the user wants to inspect before production:
+
+   ```bash
+   pnpm release:web:preview
+   ```
+
+4. Deploy production only after the preview or Codex browser surface is accepted:
+
+   ```bash
+   pnpm release:web:prod
+   ```
+
+The release script writes evidence under `.omo/evidence/fast-release/` and keeps
+`.omo/evidence/fast-release/LATEST.md` updated. Production deploy also smoke
+checks the stable alias `https://clinicflow-web-beta.vercel.app`.
+
+## Full Local Parity Path
+
+Use the web target command for Vercel parity when the local Next.js build path is
+healthy or when a change touches behavior beyond UI/static preview files:
 
 ```bash
 pnpm --filter @csp/web build
 ```
 
+For the fast release script, opt into this same local build with:
+
+```bash
+FULL_BUILD=1 pnpm release:web:fast-check
+```
+
 Then verify the deployed login route:
 
 ```bash
-curl -I -L https://clinicflow-452utruml-gunhwipak-debugs-projects.vercel.app/login
+curl -I -L https://clinicflow-web-beta.vercel.app/login
 ```
 
 Expected current evidence:
 
 - Vercel project `clinicflow-web` latest production deployment is `READY`.
-- Latest verified deployment URL:
-  `https://clinicflow-452utruml-gunhwipak-debugs-projects.vercel.app/login`
+- Stable production URL: `https://clinicflow-web-beta.vercel.app`
 - `/login` returned `HTTP/2 200` with `x-matched-path: /login` on
   2026-06-13.
 - Vercel build logs showed `pnpm --filter @csp/web build` and successful Next.js
   compilation for commit `18cec49c52c56b2653b009dc43cf9bc2a8eb8fd9`.
+  The 2026-06-14 production deploy for commit `3c2905c` also completed Vercel
+  compilation, lint/type validation, and generated static pages successfully.
 
 ## Current Local Caveat
 
