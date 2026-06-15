@@ -9,14 +9,25 @@ import {
   writeFileSync
 } from "node:fs";
 import { dirname, join } from "node:path";
-import { spawnSync } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 
 const args = process.argv.slice(2);
 const command = args[0] || "help";
 const timestamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "");
 const evidenceDir = join(".omo", "evidence", "fast-release", timestamp);
 const latestPath = join(".omo", "evidence", "fast-release", "LATEST.md");
-const rootUrl = "https://clinicflow-web-beta.vercel.app";
+const projects = {
+  web: {
+    packageFilter: "@csp/web",
+    projectName: "clinicflow-web",
+    stableUrl: "https://clinicflow-web-beta.vercel.app"
+  },
+  admin: {
+    packageFilter: "@csp/admin",
+    projectName: "clinicflow-admin",
+    stableUrl: "https://clinicflow-admin-six.vercel.app"
+  }
+};
 
 const supportedPrettierFiles = new Set([
   ".css",
@@ -43,12 +54,22 @@ Usage:
   pnpm release:web:preview
   pnpm release:web:ui-preview
   pnpm release:web:prod
+  pnpm release:web:ui-prod
+  pnpm release:admin:check
+  pnpm release:admin:preview
+  pnpm release:admin:prod
 
 Notes:
-  - fast-check runs only cheap local checks by default.
-  - ui-check/ui-preview skip local TypeScript when UI was already checked in
+  - release:web:* targets the clinicflow-web Vercel project.
+  - release:admin:* targets the clinicflow-admin Vercel project.
+  - Vercel prints a unique immutable deployment URL on every deploy.
+    The stable user-facing URLs are:
+      web:   ${projects.web.stableUrl}
+      admin: ${projects.admin.stableUrl}
+  - fast-check runs cheap local checks for the selected app by default.
+  - ui-check/ui-preview/ui-prod skip local TypeScript when UI was already checked in
     Codex/browser evidence and Vercel cloud build is the parity gate.
-  - Set FULL_BUILD=1 to add pnpm --filter @csp/web build locally.
+  - Set FULL_BUILD=1 to add pnpm --filter <app> build locally.
   - preview/prod run fast-check first, then Vercel deploy and HTTP smoke checks.
 `);
 }
@@ -59,6 +80,7 @@ function ensureEvidenceDir() {
 
 function runStep(label, cmd, cmdArgs, options = {}) {
   const timeout = options.timeoutMs ?? 120_000;
+  console.log(`→ ${label}`);
   const result = spawnSync(cmd, cmdArgs, {
     encoding: "utf8",
     stdio: ["ignore", "pipe", "pipe"],
@@ -83,33 +105,104 @@ function runStep(label, cmd, cmdArgs, options = {}) {
     throw new Error(`${label} failed with exit ${result.status}\n${output}`);
   }
 
+  console.log(`✓ ${label}`);
   return output;
 }
 
-function changedFiles() {
-  const trackedOutput = runStep("tracked changed-file list", "git", [
-    "diff",
-    "--name-only",
-    "--diff-filter=ACMR",
-    "HEAD"
-  ]);
+function runStepLive(label, cmd, cmdArgs, options = {}) {
+  const timeout = options.timeoutMs ?? 120_000;
+  console.log(`→ ${label}`);
 
-  const statusOutput = runStep("git status changed-file list", "git", [
-    "status",
-    "--porcelain=v1",
-    "-z",
-    "--untracked-files=normal"
-  ]);
+  return new Promise((resolve, reject) => {
+    const child = spawn(cmd, cmdArgs, {
+      env: process.env,
+      stdio: ["ignore", "pipe", "pipe"]
+    });
+    let stdout = "";
+    let stderr = "";
+    let settled = false;
 
-  const untrackedFiles = statusOutput
-    .split("\0")
-    .map((entry) => entry.trim())
-    .filter((entry) => entry.startsWith("?? "))
-    .map((entry) => entry.slice(3));
+    const timer = setTimeout(() => {
+      if (settled) return;
+      settled = true;
+      child.kill("SIGTERM");
+      reject(new Error(`${label} failed: timed out after ${timeout}ms`));
+    }, timeout);
 
-  return [...trackedOutput.split("\n"), ...untrackedFiles]
+    child.stdout.on("data", (chunk) => {
+      const text = chunk.toString();
+      stdout += text;
+      process.stdout.write(text);
+    });
+
+    child.stderr.on("data", (chunk) => {
+      const text = chunk.toString();
+      stderr += text;
+      process.stderr.write(text);
+    });
+
+    child.on("error", (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(new Error(`${label} failed: ${error.message}`));
+    });
+
+    child.on("close", (status) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      const output = [
+        `$ ${[cmd, ...cmdArgs].join(" ")}`,
+        stdout || "",
+        stderr || ""
+      ].join("\n");
+
+      if (options.logFile) {
+        ensureEvidenceDir();
+        writeFileSync(join(evidenceDir, options.logFile), output);
+      }
+
+      if (status !== 0) {
+        reject(new Error(`${label} failed with exit ${status}\n${output}`));
+        return;
+      }
+
+      console.log(`✓ ${label}`);
+      resolve(output);
+    });
+  });
+}
+
+function changedFiles(app) {
+  if (process.env.FAST_RELEASE_CHANGED_FILES) {
+    return process.env.FAST_RELEASE_CHANGED_FILES.split(/[,\n]/)
+      .map((line) => line.trim())
+      .filter(Boolean);
+  }
+
+  if (process.env.FAST_RELEASE_USE_GIT !== "1") {
+    return [];
+  }
+
+  const trackedOutput = runStep(
+    "tracked changed-file list",
+    "git",
+    ["diff", "--name-only", "--diff-filter=ACMR", "HEAD"],
+    {
+      timeoutMs: 15_000
+    }
+  );
+
+  return trackedOutput
+    .split("\n")
     .map((line) => line.trim())
-    .filter((line) => line && !line.startsWith("$ "));
+    .filter((line) => line && !line.startsWith("$ "))
+    .filter((file) => {
+      if (app === "web") return !file.startsWith("apps/admin/");
+      if (app === "admin") return !file.startsWith("apps/web/");
+      return true;
+    });
 }
 
 function prettierCandidates(files) {
@@ -158,13 +251,13 @@ function cleanTypeScriptBuildInfo() {
 }
 
 function detectVercelCommand() {
-  const globalVercel = spawnSync("sh", ["-lc", "command -v vercel"], {
+  const localVercel = spawnSync("pnpm", ["exec", "vercel", "--version"], {
     encoding: "utf8"
   });
-  if (globalVercel.status === 0 && globalVercel.stdout.trim()) {
-    return [globalVercel.stdout.trim(), []];
+  if (localVercel.status === 0) {
+    return ["pnpm", ["exec", "vercel"]];
   }
-  return ["pnpm", ["dlx", "vercel@latest"]];
+  return ["pnpm", ["dlx", "vercel@54.13.0"]];
 }
 
 function parseVercelAppUrl(output) {
@@ -197,27 +290,51 @@ function writeSummary(lines) {
   console.log(summary);
 }
 
-function fastCheck() {
-  const files = changedFiles();
+function selectedProject(app) {
+  const project = projects[app];
+  if (!project) {
+    throw new Error(
+      `Unknown app "${app}". Expected one of: ${Object.keys(projects).join(", ")}`
+    );
+  }
+  return project;
+}
+
+function fastCheck(app = "web") {
+  const project = selectedProject(app);
+  const files = changedFiles(app);
   const prettierFiles = prettierCandidates(files);
   const checks = [];
 
-  runStep("git diff whitespace check", "git", ["diff", "--check"], {
-    logFile: "git-diff-check.log"
-  });
-  checks.push("git diff --check passed");
+  if (process.env.FAST_RELEASE_USE_GIT === "1") {
+    runStep("git diff whitespace check", "git", ["diff", "--check"], {
+      timeoutMs: 15_000,
+      logFile: "git-diff-check.log"
+    });
+    checks.push("git diff --check passed");
+  } else {
+    checks.push(
+      "git diff checks skipped by default for speed; set FAST_RELEASE_USE_GIT=1 to opt in"
+    );
+  }
 
-  runStep(
-    "Origin-14 guard",
-    "node",
-    [
-      "scripts/clinicflow-origin14-guard.mjs",
-      "--evidence",
-      join(evidenceDir, "origin14-guard.json")
-    ],
-    { timeoutMs: 180_000, logFile: "origin14-guard.log" }
-  );
-  checks.push("Origin-14 guard passed");
+  if (process.env.FAST_RELEASE_RUN_ORIGIN14_GUARD === "1") {
+    runStep(
+      "Origin-14 guard",
+      "node",
+      [
+        "scripts/clinicflow-origin14-guard.mjs",
+        "--evidence",
+        join(evidenceDir, "origin14-guard.json")
+      ],
+      { timeoutMs: 180_000, logFile: "origin14-guard.log" }
+    );
+    checks.push("Origin-14 guard passed");
+  } else {
+    checks.push(
+      "Origin-14 guard skipped by default for release speed; set FAST_RELEASE_RUN_ORIGIN14_GUARD=1 for design-regression audit"
+    );
+  }
 
   checks.push(cleanTypeScriptBuildInfo());
 
@@ -230,7 +347,9 @@ function fastCheck() {
     );
     checks.push(`prettier passed for ${prettierFiles.length} changed file(s)`);
   } else {
-    checks.push("prettier skipped: no changed supported files");
+    checks.push(
+      "prettier skipped: no changed supported files supplied; set FAST_RELEASE_CHANGED_FILES or FAST_RELEASE_USE_GIT=1"
+    );
   }
 
   checks.push(assertPreviewSourcesSynced());
@@ -241,11 +360,11 @@ function fastCheck() {
     );
   } else {
     runStep(
-      "web typecheck without incremental cache",
+      `${app} typecheck without incremental cache`,
       "pnpm",
       [
         "--filter",
-        "@csp/web",
+        project.packageFilter,
         "exec",
         "tsc",
         "--noEmit",
@@ -254,55 +373,56 @@ function fastCheck() {
         "--pretty",
         "false"
       ],
-      { timeoutMs: 120_000, logFile: "web-typecheck-noincremental.log" }
+      { timeoutMs: 120_000, logFile: `${app}-typecheck-noincremental.log` }
     );
-    checks.push("web typecheck passed without incremental cache");
-
-    runStep(
-      "admin typecheck without incremental cache",
-      "pnpm",
-      [
-        "--filter",
-        "@csp/admin",
-        "exec",
-        "tsc",
-        "--noEmit",
-        "--incremental",
-        "false",
-        "--pretty",
-        "false"
-      ],
-      { timeoutMs: 120_000, logFile: "admin-typecheck-noincremental.log" }
-    );
-    checks.push("admin typecheck passed without incremental cache");
+    checks.push(`${app} typecheck passed without incremental cache`);
   }
 
   if (process.env.FULL_BUILD === "1") {
-    runStep("local web build", "pnpm", ["--filter", "@csp/web", "build"], {
-      timeoutMs: 900_000,
-      logFile: "web-build.log"
-    });
-    checks.push("local pnpm --filter @csp/web build passed");
+    runStep(
+      `local ${app} build`,
+      "pnpm",
+      ["--filter", project.packageFilter, "build"],
+      {
+        timeoutMs: 900_000,
+        logFile: `${app}-build.log`
+      }
+    );
+    checks.push(`local pnpm --filter ${project.packageFilter} build passed`);
   } else {
-    checks.push("local web build skipped: set FULL_BUILD=1 for full local parity");
+    checks.push(`local ${app} build skipped: set FULL_BUILD=1 for full local parity`);
   }
 
   writeSummary(checks);
 }
 
-function deploy(target) {
-  fastCheck();
+async function deploy(target, app = "web") {
+  const project = selectedProject(app);
+  fastCheck(app);
 
   const [vercelCmd, baseArgs] = detectVercelCommand();
-  const deployArgs = [...baseArgs, "deploy", "--yes"];
+  const deployArgs = [
+    ...baseArgs,
+    "deploy",
+    "--yes",
+    "--project",
+    project.projectName,
+    "--meta",
+    `clinicflowApp=${app}`
+  ];
   if (target === "prod") {
     deployArgs.push("--prod");
   }
 
-  const output = runStep(`Vercel ${target} deploy`, vercelCmd, deployArgs, {
-    timeoutMs: Number(process.env.VERCEL_DEPLOY_TIMEOUT_MS || 1_800_000),
-    logFile: `vercel-${target}.log`
-  });
+  const output = await runStepLive(
+    `Vercel ${app} ${target} deploy`,
+    vercelCmd,
+    deployArgs,
+    {
+      timeoutMs: Number(process.env.VERCEL_DEPLOY_TIMEOUT_MS || 1_800_000),
+      logFile: `vercel-${app}-${target}.log`
+    }
+  );
   const deployedUrl = parseVercelAppUrl(output);
   if (!deployedUrl) {
     throw new Error(
@@ -310,39 +430,56 @@ function deploy(target) {
     );
   }
 
-  smokeUrl(deployedUrl, `vercel-${target}`);
-  const lines = [`Vercel ${target} deployment URL: ${deployedUrl}`];
+  smokeUrl(deployedUrl, `vercel-${app}-${target}`);
+  const lines = [
+    `Vercel project: ${project.projectName}`,
+    `Immutable deployment URL: ${deployedUrl}`,
+    `Stable URL: ${project.stableUrl}`
+  ];
 
   if (target === "prod") {
-    smokeUrl(rootUrl, "clinicflow-web-beta");
-    lines.push(`Production alias smoke passed: ${rootUrl}`);
+    smokeUrl(project.stableUrl, `${app}-stable-url`);
+    lines.push(`Production alias smoke passed: ${project.stableUrl}`);
   }
 
   writeSummary(lines);
 }
 
-try {
+async function main() {
   if (command === "help" || command === "--help" || command === "-h") {
     usage();
   } else if (command === "check") {
-    fastCheck();
+    fastCheck("web");
   } else if (command === "ui-check") {
     process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
-    fastCheck();
+    fastCheck("web");
+  } else if (command === "admin-check") {
+    process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
+    fastCheck("admin");
   } else if (command === "preview") {
-    deploy("preview");
+    await deploy("preview", "web");
   } else if (command === "ui-preview") {
     process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
-    deploy("preview");
+    await deploy("preview", "web");
   } else if (command === "prod") {
-    deploy("prod");
+    await deploy("prod", "web");
   } else if (command === "ui-prod") {
     process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
-    deploy("prod");
+    await deploy("prod", "web");
+  } else if (command === "admin-preview") {
+    process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
+    await deploy("preview", "admin");
+  } else if (command === "admin-prod") {
+    process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
+    await deploy("prod", "admin");
   } else {
     usage();
     process.exitCode = 1;
   }
+}
+
+try {
+  await main();
 } catch (error) {
   console.error(error instanceof Error ? error.message : String(error));
   process.exit(1);

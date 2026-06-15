@@ -41,7 +41,10 @@
     "release:web:preview": "node scripts/clinicflow-fast-release.mjs preview",
     "release:web:ui-preview": "node scripts/clinicflow-fast-release.mjs ui-preview",
     "release:web:prod": "node scripts/clinicflow-fast-release.mjs prod",
-    "release:web:ui-prod": "node scripts/clinicflow-fast-release.mjs ui-prod"
+    "release:web:ui-prod": "node scripts/clinicflow-fast-release.mjs ui-prod",
+    "release:admin:check": "node scripts/clinicflow-fast-release.mjs admin-check",
+    "release:admin:preview": "node scripts/clinicflow-fast-release.mjs admin-preview",
+    "release:admin:prod": "node scripts/clinicflow-fast-release.mjs admin-prod"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.4.5",
