@@ -1,11 +1,5 @@
 import { payments, withUserContext } from "@csp/db";
-import {
-  ArrowLeft,
-  Banknote,
-  CalendarDays,
-  ShieldCheck,
-  WalletCards
-} from "lucide-react";
+import { Banknote, CalendarDays, ShieldCheck, WalletCards } from "lucide-react";
 import {
   AdminCard,
   AdminLockedState,
@@ -32,7 +26,7 @@ export default async function PayoutsPage() {
           previewItems={[
             "정산 예정 금액과 지급 상태",
             "슈퍼바이저별 지급 내역",
-            "정산 산출과 보류 사유"
+            "정산 계산과 보류 사유"
           ]}
         />
       </AdminShell>
@@ -45,7 +39,7 @@ export default async function PayoutsPage() {
     {
       userId: current.session.userId,
       role: "admin",
-      adminReason: "운영 정산 요약 조회를 위한 관리자 사유입니다."
+      adminReason: "운영 정산 요약 조회를 위한 처리 사유입니다."
     },
     (tx) => payments.listPayouts(tx)
   );
@@ -53,114 +47,117 @@ export default async function PayoutsPage() {
   const totalNet = payouts.reduce((sum, payout) => sum + payout.netKrw, 0);
 
   return (
-    <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-5 py-6 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <a aria-label="관리자 대시보드" href="/admin">
-            <ArrowLeft aria-hidden className="text-ink-700" size={30} />
-          </a>
-          <h1 className="text-2xl font-bold">지급 관리</h1>
-          <span className="rounded-pill bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
-            정산 산출
-          </span>
-        </div>
-      </header>
-
-      <div className="mx-auto grid max-w-5xl gap-6 px-5 py-7">
-        <div className="rounded-2xl border border-line bg-surface-elevated px-5 py-4 text-center text-base font-semibold text-ink-700 shadow-card">
-          {payoutPeriodLabel(payouts)}
-        </div>
-
-        <section className="grid gap-4 md:grid-cols-2">
-          <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-            <p className="text-lg font-bold text-ink-700">총 지급 예정 금액</p>
-            <p className="mt-4 text-4xl font-bold">
-              ₩{totalNet.toLocaleString("ko-KR")}
-            </p>
-          </AdminCard>
-          <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-            <p className="text-lg font-bold text-ink-700">총 건수</p>
-            <p className="mt-4 text-4xl font-bold">{String(payouts.length)}건</p>
-          </AdminCard>
-        </section>
-
-        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
+    <AdminShell
+      currentPath="/admin/payouts"
+      title="지급 관리"
+      subtitle="완료된 슈퍼비전의 지급 예정액과 보류 사유를 같은 흐름에서 확인합니다."
+    >
+      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <AdminCard>
           <div className="flex items-start gap-3">
-            <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
               <Banknote aria-hidden size={22} />
             </span>
             <div>
-              <h2 className="text-xl font-bold">정산 산출 상태</h2>
-              <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                기간을 지정해 정산을 산출하고, 산출된 결과를 슈퍼바이저별 지급 예정
-                목록으로 갱신합니다. 실제 송금, 세금계산서, 지급 실패 재처리는 후속 운영
-                절차에서 다룹니다.
+              <h2 className="text-xl font-bold text-ink-900">정산 기간과 요약</h2>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                {payoutPeriodLabel(payouts)}
+              </p>
+            </div>
+          </div>
+          <dl className="mt-5 grid gap-4 text-sm leading-relaxed sm:grid-cols-2">
+            <div>
+              <dt className="font-bold text-ink-500">총 지급 예정 금액</dt>
+              <dd className="mt-1 text-2xl font-bold text-ink-900">
+                ₩{totalNet.toLocaleString("ko-KR")}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold text-ink-500">총 건수</dt>
+              <dd className="mt-1 text-2xl font-bold text-ink-900">
+                {payouts.length.toLocaleString("ko-KR")}건
+              </dd>
+            </div>
+          </dl>
+        </AdminCard>
+
+        <AdminCard className="h-fit">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
+              <ShieldCheck aria-hidden size={22} />
+            </span>
+            <div>
+              <h2 className="text-xl font-bold text-ink-900">정산 계산</h2>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                산출된 결과를 슈퍼바이저별 지급 예정 목록으로 갱신합니다. 실제 송금과
+                재처리는 후속 운영 절차에서 다룹니다.
               </p>
             </div>
           </div>
           <PayoutComputeForm />
         </AdminCard>
+      </section>
 
-        <section className="grid gap-4" aria-label="정산 항목">
-          {payouts.length === 0 ? (
-            <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-              <div className="flex items-start gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
-                  <ShieldCheck aria-hidden size={20} />
-                </span>
-                <div>
-                  <strong className="text-xl text-ink-900">
-                    아직 산출된 정산이 없습니다
-                  </strong>
-                  <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                    기간을 지정해 정산 산출을 실행하면 슈퍼바이저별 정산이 표시됩니다.
-                  </p>
-                </div>
-              </div>
-            </AdminCard>
-          ) : (
-            payouts.map((payout) => (
-              <AdminCard
-                className="grid gap-4 rounded-xl border-line bg-surface-elevated p-6 shadow-card"
-                key={payout.id}
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div>
-                    <span className="text-sm font-semibold text-ink-500">
-                      지급 예정액
+      <AdminCard className="overflow-hidden p-0">
+        <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+          <div>
+            <h2 className="text-2xl font-bold text-ink-900">정산 항목</h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-500">
+              지급 예정액, 기간, 수수료를 한 행에서 확인합니다.
+            </p>
+          </div>
+          <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
+            {payouts.length.toLocaleString("ko-KR")}건
+          </span>
+        </div>
+
+        {payouts.length === 0 ? (
+          <p className="p-6 text-sm font-semibold text-ink-500">
+            기간을 지정해 정산 계산을 실행하면 슈퍼바이저별 정산이 표시됩니다.
+          </p>
+        ) : (
+          <div className="grid divide-y divide-line" aria-label="정산 항목">
+            {payouts.map((payout) => (
+              <article className="grid gap-5 p-5" key={payout.id}>
+                <div className="grid gap-4 md:grid-cols-[1fr_260px] md:items-start">
+                  <div className="flex items-start gap-3">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
+                      <WalletCards aria-hidden size={20} />
                     </span>
-                    <strong className="mt-1 block text-3xl text-ink-900">
-                      ₩{payout.netKrw.toLocaleString("ko-KR")}
-                    </strong>
+                    <div>
+                      <p className="text-sm font-semibold text-ink-500">지급 예정액</p>
+                      <strong className="mt-1 block text-3xl text-ink-900">
+                        ₩{payout.netKrw.toLocaleString("ko-KR")}
+                      </strong>
+                      <p className="mt-2 inline-flex items-center gap-2 text-xs font-semibold text-ink-500">
+                        <CalendarDays aria-hidden size={15} />
+                        {formatDate(payout.periodStart)} -{" "}
+                        {formatDate(payout.periodEnd)}
+                      </p>
+                    </div>
                   </div>
-                  <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
-                    <WalletCards aria-hidden size={20} />
-                  </span>
+
+                  <div className="grid gap-2 rounded-xl bg-surface-sunken p-4 text-sm text-ink-700">
+                    <span className="flex justify-between gap-3">
+                      <span>총액</span>
+                      <strong>₩{payout.grossKrw.toLocaleString("ko-KR")}</strong>
+                    </span>
+                    <span className="flex justify-between gap-3">
+                      <span>플랫폼 수수료</span>
+                      <strong>₩{payout.platformFeeKrw.toLocaleString("ko-KR")}</strong>
+                    </span>
+                    <span className="flex justify-between gap-3">
+                      <span>상태</span>
+                      <strong>{payoutStatusLabel(payout.status)}</strong>
+                    </span>
+                  </div>
                 </div>
-                <div className="grid gap-2 rounded-2xl bg-brand-50 p-4 text-sm text-ink-700">
-                  <span className="flex justify-between gap-3">
-                    <span>총액</span>
-                    <strong>₩{payout.grossKrw.toLocaleString("ko-KR")}</strong>
-                  </span>
-                  <span className="flex justify-between gap-3">
-                    <span>플랫폼 수수료</span>
-                    <strong>₩{payout.platformFeeKrw.toLocaleString("ko-KR")}</strong>
-                  </span>
-                  <span className="flex justify-between gap-3">
-                    <span>상태</span>
-                    <strong>{payoutStatusLabel(payout.status)}</strong>
-                  </span>
-                </div>
-                <p className="inline-flex items-center gap-2 text-xs font-semibold text-ink-500">
-                  <CalendarDays aria-hidden size={15} />
-                  {formatDate(payout.periodStart)} - {formatDate(payout.periodEnd)}
-                </p>
-              </AdminCard>
-            ))
-          )}
-        </section>
-      </div>
-    </main>
+              </article>
+            ))}
+          </div>
+        )}
+      </AdminCard>
+    </AdminShell>
   );
 }
 

@@ -49,7 +49,7 @@ export async function POST(
   if (basic.status !== "draft") {
     return envelope(
       null,
-      apiError("invalid_state", "초안 상태의 의뢰만 제출할 수 있습니다."),
+      apiError("invalid_state", "임시 저장 상태의 의뢰만 제출할 수 있습니다."),
       409
     );
   }

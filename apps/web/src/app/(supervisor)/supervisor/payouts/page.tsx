@@ -9,7 +9,10 @@ import {
   CardHeader,
   CardTitle
 } from "../../../../components/ui/card";
-import { DemoSupervisorPayoutsPreview } from "../../../../components/workflow-preview-pages";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../components/locked-state";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { isSupervisor } from "../../../../lib/auth/guards";
@@ -22,8 +25,16 @@ type Payment = payments.PaymentRecord;
 export default async function SupervisorPayoutsPage() {
   const current = await getCurrentUser();
 
+  if (!current) {
+    return <LoginRequiredState title="정산 내역" returnTo="/supervisor/payouts" />;
+  }
   if (!isSupervisor(current)) {
-    return <DemoSupervisorPayoutsPreview />;
+    return (
+      <RoleRequiredState
+        title="정산 내역"
+        description="정산 내역은 슈퍼바이저 계정에서만 확인합니다."
+      />
+    );
   }
 
   const db = createRuntimeDatabase();
@@ -60,21 +71,12 @@ export default async function SupervisorPayoutsPage() {
       title="정산 내역"
       subtitle="슈퍼비전 결제에서 플랫폼 수수료와 환불 반영 후 정산되는 금액을 확인합니다."
     >
-      <section className="grid gap-4 md:grid-cols-3">
-        <SummaryCard
-          label="결제 완료 건"
-          value={`${paidPayments.length.toLocaleString("ko-KR")}건`}
-        />
-        <SummaryCard label="정산 예정액" value={formatKrw(scheduledNet)} />
-        <SummaryCard label="누적 순정산 기준" value={formatKrw(totalNet)} />
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-[1fr_360px]">
-        <Card>
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <Card className="rounded-xl">
           <CardHeader>
             <CardTitle>정산 기록</CardTitle>
             <CardDescription>
-              관리자 정산 산정이 완료된 기간별 정산 기록입니다.
+              예정, 완료, 보류된 정산을 한 표에서 확인합니다.
             </CardDescription>
           </CardHeader>
           {payouts.length === 0 ? (
@@ -104,44 +106,54 @@ export default async function SupervisorPayoutsPage() {
           )}
         </Card>
 
-        <aside className="grid content-start gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>정산 기준</CardTitle>
-              <CardDescription>
-                환불이 완료된 금액은 정산 가능 금액에서 차감됩니다.
-              </CardDescription>
-            </CardHeader>
-            <ul className="grid gap-3 text-sm text-ink-700">
-              <li className="rounded-md border border-line bg-surface-sunken p-3">
-                결제 상태가 완료된 의뢰만 정산 대상에 포함됩니다.
-              </li>
-              <li className="rounded-md border border-line bg-surface-sunken p-3">
-                부분 환불은 실제 완료된 환불 금액만 차감합니다.
-              </li>
-              <li className="rounded-md border border-line bg-surface-sunken p-3">
-                지급 처리는 운영자가 관리자 콘솔에서 확인 후 진행합니다.
-              </li>
-            </ul>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>최근 결제</CardTitle>
-              <CardDescription>
-                내 슈퍼비전 제공 항목에 결제된 최근 내역입니다.
-              </CardDescription>
-            </CardHeader>
-            <div className="grid gap-2">
-              {supervisorPayments.slice(0, 5).map((payment) => (
-                <PaymentPreview key={payment.id} payment={payment} />
-              ))}
-              {supervisorPayments.length === 0 ? (
-                <p className="rounded-md border border-line bg-surface-sunken p-3 text-sm text-ink-600">
-                  아직 결제된 의뢰가 없습니다.
-                </p>
-              ) : null}
+        <aside className="grid content-start gap-4">
+          <Card className="grid gap-5 rounded-xl">
+            <div>
+              <p className="text-sm font-semibold text-brand-700">정산 요약</p>
+              <h2 className="mt-1 text-xl font-bold text-ink-900">
+                예정과 완료 내역만 먼저 확인하세요
+              </h2>
+              <p className="mt-2 text-sm leading-relaxed text-ink-500">
+                환불 심사 중인 건은 보류될 수 있으며, 지급 처리는 운영자가 확인 후
+                진행합니다.
+              </p>
             </div>
+
+            <div className="grid gap-3 border-y border-line py-4 text-sm">
+              <SummaryLine
+                label="이번 달 예정"
+                value={`${payouts
+                  .filter((payout) => payout.status === "scheduled")
+                  .length.toLocaleString("ko-KR")}건`}
+              />
+              <SummaryLine
+                label="완료 결제"
+                value={`${paidPayments.length.toLocaleString("ko-KR")}건`}
+              />
+              <SummaryLine label="예정 금액" value={formatKrw(scheduledNet)} />
+              <SummaryLine label="누적 순정산" value={formatKrw(totalNet)} />
+            </div>
+
+            <div className="grid gap-2">
+              <p className="text-sm font-semibold text-ink-900">최근 결제</p>
+              <p className="text-sm text-ink-500">
+                내 슈퍼비전 방식으로 결제된 최신 내역입니다.
+              </p>
+              <div className="grid gap-2">
+                {supervisorPayments.slice(0, 5).map((payment) => (
+                  <PaymentPreview key={payment.id} payment={payment} />
+                ))}
+                {supervisorPayments.length === 0 ? (
+                  <p className="rounded-md border border-line bg-surface-sunken p-3 text-sm text-ink-600">
+                    아직 결제된 의뢰가 없습니다.
+                  </p>
+                ) : null}
+              </div>
+            </div>
+
+            <p className="rounded-md border border-line bg-surface-sunken p-3 text-sm text-ink-700">
+              완료 결제만 정산 대상에 포함되며, 부분 환불은 실제 환불 금액만 차감합니다.
+            </p>
           </Card>
         </aside>
       </section>
@@ -149,12 +161,12 @@ export default async function SupervisorPayoutsPage() {
   );
 }
 
-function SummaryCard({ label, value }: { label: string; value: string }) {
+function SummaryLine({ label, value }: { label: string; value: string }) {
   return (
-    <Card className="grid gap-1">
-      <p className="text-sm font-semibold text-ink-500">{label}</p>
-      <p className="text-2xl font-bold text-ink-900">{value}</p>
-    </Card>
+    <div className="grid gap-1">
+      <p className="font-semibold text-ink-500">{label}</p>
+      <p className="text-base font-bold text-ink-900">{value}</p>
+    </div>
   );
 }
 

@@ -7,12 +7,13 @@ export default function ForgotPasswordPage() {
     <AuthScaffold
       action={
         <Link
-          className="text-sm font-semibold text-brand-700 hover:underline"
+          className="text-sm font-semibold text-[#2563ff] hover:underline"
           href="/login"
         >
           로그인으로 돌아가기
         </Link>
       }
+      eyebrow="계정 지원"
       subtitle="가입한 이메일로 비밀번호 재설정 링크를 보냅니다."
       title="비밀번호 재설정"
     >

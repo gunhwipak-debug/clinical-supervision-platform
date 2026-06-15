@@ -47,21 +47,28 @@ export function ForgotPasswordForm() {
   return (
     <form className="grid gap-4" onSubmit={form.handleSubmit(submit)}>
       <Field>
-        <Label htmlFor="forgot-email">이메일</Label>
+        <Label className="text-sm font-semibold text-[#8b94ad]" htmlFor="forgot-email">
+          이메일
+        </Label>
         <Input
           autoComplete="email"
+          className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
           id="forgot-email"
           placeholder="이메일 주소"
           type="email"
           {...form.register("email")}
         />
         {form.formState.errors["email"] ? (
-          <p className="text-sm text-danger">
+          <p className="text-sm text-[#c24141]">
             {form.formState.errors["email"].message}
           </p>
         ) : null}
       </Field>
-      <Button disabled={form.formState.isSubmitting} type="submit">
+      <Button
+        className="h-12 rounded-[16px] bg-[#2563ff] text-base font-semibold text-white hover:bg-[#1f58e6]"
+        disabled={form.formState.isSubmitting}
+        type="submit"
+      >
         <Mail aria-hidden size={18} />
         {form.formState.isSubmitting ? "전송 중" : "재설정 메일 보내기"}
       </Button>

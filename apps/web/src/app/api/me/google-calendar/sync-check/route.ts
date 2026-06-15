@@ -32,7 +32,7 @@ export async function POST(request: Request) {
   if (!connection) {
     return envelope(
       null,
-      apiError("calendar_not_connected", "구글 캘린더가 아직 연동되지 않았습니다."),
+      apiError("calendar_not_connected", "외부 일정이 아직 연결되지 않았습니다."),
       404
     );
   }
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
       null,
       apiError(
         "calendar_config_required",
-        "서비스의 구글 캘린더 OAuth 설정이 없어 연동 상태를 점검할 수 없습니다."
+        "일정 연결 준비가 완료되지 않아 연동 상태를 점검할 수 없습니다."
       ),
       503
     );
@@ -61,7 +61,7 @@ export async function POST(request: Request) {
     );
     return envelope(
       null,
-      apiError("calendar_reauth_required", "구글 캘린더 재인증이 필요합니다."),
+      apiError("calendar_reauth_required", "일정 연결을 다시 확인해야 합니다."),
       409
     );
   }
@@ -104,10 +104,7 @@ export async function POST(request: Request) {
   } catch {
     return envelope(
       null,
-      apiError(
-        "calendar_sync_failed",
-        "구글 캘린더 연동 상태를 확인하지 못했습니다."
-      ),
+      apiError("calendar_sync_failed", "일정 연동 상태를 확인하지 못했습니다."),
       422
     );
   }

@@ -110,13 +110,13 @@ export async function POST(
   }
 
   await sendUserNotification(db, {
-    body: "슈퍼바이저가 지도 의견을 제출했습니다. 내용을 확인하고 필요한 경우 승인 또는 보완 요청을 진행해주세요.",
+    body: "슈퍼바이저가 슈퍼비전 피드백을 제출했습니다. 내용을 확인하고 필요한 경우 확인 완료 또는 추가 자료 요청을 진행해주세요.",
     href: `/requests/${updatedRequest.id}`,
     kind: "feedback_submitted_supervisee",
     metadata: { requestId: updatedRequest.id },
     origin: new URL(request.url).origin,
     target: { role: "supervisee", userId: updatedRequest.superviseeId },
-    title: "지도 의견이 도착했습니다"
+    title: "슈퍼비전 피드백이 도착했습니다"
   });
 
   return envelope({ request: updatedRequest }, null, 200);

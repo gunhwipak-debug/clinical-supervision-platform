@@ -61,12 +61,13 @@ export function QualificationForm() {
   }
 
   return (
-    <Card className="rounded-2xl">
+    <Card className="rounded-xl">
       <form className="grid gap-4" onSubmit={submit}>
         <div>
-          <h2 className="text-xl font-bold">자격 제출</h2>
+          <p className="text-sm font-bold text-brand-700">다음 행동</p>
+          <h2 className="mt-1 text-xl font-bold text-ink-900">자격 증빙 제출</h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-500">
-            제출된 자격은 운영자 승인 전까지 승인 대기 상태로 표시됩니다.
+            운영자 승인 전까지는 공개 목록에 노출되지 않습니다.
           </p>
         </div>
         <Field>
@@ -101,8 +102,7 @@ export function QualificationForm() {
             type="file"
           />
           <p className="text-xs leading-relaxed text-ink-500">
-            자격증 사본, 발급기관 확인서, 면허 조회 결과 등 운영자가 검토할 수 있는
-            파일을 첨부해주세요.
+            자격증 사본, 발급기관 확인서, 면허 조회 결과를 첨부합니다.
           </p>
         </Field>
         <div className="flex flex-wrap items-center gap-3">

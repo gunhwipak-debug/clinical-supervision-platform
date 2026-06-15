@@ -1,0 +1,39 @@
+# ClinicFlow Web Preview Current Screenshots
+
+Base: https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app
+
+- 01-home: / -> 200 01-home.png
+- 02-supervisors: /supervisors -> 200 02-supervisors.png
+- 03-supervisor-detail: /supervisors/demo-supervisor -> 200 03-supervisor-detail.png
+- 04-guide: /guide -> 200 04-guide.png
+- 05-resources: /resources -> 200 05-resources.png
+- 06-clinical-guidelines: /clinical-guidelines -> 200 06-clinical-guidelines.png
+- 07-security: /security -> 200 07-security.png
+- 08-privacy: /privacy -> 200 08-privacy.png
+- 09-terms: /terms -> 200 09-terms.png
+- 10-sensitive-consent: /sensitive-consent -> 200 10-sensitive-consent.png
+- 11-login: /login -> 200 11-login.png
+- 12-signup: /signup -> 200 12-signup.png
+- 13-forgot-password: /forgot-password -> 200 13-forgot-password.png
+- 14-reset-password: /reset-password -> 200 14-reset-password.png
+- 15-email-verify: /email/verify -> 200 15-email-verify.png
+- 16-verify-email: /verify-email -> 200 16-verify-email.png
+- 17-requests: /requests -> 200 17-requests.png
+- 18-requests-new: /requests/new -> 200 18-requests-new.png
+- 19-request-detail: /requests/demo-request -> 200 19-request-detail.png
+- 20-payments: /payments -> 200 20-payments.png
+- 21-payment-detail: /payments/demo-payment -> 200 21-payment-detail.png
+- 22-payment-confirm: /payments/confirm -> 200 22-payment-confirm.png
+- 23-case-archive: /case-archive -> 200 23-case-archive.png
+- 24-settings: /settings -> 200 24-settings.png
+- 25-notifications: /notifications -> 200 25-notifications.png
+- 26-me: /me -> 200 26-me.png
+- 27-supervisor-home: /supervisor -> 200 27-supervisor-home.png
+- 28-supervisor-profile: /supervisor/profile -> 200 28-supervisor-profile.png
+- 29-supervisor-availability: /supervisor/availability -> 200 29-supervisor-availability.png
+- 30-supervisor-requests: /supervisor/requests -> 200 30-supervisor-requests.png
+- 31-supervisor-request-detail: /supervisor/requests/demo-request -> 200 31-supervisor-request-detail.png
+- 32-supervisor-memory: /supervisor/memory -> 200 32-supervisor-memory.png
+- 33-supervisor-products: /supervisor/products -> 200 33-supervisor-products.png
+- 34-supervisor-payouts: /supervisor/payouts -> 200 34-supervisor-payouts.png
+- 35-supervisor-qualifications: /supervisor/qualifications -> 200 35-supervisor-qualifications.png

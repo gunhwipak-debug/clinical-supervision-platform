@@ -1,26 +1,20 @@
 import Link from "next/link";
 import { calendar, profiles, withUserContext } from "@csp/db";
+import { AppShell } from "../../../../components/app-shell";
 import {
-  BadgeCheck,
-  CalendarClock,
-  ClipboardList,
-  CreditCard,
-  LayoutDashboard
-} from "lucide-react";
-import { DemoSupervisorAvailabilityPreview } from "../../../../components/workflow-preview-pages";
+  PrimaryActionPanel,
+  SectionBlock
+} from "../../../../components/clinicflow-shell";
+import { Button } from "../../../../components/ui/button";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { AvailabilityForm } from "./availability-form";
 
 export const dynamic = "force-dynamic";
-
-const navItems = [
-  { href: "/supervisor", icon: LayoutDashboard, label: "업무 홈" },
-  { href: "/supervisor/requests", icon: ClipboardList, label: "의뢰 검토" },
-  { href: "/supervisor/profile", icon: BadgeCheck, label: "프로필" },
-  { href: "/supervisor/products", icon: CreditCard, label: "제공 항목" },
-  { href: "/supervisor/availability", icon: CalendarClock, label: "일정" }
-] as const;
 
 export default async function Page({
   searchParams
@@ -30,8 +24,16 @@ export default async function Page({
   const current = await getCurrentUser();
   const params = await searchParams;
 
-  if (!current || current.user.role !== "supervisor") {
-    return <DemoSupervisorAvailabilityPreview />;
+  if (!current) {
+    return <LoginRequiredState title="일정 관리" returnTo="/supervisor/availability" />;
+  }
+  if (current.user.role !== "supervisor") {
+    return (
+      <RoleRequiredState
+        title="일정 관리"
+        description="일정 관리는 슈퍼바이저 계정에서만 사용할 수 있습니다."
+      />
+    );
   }
 
   const db = createRuntimeDatabase();
@@ -51,68 +53,67 @@ export default async function Page({
   );
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-on-background font-body-md antialiased">
-      <header className="fixed top-0 left-0 right-0 z-50 border-b border-outline-variant bg-surface-container-lowest">
-        <div className="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-lg">
-          <Link
-            className="font-headline-md text-headline-md font-bold text-primary"
-            href="/supervisor"
+    <AppShell
+      action={
+        <Button asChild variant="secondary">
+          <Link href="/supervisor">업무 홈</Link>
+        </Button>
+      }
+      subtitle="슈퍼비전을 받을 수 있는 요일과 시간을 정리합니다."
+      title="일정 관리"
+    >
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-6">
+          <PrimaryActionPanel title="예약 가능한 시간을 먼저 정하세요">
+            신청자는 이 시간표를 기준으로 세션을 선택합니다. 가능한 시간만 남기면 일정
+            조율이 줄어듭니다.
+          </PrimaryActionPanel>
+
+          <SectionBlock
+            subtitle="요일별 가능 시간과 일정 연동 상태를 한 화면에서 관리합니다."
+            title="가능 시간"
           >
-            ClinicFlow
-          </Link>
-          <div className="flex items-center gap-md">
-            <Link
-              className="flex h-8 w-8 items-center justify-center rounded-full border border-outline-variant bg-surface-dim"
-              href="/supervisor/profile"
+            <div
+              className="rounded-xl border border-line bg-surface-elevated p-5"
+              id="availability-form"
             >
-              <span className="material-symbols-outlined text-on-surface-variant">
-                person
-              </span>
-            </Link>
-          </div>
-        </div>
-      </header>
-      <div className="flex flex-1 pt-16">
-        <aside className="fixed left-0 z-40 hidden h-[calc(100vh-64px)] w-64 flex-col border-r border-outline-variant bg-surface p-md md:flex">
-          <nav className="flex-1 space-y-xs">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  className={`flex items-center gap-sm rounded-lg px-sm py-sm transition-all ${
-                    item.href === "/supervisor/availability"
-                      ? "bg-secondary-container font-bold text-on-secondary-container"
-                      : "text-on-surface-variant hover:bg-surface-container"
-                  }`}
-                  href={item.href}
-                  key={item.href}
-                >
-                  <Icon aria-hidden size={22} />
-                  <span className="font-label-md text-label-md">{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-        </aside>
-        <main className="mx-auto w-full max-w-container-max flex-1 p-margin-mobile pb-24 md:ml-64 md:p-gutter">
-          <div className="mb-xl flex flex-col items-start justify-between gap-md md:flex-row md:items-end">
-            <div>
-              <h1 className="font-headline-lg text-headline-lg text-on-background md:font-display-lg md:text-display-lg">
-                일정 및 예약 관리
-              </h1>
-              <p className="mt-base font-body-md text-body-md text-on-surface-variant">
-                슈퍼비전 세션이 가능한 요일과 시간을 설정하세요.
-              </p>
+              <AvailabilityForm
+                availability={availability}
+                calendarConfigReady={calendarConfigReady}
+                calendarConnection={calendarConnection}
+                calendarMessage={params.calendar ?? ""}
+              />
             </div>
+          </SectionBlock>
+        </div>
+
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <h2 className="text-xl font-bold text-ink-900">일정 요약</h2>
+          <div className="mt-5 grid divide-y divide-line text-sm">
+            <SummaryLine
+              label="등록된 시간"
+              value={`${String(availability.length)}개`}
+            />
+            <SummaryLine
+              label="일정 연동"
+              value={calendarConnection ? "연동됨" : "확인 필요"}
+            />
+            <SummaryLine
+              label="설정 상태"
+              value={calendarConfigReady ? "예약 사용 가능" : "연동 설정 필요"}
+            />
           </div>
-          <AvailabilityForm
-            availability={availability}
-            calendarConfigReady={calendarConfigReady}
-            calendarConnection={calendarConnection}
-            calendarMessage={params.calendar ?? ""}
-          />
-        </main>
-      </div>
+        </aside>
+      </section>
+    </AppShell>
+  );
+}
+
+function SummaryLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid gap-1 py-3">
+      <span className="font-bold text-ink-400">{label}</span>
+      <span className="font-semibold leading-relaxed text-ink-900">{value}</span>
     </div>
   );
 }

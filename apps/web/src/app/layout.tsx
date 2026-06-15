@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
-import { Toaster } from "sonner";
 import "./globals.css";
+import { ToastProvider } from "../components/toast-provider";
 
 export const metadata: Metadata = {
   title: "ClinicFlow",
@@ -14,7 +14,7 @@ export default function RootLayout({
     <html lang="ko">
       <body className="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
         {children}
-        <Toaster richColors position="top-center" toastOptions={{ duration: 3200 }} />
+        <ToastProvider />
       </body>
     </html>
   );

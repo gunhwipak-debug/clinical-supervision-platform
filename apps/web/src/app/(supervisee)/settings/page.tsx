@@ -1,15 +1,9 @@
 import Link from "next/link";
-import { calendar, profiles, supervision, withUserContext } from "@csp/db";
+import { profiles, withUserContext } from "@csp/db";
 import { AppShell } from "../../../components/app-shell";
-import { Badge } from "../../../components/ui/badge";
+import { SectionBlock } from "../../../components/clinicflow-shell";
 import { Button } from "../../../components/ui/button";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from "../../../components/ui/card";
-import { DemoSettingsPreview } from "../../../components/workflow-preview-pages";
+import { LoginRequiredState } from "../../../components/locked-state";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { isSupervisor } from "../../../lib/auth/guards";
@@ -23,46 +17,24 @@ export default async function SettingsPage() {
   const current = await getCurrentUser();
 
   if (!current) {
-    return <DemoSettingsPreview />;
+    return <LoginRequiredState title="계정 설정" returnTo="/settings" />;
   }
 
   const db = createRuntimeDatabase();
-  const [superviseeProfile, supervisorProfile, calendarConnection, requests] =
-    await withUserContext(db, contextFor(current), async (tx) =>
-      Promise.all([
-        profiles.getSuperviseeProfileByUserId(tx, current.session.userId),
-        isSupervisor(current)
-          ? profiles.getSupervisorProfileByUserId(tx, current.session.userId)
-          : Promise.resolve(null),
-        isSupervisor(current)
-          ? calendar.getConnectionSummaryForUser(tx, current.session.userId)
-          : Promise.resolve(null),
-        supervision.listSupervisionRequests(tx)
-      ])
-    );
-
-  const sentRequests = requests.filter(
-    (request) => request.superviseeId === current.session.userId
+  const superviseeProfile = await withUserContext(db, contextFor(current), (tx) =>
+    profiles.getSuperviseeProfileByUserId(tx, current.session.userId)
   );
-  const receivedRequests = requests.filter(
-    (request) => request.supervisorId === current.session.userId
-  );
+  const supervisorMode = isSupervisor(current);
 
   return (
-    <AppShell
-      title="계정 설정"
-      subtitle="로그인 계정, 슈퍼바이지 프로필, 슈퍼바이저 업무 상태를 실제 저장 데이터 기준으로 관리합니다."
-    >
-      <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
+    <AppShell title="계정 설정" subtitle="로그인 계정과 신청자 프로필만 정리합니다.">
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section className="grid gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>기본 계정</CardTitle>
-              <CardDescription>
-                모든 사용자는 슈퍼비전을 받을 수 있는 임상가 계정으로 시작합니다.
-              </CardDescription>
-            </CardHeader>
-            <dl className="grid gap-3 text-sm md:grid-cols-2">
+          <SectionBlock
+            title="기본 계정"
+            subtitle="로그인과 알림에 사용하는 계정 상태입니다."
+          >
+            <dl className="rounded-xl border border-line bg-surface-elevated px-5 text-sm">
               <SettingRow label="이메일" value={current.user.email} />
               <SettingRow label="현재 권한" value={roleLabel(current.user.role)} />
               <SettingRow label="계정 상태" value={statusLabel(current.user.status)} />
@@ -79,112 +51,50 @@ export default async function SettingsPage() {
                 }
               />
             </dl>
-          </Card>
+          </SectionBlock>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>슈퍼바이지 프로필</CardTitle>
-              <CardDescription>
-                슈퍼비전을 신청할 때 슈퍼바이저에게 전달되는 기본 정보입니다.
-              </CardDescription>
-            </CardHeader>
-            <SettingsProfileForm profile={superviseeProfile} />
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>슈퍼바이저 업무 상태</CardTitle>
-              <CardDescription>
-                슈퍼바이저도 필요할 때 다른 슈퍼바이저에게 슈퍼비전을 의뢰할 수
-                있습니다. 아래 정보는 슈퍼바이저 업무를 수행할 때만 추가로 적용됩니다.
-              </CardDescription>
-            </CardHeader>
-            {isSupervisor(current) ? (
-              <div className="grid gap-4">
-                <div className="flex flex-wrap gap-2">
-                  <Badge tone={supervisorProfile ? "brand" : "neutral"}>
-                    {supervisorProfile ? "프로필 등록됨" : "프로필 미등록"}
-                  </Badge>
-                  <Badge tone={calendarConnection ? "brand" : "neutral"}>
-                    구글 캘린더 {calendarConnection ? "연동됨" : "미연동"}
-                  </Badge>
-                  {supervisorProfile ? (
-                    <Badge
-                      tone={verificationTone(supervisorProfile.verificationStatus)}
-                    >
-                      {verificationLabel(supervisorProfile.verificationStatus)}
-                    </Badge>
-                  ) : null}
-                </div>
-                <div className="grid gap-3 text-sm md:grid-cols-2">
-                  <SettingRow
-                    label="공개 이름"
-                    value={supervisorProfile?.displayName ?? "아직 등록되지 않음"}
-                  />
-                  <SettingRow
-                    label="공개 상태"
-                    value={
-                      supervisorProfile
-                        ? visibilityLabel(supervisorProfile.visibility)
-                        : "-"
-                    }
-                  />
-                  <SettingRow
-                    label="받은 자료"
-                    value={`${receivedRequests.length.toLocaleString("ko-KR")}건`}
-                  />
-                  <SettingRow
-                    label="내가 의뢰한 자료"
-                    value={`${sentRequests.length.toLocaleString("ko-KR")}건`}
-                  />
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button asChild variant="secondary">
-                    <Link href="/supervisor/profile">슈퍼바이저 프로필 관리</Link>
-                  </Button>
-                  <Button asChild variant="secondary">
-                    <Link href="/supervisor/availability">예약 가능시간 관리</Link>
-                  </Button>
-                </div>
-              </div>
-            ) : (
-              <div className="grid gap-md rounded-xl border border-line bg-surface-sunken p-md text-sm text-on-surface">
-                <div>
-                  <h4 className="font-title-md text-base font-bold text-on-surface">
-                    슈퍼바이저로 활동하려면 자격 확인이 필요합니다.
-                  </h4>
-                  <p className="mt-sm font-body-sm text-sm leading-relaxed text-on-surface-variant">
-                    신청 후 프로필, 자격 증빙, 가능 일정을 차례로 등록합니다. 승인
-                    전에는 공개 목록에 노출되지 않습니다.
-                  </p>
-                </div>
-                <div className="flex justify-end border-t border-outline-variant/30 pt-sm">
-                  <SupervisorApplicationButton />
-                </div>
-              </div>
-            )}
-          </Card>
+          <SectionBlock
+            title="신청자 프로필"
+            subtitle="슈퍼비전을 신청할 때 슈퍼바이저에게 전달되는 기본 정보입니다."
+          >
+            <div className="rounded-xl border border-line bg-surface-elevated p-5">
+              <SettingsProfileForm profile={superviseeProfile} />
+            </div>
+          </SectionBlock>
         </section>
 
-        <aside className="grid content-start gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>계정 확인</CardTitle>
-              <CardDescription>
-                공개 프로필과 운영 업무에 필요한 계정 확인 상태입니다.
-              </CardDescription>
-            </CardHeader>
-            <div className="grid gap-3 text-sm">
-              <div className="rounded-md border border-line bg-surface-sunken p-3">
-                <p className="font-semibold text-ink-900">2단계 인증</p>
-                <p className="mt-1 text-ink-600">
-                  {current.user.totpEnabled
-                    ? "현재 2단계 인증이 켜져 있습니다."
-                    : "관리자와 슈퍼바이저 업무에는 2단계 인증을 켜는 것을 권장합니다."}
-                </p>
-              </div>
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <h2 className="text-xl font-bold text-ink-900">계정 확인</h2>
+          <dl className="mt-5 grid divide-y divide-line text-sm">
+            <SettingRow
+              label="2단계 인증"
+              value={current.user.totpEnabled ? "사용 중" : "확인 필요"}
+            />
+            <SettingRow label="계정 상태" value={statusLabel(current.user.status)} />
+            <div className="grid gap-1 py-3">
+              <dt className="font-bold text-ink-400">안내</dt>
+              <dd className="break-keep font-semibold leading-relaxed text-ink-900">
+                {current.user.totpEnabled
+                  ? "현재 계정 확인이 완료되어 있습니다."
+                  : "슈퍼바이저 업무를 시작하기 전 계정 확인을 권장합니다."}
+              </dd>
             </div>
-          </Card>
+          </dl>
+          <div className="mt-5 border-t border-line pt-5">
+            <h3 className="text-base font-bold text-ink-900">슈퍼바이저 업무</h3>
+            <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+              공개 프로필, 가능 시간, 제공 세션 관리는 슈퍼바이저 홈에서 이어갑니다.
+            </p>
+            <div className="mt-4">
+              {supervisorMode ? (
+                <Button asChild className="w-full" variant="secondary">
+                  <Link href="/supervisor">슈퍼바이저 홈으로 이동</Link>
+                </Button>
+              ) : (
+                <SupervisorApplicationButton />
+              )}
+            </div>
+          </div>
         </aside>
       </div>
     </AppShell>
@@ -193,9 +103,11 @@ export default async function SettingsPage() {
 
 function SettingRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-line bg-surface-sunken p-3">
-      <dt className="text-xs font-semibold text-ink-500">{label}</dt>
-      <dd className="mt-1 break-words font-semibold text-ink-900">{value}</dd>
+    <div className="grid gap-1 border-b border-line py-3 last:border-b-0">
+      <dt className="font-bold text-ink-400">{label}</dt>
+      <dd className="break-words font-semibold leading-relaxed text-ink-900">
+        {value}
+      </dd>
     </div>
   );
 }
@@ -203,8 +115,8 @@ function SettingRow({ label, value }: { label: string; value: string }) {
 function roleLabel(role: string): string {
   const labels: Record<string, string> = {
     admin: "관리자",
-    supervisee: "슈퍼바이지",
-    supervisor: "슈퍼바이지 + 슈퍼바이저"
+    supervisee: "신청자",
+    supervisor: "신청자 + 슈퍼바이저"
   };
   return labels[role] ?? role;
 }
@@ -216,32 +128,6 @@ function statusLabel(status: string): string {
     withdrawn: "탈퇴"
   };
   return labels[status] ?? status;
-}
-
-function verificationLabel(status: string): string {
-  const labels: Record<string, string> = {
-    approved: "검증 완료",
-    pending: "검증 대기",
-    rejected: "검증 반려",
-    revoked: "검증 취소"
-  };
-  return labels[status] ?? status;
-}
-
-function verificationTone(status: string): "brand" | "accent" | "neutral" | "danger" {
-  if (status === "approved") return "brand";
-  if (status === "pending") return "accent";
-  if (status === "rejected" || status === "revoked") return "danger";
-  return "neutral";
-}
-
-function visibilityLabel(visibility: string): string {
-  const labels: Record<string, string> = {
-    hidden: "비공개",
-    private: "링크 공개",
-    public: "검색 공개"
-  };
-  return labels[visibility] ?? visibility;
 }
 
 function formatDate(value: Date | string): string {

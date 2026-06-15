@@ -1,17 +1,11 @@
-@import "@fontsource/hanken-grotesk/400.css";
-@import "@fontsource/hanken-grotesk/500.css";
-@import "@fontsource/hanken-grotesk/600.css";
-@import "@fontsource/hanken-grotesk/700.css";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
 @import "@fontsource/pretendard/400.css";
 @import "@fontsource/pretendard/500.css";
 @import "@fontsource/pretendard/600.css";
 @import "@fontsource/pretendard/700.css";
 @import "@fontsource/material-symbols-outlined/400.css";
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "./";
+@source "../components";
 @import "@csp/design-tokens/css";
 
 @layer base {
@@ -23,11 +17,13 @@
   body {
     min-height: 100%;
     margin: 0;
-    background: var(--color-surface-base);
+    background: var(--color-background);
     color: var(--color-ink-900);
-    font-family: var(--font-sans);
+    font-family: "Noto Sans KR", var(--font-sans);
     font-size: var(--text-base);
-    line-height: 1.55;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   a {
@@ -35,80 +31,42 @@
     text-decoration: none;
   }
 
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: "Noto Sans KR", var(--font-sans);
+  }
+
   :focus-visible {
-    outline: 3px solid var(--color-accent-500);
+    outline: 3px solid var(--color-brand-500);
     outline-offset: 3px;
   }
 }
 
 @layer components {
-  .docked {
-    position: sticky;
-  }
-
-  .full-width {
-    width: 100%;
-  }
-
+  .card-shadow,
   .flat,
   .no,
   .shadows {
     box-shadow: none;
   }
 
-  .rounded-DEFAULT {
-    border-radius: var(--radius);
-  }
-
-  .bg-opacity-20 {
-    --tw-bg-opacity: 0.2;
-  }
-
-  .bg-opacity-90 {
-    --tw-bg-opacity: 0.9;
-  }
-
-  .hover\:bg-opacity-90:hover {
-    --tw-bg-opacity: 0.9;
-  }
-
-  .border-opacity-50 {
-    --tw-border-opacity: 0.5;
-  }
-
-  .card-shadow {
-    box-shadow:
-      0 10px 15px -3px rgba(17, 28, 45, 0.08),
-      0 4px 6px -4px rgba(17, 28, 45, 0.08);
-  }
-
-  .glass-card {
-    backdrop-filter: blur(18px);
-    background-color: color-mix(
-      in srgb,
-      var(--color-surface-container-lowest) 84%,
-      transparent
-    );
-  }
-
-  .bg-pattern,
-  .pattern-bg {
-    background-color: var(--color-background);
-    background-image: radial-gradient(
-      var(--color-surface-variant) 1px,
-      transparent 1px
-    );
-    background-size: 24px 24px;
-  }
-
-  .calendar-scroll,
   .no-scrollbar,
   .scrollbar-hide {
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
 
-  .calendar-scroll::-webkit-scrollbar,
   .no-scrollbar::-webkit-scrollbar,
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
@@ -116,23 +74,22 @@
 
   .material-symbols-outlined {
     font-family: "Material Symbols Outlined";
-    font-weight: normal;
-    font-style: normal;
     font-size: 24px;
-    line-height: 1;
-    letter-spacing: normal;
-    text-transform: none;
-    display: inline-block;
-    white-space: nowrap;
-    word-wrap: normal;
-    direction: ltr;
-    -webkit-font-feature-settings: "liga";
-    -webkit-font-smoothing: antialiased;
+    font-style: normal;
     font-variation-settings:
       "FILL" 0,
       "wght" 400,
       "GRAD" 0,
       "opsz" 24;
+    font-weight: normal;
+    letter-spacing: normal;
+    line-height: 1;
+    text-transform: none;
+    white-space: nowrap;
+    word-wrap: normal;
+    direction: ltr;
+    -webkit-font-feature-settings: "liga";
+    -webkit-font-smoothing: antialiased;
   }
 
   .fill-icon,

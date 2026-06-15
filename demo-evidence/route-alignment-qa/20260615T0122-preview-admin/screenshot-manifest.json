@@ -1,0 +1,175 @@
+{
+  "capturedAt": "2026-06-15T01:26:33.493Z",
+  "baseUrl": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app",
+  "viewport": "1440x1200",
+  "count": 9,
+  "results": [
+    {
+      "slug": "36-admin-root",
+      "path": "/",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252F%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "36-admin-root.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "37-admin-home",
+      "path": "/admin",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/admin",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fadmin%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "37-admin-home.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Failed to load resource: the server responded with a status of 403 ()",
+        "error: Provider's accounts list is empty."
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "38-admin-queue",
+      "path": "/admin/queue",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/admin/queue",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Fqueue%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "38-admin-queue.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider.",
+        "error: Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "39-admin-qualifications",
+      "path": "/admin/qualifications",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/admin/qualifications",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Fqualifications%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "39-admin-qualifications.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider."
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "40-admin-refunds",
+      "path": "/admin/refunds",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/admin/refunds",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Frefunds%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "40-admin-refunds.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider.",
+        "error: Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "41-admin-payouts",
+      "path": "/admin/payouts",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/admin/payouts",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Fpayouts%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "41-admin-payouts.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider.",
+        "error: Failed to load resource: the server responded with a status of 429 ()"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "42-admin-audit",
+      "path": "/admin/audit",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/admin/audit",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Faudit%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "42-admin-audit.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider.",
+        "error: Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "43-admin-payouts-alias",
+      "path": "/payouts",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/payouts",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Fpayouts%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "43-admin-payouts-alias.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider.",
+        "error: Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    },
+    {
+      "slug": "44-admin-refunds-alias",
+      "path": "/refunds",
+      "url": "https://clinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app/refunds",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-7lvnkv2zz-gunhwipak-debugs-projects.vercel.app%252Frefunds%26nonce%3D1a0469f50badab9363af90341674732c75402ed5e797efd77fba8568e9ee83ab",
+      "title": "Login – Vercel",
+      "screenshot": "44-admin-refunds-alias.png",
+      "overlay": false,
+      "meaningfulText": true,
+      "consoleErrors": [
+        "error: Failed to load resource: the server responded with a status of 401 ()",
+        "warning: Deprecated API for given entry type.",
+        "warning: [GSI_LOGGER]: Your client application uses one of the Google One Tap prompt UI status methods that may stop functioning when FedCM becomes mandatory. Refer to the migration guide to update your code accordingly and opt-in to FedCM to test your changes. Learn more: https://developers.google.com/ident",
+        "error: Not signed in with the identity provider.",
+        "error: Failed to load resource: the server responded with a status of 403 ()"
+      ],
+      "bodySample": "Skip to content Sign Up Log in to Vercel Continue with Email Continue with Google Continue with GitHub Continue with Apple Continue with SAML SSO Continue with Passkey Show other options Don't have an account? Sign Up Terms Privacy Policy"
+    }
+  ]
+}

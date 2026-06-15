@@ -1,7 +1,7 @@
 "use client";
 
 import type { profiles } from "@csp/db";
-import { CheckCircle2, Eye, EyeOff, Save, UserRoundCog, Sparkles } from "lucide-react";
+import { CheckCircle2, Eye, EyeOff, Save, UserRoundCog } from "lucide-react";
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";
@@ -19,19 +19,19 @@ const productKinds = [
   {
     kind: "zoom_60",
     label: "비대면 화상 슈퍼비전 (60분)",
-    desc: "내장 화상 및 줌 회의로 1시간 동안 1:1 세션을 지도합니다.",
+    desc: "화상 회의로 1시간 동안 1:1 슈퍼비전을 진행합니다.",
     defaultPrice: 80000
   },
   {
     kind: "zoom_90",
     label: "비대면 화상 슈퍼비전 (90분)",
-    desc: "내장 화상 및 줌 회의로 1시간 30분 동안 심층 세션을 지도합니다.",
+    desc: "화상 회의로 1시간 30분 동안 심층 슈퍼비전을 진행합니다.",
     defaultPrice: 120000
   },
   {
     kind: "async_comment",
     label: "서면 피드백 슈퍼비전 (2회 무료 피드백)",
-    desc: "자료 제출 시 서면 코멘트 및 피드백을 전달합니다.",
+    desc: "사례 자료를 바탕으로 서면 코멘트와 피드백을 전달합니다.",
     defaultPrice: 50000
   },
   {
@@ -134,7 +134,7 @@ export function SupervisorProfileEditor({
         return;
       }
 
-      setMessage("제공 항목을 저장하는 중입니다...");
+      setMessage("슈퍼비전 방식을 저장하는 중입니다...");
       const promises = productKinds.map(async (item) => {
         const isChecked = checkedProducts[item.kind] ?? false;
         const price = productPrices[item.kind] ?? item.defaultPrice;
@@ -154,35 +154,32 @@ export function SupervisorProfileEditor({
       });
 
       await Promise.all(promises);
-      setMessage("프로필과 제공 항목을 저장했습니다.");
-      toast.success("프로필과 제공 항목을 저장했습니다.");
+      setMessage("프로필과 슈퍼비전 방식을 저장했습니다.");
+      toast.success("프로필과 슈퍼비전 방식을 저장했습니다.");
     });
   }
 
   return (
-    <div className="grid grid-cols-1 gap-lg lg:grid-cols-12">
-      <div className="space-y-lg lg:col-span-7">
-        <div className="rounded-xl border border-outline-variant/80 bg-surface-container-lowest p-6 shadow-card">
-          <div className="mb-6 flex items-start justify-between border-b border-outline-variant/60 pb-xs">
+    <div className="grid gap-6">
+      <div className="space-y-6">
+        <Card className="rounded-xl p-6">
+          <div className="mb-6 border-b border-line pb-4">
             <div>
-              <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
-                슈퍼바이저 전용 프로필 설정
-              </span>
-              <h2 className="mt-xs font-display-md text-xl font-bold text-on-surface">
-                공개 슈퍼바이저 프로필 작성
+              <p className="text-sm font-semibold text-brand-700">공개 프로필</p>
+              <h2 className="mt-1 text-2xl font-bold text-ink-900">
+                선택에 필요한 정보만 정리합니다
               </h2>
-              <p className="mt-xs font-body-sm text-xs text-on-surface-variant">
-                슈퍼바이저가 공개 프로필과 제공 항목을 한 화면에서 정리할 수 있도록
-                구성했습니다.
+              <p className="mt-2 text-sm leading-relaxed text-ink-500">
+                공개 프로필과 슈퍼비전 방식을 한 화면에서 정리합니다.
               </p>
             </div>
           </div>
 
-          <div className="grid gap-md">
+          <div className="grid gap-4">
             <Field>
               <Label
                 htmlFor="displayName"
-                className="font-bold text-on-surface text-sm"
+                className="text-sm font-semibold text-ink-900"
               >
                 공개 표시명 (실명 또는 성함) *
               </Label>
@@ -196,7 +193,7 @@ export function SupervisorProfileEditor({
             </Field>
 
             <Field>
-              <Label htmlFor="headline" className="font-bold text-on-surface text-sm">
+              <Label htmlFor="headline" className="text-sm font-semibold text-ink-900">
                 검색 화면 한줄 소개 (헤드라인)
               </Label>
               <Input
@@ -208,7 +205,7 @@ export function SupervisorProfileEditor({
             </Field>
 
             <Field>
-              <Label htmlFor="photoUrl" className="font-bold text-on-surface text-sm">
+              <Label htmlFor="photoUrl" className="text-sm font-semibold text-ink-900">
                 사진 주소 (URL)
               </Label>
               <Input
@@ -221,14 +218,14 @@ export function SupervisorProfileEditor({
             </Field>
 
             <Field>
-              <Label htmlFor="bio" className="font-bold text-on-surface text-sm">
+              <Label htmlFor="bio" className="text-sm font-semibold text-ink-900">
                 상세 프로필 소개
               </Label>
               <Textarea
                 value={bio}
                 id="bio"
                 onChange={(e) => setBio(e.target.value)}
-                placeholder="슈퍼바이지가 확인해야 할 학술 배경, 전문 분야, 슈퍼비전 방식, 지도 이력을 간결하게 작성해 주세요."
+                placeholder="신청자가 확인해야 할 학술 배경, 전문 분야, 슈퍼비전 방식, 지도 이력을 간결하게 작성해 주세요."
                 rows={6}
               />
             </Field>
@@ -236,7 +233,7 @@ export function SupervisorProfileEditor({
             <Field>
               <Label
                 htmlFor="yearsOfExperience"
-                className="font-bold text-on-surface text-sm"
+                className="text-sm font-semibold text-ink-900"
               >
                 실무 경력 연수
               </Label>
@@ -254,60 +251,56 @@ export function SupervisorProfileEditor({
               />
             </Field>
           </div>
-        </div>
+        </Card>
 
-        <div className="rounded-xl border border-outline-variant/80 bg-surface-container-lowest p-6 shadow-card">
-          <div className="mb-5 border-b border-outline-variant/60 pb-xs">
-            <span className="inline-flex rounded-full bg-secondary/15 px-3 py-1 text-xs font-bold text-secondary">
-              제공할 슈퍼비전 항목
-            </span>
-            <h3 className="mt-xs font-title-lg text-base font-bold text-on-surface">
-              공개할 지도 방식과 요금
+        <Card className="rounded-xl p-6">
+          <div className="mb-5 border-b border-line pb-4">
+            <p className="text-sm font-semibold text-brand-700">슈퍼비전 방식</p>
+            <h3 className="mt-1 text-xl font-bold text-ink-900">
+              공개할 세션 유형과 요금
             </h3>
-            <p className="mt-xs font-body-sm text-xs text-on-surface-variant">
-              슈퍼바이지가 선택할 수 있는 지도 방식과 기본 요금을 정합니다.
+            <p className="mt-2 text-sm leading-relaxed text-ink-500">
+              신청자가 선택할 수 있는 슈퍼비전 방식과 기본 요금을 정합니다.
             </p>
           </div>
 
-          <div className="space-y-md">
+          <div className="space-y-4">
             {productKinds.map((item) => {
               const isChecked = checkedProducts[item.kind] ?? false;
               const price = productPrices[item.kind] ?? item.defaultPrice;
 
               return (
                 <div
-                  className={`group rounded-xl border p-md transition-all duration-200 ${
+                  className={`group rounded-xl border p-4 transition-colors ${
                     isChecked
-                      ? "border-secondary/60 bg-secondary/2 shadow-xs"
-                      : "border-outline-variant/60 bg-surface/30 hover:border-secondary/30"
+                      ? "border-brand-300 bg-brand-50/40"
+                      : "border-line bg-surface-base hover:border-brand-200"
                   }`}
                   key={item.kind}
                 >
-                  <div className="flex flex-col gap-sm sm:flex-row sm:items-start sm:justify-between">
-                    <label className="flex cursor-pointer gap-sm items-start flex-1">
+                  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                    <label className="flex flex-1 cursor-pointer items-start gap-3">
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={(e) =>
                           handleProductCheck(item.kind, e.target.checked)
                         }
-                        className="mt-1 custom-checkbox shrink-0"
+                        className="mt-1 shrink-0"
                       />
                       <div>
-                        <strong className="block text-sm text-on-surface group-hover:text-secondary transition-colors">
+                        <strong className="block text-sm text-ink-900">
                           {item.label}
                         </strong>
-                        <p className="mt-xs text-[11px] text-on-surface-variant leading-relaxed">
+                        <p className="mt-1 text-xs leading-relaxed text-ink-500">
                           {item.desc}
                         </p>
                       </div>
                     </label>
 
                     {isChecked && (
-                      <div className="flex items-center gap-xs mt-xs sm:mt-0">
-                        <span className="font-mono text-xs text-on-surface-variant">
-                          ₩
-                        </span>
+                      <div className="mt-1 flex items-center gap-2 sm:mt-0">
+                        <span className="font-mono text-xs text-ink-500">₩</span>
                         <input
                           type="number"
                           value={price}
@@ -316,7 +309,7 @@ export function SupervisorProfileEditor({
                           onChange={(e) =>
                             handleProductPrice(item.kind, Number(e.target.value))
                           }
-                          className="w-28 h-9 rounded-md border border-outline-variant bg-surface px-2 text-right font-mono text-xs font-bold text-secondary focus:border-secondary focus:outline-none"
+                          className="h-9 w-28 rounded-md border border-line bg-surface-elevated px-2 text-right font-mono text-xs font-bold text-ink-900 focus:border-brand-400 focus:outline-none"
                         />
                       </div>
                     )}
@@ -325,139 +318,123 @@ export function SupervisorProfileEditor({
               );
             })}
           </div>
-        </div>
 
-        <div className="flex flex-col gap-sm items-start rounded-xl border border-outline-variant bg-surface-container/30 p-md">
-          <Button
-            className="flex h-11 w-full items-center justify-center gap-xs font-label-md text-sm font-bold active:scale-98"
-            disabled={isPending}
-            onClick={handleSave}
-            type="button"
-          >
-            <Save aria-hidden size={16} />
-            {isPending ? "저장 중..." : "프로필과 제공 항목 저장"}
-          </Button>
-          {message ? (
-            <p className="font-label-sm text-xs font-bold text-secondary animate-pulse mt-xs">
-              {message}
-            </p>
-          ) : null}
-        </div>
+          <div className="mt-6 flex flex-col gap-2 border-t border-line pt-4">
+            <Button
+              className="flex h-11 w-full items-center justify-center gap-2 text-sm font-semibold"
+              disabled={isPending}
+              onClick={handleSave}
+              type="button"
+            >
+              <Save aria-hidden size={16} />
+              {isPending ? "저장 중..." : "프로필과 슈퍼비전 방식 저장"}
+            </Button>
+            {message ? (
+              <p className="text-sm font-semibold text-brand-700">{message}</p>
+            ) : null}
+          </div>
+        </Card>
       </div>
 
-      <div className="lg:col-span-5">
-        <div className="sticky top-[104px] space-y-md">
-          <div className="rounded-xl border border-secondary/20 bg-secondary/3 p-md shadow-2xs">
-            <span className="flex items-center gap-xs font-label-sm text-xs font-bold text-secondary">
-              <Sparkles size={14} />
-              실시간 공개 화면 미리보기
-            </span>
-            <p className="mt-xs text-[11px] text-on-surface-variant leading-relaxed">
-              입력한 내용이 슈퍼바이지에게 보이는 공개 프로필에 어떻게 배치되는지
-              확인합니다.
+      <details className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
+        <summary className="cursor-pointer list-none p-5 text-sm font-bold text-ink-900">
+          공개 화면 미리보기
+        </summary>
+        <div className="grid gap-5 border-t border-line p-5 md:grid-cols-[180px_minmax(0,1fr)]">
+          <div className="flex flex-col items-center text-center">
+            <div className="mb-4 grid size-24 place-items-center overflow-hidden rounded-full border border-line bg-brand-50 text-brand-600">
+              {photoUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  alt="실시간 미리보기 사진"
+                  className="h-full w-full object-cover"
+                  src={photoUrl}
+                />
+              ) : (
+                <UserRoundCog aria-hidden size={36} />
+              )}
+            </div>
+            <h2 className="flex items-center gap-2 text-lg font-bold text-ink-900">
+              {displayName || "표시명을 입력해주세요"}
+              {profile?.verificationStatus === "approved" && (
+                <CheckCircle2 aria-hidden className="text-brand-600" size={18} />
+              )}
+            </h2>
+            <p className="mt-1 text-xs font-medium text-ink-500">
+              {headline || "한 줄 소개가 들어갑니다."}
             </p>
           </div>
 
-          <Card className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-            <div className="flex flex-col items-center text-center">
-              <div className="mb-md grid size-24 place-items-center overflow-hidden rounded-full border border-line bg-brand-50 text-brand-600">
-                {photoUrl ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img
-                    alt="실시간 미리보기 사진"
-                    className="h-full w-full object-cover"
-                    src={photoUrl}
-                  />
-                ) : (
-                  <UserRoundCog aria-hidden size={36} />
-                )}
-              </div>
-              <h2 className="text-xl font-extrabold text-primary flex items-center gap-xs">
-                {displayName || "표시명을 입력해주세요"}
-                {profile?.verificationStatus === "approved" && (
-                  <CheckCircle2 aria-hidden className="text-brand-600" size={18} />
-                )}
-              </h2>
-              <p className="mt-xs text-xs font-medium text-on-surface-variant min-h-[16px]">
-                {headline || "소개 카드의 한 줄 소개가 들어갑니다."}
-              </p>
-
-              <div className="mt-xs flex flex-wrap justify-center gap-1">
-                <Badge tone={profile?.visibility === "public" ? "brand" : "neutral"}>
-                  {profile?.visibility === "public" ? "검색 공개됨" : "비공개 초안"}
-                </Badge>
-                <Badge tone="accent">
-                  실무{" "}
-                  {yearsOfExperience ? `${String(yearsOfExperience)}년` : "경력 미지정"}
-                </Badge>
-              </div>
-
-              {/* 자격 및 전문 분야 배지 미리보기 */}
-              <div className="mt-md flex flex-wrap justify-center gap-1 border-t border-outline-variant/40 pt-md w-full">
-                {approvedQualifications.length > 0 ? (
-                  approvedQualifications.slice(0, 2).map((q) => (
-                    <Badge key={q.id} tone="brand" className="text-[10px] py-0">
-                      {q.name}
-                    </Badge>
-                  ))
-                ) : (
-                  <Badge tone="neutral" className="text-[10px] py-0">
-                    인증된 자격 증빙
+          <div className="grid gap-4">
+            <div className="flex flex-wrap gap-1">
+              <Badge tone={profile?.visibility === "public" ? "brand" : "neutral"}>
+                {profile?.visibility === "public" ? "검색 공개됨" : "검색 비공개"}
+              </Badge>
+              <Badge tone="accent">
+                실무{" "}
+                {yearsOfExperience ? `${String(yearsOfExperience)}년` : "경력 미지정"}
+              </Badge>
+              {approvedQualifications.length > 0 ? (
+                approvedQualifications.slice(0, 2).map((q) => (
+                  <Badge key={q.id} tone="brand" className="py-0 text-[10px]">
+                    {q.name}
                   </Badge>
-                )}
-                {specialties.length > 0 ? (
-                  specialties.slice(0, 3).map((s) => (
-                    <Badge key={s.id} tone="neutral" className="text-[10px] py-0">
-                      {s.labelKo}
-                    </Badge>
-                  ))
-                ) : (
-                  <Badge tone="neutral" className="text-[10px] py-0">
-                    전문분야 미지정
+                ))
+              ) : (
+                <Badge tone="neutral" className="py-0 text-[10px]">
+                  인증된 자격 증빙
+                </Badge>
+              )}
+              {specialties.length > 0 ? (
+                specialties.slice(0, 3).map((s) => (
+                  <Badge key={s.id} tone="neutral" className="py-0 text-[10px]">
+                    {s.labelKo}
                   </Badge>
-                )}
-              </div>
-
-              <div className="mt-md w-full text-left">
-                <h4 className="font-label-sm text-xs font-bold text-on-surface border-b border-outline-variant/40 pb-xs mb-xs">
-                  소개 소개글 미리보기
-                </h4>
-                <p className="line-clamp-4 whitespace-pre-wrap text-[11px] leading-relaxed text-on-surface-variant min-h-[50px]">
-                  {bio ||
-                    "좌측에 상세 소개글을 입력하시면 이곳에 최대 4줄까지 카드 요약으로 자동 반영됩니다."}
-                </p>
-              </div>
-
-              <div className="mt-md w-full text-left">
-                <h4 className="font-label-sm text-xs font-bold text-on-surface border-b border-outline-variant/40 pb-xs mb-sm">
-                  제공 항목 ({String(previewProducts.length)}개 선택됨)
-                </h4>
-                {previewProducts.length === 0 ? (
-                  <div className="flex h-16 items-center justify-center rounded-lg border border-dashed border-outline-variant bg-surface-container-lowest text-center text-[10px] text-on-surface-variant">
-                    공개할 제공 항목을 하나 이상 선택하면 이곳에 표시됩니다.
-                  </div>
-                ) : (
-                  <div className="space-y-xs max-h-40 overflow-y-auto pr-xs">
-                    {previewProducts.map((prod) => (
-                      <div
-                        key={prod.id}
-                        className="flex items-center justify-between rounded-lg border border-outline-variant/60 bg-surface px-sm py-1.5"
-                      >
-                        <span className="text-[10px] font-bold text-on-surface truncate max-w-[200px]">
-                          {prod.title}
-                        </span>
-                        <span className="font-mono text-[10px] font-extrabold text-secondary shrink-0">
-                          ₩ {prod.priceKrw.toLocaleString("ko-KR")}
-                        </span>
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
+                ))
+              ) : (
+                <Badge tone="neutral" className="py-0 text-[10px]">
+                  전문분야 미지정
+                </Badge>
+              )}
             </div>
-          </Card>
+
+            <div>
+              <h4 className="text-xs font-semibold text-ink-500">소개글</h4>
+              <p className="mt-2 line-clamp-4 whitespace-pre-wrap text-sm leading-relaxed text-ink-700">
+                {bio ||
+                  "상세 소개글을 입력하면 신청자가 확인할 요약 문구가 이곳에 반영됩니다."}
+              </p>
+            </div>
+
+            <div>
+              <h4 className="text-xs font-semibold text-ink-500">
+                슈퍼비전 방식 ({String(previewProducts.length)}개 선택됨)
+              </h4>
+              {previewProducts.length === 0 ? (
+                <p className="mt-2 rounded-lg border border-dashed border-line bg-surface-base p-3 text-sm text-ink-500">
+                  공개할 슈퍼비전 방식을 하나 이상 선택하면 표시됩니다.
+                </p>
+              ) : (
+                <div className="mt-2 divide-y divide-line rounded-lg border border-line">
+                  {previewProducts.map((prod) => (
+                    <div
+                      key={prod.id}
+                      className="flex items-center justify-between gap-3 px-3 py-2 text-sm"
+                    >
+                      <span className="truncate font-semibold text-ink-900">
+                        {prod.title}
+                      </span>
+                      <span className="shrink-0 font-mono font-bold text-brand-700">
+                        ₩ {prod.priceKrw.toLocaleString("ko-KR")}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
         </div>
-      </div>
+      </details>
     </div>
   );
 }

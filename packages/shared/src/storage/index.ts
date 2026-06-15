@@ -646,7 +646,7 @@ export function assertAllowedCaseFileUpload(input: {
   contentType?: string | null;
 }): FilePolicyAllowed {
   const result = evaluateCaseFileUploadPolicy(input);
-  if (!result.allowed) {
+  if (result.allowed === false) {
     throw new StorageTokenError(result.code);
   }
   return result;

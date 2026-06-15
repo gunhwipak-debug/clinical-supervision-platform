@@ -1,12 +1,14 @@
 import Link from "next/link";
-import { ArrowLeft, ClipboardList, FolderOpen, ShieldCheck } from "lucide-react";
 import { files, supervision, withUserContext } from "@csp/db";
 import { AppShell } from "../../../../components/app-shell";
 import { CaseFilesPanel } from "../../../../components/case-files-panel";
-import { Badge } from "../../../../components/ui/badge";
-import { Card } from "../../../../components/ui/card";
+import { FlowStepNav, SectionBlock } from "../../../../components/clinicflow-shell";
+import { Button } from "../../../../components/ui/button";
 import { EmptyState } from "../../../../components/ui/state";
-import { DemoRequestDetailPreview } from "../../../../components/workflow-preview-pages";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../components/locked-state";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { contextFor, isRequestOwner } from "@/lib/supervision/authz";
@@ -22,11 +24,17 @@ export default async function RequestDetailPage({
   const current = await getCurrentUser();
   const { id } = await params;
 
-  if (
-    !current ||
-    (current.user.role !== "supervisee" && current.user.role !== "supervisor")
-  ) {
-    return <DemoRequestDetailPreview />;
+  if (!current) {
+    return <LoginRequiredState title="의뢰 상세" returnTo={`/requests/${id}`} />;
+  }
+
+  if (current.user.role !== "supervisee" && current.user.role !== "supervisor") {
+    return (
+      <RoleRequiredState
+        title="의뢰 상세"
+        description="의뢰 상세는 신청자와 담당 슈퍼바이저만 확인할 수 있습니다."
+      />
+    );
   }
 
   const db = createRuntimeDatabase();
@@ -59,249 +67,144 @@ export default async function RequestDetailPage({
   );
 
   return (
-    <main className="min-h-screen bg-surface-base pb-24 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-5 py-4 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <Link aria-label="의뢰 목록" href="/requests">
-            <ArrowLeft aria-hidden className="text-ink-900" size={28} />
-          </Link>
-          <h1 className="text-2xl font-bold">의뢰 심사</h1>
-          <span className="size-7" aria-hidden />
+    <AppShell
+      action={
+        <Button asChild variant="secondary">
+          <Link href="/requests">의뢰 목록</Link>
+        </Button>
+      }
+      subtitle={pageSubtitle(basic)}
+      title={pageTitle(basic.status)}
+    >
+      <FlowStepNav current={flowStepForStatus(basic.status)} steps={requestFlowSteps} />
+
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-6">
+          <SectionBlock
+            subtitle="주호소, 의뢰 사유, 검사명처럼 슈퍼바이저가 먼저 볼 내용을 한 줄씩 정리합니다."
+            title="사례 자료"
+          >
+            <div
+              className="rounded-xl border border-line bg-surface-elevated p-5"
+              id="case-info"
+            >
+              <RequestDetailClient
+                initialChiefComplaint={detail?.chiefComplaint ?? ""}
+                initialClientAgeBand={detail?.clientAgeBand ?? null}
+                initialClientGender={detail?.clientGender ?? null}
+                initialNeedsCompletionRecord={detail?.needsCompletionRecord ?? null}
+                initialPreferredMethod={detail?.preferredMethod ?? null}
+                initialPurpose={detail?.purpose ?? null}
+                initialReferralReason={detail?.referralReason ?? ""}
+                initialRequestItems={detail?.requestItems ?? null}
+                initialSetting={detail?.setting ?? null}
+                initialTestsUsed={detail?.testsUsed ?? null}
+                initialTitle={detail?.title ?? ""}
+                completionRecord={completionRecord}
+                feedbackRecommendations={detail?.feedbackRecommendations ?? null}
+                feedbackSubmittedAt={detail?.feedbackSubmittedAt ?? null}
+                feedbackSummary={detail?.feedbackSummary ?? null}
+                bookingStatus={basic.bookingStatus}
+                deidentificationComplete={basic.deidentificationComplete}
+                initialMeetingUrl={basic.meetingUrl}
+                initialScheduledEnd={basic.scheduledEnd}
+                initialScheduledStart={basic.scheduledStart}
+                packetComplete={basic.packetComplete}
+                phiDisabled={false}
+                requestId={id}
+                serviceProductSupervisionType={basic.serviceProductSupervisionType}
+                status={basic.status}
+              />
+            </div>
+          </SectionBlock>
+
+          <SectionBlock
+            subtitle="보고서, 검사 결과, 면담 요약처럼 슈퍼비전에 필요한 파일만 보관합니다."
+            title={`첨부 자료 ${String(caseFiles.length)}개`}
+          >
+            <div
+              className="rounded-xl border border-line bg-surface-elevated p-5"
+              id="case-files"
+            >
+              <CaseFilesPanel
+                canDelete={basic.status === "draft" || basic.status === "in_review"}
+                canUpload={
+                  basic.status === "draft" ||
+                  basic.status === "submitted" ||
+                  basic.status === "in_review" ||
+                  basic.status === "additional_info_requested"
+                }
+                initialFiles={caseFiles.map((file) => ({
+                  id: file.id,
+                  kind: file.kind,
+                  originalFilename: file.originalFilename,
+                  mimeType: file.mimeType,
+                  sizeBytes: file.sizeBytes,
+                  virusScanStatus: file.virusScanStatus,
+                  phiScanStatus: file.phiScanStatus,
+                  uploadedAt: file.uploadedAt
+                }))}
+                requestId={id}
+              />
+            </div>
+          </SectionBlock>
         </div>
-      </header>
 
-      <div className="mx-auto grid max-w-5xl gap-5 px-5 py-5">
-        <section className="rounded-xl border border-brand-100 bg-brand-50 p-4 text-ink-800">
-          <div className="flex gap-3">
-            <ShieldCheck
-              aria-hidden
-              className="mt-1 shrink-0 text-brand-600"
-              size={22}
-            />
-            <div>
-              <h2 className="font-bold">자료 열람 범위</h2>
-              <p className="mt-1 text-sm leading-relaxed text-ink-700">
-                제출한 자료와 피드백은 이 의뢰의 슈퍼비전 흐름 안에서 확인합니다.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        <Card className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-          <div className="mb-3 flex items-start justify-between gap-4">
-            <Badge tone="brand">슈퍼비전 의뢰</Badge>
-            <Badge tone="neutral">{statusLabel(basic.status)}</Badge>
-          </div>
-          <h2 className="text-2xl font-bold text-ink-900">
-            {detail?.title || basic.productTitle || "케이스 패킷을 작성해주세요"}
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <h2 className="text-xl font-bold text-ink-900">
+            {summaryHeading(basic.status)}
           </h2>
-          <p className="mt-3 text-sm text-ink-700">
-            요청일 · 보관 {String(basic.retentionDays)}일 ·{" "}
-            {basic.productTitle ?? "제공 항목 확인 필요"}
-          </p>
-          <p className="mt-2 text-sm font-semibold text-ink-800">
-            예약 일정 · {formatBookingSlot(basic)}
-          </p>
-        </Card>
-
-        <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
-          <div className="grid gap-5">
-            <Card className="overflow-hidden rounded-2xl border-line bg-surface-elevated p-0 shadow-card">
-              <div className="flex items-center justify-between border-b border-line px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <ClipboardList aria-hidden className="text-ink-700" size={24} />
-                  <h2 className="text-xl font-bold">사례 기본 정보</h2>
-                </div>
-              </div>
-              <div className="p-5">
-                <RequestDetailClient
-                  initialChiefComplaint={detail?.chiefComplaint ?? ""}
-                  initialClientAgeBand={detail?.clientAgeBand ?? null}
-                  initialClientGender={detail?.clientGender ?? null}
-                  initialNeedsCompletionRecord={detail?.needsCompletionRecord ?? null}
-                  initialPreferredMethod={detail?.preferredMethod ?? null}
-                  initialPurpose={detail?.purpose ?? null}
-                  initialReferralReason={detail?.referralReason ?? ""}
-                  initialRequestItems={detail?.requestItems ?? null}
-                  initialSetting={detail?.setting ?? null}
-                  initialTestsUsed={detail?.testsUsed ?? null}
-                  initialTitle={detail?.title ?? ""}
-                  completionRecord={completionRecord}
-                  feedbackRecommendations={detail?.feedbackRecommendations ?? null}
-                  feedbackSubmittedAt={detail?.feedbackSubmittedAt ?? null}
-                  feedbackSummary={detail?.feedbackSummary ?? null}
-                  bookingStatus={basic.bookingStatus}
-                  deidentificationComplete={basic.deidentificationComplete}
-                  initialMeetingUrl={basic.meetingUrl}
-                  initialScheduledEnd={basic.scheduledEnd}
-                  initialScheduledStart={basic.scheduledStart}
-                  packetComplete={basic.packetComplete}
-                  phiDisabled={false}
-                  requestId={id}
-                  serviceProductSupervisionType={basic.serviceProductSupervisionType}
-                  status={basic.status}
-                />
-              </div>
-            </Card>
-
-            <Card className="overflow-hidden rounded-2xl border-line bg-surface-elevated p-0 shadow-card">
-              <div className="flex items-center justify-between border-b border-line px-5 py-4">
-                <div className="flex items-center gap-3">
-                  <FolderOpen aria-hidden className="text-ink-700" size={24} />
-                  <h2 className="text-xl font-bold">
-                    첨부 문서 ({String(caseFiles.length)})
-                  </h2>
-                </div>
-              </div>
-              <div className="p-5">
-                <CaseFilesPanel
-                  canDelete={basic.status === "draft" || basic.status === "in_review"}
-                  canUpload={
-                    basic.status === "draft" ||
-                    basic.status === "submitted" ||
-                    basic.status === "in_review" ||
-                    basic.status === "additional_info_requested"
-                  }
-                  initialFiles={caseFiles.map((file) => ({
-                    id: file.id,
-                    kind: file.kind,
-                    originalFilename: file.originalFilename,
-                    mimeType: file.mimeType,
-                    sizeBytes: file.sizeBytes,
-                    virusScanStatus: file.virusScanStatus,
-                    phiScanStatus: file.phiScanStatus,
-                    uploadedAt: file.uploadedAt
-                  }))}
-                  requestId={id}
-                />
-              </div>
-            </Card>
+          <div className="mt-5 grid divide-y divide-line text-sm">
+            <SummaryLine label="현재 상태" value={statusLabel(basic.status)} />
+            <SummaryLine
+              label="슈퍼바이저"
+              value={basic.supervisorDisplayName ?? "확인 중"}
+            />
+            <SummaryLine label="일정" value={formatBookingSlot(basic)} />
+            <SummaryLine
+              label="사례 자료"
+              value={basic.packetComplete ? "정리 완료" : "정리 필요"}
+            />
+            <SummaryLine label="자료 보관" value={`${String(basic.retentionDays)}일`} />
           </div>
-
-          <Card className="h-fit rounded-2xl border-line bg-surface-elevated p-5 shadow-card">
-            <h2 className="mb-5 text-xl font-bold text-ink-900">진행 타임라인</h2>
-            <div className="relative border-l border-outline-variant/60 ml-3.5 space-y-lg pb-1">
-              {timelineSteps.map((stepItem, idx) => {
-                const isFinished = checkFinished(stepItem.key, basic.status);
-                const isActive = checkActive(stepItem.key, basic.status);
-
-                return (
-                  <div className="relative pl-6" key={stepItem.key}>
-                    {/* 커스텀 타임라인 도트 */}
-                    <div
-                      className={`absolute -left-[15px] top-0 flex h-7 w-7 items-center justify-center rounded-full border-2 text-[12px] transition-all duration-200 ${
-                        isFinished
-                          ? "bg-primary border-primary text-on-primary"
-                          : isActive
-                            ? "bg-surface-elevated border-secondary text-secondary animate-pulse ring-4 ring-secondary/15"
-                            : "bg-surface-elevated border-outline-variant text-on-surface-variant"
-                      }`}
-                    >
-                      {isFinished ? (
-                        <span className="material-symbols-outlined text-[16px] font-bold">
-                          check
-                        </span>
-                      ) : (
-                        <span>{idx + 1}</span>
-                      )}
-                    </div>
-                    <div>
-                      <h3
-                        className={`font-label-md text-sm font-bold ${
-                          isActive
-                            ? "text-secondary"
-                            : isFinished
-                              ? "text-primary"
-                              : "text-on-surface-variant"
-                        }`}
-                      >
-                        {stepItem.label}
-                      </h3>
-                      <p className="mt-xs font-body-sm text-[11px] text-on-surface-variant leading-relaxed">
-                        {stepItem.desc}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* 상태별 상세 수치 요약 */}
-            <div className="mt-md border-t border-outline-variant/40 pt-md grid gap-2 text-xs">
-              <div className="flex items-center justify-between">
-                <span className="text-on-surface-variant">현재 상태</span>
-                <Badge tone="accent">{statusLabel(basic.status)}</Badge>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-on-surface-variant">사례 완료여부</span>
-                <Badge tone={basic.packetComplete ? "brand" : "danger"}>
-                  {basic.packetComplete ? "완료" : "미완료"}
-                </Badge>
-              </div>
-            </div>
-          </Card>
-        </section>
-      </div>
-    </main>
+        </aside>
+      </section>
+    </AppShell>
   );
 }
 
-const timelineSteps = [
-  {
-    key: "draft",
-    label: "작성 및 자료 점검",
-    desc: "사례 정보 입력 및 제출 자료 확인"
-  },
-  { key: "payment", label: "결제 완료", desc: "결제 완료 후 슈퍼바이저 확인" },
-  { key: "supervision", label: "슈퍼비전 진행", desc: "슈퍼바이저 검토 및 세션 진행" },
-  { key: "completed", label: "최종 완료", desc: "완료 기록 및 피드백 발급 완료" }
+const requestFlowSteps = [
+  "슈퍼바이저 선택",
+  "세션·일정",
+  "사례자료 정리",
+  "확인·결제",
+  "학습 기록"
 ] as const;
 
-function checkFinished(stepKey: string, status: string): boolean {
-  if (status === "rejected" || status === "cancelled" || status === "refunded")
-    return false;
-
-  if (stepKey === "draft") {
-    return status !== "draft";
-  }
-  if (stepKey === "payment") {
-    return status !== "draft" && status !== "awaiting_payment";
-  }
-  if (stepKey === "supervision") {
-    return (
-      status === "feedback_submitted" ||
-      status === "completion_record_issued" ||
-      status === "completed"
-    );
-  }
-  if (stepKey === "completed") {
-    return status === "completed" || status === "completion_record_issued";
-  }
-  return false;
+function SummaryLine({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="grid gap-1 py-3">
+      <span className="font-bold text-ink-400">{label}</span>
+      <span className="font-semibold leading-relaxed text-ink-900">{value}</span>
+    </div>
+  );
 }
 
-function checkActive(stepKey: string, status: string): boolean {
-  if (status === "rejected" || status === "cancelled" || status === "refunded")
-    return false;
-
-  if (stepKey === "draft") {
-    return status === "draft";
+function flowStepForStatus(status: string): (typeof requestFlowSteps)[number] {
+  if (
+    status === "draft" ||
+    status === "submitted" ||
+    status === "in_review" ||
+    status === "additional_info_requested"
+  ) {
+    return "사례자료 정리";
   }
-  if (stepKey === "payment") {
-    return status === "awaiting_payment";
+  if (status === "awaiting_payment" || status === "paid") return "확인·결제";
+  if (status === "completion_record_issued" || status === "completed") {
+    return "학습 기록";
   }
-  if (stepKey === "supervision") {
-    return (
-      status === "paid" ||
-      status === "awaiting_supervisor_review" ||
-      status === "accepted" ||
-      status === "in_review"
-    );
-  }
-  if (stepKey === "completed") {
-    return status === "feedback_submitted";
-  }
-  return false;
+  if (status === "feedback_submitted") return "학습 기록";
+  return "확인·결제";
 }
 
 function formatBookingSlot(request: supervision.SupervisionRequestDetails): string {
@@ -326,19 +229,74 @@ function formatBookingSlot(request: supervision.SupervisionRequestDetails): stri
 function statusLabel(status: string): string {
   const labels: Record<string, string> = {
     draft: "작성 중",
-    submitted: "제출됨",
-    awaiting_payment: "결제 대기",
+    submitted: "제출 완료",
+    awaiting_payment: "결제 필요",
     paid: "결제 완료",
-    awaiting_supervisor_review: "검토 대기",
+    awaiting_supervisor_review: "수락 대기",
     accepted: "수락됨",
-    in_review: "검토 중",
-    feedback_submitted: "피드백 제출",
-    completion_record_issued: "완료기록 발급",
+    additional_info_requested: "추가 자료 요청됨",
+    in_review: "검토 진행 중",
+    feedback_submitted: "피드백 도착",
+    completion_record_issued: "이수 기록 발급됨",
     completed: "완료",
-    rejected: "반려",
+    rejected: "수락되지 않음",
     cancelled: "취소",
     refunded: "환불",
     expired: "만료"
   };
   return labels[status] ?? status;
+}
+
+function pageTitle(status: string): string {
+  if (status === "awaiting_supervisor_review" || status === "accepted") {
+    return "슈퍼바이저 확인을 기다립니다";
+  }
+  if (status === "awaiting_payment" || status === "paid") {
+    return "선택 내용을 확인하고 결제합니다";
+  }
+  if (
+    status === "feedback_submitted" ||
+    status === "completion_record_issued" ||
+    status === "completed"
+  ) {
+    return "학습 기록";
+  }
+  return "의뢰 상세";
+}
+
+function pageSubtitle(request: supervision.SupervisionRequestDetails): string {
+  if (
+    request.status === "awaiting_supervisor_review" ||
+    request.status === "accepted"
+  ) {
+    return "결제와 사례자료 정리가 끝났습니다. 슈퍼바이저가 일정과 자료를 확인하면 슈퍼비전이 시작됩니다.";
+  }
+  if (request.status === "additional_info_requested") {
+    return `${request.id.slice(0, 8).toUpperCase()} · 필요한 자료를 먼저 보완하세요.`;
+  }
+  if (request.status === "awaiting_payment" || request.status === "paid") {
+    return "슈퍼바이저, 세션, 일정, 자료를 한 번 더 확인한 뒤 신청을 확정합니다.";
+  }
+  if (
+    request.status === "feedback_submitted" ||
+    request.status === "completion_record_issued" ||
+    request.status === "completed"
+  ) {
+    return "피드백과 완료 기록을 한 화면에서 다시 확인합니다.";
+  }
+  return `${statusLabel(request.status)} · ${formatBookingSlot(request)}`;
+}
+
+function summaryHeading(status: string): string {
+  if (status === "awaiting_supervisor_review" || status === "accepted") {
+    return "신청 요약";
+  }
+  if (
+    status === "feedback_submitted" ||
+    status === "completion_record_issued" ||
+    status === "completed"
+  ) {
+    return "기록 요약";
+  }
+  return "의뢰 요약";
 }

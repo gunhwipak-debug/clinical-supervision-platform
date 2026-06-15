@@ -1,0 +1,50 @@
+# ClinicFlow Route Alignment Screenshots
+
+Captured: 2026-06-14T16:22:38.981Z
+
+| App   | Route                           | Status |   Time | Screenshot                                                                   |
+| ----- | ------------------------------- | -----: | -----: | ---------------------------------------------------------------------------- |
+| web   | `/`                             |    200 | 1475ms | [web-root.png](web-root.png)                                                 |
+| web   | `/login`                        |    200 | 1746ms | [web-login.png](web-login.png)                                               |
+| web   | `/signup`                       |    200 |  918ms | [web-signup.png](web-signup.png)                                             |
+| web   | `/forgot-password`              |    200 |  841ms | [web-forgot-password.png](web-forgot-password.png)                           |
+| web   | `/reset-password`               |    200 |  899ms | [web-reset-password.png](web-reset-password.png)                             |
+| web   | `/email/verify`                 |    200 |  910ms | [web-email-verify.png](web-email-verify.png)                                 |
+| web   | `/verify-email`                 |    200 |  972ms | [web-verify-email.png](web-verify-email.png)                                 |
+| web   | `/supervisors`                  |    200 | 1402ms | [web-supervisors.png](web-supervisors.png)                                   |
+| web   | `/supervisors/demo`             |    200 | 1411ms | [web-supervisors-demo.png](web-supervisors-demo.png)                         |
+| web   | `/guide`                        |    200 | 1104ms | [web-guide.png](web-guide.png)                                               |
+| web   | `/resources`                    |    200 |  881ms | [web-resources.png](web-resources.png)                                       |
+| web   | `/clinical-guidelines`          |    200 |  926ms | [web-clinical-guidelines.png](web-clinical-guidelines.png)                   |
+| web   | `/terms`                        |    200 |  955ms | [web-terms.png](web-terms.png)                                               |
+| web   | `/privacy`                      |    200 |  906ms | [web-privacy.png](web-privacy.png)                                           |
+| web   | `/security`                     |    200 |  955ms | [web-security.png](web-security.png)                                         |
+| web   | `/sensitive-consent`            |    200 |  933ms | [web-sensitive-consent.png](web-sensitive-consent.png)                       |
+| web   | `/requests`                     |    200 | 1178ms | [web-requests.png](web-requests.png)                                         |
+| web   | `/requests/new`                 |    200 | 1188ms | [web-requests-new.png](web-requests-new.png)                                 |
+| web   | `/requests/REQ-1042`            |    200 | 1426ms | [web-requests-req-1042.png](web-requests-req-1042.png)                       |
+| web   | `/case-archive`                 |    200 | 1652ms | [web-case-archive.png](web-case-archive.png)                                 |
+| web   | `/payments`                     |    200 | 1063ms | [web-payments.png](web-payments.png)                                         |
+| web   | `/payments/pay-001`             |    200 | 1341ms | [web-payments-pay-001.png](web-payments-pay-001.png)                         |
+| web   | `/payments/confirm`             |    200 | 1029ms | [web-payments-confirm.png](web-payments-confirm.png)                         |
+| web   | `/notifications`                |    200 | 1119ms | [web-notifications.png](web-notifications.png)                               |
+| web   | `/settings`                     |    200 | 1089ms | [web-settings.png](web-settings.png)                                         |
+| web   | `/me`                           |    200 | 1158ms | [web-me.png](web-me.png)                                                     |
+| web   | `/supervisor`                   |    200 | 1175ms | [web-supervisor.png](web-supervisor.png)                                     |
+| web   | `/supervisor/requests`          |    200 | 1319ms | [web-supervisor-requests.png](web-supervisor-requests.png)                   |
+| web   | `/supervisor/requests/REQ-1042` |    200 | 1603ms | [web-supervisor-requests-req-1042.png](web-supervisor-requests-req-1042.png) |
+| web   | `/supervisor/profile`           |    200 | 2040ms | [web-supervisor-profile.png](web-supervisor-profile.png)                     |
+| web   | `/supervisor/availability`      |    200 | 1175ms | [web-supervisor-availability.png](web-supervisor-availability.png)           |
+| web   | `/supervisor/products`          |    200 | 1246ms | [web-supervisor-products.png](web-supervisor-products.png)                   |
+| web   | `/supervisor/payouts`           |    200 | 1289ms | [web-supervisor-payouts.png](web-supervisor-payouts.png)                     |
+| web   | `/supervisor/memory`            |    200 | 1253ms | [web-supervisor-memory.png](web-supervisor-memory.png)                       |
+| web   | `/supervisor/qualifications`    |    200 | 1375ms | [web-supervisor-qualifications.png](web-supervisor-qualifications.png)       |
+| admin | `/`                             |    200 | 2516ms | [admin-root.png](admin-root.png)                                             |
+| admin | `/admin`                        |    200 |  612ms | [admin-admin.png](admin-admin.png)                                           |
+| admin | `/admin/queue`                  |    200 | 1587ms | [admin-admin-queue.png](admin-admin-queue.png)                               |
+| admin | `/admin/qualifications`         |    200 |  952ms | [admin-admin-qualifications.png](admin-admin-qualifications.png)             |
+| admin | `/admin/refunds`                |    200 |  895ms | [admin-admin-refunds.png](admin-admin-refunds.png)                           |
+| admin | `/admin/payouts`                |    200 |  906ms | [admin-admin-payouts.png](admin-admin-payouts.png)                           |
+| admin | `/admin/audit`                  |    200 | 1063ms | [admin-admin-audit.png](admin-admin-audit.png)                               |
+| admin | `/payouts`                      |    200 |  946ms | [admin-payouts.png](admin-payouts.png)                                       |
+| admin | `/refunds`                      |    200 |  919ms | [admin-refunds.png](admin-refunds.png)                                       |

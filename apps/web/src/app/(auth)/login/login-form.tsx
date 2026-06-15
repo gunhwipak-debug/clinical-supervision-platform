@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -60,57 +59,47 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
 
   return (
     <AuthPanel
-      description="임상 슈퍼비전 자료와 의뢰 내역을 안전하게 확인합니다."
+      description="의뢰 자료와 슈퍼비전 기록을 안전하게 확인합니다."
       title="로그인"
     >
       <form className="grid gap-4" method="post" onSubmit={form.handleSubmit(submit)}>
-        <Field className="gap-1.5">
-          <Label className="text-sm font-semibold text-ink-900" htmlFor="email">
+        <Field className="gap-2">
+          <Label className="text-sm font-semibold text-[#8b94ad]" htmlFor="email">
             이메일
           </Label>
-          <div className="relative">
-            <Mail
-              aria-hidden
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-400"
-              size={20}
-            />
-            <Input
-              autoComplete="email"
-              className="h-12 rounded-lg bg-surface-base pl-11 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 sm:h-13 sm:pl-12 sm:text-base"
-              id="email"
-              placeholder="이메일 주소"
-              type="email"
-              {...form.register("email")}
-            />
-          </div>
+          <Input
+            autoComplete="email"
+            className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
+            id="email"
+            placeholder="이메일 주소"
+            type="email"
+            {...form.register("email")}
+          />
           {form.formState.errors.email ? (
-            <p className="text-xs text-danger">{form.formState.errors.email.message}</p>
+            <p className="text-sm text-[#c24141]">
+              {form.formState.errors.email.message}
+            </p>
           ) : null}
         </Field>
-        <Field className="gap-1.5">
+        <Field className="gap-2">
           <div className="flex items-center justify-between gap-3">
             <Label
-              className="whitespace-nowrap text-sm font-semibold text-ink-900"
+              className="whitespace-nowrap text-sm font-semibold text-[#8b94ad]"
               htmlFor="password"
             >
               비밀번호
             </Label>
             <Link
-              className="shrink-0 text-right text-xs font-medium text-brand-600 hover:underline sm:text-sm"
+              className="text-sm font-semibold text-[#2563ff] hover:underline"
               href="/forgot-password"
             >
               비밀번호 찾기
             </Link>
           </div>
           <div className="relative">
-            <LockKeyhole
-              aria-hidden
-              className="pointer-events-none absolute left-4 top-1/2 -translate-y-1/2 text-ink-400"
-              size={20}
-            />
             <Input
               autoComplete="current-password"
-              className="h-12 rounded-lg bg-surface-base px-11 text-sm focus:border-brand-500 focus:ring-1 focus:ring-brand-500 sm:h-13 sm:px-12 sm:text-base"
+              className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 pr-12 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
               id="password"
               placeholder="비밀번호를 입력하세요"
               type={showPassword ? "text" : "password"}
@@ -118,44 +107,40 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
             />
             <button
               aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-              className="absolute right-2 top-1/2 grid size-9 -translate-y-1/2 place-items-center rounded-full text-ink-400 transition hover:bg-surface-sunken hover:text-ink-800"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#5f6c8f] hover:text-[#081225]"
               onClick={() => setShowPassword((value) => !value)}
               type="button"
             >
-              {showPassword ? (
-                <EyeOff aria-hidden size={18} />
-              ) : (
-                <Eye aria-hidden size={18} />
-              )}
+              {showPassword ? "숨기기" : "보기"}
             </button>
           </div>
           {form.formState.errors.password ? (
-            <p className="text-xs text-danger">
+            <p className="text-sm text-[#c24141]">
               {form.formState.errors.password.message}
             </p>
           ) : null}
         </Field>
         <Button
-          className="mt-2 h-12 rounded-lg bg-ink-900 text-sm font-bold text-surface-elevated transition-colors hover:bg-ink-800 active:bg-ink-950 sm:h-13 sm:text-base"
+          className="mt-2 h-12 rounded-[16px] bg-[#2563ff] text-base font-semibold text-white hover:bg-[#1f58e6]"
           disabled={!isHydrated || form.formState.isSubmitting}
           type="submit"
         >
           로그인
-          <ArrowRight aria-hidden size={18} />
         </Button>
-        <div className="border-t border-line pt-5 text-center text-sm leading-relaxed text-ink-600 sm:text-base">
-          아직 계정이 없나요?{" "}
+        <p className="text-center text-sm leading-7 text-[#5f6c8f]">
+          처음이라면{" "}
           <Link
-            className="font-bold text-ink-900 hover:underline"
+            className="font-semibold text-[#2563ff] hover:underline"
             href={
               safeReturnTo(returnTo)
                 ? `/signup?returnTo=${encodeURIComponent(returnTo)}`
                 : "/signup"
             }
           >
-            가입하기
+            계정 만들기
           </Link>
-        </div>
+          에서 시작할 수 있습니다.
+        </p>
         {message ? (
           <div role="alert">
             <InlineMessage tone="danger">{message}</InlineMessage>
@@ -189,7 +174,7 @@ function loginErrorMessage(code: string | undefined): string {
     invalid_request: "입력값을 다시 확인해주세요.",
     rate_limited: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.",
     server_unavailable:
-      "서버 설정 또는 데이터베이스 연결 문제로 로그인할 수 없습니다. 관리자에게 문의해주세요.",
+      "일시적인 문제로 로그인할 수 없습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.",
     totp_required: "2단계 인증이 필요합니다.",
     unauthorized: "이메일 또는 비밀번호가 올바르지 않습니다."
   };

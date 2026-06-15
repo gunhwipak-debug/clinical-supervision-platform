@@ -1,6 +1,13 @@
 #!/usr/bin/env node
 
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  existsSync,
+  mkdirSync,
+  readdirSync,
+  readFileSync,
+  rmSync,
+  writeFileSync
+} from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
 
@@ -25,16 +32,22 @@ const supportedPrettierFiles = new Set([
   ".yaml"
 ]);
 
+const generatedEvidencePrefixes = ["demo-evidence/route-alignment-qa/"];
+
 function usage() {
   console.log(`ClinicFlow fast release
 
 Usage:
   pnpm release:web:fast-check
+  pnpm release:web:ui-check
   pnpm release:web:preview
+  pnpm release:web:ui-preview
   pnpm release:web:prod
 
 Notes:
   - fast-check runs only cheap local checks by default.
+  - ui-check/ui-preview skip local TypeScript when UI was already checked in
+    Codex/browser evidence and Vercel cloud build is the parity gate.
   - Set FULL_BUILD=1 to add pnpm --filter @csp/web build locally.
   - preview/prod run fast-check first, then Vercel deploy and HTTP smoke checks.
 `);
@@ -80,18 +93,30 @@ function changedFiles() {
     "--diff-filter=ACMR",
     "HEAD"
   ]);
-  const untrackedOutput = runStep("untracked file list", "git", [
-    "ls-files",
-    "--others",
-    "--exclude-standard"
+
+  const statusOutput = runStep("git status changed-file list", "git", [
+    "status",
+    "--porcelain=v1",
+    "-z",
+    "--untracked-files=normal"
   ]);
-  return [...trackedOutput.split("\n"), ...untrackedOutput.split("\n")]
+
+  const untrackedFiles = statusOutput
+    .split("\0")
+    .map((entry) => entry.trim())
+    .filter((entry) => entry.startsWith("?? "))
+    .map((entry) => entry.slice(3));
+
+  return [...trackedOutput.split("\n"), ...untrackedFiles]
     .map((line) => line.trim())
     .filter((line) => line && !line.startsWith("$ "));
 }
 
 function prettierCandidates(files) {
   return files.filter((file) => {
+    if (generatedEvidencePrefixes.some((prefix) => file.startsWith(prefix))) {
+      return false;
+    }
     const dot = file.lastIndexOf(".");
     return dot > -1 && supportedPrettierFiles.has(file.slice(dot));
   });
@@ -114,6 +139,24 @@ function assertPreviewSourcesSynced() {
   return "passed: approved preview source is synced";
 }
 
+function cleanTypeScriptBuildInfo() {
+  const roots = ["apps/web", "apps/admin"];
+  let removed = 0;
+
+  for (const root of roots) {
+    if (!existsSync(root)) continue;
+    for (const file of readdirSync(root)) {
+      if (!file.startsWith("tsconfig") || !file.endsWith(".tsbuildinfo")) {
+        continue;
+      }
+      rmSync(join(root, file), { force: true });
+      removed += 1;
+    }
+  }
+
+  return `removed ${removed} ignored TypeScript build-info file(s)`;
+}
+
 function detectVercelCommand() {
   const globalVercel = spawnSync("sh", ["-lc", "command -v vercel"], {
     encoding: "utf8"
@@ -126,7 +169,7 @@ function detectVercelCommand() {
 
 function parseVercelAppUrl(output) {
   const urls = [...output.matchAll(/https:\/\/[^\s]+\.vercel\.app[^\s]*/g)].map(
-    (match) => match[0].replace(/[),]+$/, "")
+    (match) => match[0].replace(/[),".]+$/, "")
   );
   return urls.find((url) => !url.includes("vercel.com/")) || urls[0] || null;
 }
@@ -164,6 +207,20 @@ function fastCheck() {
   });
   checks.push("git diff --check passed");
 
+  runStep(
+    "Origin-14 guard",
+    "node",
+    [
+      "scripts/clinicflow-origin14-guard.mjs",
+      "--evidence",
+      join(evidenceDir, "origin14-guard.json")
+    ],
+    { timeoutMs: 180_000, logFile: "origin14-guard.log" }
+  );
+  checks.push("Origin-14 guard passed");
+
+  checks.push(cleanTypeScriptBuildInfo());
+
   if (prettierFiles.length > 0) {
     runStep(
       "prettier changed files check",
@@ -177,6 +234,48 @@ function fastCheck() {
   }
 
   checks.push(assertPreviewSourcesSynced());
+
+  if (process.env.FAST_RELEASE_SKIP_TYPECHECK === "1") {
+    checks.push(
+      "local TypeScript skipped: FAST_RELEASE_SKIP_TYPECHECK=1; Vercel cloud build remains the release parity gate"
+    );
+  } else {
+    runStep(
+      "web typecheck without incremental cache",
+      "pnpm",
+      [
+        "--filter",
+        "@csp/web",
+        "exec",
+        "tsc",
+        "--noEmit",
+        "--incremental",
+        "false",
+        "--pretty",
+        "false"
+      ],
+      { timeoutMs: 120_000, logFile: "web-typecheck-noincremental.log" }
+    );
+    checks.push("web typecheck passed without incremental cache");
+
+    runStep(
+      "admin typecheck without incremental cache",
+      "pnpm",
+      [
+        "--filter",
+        "@csp/admin",
+        "exec",
+        "tsc",
+        "--noEmit",
+        "--incremental",
+        "false",
+        "--pretty",
+        "false"
+      ],
+      { timeoutMs: 120_000, logFile: "admin-typecheck-noincremental.log" }
+    );
+    checks.push("admin typecheck passed without incremental cache");
+  }
 
   if (process.env.FULL_BUILD === "1") {
     runStep("local web build", "pnpm", ["--filter", "@csp/web", "build"], {
@@ -227,9 +326,18 @@ try {
     usage();
   } else if (command === "check") {
     fastCheck();
+  } else if (command === "ui-check") {
+    process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
+    fastCheck();
   } else if (command === "preview") {
     deploy("preview");
+  } else if (command === "ui-preview") {
+    process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
+    deploy("preview");
   } else if (command === "prod") {
+    deploy("prod");
+  } else if (command === "ui-prod") {
+    process.env.FAST_RELEASE_SKIP_TYPECHECK = "1";
     deploy("prod");
   } else {
     usage();

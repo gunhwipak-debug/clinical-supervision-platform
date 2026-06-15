@@ -34,7 +34,7 @@ const completionSchema = z.object({
 });
 
 const rejectSchema = z.object({
-  reason: z.string().min(10, "반려 사유를 10자 이상 입력해주세요.")
+  reason: z.string().min(10, "수락하지 않는 이유를 10자 이상 입력해주세요.")
 });
 
 type FeedbackValues = z.infer<typeof feedbackSchema>;
@@ -140,32 +140,32 @@ export function RequestWorkflow({
       <div className="flex w-full items-center gap-sm sm:w-auto">
         <a
           aria-disabled={!canRequestRevision}
-          className={`flex flex-1 items-center justify-center gap-xs rounded-lg border border-outline px-4 py-2 font-label-md text-label-md transition-colors sm:flex-none ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-bold transition-colors sm:flex-none ${
             canRequestRevision
-              ? "text-on-surface hover:bg-surface-container-lowest"
-              : "pointer-events-none cursor-not-allowed text-on-surface-variant opacity-50"
+              ? "border-line text-ink-800 hover:bg-surface-sunken"
+              : "pointer-events-none cursor-not-allowed border-line text-ink-400 opacity-50"
           }`}
           href="#supervisor-actions"
           title={
             canRequestRevision
-              ? "보완 요청 입력 영역으로 이동합니다."
+              ? "추가 자료 요청 입력 영역으로 이동합니다."
               : "검토 중 또는 피드백 완료 상태에서 사용할 수 있습니다."
           }
         >
           <span className="material-symbols-outlined text-[18px]">edit_note</span>
-          보완 요청
+          추가 자료 요청
         </a>
         <a
           aria-disabled={!canComplete}
-          className={`flex flex-1 items-center justify-center gap-xs rounded-lg px-4 py-2 font-label-md text-label-md shadow-sm transition-opacity sm:flex-none ${
+          className={`flex flex-1 items-center justify-center gap-2 rounded-lg px-4 py-2 text-sm font-bold transition-opacity sm:flex-none ${
             canComplete
-              ? "bg-primary text-on-primary hover:opacity-90"
-              : "pointer-events-none cursor-not-allowed bg-primary text-on-primary opacity-50"
+              ? "bg-brand-600 text-surface-elevated hover:bg-brand-700"
+              : "pointer-events-none cursor-not-allowed bg-brand-600 text-surface-elevated opacity-50"
           }`}
           href="#supervisor-actions"
           title={
             canComplete
-              ? "완료기록 입력 영역으로 이동합니다."
+              ? "학습 기록 입력 영역으로 이동합니다."
               : completionBlockedReason({
                   latestReviewStatus,
                   needsCompletionRecord,
@@ -175,7 +175,7 @@ export function RequestWorkflow({
           }
         >
           <span className="material-symbols-outlined text-[18px]">check_circle</span>
-          완료기록 발급
+          학습 기록 발급
         </a>
       </div>
     );
@@ -225,7 +225,7 @@ export function RequestWorkflow({
           </Button>
         ) : (
           <p className="rounded-lg bg-surface-sunken px-3 py-2 text-sm text-ink-600">
-            구글 캘린더 회의 링크가 아직 동기화되지 않았습니다.
+            화상 세션 링크가 아직 준비되지 않았습니다.
           </p>
         )}
         {canRecordSessionOutcome(status, bookingStatus) ? (
@@ -244,7 +244,7 @@ export function RequestWorkflow({
               variant="secondary"
             >
               <UserX aria-hidden size={18} />
-              슈퍼바이지 불참
+              신청자 불참
             </Button>
             <Button
               onClick={() => void sessionOutcome("no_show_supervisor")}
@@ -263,8 +263,7 @@ export function RequestWorkflow({
           <div>
             <h3 className="font-bold text-ink-900">검토 가능 여부를 결정하세요</h3>
             <p className="mt-1 text-sm leading-relaxed text-ink-500">
-              의뢰 범위, 자료 충분성, 일정 가능성을 확인한 뒤 수락 또는 반려를
-              선택합니다.
+              의뢰 범위, 자료 충분성, 일정 가능성을 확인한 뒤 수락 여부를 선택합니다.
             </p>
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
@@ -275,10 +274,10 @@ export function RequestWorkflow({
           </div>
           <form className="grid gap-3" onSubmit={rejectForm.handleSubmit(reject)}>
             <Field>
-              <Label htmlFor="reject-reason">반려 사유</Label>
+              <Label htmlFor="reject-reason">수락하지 않는 이유</Label>
               <Textarea
                 id="reject-reason"
-                placeholder="의뢰 범위, 자료 부족, 일정 문제 등 반려 사유를 구체적으로 적어주세요."
+                placeholder="의뢰 범위, 자료 부족, 일정 문제처럼 진행하기 어려운 이유를 적어주세요."
                 {...rejectForm.register("reason")}
               />
               {rejectForm.formState.errors.reason ? (
@@ -293,7 +292,7 @@ export function RequestWorkflow({
               variant="secondary"
             >
               <XCircle aria-hidden size={18} />
-              사유를 남기고 반려
+              이유를 남기고 수락하지 않음
             </Button>
           </form>
         </div>
@@ -347,16 +346,16 @@ export function RequestWorkflow({
           onSubmit={completionForm.handleSubmit(completion)}
         >
           <div>
-            <h3 className="font-bold text-ink-900">완료기록 발급</h3>
+            <h3 className="font-bold text-ink-900">학습 기록 발급</h3>
             <p className="mt-1 text-sm leading-relaxed text-ink-500">
-              검토 범위와 한계를 남긴 뒤, 고정 책임 고지를 포함해 완료기록을 발급합니다.
+              검토 범위와 한계를 남긴 뒤 학습 기록을 발급합니다.
             </p>
           </div>
           <Field>
             <Label htmlFor="reviewedMaterials">검토한 자료</Label>
             <Textarea
               id="reviewedMaterials"
-              placeholder="예: 사례보고서 초안&#10;예: 심리검사 결과 요약본"
+              placeholder="예: 사례보고서&#10;예: 심리검사 결과 요약본"
               {...completionForm.register("reviewedMaterials")}
             />
             {completionForm.formState.errors.reviewedMaterials ? (
@@ -399,7 +398,7 @@ export function RequestWorkflow({
               {...completionForm.register("responsibilityNotice")}
             />
             <p className="text-xs leading-relaxed text-ink-500">
-              완료기록이 진단서, 감정서, 법적 증명서처럼 오해되지 않도록 모든 발급
+              학습 기록이 진단서, 감정서, 법적 증명서처럼 오해되지 않도록 모든 발급
               기록에 동일하게 포함됩니다.
             </p>
             {completionForm.formState.errors.responsibilityNotice ? (
@@ -410,13 +409,13 @@ export function RequestWorkflow({
           </Field>
           <Button disabled={completionForm.formState.isSubmitting} type="submit">
             <FileCheck2 aria-hidden size={18} />
-            완료기록 발급
+            학습 기록 발급
           </Button>
         </form>
       ) : null}
       {status === "feedback_submitted" && !completionReady ? (
         <div className="rounded-lg border border-line bg-surface-base p-4">
-          <h3 className="font-bold text-ink-900">완료기록 발급 대기</h3>
+          <h3 className="font-bold text-ink-900">학습 기록 발급 대기</h3>
           <p className="mt-1 text-sm leading-relaxed text-ink-500">
             {completionBlockedReason({
               latestReviewStatus,
@@ -475,31 +474,31 @@ function completionBlockedReason({
   status: string;
 }): string {
   if (status !== "feedback_submitted") {
-    return "피드백 제출 후 슈퍼바이지 승인 단계에서 사용할 수 있습니다.";
+    return "피드백 제출 후 신청자 확인 단계에서 사용할 수 있습니다.";
   }
   if (
     serviceProductSupervisionType !== "assessment" ||
     needsCompletionRecord === false
   ) {
-    return "이 의뢰는 완료기록 발급 대상이 아닙니다. 슈퍼바이지가 피드백을 확인하면 완료 처리됩니다.";
+    return "이 의뢰는 학습 기록 발급 대상이 아닙니다. 신청자가 피드백을 확인하면 완료 처리됩니다.";
   }
   if (latestReviewStatus !== "feedback_approved") {
-    return "슈퍼바이지가 피드백을 승인한 뒤 완료기록을 발급할 수 있습니다.";
+    return "신청자가 피드백을 확인한 뒤 학습 기록을 발급할 수 있습니다.";
   }
-  return "완료기록 발급 조건을 확인하고 있습니다.";
+  return "학습 기록 발급 조건을 확인하고 있습니다.";
 }
 
 function workflowErrorMessage(code: string | undefined, fallback?: string): string {
   const labels: Record<string, string> = {
     feedback_approval_required:
-      "슈퍼바이지가 피드백을 승인한 뒤 완료기록을 발급할 수 있습니다.",
+      "신청자가 피드백을 확인한 뒤 학습 기록을 발급할 수 있습니다.",
     booking_not_found: "결과를 기록할 예약을 찾지 못했습니다.",
     forbidden: "이 의뢰를 처리할 권한이 없습니다.",
     invalid_request: "입력값을 다시 확인해주세요.",
     invalid_state: "현재 상태에서는 처리할 수 없습니다.",
     not_found: "의뢰를 찾지 못했습니다.",
     phi_detected: "식별정보로 보일 수 있는 문구가 포함되어 있습니다.",
-    stamp_not_required: "이 의뢰는 완료기록 발급 대상이 아닙니다.",
+    stamp_not_required: "이 의뢰는 학습 기록 발급 대상이 아닙니다.",
     unauthorized: "로그인이 필요합니다."
   };
   return labels[code ?? ""] ?? fallback ?? "처리하지 못했습니다.";
@@ -544,7 +543,7 @@ function bookingStatusLabel(status: string | null): string {
   const labels: Record<string, string> = {
     cancelled: "취소됨",
     completed: "세션 완료",
-    no_show_supervisee: "슈퍼바이지 불참",
+    no_show_supervisee: "신청자 불참",
     no_show_supervisor: "슈퍼바이저 불참",
     rescheduled: "일정 변경됨",
     scheduled: "예약됨"
@@ -580,11 +579,11 @@ function workflowTitle(status: string): string {
     awaiting_supervisor_review: "수락 결정",
     accepted: "피드백 작성",
     in_review: "피드백 작성",
-    feedback_submitted: "완료기록",
-    additional_info_requested: "보완 요청됨",
+    feedback_submitted: "학습 기록",
+    additional_info_requested: "추가 자료 요청됨",
     completion_record_issued: "발급 완료",
     completed: "완료",
-    rejected: "반려",
+    rejected: "수락하지 않음",
     cancelled: "취소"
   };
   return labels[status] ?? "상태 확인";
@@ -601,14 +600,14 @@ function workflowTone(status: string): "brand" | "accent" | "neutral" | "danger"
 
 function workflowDescription(status: string): string {
   const descriptions: Record<string, string> = {
-    awaiting_supervisor_review: "자료를 검토한 뒤 수락 또는 반려를 선택합니다.",
+    awaiting_supervisor_review: "자료를 검토한 뒤 수락 여부를 선택합니다.",
     accepted: "수락한 의뢰의 피드백을 작성할 수 있습니다.",
     in_review: "검토 중인 의뢰의 피드백을 작성할 수 있습니다.",
-    feedback_submitted: "피드백 제출 후 완료기록 발급을 진행합니다.",
-    additional_info_requested: "슈퍼바이지의 수정본 제출을 기다립니다.",
-    completion_record_issued: "완료기록이 발급되어 슈퍼바이지 확인을 기다립니다.",
+    feedback_submitted: "피드백 제출 후 학습 기록 발급을 진행합니다.",
+    additional_info_requested: "신청자가 추가 자료를 올리기를 기다립니다.",
+    completion_record_issued: "학습 기록이 발급되어 신청자 확인을 기다립니다.",
     completed: "슈퍼비전 흐름이 완료되었습니다.",
-    rejected: "반려된 의뢰는 추가 작업이 없습니다.",
+    rejected: "수락하지 않은 의뢰는 추가 작업이 없습니다.",
     cancelled: "취소된 의뢰는 추가 작업이 없습니다."
   };
   return descriptions[status] ?? "현재 상태에서 가능한 작업을 확인합니다.";
@@ -628,11 +627,11 @@ function isReadOnlyStatus(status: string): boolean {
 function readOnlyDescription(status: string): string {
   const descriptions: Record<string, string> = {
     completion_record_issued:
-      "완료기록이 이미 발급되었습니다. 슈퍼바이지 리뷰 또는 완료 확인을 기다립니다.",
+      "학습 기록이 이미 발급되었습니다. 신청자 확인을 기다립니다.",
     completed: "완료된 의뢰입니다. 기록 확인만 가능합니다.",
     additional_info_requested:
-      "보완 요청을 보냈습니다. 수정본 제출 후 다시 검토할 수 있습니다.",
-    rejected: "반려 처리된 의뢰입니다. 새 작업은 생성되지 않습니다.",
+      "추가 자료를 요청했습니다. 신청자가 자료를 올리면 다시 검토할 수 있습니다.",
+    rejected: "수락하지 않은 의뢰입니다. 새 작업은 생성되지 않습니다.",
     cancelled: "취소된 의뢰입니다. 감사 목적의 조회만 가능합니다.",
     expired: "보관 기간이 만료된 의뢰입니다."
   };

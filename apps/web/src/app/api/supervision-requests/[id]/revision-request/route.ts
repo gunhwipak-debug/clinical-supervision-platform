@@ -32,7 +32,7 @@ export async function POST(
   if (!parsed.success || !body.success) {
     return envelope(
       null,
-      apiError("invalid_request", "보완 요청 형식이 올바르지 않습니다."),
+      apiError("invalid_request", "추가 자료 요청 형식이 올바르지 않습니다."),
       422
     );
   }

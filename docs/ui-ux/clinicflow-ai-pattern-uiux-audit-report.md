@@ -129,35 +129,35 @@
 
 ## 10. Route-By-Route Coverage
 
-| Route                                         | Coverage             | Notes                                                                            |
-| --------------------------------------------- | -------------------- | -------------------------------------------------------------------------------- |
-| `/`                                           | changed              | header label/copy polish                                                         |
-| `/supervisors`                                | changed              | demo command removed, comparison criteria block added                            |
-| `/supervisors/[id]`                           | changed              | header label consistency and formatted surface                                   |
-| `/clinical-guidelines` (`/guide` counterpart) | reviewed             | current route exists as clinical-guidelines                                      |
-| `/resources`                                  | reviewed             | simple info page retained                                                        |
-| `/terms`, `/security`, `/privacy`             | changed/reviewed     | security/privacy terminology cleaned                                             |
-| `/requests`                                   | reviewed             | list structure retained                                                          |
-| `/requests/new`                               | changed              | `수퍼` -> `슈퍼`                                                                 |
-| `/requests/[id]`                              | changed              | internal terminology and radius cleaned                                          |
-| `/payments`                                   | changed              | metric cards replaced with status panel                                          |
-| `/payments/[id]`                              | changed              | gradient and excessive radius removed                                            |
-| `/case-archive`                               | absent in production | static preview covers learning-record hierarchy; production route gap documented |
-| `/settings`                                   | changed              | role language and promotional grid reduced                                       |
-| `/supervisor`                                 | changed              | KPI cards replaced with next-request work queue                                  |
-| `/supervisor/profile`                         | changed              | copy and radius cleaned                                                          |
-| `/supervisor/availability`                    | reviewed             | no high-priority change in this pass                                             |
-| `/supervisor/requests`                        | reviewed             | queue structure already action-oriented                                          |
-| `/supervisor/requests/[id]`                   | reviewed             | later focused workspace polish recommended                                       |
-| `/supervisor/memory`                          | absent in production | document as Feature Lab/Architecture gap                                         |
-| `/supervisor/products`                        | changed              | public-facing wording normalized to `제공 항목`                                  |
-| `/supervisor/payouts`                         | changed              | radius reduced                                                                   |
-| `/admin`                                      | changed              | metric cards removed, operation queue first                                      |
-| `/admin/queue`                                | absent in production | admin home acts as current queue surface                                         |
-| `/admin/qualifications`                       | changed              | radius reduced                                                                   |
-| `/admin/refunds`                              | changed              | radius reduced                                                                   |
-| `/admin/payouts`                              | changed              | radius reduced                                                                   |
-| `/admin/audit`                                | changed              | `감사 로그`/`서명 URL` wording reduced                                           |
+| Route                                         | Coverage         | Notes                                                                         |
+| --------------------------------------------- | ---------------- | ----------------------------------------------------------------------------- |
+| `/`                                           | changed          | header label/copy polish                                                      |
+| `/supervisors`                                | changed          | demo command removed, comparison criteria block added                         |
+| `/supervisors/[id]`                           | changed          | header label consistency and formatted surface                                |
+| `/clinical-guidelines` (`/guide` counterpart) | reviewed         | current route exists as clinical-guidelines                                   |
+| `/resources`                                  | reviewed         | simple info page retained                                                     |
+| `/terms`, `/security`, `/privacy`             | changed/reviewed | security/privacy terminology cleaned                                          |
+| `/requests`                                   | reviewed         | list structure retained                                                       |
+| `/requests/new`                               | changed          | `수퍼` -> `슈퍼`                                                              |
+| `/requests/[id]`                              | changed          | internal terminology and radius cleaned                                       |
+| `/payments`                                   | changed          | metric cards replaced with status panel                                       |
+| `/payments/[id]`                              | changed          | gradient and excessive radius removed                                         |
+| `/case-archive`                               | changed          | supervisor-grouped learning record route now exists in production surface     |
+| `/settings`                                   | changed          | role language and promotional grid reduced                                    |
+| `/supervisor`                                 | changed          | KPI cards replaced with next-request work queue                               |
+| `/supervisor/profile`                         | changed          | copy and radius cleaned                                                       |
+| `/supervisor/availability`                    | reviewed         | no high-priority change in this pass                                          |
+| `/supervisor/requests`                        | reviewed         | queue structure already action-oriented                                       |
+| `/supervisor/requests/[id]`                   | reviewed         | later focused workspace polish recommended                                    |
+| `/supervisor/memory`                          | changed          | route exists as a record-folder surface; richer note CRUD remains Feature Lab |
+| `/supervisor/products`                        | changed          | public-facing wording normalized to `제공 항목`                               |
+| `/supervisor/payouts`                         | changed          | radius reduced                                                                |
+| `/admin`                                      | changed          | metric cards removed, operation queue first                                   |
+| `/admin/queue`                                | changed          | route exists as an admin operation queue surface                              |
+| `/admin/qualifications`                       | changed          | radius reduced                                                                |
+| `/admin/refunds`                              | changed          | radius reduced                                                                |
+| `/admin/payouts`                              | changed          | radius reduced                                                                |
+| `/admin/audit`                                | changed          | `감사 로그`/`서명 URL` wording reduced                                        |
 
 ## 11. Accessibility And Responsive Notes
 

@@ -1,18 +1,17 @@
 import Link from "next/link";
 import { profiles, withUserContext } from "@csp/db";
+import { AppShell } from "../../../../components/app-shell";
 import {
-  CalendarClock,
-  Clock3,
-  ClipboardList,
-  LayoutGrid,
-  PackageCheck,
-  ShieldCheck
-} from "lucide-react";
-import { SiteHeader } from "../../../../components/clinicflow-shell";
+  PrimaryActionPanel,
+  SectionBlock
+} from "../../../../components/clinicflow-shell";
 import { Badge } from "../../../../components/ui/badge";
-import { Card } from "../../../../components/ui/card";
+import { Button } from "../../../../components/ui/button";
 import { EmptyState } from "../../../../components/ui/state";
-import { DemoSupervisorProductsPreview } from "../../../../components/workflow-preview-pages";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { ProductForm, ProductManageForm } from "./product-form";
@@ -22,8 +21,16 @@ export const dynamic = "force-dynamic";
 export default async function SupervisorProductsPage() {
   const current = await getCurrentUser();
 
-  if (!current || current.user.role !== "supervisor") {
-    return <DemoSupervisorProductsPreview />;
+  if (!current) {
+    return <LoginRequiredState title="슈퍼비전 방식" returnTo="/supervisor/products" />;
+  }
+  if (current.user.role !== "supervisor") {
+    return (
+      <RoleRequiredState
+        title="슈퍼비전 방식"
+        description="슈퍼비전 방식 관리는 슈퍼바이저 계정에서만 사용할 수 있습니다."
+      />
+    );
   }
 
   const db = createRuntimeDatabase();
@@ -33,90 +40,79 @@ export default async function SupervisorProductsPage() {
     (tx) => profiles.listProducts(tx, current.session.userId)
   );
 
+  const activeProducts = products.filter((product) => product.active);
+
   return (
-    <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <SiteHeader
-        active="supervisor"
-        actionHref="/supervisor/products#new-product"
-        actionLabel="항목 추가"
-      />
+    <AppShell
+      active="supervisor"
+      title="슈퍼비전 방식"
+      subtitle="신청자가 선택할 세션 유형, 가격, 응답 기준을 간결하게 정리합니다."
+      action={
+        <Button asChild variant="secondary">
+          <Link href="/supervisor">업무 홈</Link>
+        </Button>
+      }
+    >
+      <PrimaryActionPanel
+        action={
+          <Button asChild variant="secondary">
+            <Link href="#new-product">새 방식 추가</Link>
+          </Button>
+        }
+        title={
+          products.length === 0
+            ? "먼저 하나의 슈퍼비전 방식을 준비하세요"
+            : "공개 목록에 보일 방식을 확인하세요"
+        }
+      >
+        {products.length === 0
+          ? "신청자가 의뢰 전에 선택할 세션명, 가격, 응답 시간을 한 줄씩 정리합니다."
+          : `현재 공개 중인 방식은 ${String(activeProducts.length)}개입니다. 중지된 방식은 신청자에게 보이지 않습니다.`}
+      </PrimaryActionPanel>
 
-      <div className="mx-auto grid max-w-5xl gap-6 px-6 py-8">
-        <section>
-          <h1 className="text-4xl font-bold">제공 항목</h1>
-          <p className="mt-3 text-xl text-ink-700">
-            슈퍼바이지가 의뢰 전에 확인하는 세션 유형, 가격, 응답 기준입니다.
-          </p>
-        </section>
-
-        <div id="new-product">
-          <ProductForm />
-        </div>
-
-        {products.length === 0 ? (
-          <EmptyState
-            title="등록된 제공 항목이 없습니다"
-            description="검색 상세에서 선택할 수 있는 세션 유형을 하나 이상 준비해주세요."
-          />
-        ) : (
-          <>
-            <Card className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-                <div className="flex items-start gap-3">
-                  <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
-                    <PackageCheck aria-hidden size={22} />
-                  </span>
-                  <div>
-                    <h2 className="text-xl font-bold">제공 항목 상태</h2>
-                    <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                      공개 프로필에 노출될 세션 유형과 운영 상태를 확인합니다.
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Badge tone="brand">
-                    운영 {String(products.filter((product) => product.active).length)}개
-                  </Badge>
-                  <Badge tone="neutral">전체 {String(products.length)}개</Badge>
-                </div>
-              </div>
-            </Card>
-
-            <section className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <section className="grid gap-8 lg:grid-cols-[1fr_360px]">
+        <SectionBlock
+          subtitle="카드처럼 흩어놓지 않고, 운영 상태와 수정 항목을 한 줄 흐름으로 확인합니다."
+          title="등록된 슈퍼비전 방식"
+        >
+          {products.length === 0 ? (
+            <EmptyState
+              title="등록된 슈퍼비전 방식이 없습니다"
+              description="검색 상세에서 선택할 수 있는 세션 유형을 하나 이상 준비해주세요."
+            />
+          ) : (
+            <div className="grid gap-3">
               {products.map((product) => (
-                <Card
+                <details
+                  className="rounded-xl border border-line bg-surface-elevated p-5"
                   key={product.id}
-                  className="grid gap-4 rounded-xl border-line bg-surface-elevated p-6 shadow-card"
                 >
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <h2 className="text-xl font-bold text-ink-900">
-                        {product.title}
-                      </h2>
-                      <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                        {product.description ?? "상세 설명 미등록"}
-                      </p>
+                  <summary className="cursor-pointer list-none">
+                    <div className="grid gap-3 md:grid-cols-[1fr_auto] md:items-center">
+                      <div>
+                        <div className="mb-2 flex flex-wrap items-center gap-2">
+                          <Badge tone={product.active ? "brand" : "neutral"}>
+                            {product.active ? "공개 중" : "중지됨"}
+                          </Badge>
+                          <Badge tone="neutral">{productKindLabel(product.kind)}</Badge>
+                        </div>
+                        <h2 className="text-lg font-bold text-ink-900">
+                          {product.title}
+                        </h2>
+                        <p className="mt-1 text-sm leading-relaxed text-ink-500">
+                          {product.description ?? "설명 미등록"}
+                        </p>
+                      </div>
+                      <div className="text-left md:text-right">
+                        <p className="text-xl font-bold text-ink-900">
+                          {product.priceKrw.toLocaleString("ko-KR")}원
+                        </p>
+                        <p className="mt-1 text-sm font-semibold text-ink-500">
+                          {String(product.turnaroundHours ?? 72)}시간 이내 응답
+                        </p>
+                      </div>
                     </div>
-                    <Badge tone={product.active ? "brand" : "neutral"}>
-                      {product.active ? "운영" : "중지"}
-                    </Badge>
-                  </div>
-                  <div className="rounded-2xl bg-brand-50 p-4">
-                    <span className="text-sm font-semibold text-ink-500">가격</span>
-                    <strong className="mt-1 block text-2xl text-ink-900">
-                      {product.priceKrw.toLocaleString("ko-KR")}원
-                    </strong>
-                  </div>
-                  <div className="grid gap-2 text-sm text-ink-500">
-                    <span className="inline-flex items-center gap-2 rounded-xl bg-surface-base px-3 py-2">
-                      <ShieldCheck aria-hidden size={16} />
-                      {productKindLabel(product.kind)}
-                    </span>
-                    <span className="inline-flex items-center gap-2 rounded-xl bg-surface-base px-3 py-2">
-                      <Clock3 aria-hidden size={16} />
-                      {String(product.turnaroundHours ?? 72)}시간 이내 응답
-                    </span>
-                  </div>
+                  </summary>
                   <ProductManageForm
                     product={{
                       active: product.active,
@@ -128,14 +124,17 @@ export default async function SupervisorProductsPage() {
                       turnaroundHours: product.turnaroundHours
                     }}
                   />
-                </Card>
+                </details>
               ))}
-            </section>
-          </>
-        )}
-      </div>
-      <SupervisorBottomNav active="제공 항목" />
-    </main>
+            </div>
+          )}
+        </SectionBlock>
+
+        <aside className="h-fit lg:sticky lg:top-24" id="new-product">
+          <ProductForm />
+        </aside>
+      </section>
+    </AppShell>
   );
 }
 
@@ -148,40 +147,4 @@ function productKindLabel(kind: profiles.ServiceProductKind): string {
     urgent_24h: "24시간 긴급 검토"
   };
   return labels[kind];
-}
-
-function SupervisorBottomNav({ active }: { active: string }) {
-  return (
-    <nav className="border-t border-line bg-surface-elevated px-4 py-3">
-      <div className="mx-auto grid max-w-5xl grid-cols-4 gap-2 text-center text-sm font-medium text-ink-700">
-        {(
-          [
-            { href: "/supervisor", label: "업무 홈", icon: LayoutGrid },
-            { href: "/supervisor/requests", label: "의뢰 검토", icon: ClipboardList },
-            {
-              href: "/supervisor/availability",
-              label: "일정",
-              icon: CalendarClock
-            },
-            { href: "/supervisor/products", label: "제공 항목", icon: PackageCheck }
-          ] as const
-        ).map((item) => {
-          const Icon = item.icon;
-          const selected = item.label === active;
-          return (
-            <Link
-              className={`grid place-items-center gap-1 rounded-full px-3 py-2 ${
-                selected ? "bg-brand-500 text-white" : "text-ink-700"
-              }`}
-              href={item.href}
-              key={item.label}
-            >
-              <Icon aria-hidden size={24} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
-  );
 }

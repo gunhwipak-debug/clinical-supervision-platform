@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
-import { SiteHeader } from "../../../components/clinicflow-shell";
-import { DemoRequestsPreview } from "../../../components/workflow-preview-pages";
+import { AppShell } from "../../../components/app-shell";
+import { PrimaryActionPanel, SectionBlock } from "../../../components/clinicflow-shell";
+import { LoginRequiredState } from "../../../components/locked-state";
+import { Button } from "../../../components/ui/button";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { contextFor } from "../../../lib/supervision/authz";
@@ -14,7 +16,7 @@ export default async function Page() {
   const current = await getCurrentUser();
 
   if (!current) {
-    return <DemoRequestsPreview />;
+    return <LoginRequiredState title="내 슈퍼비전 의뢰" returnTo="/requests" />;
   }
 
   const db = createRuntimeDatabase();
@@ -27,43 +29,59 @@ export default async function Page() {
   const received = requests.filter(
     (request) => request.supervisorId === current.session.userId
   );
+  const firstSentRequest = sent[0];
 
   return (
-    <div className="flex min-h-screen flex-col bg-background text-on-background">
-      <SiteHeader active="requests" actionHref="/supervisors" actionLabel="새 의뢰" />
+    <AppShell
+      active="requests"
+      title="내 슈퍼비전 의뢰"
+      subtitle="진행 중인 의뢰와 다음 행동을 한 줄씩 확인합니다."
+    >
+      <PrimaryActionPanel
+        action={
+          firstSentRequest ? (
+            <Button asChild variant="secondary">
+              <Link href={targetHref(firstSentRequest, "sent") as never}>
+                첫 의뢰 열기
+              </Link>
+            </Button>
+          ) : (
+            <Button asChild variant="secondary">
+              <Link href="/supervisors">슈퍼바이저 찾기</Link>
+            </Button>
+          )
+        }
+        title={
+          sent.length > 0
+            ? "지금 이어볼 의뢰를 먼저 확인합니다"
+            : "첫 의뢰를 시작합니다"
+        }
+      >
+        {sent.length > 0
+          ? "추가 자료 요청, 결제, 피드백 도착처럼 지금 해야 할 일이 있는 의뢰를 위에서부터 확인하세요."
+          : "슈퍼바이저를 선택하면 세션, 일정, 사례 자료 정리 흐름으로 이어집니다."}
+      </PrimaryActionPanel>
 
-      <main className="mx-auto w-full max-w-container-max flex-1 px-margin-mobile py-xl md:px-gutter">
-        <section className="mb-xl">
-          <h1 className="font-headline-lg text-headline-lg text-on-surface">
-            내 의뢰와 받은 자료
-          </h1>
-          <p className="mt-base max-w-3xl font-body-md text-body-md text-on-surface-variant">
-            내가 슈퍼바이지로 제출한 자료와, 슈퍼바이저로 배정받아 검토해야 할 자료를
-            분리해서 확인합니다.
-          </p>
-        </section>
+      <div className="grid gap-8">
+        <RequestSection
+          description="내가 신청한 슈퍼비전의 진행 상태입니다."
+          empty="아직 신청한 슈퍼비전이 없습니다."
+          items={sent}
+          mode="sent"
+          title="신청한 의뢰"
+        />
 
-        <div className="grid gap-lg">
+        {current.user.role === "supervisor" ? (
           <RequestSection
-            description="내가 슈퍼바이지로서 슈퍼바이저에게 전달한 문서입니다."
-            empty="아직 전달한 의뢰가 없습니다."
-            items={sent}
-            mode="sent"
-            title="내가 슈퍼바이지로서 보낸 자료"
+            description="슈퍼바이저로 배정되어 확인해야 하는 의뢰입니다."
+            empty="아직 배정받은 의뢰가 없습니다."
+            items={received}
+            mode="received"
+            title="검토할 의뢰"
           />
-
-          {current.user.role === "supervisor" ? (
-            <RequestSection
-              description="내가 슈퍼바이저로서 슈퍼바이지로부터 받은 자료입니다."
-              empty="아직 배정받은 자료가 없습니다."
-              items={received}
-              mode="received"
-              title="내가 슈퍼바이저로서 받은 자료"
-            />
-          ) : null}
-        </div>
-      </main>
-    </div>
+        ) : null}
+      </div>
+    </AppShell>
   );
 }
 
@@ -81,60 +99,51 @@ function RequestSection({
   title: string;
 }) {
   return (
-    <section className="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-      <div className="mb-md flex flex-col gap-xs md:flex-row md:items-end md:justify-between">
-        <div>
-          <h2 className="font-headline-md text-headline-md text-on-surface">{title}</h2>
-          <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
-            {description}
-          </p>
-        </div>
-        <span className="font-label-sm text-label-sm text-on-surface-variant">
-          {items.length.toLocaleString("ko-KR")}건
-        </span>
-      </div>
-
+    <SectionBlock
+      subtitle={`${description} ${items.length.toLocaleString("ko-KR")}건`}
+      title={title}
+    >
       {items.length === 0 ? (
-        <p className="rounded-lg border border-dashed border-outline-variant bg-surface p-md font-body-sm text-body-sm text-on-surface-variant">
+        <p className="rounded-xl border border-dashed border-line bg-surface-elevated p-5 text-sm leading-relaxed text-ink-500">
           {empty}
         </p>
       ) : (
-        <ul className="grid gap-sm">
+        <ul className="grid gap-3">
           {items.map((item) => (
             <li key={`${mode}-${item.id}`}>
               <Link
-                className="grid gap-md rounded-lg border border-outline-variant bg-surface p-md transition-colors hover:border-secondary hover:bg-surface-bright md:grid-cols-[1fr_auto]"
+                className="grid gap-4 rounded-xl border border-line bg-surface-elevated p-5 transition-colors hover:border-brand-600 md:grid-cols-[1fr_auto] md:items-center"
                 href={targetHref(item, mode) as never}
               >
                 <div className="min-w-0">
-                  <div className="mb-xs flex flex-wrap items-center gap-sm">
-                    <span className="rounded-full bg-surface-container px-2 py-1 font-label-sm text-label-sm text-secondary">
+                  <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-bold">
+                    <span className="rounded-md bg-brand-50 px-2 py-1 text-brand-700">
                       {shortRequestId(item.id)}
                     </span>
-                    <span className="rounded-full border border-outline-variant px-2 py-1 font-label-sm text-label-sm text-on-surface-variant">
+                    <span className="rounded-md border border-line px-2 py-1 text-ink-500">
                       {statusLabel(item.status)}
                     </span>
                   </div>
-                  <h3 className="truncate font-label-md text-label-md text-on-surface">
+                  <h3 className="truncate text-base font-bold text-ink-900">
                     {item.productTitle ?? "슈퍼비전 의뢰"}
                   </h3>
-                  <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
+                  <p className="mt-2 text-sm leading-relaxed text-ink-500">
                     {mode === "received"
-                      ? "슈퍼바이지가 제출한 자료를 미리보기에서 확인하고 주석, 피드백, 서명 작업을 진행합니다."
-                      : "내가 제출한 자료, 피드백, 최종 확인 문서를 이어서 확인합니다."}
+                      ? "사례 자료를 확인하고 수락, 추가 자료 요청, 피드백 정리로 이어갑니다."
+                      : "사례 자료, 결제 상태, 피드백과 학습 기록을 이어서 확인합니다."}
                   </p>
-                  <p className="mt-xs font-label-sm text-label-sm text-on-surface-variant">
+                  <p className="mt-2 text-xs font-semibold text-ink-500">
                     예약 일정 · {formatBookingSlot(item)}
                   </p>
-                  <p className="mt-xs font-label-sm text-label-sm text-on-surface-variant">
+                  <p className="mt-1 text-xs font-semibold text-ink-500">
                     최근 변경 · {formatDate(item.updatedAt)}
                   </p>
                 </div>
-                <div className="flex items-center justify-between gap-sm md:justify-end">
-                  <span className="font-label-md text-label-md text-secondary">
+                <div className="flex items-center justify-between gap-3 md:justify-end">
+                  <span className="text-sm font-bold text-brand-700">
                     {actionLabel(item.status, mode)}
                   </span>
-                  <span className="material-symbols-outlined text-on-surface-variant">
+                  <span className="material-symbols-outlined text-ink-400">
                     chevron_right
                   </span>
                 </div>
@@ -143,7 +152,7 @@ function RequestSection({
           ))}
         </ul>
       )}
-    </section>
+    </SectionBlock>
   );
 }
 
@@ -157,7 +166,7 @@ function actionLabel(status: string, mode: "received" | "sent"): string {
   if (mode === "received") {
     if (status === "awaiting_supervisor_review") return "수락 여부 검토";
     if (status === "feedback_submitted") return "서명 및 반환";
-    return "자료 미리보기";
+    return "의뢰 확인";
   }
 
   if (status === "feedback_submitted" || status === "completion_record_issued") {
@@ -200,21 +209,21 @@ function formatBookingSlot(item: RequestSummary): string {
 function statusLabel(status: string): string {
   const labels: Record<string, string> = {
     accepted: "수락됨",
-    additional_info_requested: "보완 요청",
-    awaiting_payment: "결제 대기",
-    awaiting_supervisor_review: "검토 대기",
+    additional_info_requested: "추가 자료 요청",
+    awaiting_payment: "결제 필요",
+    awaiting_supervisor_review: "수락 대기",
     cancelled: "취소",
     completed: "완료",
-    completion_record_issued: "완료 기록 발급",
+    completion_record_issued: "학습 기록 발급",
     draft: "작성 중",
     expired: "만료",
-    feedback_submitted: "피드백 제출",
+    feedback_submitted: "피드백 도착",
     in_review: "검토 중",
     meeting_completed: "상담 완료",
     meeting_scheduled: "일정 확정",
     paid: "결제 완료",
     refunded: "환불",
-    rejected: "반려",
+    rejected: "수락되지 않음",
     submitted: "제출됨"
   };
   return labels[status] ?? status;

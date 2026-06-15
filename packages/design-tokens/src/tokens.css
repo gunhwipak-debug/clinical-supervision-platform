@@ -1,28 +1,27 @@
 @theme {
-  /* === Stitch Clinical Trust (Material 3 tonal) — primary source of truth === */
   /* Surfaces */
-  --color-surface: #f9f9ff;
-  --color-surface-dim: #cfdaf2;
-  --color-surface-bright: #f9f9ff;
+  --color-surface: #ffffff;
+  --color-surface-dim: #f4f7fb;
+  --color-surface-bright: #ffffff;
   --color-surface-container-lowest: #ffffff;
-  --color-surface-container-low: #f0f3ff;
-  --color-surface-container: #e7eeff;
-  --color-surface-container-high: #dee8ff;
-  --color-surface-container-highest: #d8e3fb;
-  --color-surface-variant: #d8e3fb;
-  --color-surface-tint: #565e74;
-  --color-background: #f9f9ff;
+  --color-surface-container-low: #f8fbff;
+  --color-surface-container: #f4f8ff;
+  --color-surface-container-high: #eef4ff;
+  --color-surface-container-highest: #e7ebf1;
+  --color-surface-variant: #e7ebf1;
+  --color-surface-tint: #667085;
+  --color-background: #ffffff;
   /* On-surface (text on surface) */
-  --color-on-surface: #111c2d;
-  --color-on-surface-variant: #45464d;
-  --color-on-background: #111c2d;
+  --color-on-surface: #081225;
+  --color-on-surface-variant: #667085;
+  --color-on-background: #081225;
   /* Inverse */
   --color-inverse-surface: #263143;
   --color-inverse-on-surface: #ecf1ff;
   --color-inverse-primary: #bec6e0;
   /* Outline */
-  --color-outline: #76777d;
-  --color-outline-variant: #c6c6cd;
+  --color-outline: #667085;
+  --color-outline-variant: #e7ebf1;
   /* Primary */
   --color-primary: #000000;
   --color-on-primary: #ffffff;
@@ -33,14 +32,14 @@
   --color-on-primary-fixed: #131b2e;
   --color-on-primary-fixed-variant: #3f465c;
   /* Secondary */
-  --color-secondary: #0058be;
+  --color-secondary: #2563ff;
   --color-on-secondary: #ffffff;
-  --color-secondary-container: #2170e4;
+  --color-secondary-container: #2563ff;
   --color-on-secondary-container: #fefcff;
   --color-secondary-fixed: #d8e2ff;
   --color-secondary-fixed-dim: #adc6ff;
   --color-on-secondary-fixed: #001a42;
-  --color-on-secondary-fixed-variant: #004395;
+  --color-on-secondary-fixed-variant: #1d4ed8;
   /* Tertiary */
   --color-tertiary: #000000;
   --color-on-tertiary: #ffffff;
@@ -56,28 +55,27 @@
   --color-error-container: #ffdad6;
   --color-on-error-container: #93000a;
 
-  /* === Legacy brand/accent/ink tokens — retained for pages outside the 19 Stitch screens === */
-  --color-brand-50: #f0f3ff;
-  --color-brand-100: #dae2fd;
-  --color-brand-500: #2170e4;
-  --color-brand-600: #0058be;
-  --color-brand-700: #131b2e;
-  --color-accent-100: #d8e2ff;
-  --color-accent-500: #adc6ff;
-  --color-accent-600: #004395;
-  --color-surface-base: #f9f9ff;
+  --color-brand-50: #f4f8ff;
+  --color-brand-100: #eef4ff;
+  --color-brand-500: #2563ff;
+  --color-brand-600: #2563ff;
+  --color-brand-700: #1d4ed8;
+  --color-accent-100: #eef4ff;
+  --color-accent-500: #2563ff;
+  --color-accent-600: #1d4ed8;
+  --color-surface-base: #ffffff;
   --color-surface-elevated: #ffffff;
-  --color-surface-sunken: #e7eeff;
-  --color-ink-900: #111c2d;
-  --color-ink-700: #45464d;
-  --color-ink-500: #76777d;
-  --color-ink-300: #c6c6cd;
-  --color-ink-100: #d8e3fb;
-  --color-line: #c6c6cd;
-  --color-success: #0058be;
+  --color-surface-sunken: #f4f8ff;
+  --color-ink-900: #081225;
+  --color-ink-700: #344054;
+  --color-ink-500: #667085;
+  --color-ink-300: #98a2b3;
+  --color-ink-100: #e7ebf1;
+  --color-line: #e7ebf1;
+  --color-success: #2563ff;
   --color-danger: #ba1a1a;
   --color-warn: #f59e0b;
-  --color-info: #0058be;
+  --color-info: #2563ff;
 
   /* === Border radius (Stitch is source of truth) === */
   --radius-sm: 0.25rem;
@@ -111,20 +109,19 @@
   --spacing-11: 44px;
   --spacing-12: 48px;
 
-  /* === Font families (Stitch) === */
-  --font-display-lg: "Hanken Grotesk", "Pretendard Variable", system-ui, sans-serif;
-  --font-headline-lg: "Hanken Grotesk", "Pretendard Variable", system-ui, sans-serif;
+  --font-display-lg: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-headline-lg: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
   --font-headline-lg-mobile:
-    "Hanken Grotesk", "Pretendard Variable", system-ui, sans-serif;
-  --font-headline-md: "Hanken Grotesk", "Pretendard Variable", system-ui, sans-serif;
-  --font-headline-sm: "Hanken Grotesk", "Pretendard Variable", system-ui, sans-serif;
-  --font-body-lg: "Inter", "Pretendard Variable", system-ui, sans-serif;
-  --font-body-md: "Inter", "Pretendard Variable", system-ui, sans-serif;
-  --font-body-sm: "Inter", "Pretendard Variable", system-ui, sans-serif;
-  --font-label-md: "Inter", "Pretendard Variable", system-ui, sans-serif;
-  --font-label-sm: "Inter", "Pretendard Variable", system-ui, sans-serif;
+    "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-headline-md: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-headline-sm: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-body-lg: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-body-md: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-body-sm: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-label-md: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
+  --font-label-sm: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
   /* Legacy default sans */
-  --font-sans: "Pretendard Variable", system-ui, sans-serif;
+  --font-sans: "Noto Sans KR", "Pretendard Variable", system-ui, sans-serif;
 
   /* === Font sizes (with line-height, font-weight, letter-spacing modifiers) === */
   --text-display-lg: 48px;

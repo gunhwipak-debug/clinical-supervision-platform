@@ -51,6 +51,19 @@ known local `next build` hang and lets Vercel's cloud build be the parity gate.
    pnpm release:web:fast-check
    ```
 
+   If the change is UI/copy/layout only, has already been checked in the Codex
+   browser or by Origin-14 screenshot evidence, and local TypeScript is timing
+   out on this Mac, use the UI-only gate instead:
+
+   ```bash
+   pnpm release:web:ui-check
+   ```
+
+   This still runs `git diff --check`, the Origin-14 guard, changed-file
+   Prettier, ignored TypeScript build-info cleanup, and preview-source drift
+   checks. It skips local TypeScript and relies on Vercel's cloud build as the
+   parity gate.
+
 2. Commit the verified change.
 
 3. Create a preview deployment when the user wants to inspect before production:
@@ -59,15 +72,33 @@ known local `next build` hang and lets Vercel's cloud build be the parity gate.
    pnpm release:web:preview
    ```
 
+   UI-only preview path:
+
+   ```bash
+   pnpm release:web:ui-preview
+   ```
+
 4. Deploy production only after the preview or Codex browser surface is accepted:
 
    ```bash
    pnpm release:web:prod
    ```
 
+   UI-only production path:
+
+   ```bash
+   pnpm release:web:ui-prod
+   ```
+
 The release script writes evidence under `.omo/evidence/fast-release/` and keeps
-`.omo/evidence/fast-release/LATEST.md` updated. Production deploy also smoke
-checks the stable alias `https://clinicflow-web-beta.vercel.app`.
+`.omo/evidence/fast-release/LATEST.md` updated. It removes ignored
+`tsconfig*.tsbuildinfo` files, then runs changed-file Prettier,
+`git diff --check`, approved-preview source sync, the Origin-14 guard, and
+web/admin TypeScript checks with `--incremental false` by default. The
+`ui-*` commands intentionally skip local TypeScript for UI-only releases where
+the local runner is timing out; Vercel's cloud build then becomes the blocking
+parity check. Production deploy also smoke checks the stable alias
+`https://clinicflow-web-beta.vercel.app`.
 
 ## Full Local Parity Path
 
@@ -103,11 +134,16 @@ Expected current evidence:
 
 ## Current Local Caveat
 
-On the current Mac checkout, local `pnpm --filter @csp/web build`,
-`pnpm --filter @csp/web typecheck`, root `pnpm build`, and root
-`pnpm typecheck` have shown long silent waits and were stopped manually. Vercel
-itself completed the web build successfully, so this is a local workflow
-diagnostic issue rather than evidence that the deployed web build is broken.
+On the current Mac checkout, local `pnpm --filter @csp/web build`, default
+`pnpm --filter @csp/web typecheck`, root `pnpm build`, and root `pnpm typecheck`
+have shown long silent waits and were stopped manually. In the latest 2026-06-15
+check, even `pnpm release:web:fast-check` timed out at the web non-incremental
+TypeScript step. `next dev` and `next build` can still stall before opening a
+port, with samples pointing at Next/webpack internal file reads during startup,
+so local browser QA remains a release-hygiene task rather than evidence that the
+deployed web build is broken. For UI-only releases, use `pnpm
+release:web:ui-check` followed by `pnpm release:web:ui-preview` and let Vercel
+cloud build block broken code.
 
 Before using this branch as a shared release baseline, fix GitHub authentication
 and push the local commits so the remote branch matches the local branch.

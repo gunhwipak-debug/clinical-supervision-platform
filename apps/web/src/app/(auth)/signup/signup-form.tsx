@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ArrowRight, Eye, EyeOff, ShieldCheck, UserPlus } from "lucide-react";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -9,7 +8,7 @@ import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "../../../components/ui/button";
 import { Field, Input, Label } from "../../../components/ui/form";
-import { InlineMessage } from "../auth-ui";
+import { AuthPanel, InlineMessage } from "../auth-ui";
 
 const signupSchema = z.object({
   email: z.email("이메일 형식으로 입력해주세요."),
@@ -89,75 +88,70 @@ export function SignupForm() {
   }
 
   return (
-    <section className="mx-auto grid w-full max-w-[580px] gap-7">
-      <div>
-        <h2 className="text-4xl font-bold leading-tight text-ink-900">계정 만들기</h2>
-        <p className="mt-3 text-xl leading-relaxed text-ink-700">
-          가입 후 필요한 경우 슈퍼바이저 신청을 진행할 수 있습니다.
-        </p>
-      </div>
+    <AuthPanel
+      description="가입 후 필요한 경우 슈퍼바이저 신청을 진행할 수 있습니다."
+      notes={[
+        "모든 사용자는 먼저 신청자 계정으로 시작합니다.",
+        "이메일 인증을 마쳐야 의뢰와 기록 화면을 사용할 수 있습니다."
+      ]}
+      size="wide"
+      title="계정 만들기"
+    >
+      <form className="grid gap-5" method="post" onSubmit={form.handleSubmit(submit)}>
+        <Field className="gap-2">
+          <Label className="text-sm font-semibold text-[#8b94ad]" htmlFor="email">
+            이메일
+          </Label>
+          <Input
+            autoComplete="email"
+            className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
+            id="email"
+            placeholder="이메일 주소"
+            type="email"
+            {...form.register("email")}
+          />
+          {form.formState.errors.email ? (
+            <p className="text-sm text-[#c24141]">
+              {form.formState.errors.email.message}
+            </p>
+          ) : null}
+        </Field>
 
-      <form className="grid gap-7" method="post" onSubmit={form.handleSubmit(submit)}>
-        <fieldset className="grid gap-5 rounded-2xl border border-line bg-surface-elevated p-6 shadow-card">
-          <legend className="sr-only">계정 정보</legend>
-          <Field className="gap-2">
-            <Label className="text-lg font-medium" htmlFor="email">
-              이메일
-            </Label>
+        <Field className="gap-2">
+          <Label className="text-sm font-semibold text-[#8b94ad]" htmlFor="password">
+            비밀번호
+          </Label>
+          <div className="relative">
             <Input
-              autoComplete="email"
-              className="h-16 rounded-lg bg-surface-base px-5 text-xl sm:text-2xl"
-              id="email"
-              placeholder="이메일 주소"
-              type="email"
-              {...form.register("email")}
+              autoComplete="new-password"
+              className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 pr-12 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
+              id="password"
+              placeholder="10자 이상, 숫자와 특수문자 포함"
+              type={showPassword ? "text" : "password"}
+              {...form.register("password")}
             />
-            {form.formState.errors.email ? (
-              <p className="text-sm text-danger">
-                {form.formState.errors.email.message}
-              </p>
-            ) : null}
-          </Field>
+            <button
+              aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-semibold text-[#5f6c8f] hover:text-[#081225]"
+              onClick={() => setShowPassword((value) => !value)}
+              type="button"
+            >
+              {showPassword ? "숨기기" : "보기"}
+            </button>
+          </div>
+          {form.formState.errors.password ? (
+            <p className="text-sm text-[#c24141]">
+              {form.formState.errors.password.message}
+            </p>
+          ) : null}
+        </Field>
 
-          <Field className="gap-2">
-            <Label className="text-lg font-medium" htmlFor="password">
-              비밀번호
-            </Label>
-            <div className="relative">
-              <Input
-                autoComplete="new-password"
-                className="h-16 rounded-lg bg-surface-base px-5 pr-14 text-xl sm:text-2xl"
-                id="password"
-                placeholder="10자 이상, 숫자와 특수문자 포함"
-                type={showPassword ? "text" : "password"}
-                {...form.register("password")}
-              />
-              <button
-                aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
-                className="absolute right-3 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full text-ink-500 transition hover:bg-surface-sunken hover:text-ink-900"
-                onClick={() => setShowPassword((value) => !value)}
-                type="button"
-              >
-                {showPassword ? (
-                  <EyeOff aria-hidden size={24} />
-                ) : (
-                  <Eye aria-hidden size={24} />
-                )}
-              </button>
-            </div>
-            {form.formState.errors.password ? (
-              <p className="text-sm text-danger">
-                {form.formState.errors.password.message}
-              </p>
-            ) : null}
-          </Field>
-        </fieldset>
-
-        <fieldset className="grid gap-5">
-          <legend className="flex items-start gap-4 text-2xl font-bold text-ink-900">
+        <fieldset className="grid gap-3 rounded-[20px] border border-[#e7ebf1] bg-[#fbfcff] p-4">
+          <legend className="sr-only">필수 동의</legend>
+          <label className="flex items-start gap-3 text-sm font-semibold text-[#081225]">
             <input
-              className="mt-1 size-6 rounded border-line bg-surface-elevated"
               checked={allRequiredConsents}
+              className="mt-1 size-5 rounded border-[#cdd5e2]"
               onChange={(event) => {
                 const checked = event.target.checked;
                 for (const [key] of consentItems) {
@@ -171,55 +165,51 @@ export function SignupForm() {
             />
             <span>
               필수 약관 전체 동의
-              <span className="mt-1 block text-lg font-normal leading-relaxed text-ink-700">
+              <span className="mt-1 block text-sm font-normal leading-7 text-[#5f6c8f]">
                 서비스 이용약관, 개인정보 처리방침, 민감정보 처리 동의를 포함합니다.
               </span>
             </span>
-          </legend>
+          </label>
 
-          <div className="ml-4 grid gap-5 border-l-4 border-brand-50 pl-10">
-            {consentItems.map(([key, label, href]) => (
-              <label
-                className="flex items-center justify-between gap-4 text-xl text-ink-900"
-                key={key}
-              >
-                <span className="flex items-center gap-4">
-                  <input
-                    className="size-8 rounded border-line bg-surface-elevated"
-                    type="checkbox"
-                    {...form.register(key as keyof SignupValues)}
-                  />
-                  {label}
-                </span>
-                <Link
-                  className="rounded-full bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700 hover:underline"
-                  href={href as never}
-                >
-                  보기
-                </Link>
-              </label>
-            ))}
-          </div>
+          {consentItems.map(([key, label, href]) => (
+            <label
+              className="flex items-center justify-between gap-3 rounded-[16px] border border-[#e7ebf1] bg-white px-4 py-3 text-sm font-semibold text-[#081225]"
+              key={key}
+            >
+              <span className="flex items-center gap-3">
+                <input
+                  className="size-5 rounded border-[#cdd5e2]"
+                  type="checkbox"
+                  {...form.register(key as keyof SignupValues)}
+                />
+                {label}
+              </span>
+              <Link className="text-[#2563ff] hover:underline" href={href as never}>
+                보기
+              </Link>
+            </label>
+          ))}
 
           {form.formState.errors.tos ||
           form.formState.errors.privacy ||
           form.formState.errors.sensitive ? (
-            <p className="text-sm text-danger">필수 동의 항목을 모두 확인해주세요.</p>
+            <p className="text-sm text-[#c24141]">
+              필수 동의 항목을 모두 확인해주세요.
+            </p>
           ) : null}
         </fieldset>
 
         <Button
-          className="h-16 rounded-lg bg-ink-900 text-xl font-bold text-surface-elevated hover:bg-ink-700"
+          className="h-12 rounded-[16px] bg-[#2563ff] text-base font-semibold text-white hover:bg-[#1f58e6]"
           disabled={!isHydrated || form.formState.isSubmitting}
           type="submit"
         >
           가입하기
-          <ArrowRight aria-hidden size={22} />
         </Button>
 
-        <p className="text-center text-xl text-ink-700">
+        <p className="text-center text-sm leading-7 text-[#5f6c8f]">
           이미 계정이 있으신가요?{" "}
-          <Link className="font-semibold text-brand-600 hover:underline" href="/login">
+          <Link className="font-semibold text-[#2563ff] hover:underline" href="/login">
             로그인
           </Link>
         </p>
@@ -227,19 +217,12 @@ export function SignupForm() {
         {message ? (
           <div role="alert">
             <InlineMessage tone={message.includes("완료") ? "brand" : "danger"}>
-              <span className="inline-flex items-center gap-2">
-                {message.includes("완료") ? (
-                  <ShieldCheck aria-hidden size={18} />
-                ) : (
-                  <UserPlus aria-hidden size={18} />
-                )}
-                {message}
-              </span>
+              {message}
             </InlineMessage>
           </div>
         ) : null}
       </form>
-    </section>
+    </AuthPanel>
   );
 }
 
@@ -249,7 +232,7 @@ function signupErrorMessage(code: string | undefined): string {
     email_exists: "이미 가입된 이메일입니다. 로그인하거나 비밀번호를 재설정해주세요.",
     invalid_request: "입력값을 다시 확인해주세요.",
     server_unavailable:
-      "서버 설정 또는 데이터베이스 연결 문제로 가입할 수 없습니다. 관리자에게 문의해주세요.",
+      "일시적인 문제로 가입할 수 없습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.",
     weak_password: "비밀번호는 10자 이상이며 숫자와 특수문자를 포함해야 합니다."
   };
   return (

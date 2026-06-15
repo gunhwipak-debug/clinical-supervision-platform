@@ -91,7 +91,10 @@ export async function POST(
   if (result.kind === "session_not_ended") {
     return envelope(
       null,
-      apiError("session_not_ended", "세션 종료 시간이 지난 뒤 결과를 기록할 수 있습니다."),
+      apiError(
+        "session_not_ended",
+        "세션 종료 시간이 지난 뒤 결과를 기록할 수 있습니다."
+      ),
       409
     );
   }
@@ -131,7 +134,7 @@ function canRecordOutcome(status: string): boolean {
 function outcomeLabel(outcome: z.infer<typeof bodySchema>["outcome"]): string {
   const labels = {
     completed: "세션 완료",
-    no_show_supervisee: "슈퍼바이지 불참",
+    no_show_supervisee: "신청자 불참",
     no_show_supervisor: "슈퍼바이저 불참"
   };
   return labels[outcome];

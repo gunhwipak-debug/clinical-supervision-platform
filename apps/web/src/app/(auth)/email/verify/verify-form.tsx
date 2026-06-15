@@ -42,45 +42,42 @@ export function VerifyForm() {
   }
 
   return (
-    <section className="grid gap-7">
+    <section className="grid gap-5">
       <div className="text-center">
-        <div className="mx-auto mb-6 grid size-48 place-items-center rounded-full bg-brand-100 text-brand-600">
-          <MailCheck aria-hidden size={88} />
+        <div className="mx-auto mb-4 grid size-14 place-items-center rounded-[18px] bg-[#f5f8ff] text-[#2563ff]">
+          <MailCheck aria-hidden size={26} />
         </div>
-        <h2 className="text-4xl font-bold leading-tight">이메일 확인</h2>
-        <p className="mt-6 text-lg leading-relaxed text-ink-700">
+        <h2 className="text-xl font-bold leading-tight text-[#081225]">이메일 확인</h2>
+        <p className="mt-2 text-sm leading-7 text-[#5f6c8f]">
           메일에 담긴 확인 정보를 입력하면 계정을 사용할 수 있습니다.
         </p>
       </div>
 
-      <form
-        className="grid gap-6 rounded-2xl border border-line bg-surface-elevated p-7 shadow-card"
-        onSubmit={form.handleSubmit(submit)}
-      >
-        <Field className="gap-3">
-          <Label className="text-2xl font-bold" htmlFor="mail-code">
+      <form className="grid gap-4" onSubmit={form.handleSubmit(submit)}>
+        <Field>
+          <Label className="text-sm font-semibold text-[#8b94ad]" htmlFor="mail-code">
             메일 확인 정보
           </Label>
           <Input
             autoComplete="one-time-code"
-            className="h-20 rounded-none bg-surface-base px-6 text-xl"
+            className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
             id="mail-code"
             placeholder="메일 확인 정보"
             {...form.register("mailCode")}
           />
           {form.formState.errors.mailCode ? (
-            <p className="text-sm text-danger">
+            <p className="text-sm text-[#c24141]">
               {form.formState.errors.mailCode.message}
             </p>
           ) : null}
         </Field>
 
         <Button
-          className="h-20 rounded-lg bg-black text-2xl font-bold text-white hover:bg-ink-900"
+          className="h-12 rounded-[16px] bg-[#2563ff] text-base font-semibold text-white hover:bg-[#1f58e6]"
           disabled={form.formState.isSubmitting}
           type="submit"
         >
-          <MailCheck aria-hidden size={26} />
+          <MailCheck aria-hidden size={18} />
           이메일 인증
         </Button>
 

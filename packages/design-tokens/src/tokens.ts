@@ -1,29 +1,29 @@
 export const tokens = {
   color: {
     stitch: {
-      surface: "#F9F9FF",
-      "surface-dim": "#CFDAF2",
-      "surface-bright": "#F9F9FF",
+      surface: "#FFFFFF",
+      "surface-dim": "#F4F7FB",
+      "surface-bright": "#FFFFFF",
       "surface-container-lowest": "#FFFFFF",
-      "surface-container-low": "#F0F3FF",
-      "surface-container": "#E7EEFF",
-      "surface-container-high": "#DEE8FF",
-      "surface-container-highest": "#D8E3FB",
-      "on-surface": "#111C2D",
-      "on-surface-variant": "#45464D",
+      "surface-container-low": "#F8FBFF",
+      "surface-container": "#F4F8FF",
+      "surface-container-high": "#EEF4FF",
+      "surface-container-highest": "#E7EBF1",
+      "on-surface": "#081225",
+      "on-surface-variant": "#667085",
       "inverse-surface": "#263143",
       "inverse-on-surface": "#ECF1FF",
-      outline: "#76777D",
-      "outline-variant": "#C6C6CD",
-      "surface-tint": "#565E74",
+      outline: "#667085",
+      "outline-variant": "#E7EBF1",
+      "surface-tint": "#667085",
       primary: "#000000",
       "on-primary": "#FFFFFF",
       "primary-container": "#131B2E",
       "on-primary-container": "#7C839B",
       "inverse-primary": "#BEC6E0",
-      secondary: "#0058BE",
+      secondary: "#2563FF",
       "on-secondary": "#FFFFFF",
-      "secondary-container": "#2170E4",
+      "secondary-container": "#2563FF",
       "on-secondary-container": "#FEFCFF",
       tertiary: "#000000",
       "on-tertiary": "#FFFFFF",
@@ -40,44 +40,44 @@ export const tokens = {
       "secondary-fixed": "#D8E2FF",
       "secondary-fixed-dim": "#ADC6FF",
       "on-secondary-fixed": "#001A42",
-      "on-secondary-fixed-variant": "#004395",
+      "on-secondary-fixed-variant": "#1D4ED8",
       "tertiary-fixed": "#DCE3EC",
       "tertiary-fixed-dim": "#C0C7D0",
       "on-tertiary-fixed": "#151C23",
       "on-tertiary-fixed-variant": "#40484F",
-      background: "#F9F9FF",
-      "on-background": "#111C2D",
-      "surface-variant": "#D8E3FB"
+      background: "#FFFFFF",
+      "on-background": "#081225",
+      "surface-variant": "#E7EBF1"
     },
     brand: {
-      50: "#F0F3FF",
-      100: "#DAE2FD",
-      500: "#2170E4",
-      600: "#0058BE",
-      700: "#131B2E"
+      50: "#F4F8FF",
+      100: "#EEF4FF",
+      500: "#2563FF",
+      600: "#2563FF",
+      700: "#1D4ED8"
     },
     accent: {
-      100: "#D8E2FF",
-      500: "#ADC6FF",
-      600: "#004395"
+      100: "#EEF4FF",
+      500: "#2563FF",
+      600: "#1D4ED8"
     },
     surface: {
-      base: "#F9F9FF",
+      base: "#FFFFFF",
       elevated: "#FFFFFF",
-      sunken: "#E7EEFF"
+      sunken: "#F4F8FF"
     },
     ink: {
-      900: "#111C2D",
-      700: "#45464D",
-      500: "#76777D",
-      300: "#C6C6CD",
-      100: "#D8E3FB"
+      900: "#081225",
+      700: "#344054",
+      500: "#667085",
+      300: "#98A2B3",
+      100: "#E7EBF1"
     },
-    line: "#C6C6CD",
-    success: "#0058BE",
+    line: "#E7EBF1",
+    success: "#2563FF",
     danger: "#BA1A1A",
     warn: "#F59E0B",
-    info: "#0058BE"
+    info: "#2563FF"
   },
   radius: { sm: 8, md: 12, lg: 16, xl: 20, pill: 9999 },
   stitchRadius: {
@@ -114,7 +114,7 @@ export const tokens = {
     12: 48
   },
   font: {
-    family: { sans: "Pretendard Variable, system-ui, sans-serif" },
+    family: { sans: "Noto Sans KR, Pretendard Variable, system-ui, sans-serif" },
     size: { xs: 12, sm: 14, base: 15, lg: 17, xl: 20, "2xl": 24, "3xl": 32, "4xl": 40 },
     weight: { regular: 400, medium: 500, semibold: 600, bold: 700 },
     lineHeight: { tight: 1.25, normal: 1.55, relaxed: 1.7 }

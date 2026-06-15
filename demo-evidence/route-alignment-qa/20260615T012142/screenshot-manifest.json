@@ -1,0 +1,354 @@
+[
+  {
+    "app": "web",
+    "route": "/",
+    "status": "200",
+    "ms": 1475,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-root.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/login",
+    "status": "200",
+    "ms": 1746,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-login.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/signup",
+    "status": "200",
+    "ms": 918,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-signup.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/forgot-password",
+    "status": "200",
+    "ms": 841,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-forgot-password.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/reset-password",
+    "status": "200",
+    "ms": 899,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-reset-password.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/email/verify",
+    "status": "200",
+    "ms": 910,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-email-verify.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/verify-email",
+    "status": "200",
+    "ms": 972,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-verify-email.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisors",
+    "status": "200",
+    "ms": 1402,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisors.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisors/demo",
+    "status": "200",
+    "ms": 1411,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisors-demo.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/guide",
+    "status": "200",
+    "ms": 1104,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-guide.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/resources",
+    "status": "200",
+    "ms": 881,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-resources.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/clinical-guidelines",
+    "status": "200",
+    "ms": 926,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-clinical-guidelines.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/terms",
+    "status": "200",
+    "ms": 955,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-terms.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/privacy",
+    "status": "200",
+    "ms": 906,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-privacy.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/security",
+    "status": "200",
+    "ms": 955,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-security.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/sensitive-consent",
+    "status": "200",
+    "ms": 933,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-sensitive-consent.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/requests",
+    "status": "200",
+    "ms": 1178,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-requests.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/requests/new",
+    "status": "200",
+    "ms": 1188,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-requests-new.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/requests/REQ-1042",
+    "status": "200",
+    "ms": 1426,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-requests-req-1042.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/case-archive",
+    "status": "200",
+    "ms": 1652,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-case-archive.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/payments",
+    "status": "200",
+    "ms": 1063,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-payments.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/payments/pay-001",
+    "status": "200",
+    "ms": 1341,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-payments-pay-001.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/payments/confirm",
+    "status": "200",
+    "ms": 1029,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-payments-confirm.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/notifications",
+    "status": "200",
+    "ms": 1119,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-notifications.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/settings",
+    "status": "200",
+    "ms": 1089,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-settings.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/me",
+    "status": "200",
+    "ms": 1158,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-me.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor",
+    "status": "200",
+    "ms": 1175,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/requests",
+    "status": "200",
+    "ms": 1319,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-requests.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/requests/REQ-1042",
+    "status": "200",
+    "ms": 1603,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-requests-req-1042.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/profile",
+    "status": "200",
+    "ms": 2040,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-profile.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/availability",
+    "status": "200",
+    "ms": 1175,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-availability.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/products",
+    "status": "200",
+    "ms": 1246,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-products.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/payouts",
+    "status": "200",
+    "ms": 1289,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-payouts.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/memory",
+    "status": "200",
+    "ms": 1253,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-memory.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/qualifications",
+    "status": "200",
+    "ms": 1375,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/web-supervisor-qualifications.png",
+    "title": "ClinicFlow"
+  },
+  {
+    "app": "admin",
+    "route": "/",
+    "status": "200",
+    "ms": 2516,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-root.png",
+    "title": "Loading http://127.0.0.1:3017/admin"
+  },
+  {
+    "app": "admin",
+    "route": "/admin",
+    "status": "200",
+    "ms": 612,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-admin.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/admin/queue",
+    "status": "200",
+    "ms": 1587,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-admin-queue.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/admin/qualifications",
+    "status": "200",
+    "ms": 952,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-admin-qualifications.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/admin/refunds",
+    "status": "200",
+    "ms": 895,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-admin-refunds.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/admin/payouts",
+    "status": "200",
+    "ms": 906,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-admin-payouts.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/admin/audit",
+    "status": "200",
+    "ms": 1063,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-admin-audit.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/payouts",
+    "status": "200",
+    "ms": 946,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-payouts.png",
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "app": "admin",
+    "route": "/refunds",
+    "status": "200",
+    "ms": 919,
+    "file": "demo-evidence/route-alignment-qa/20260615T012142/admin-refunds.png",
+    "title": "ClinicFlow 운영"
+  }
+]

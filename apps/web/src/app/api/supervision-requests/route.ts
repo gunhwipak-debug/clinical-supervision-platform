@@ -181,7 +181,10 @@ export async function POST(request: NextRequest) {
           await deleteDraft();
           return envelope(
             null,
-            apiError("slot_unavailable", "이미 예약되었거나 선택할 수 없는 시간입니다."),
+            apiError(
+              "slot_unavailable",
+              "이미 예약되었거나 선택할 수 없는 시간입니다."
+            ),
             409
           );
         }
@@ -322,16 +325,16 @@ export async function POST(request: NextRequest) {
       const scheduledText = formatKoreanDateTime(selectedSlotStart);
       await sendManyNotifications(db, [
         {
-          body: `${scheduledText} 일정으로 슈퍼비전 초안이 생성되었습니다. 자료 작성과 결제를 이어서 진행해주세요.`,
+          body: `${scheduledText} 일정으로 슈퍼비전 의뢰가 임시 저장되었습니다. 자료 작성과 결제를 이어서 진행해주세요.`,
           href: `/requests/${created.id}`,
           kind: "supervision_request_scheduled_supervisee",
           metadata: { requestId: created.id },
           origin,
           target: { role: "supervisee", userId: current.session.userId },
-          title: "예약 초안이 생성되었습니다"
+          title: "예약 의뢰가 임시 저장되었습니다"
         },
         {
-          body: `${scheduledText} 일정으로 새 슈퍼비전 의뢰 초안이 생성되었습니다. 결제 완료 후 검토 대기열에 표시됩니다.`,
+          body: `${scheduledText} 일정으로 새 슈퍼비전 의뢰가 임시 저장되었습니다. 결제 완료 후 검토 목록에 표시됩니다.`,
           href: "/supervisor/requests",
           kind: "supervision_request_scheduled_supervisor",
           metadata: { requestId: created.id },
@@ -343,22 +346,22 @@ export async function POST(request: NextRequest) {
     } else {
       await sendManyNotifications(db, [
         {
-          body: "비동기 슈퍼비전 초안이 생성되었습니다. 사례 패킷과 첨부자료를 이어서 작성해주세요.",
+          body: "비동기 슈퍼비전 의뢰가 임시 저장되었습니다. 사례 정보와 첨부자료를 이어서 작성해주세요.",
           href: `/requests/${created.id}`,
           kind: "supervision_request_draft_created_supervisee",
           metadata: { requestId: created.id },
           origin,
           target: { role: "supervisee", userId: current.session.userId },
-          title: "의뢰 초안이 생성되었습니다"
+          title: "의뢰가 임시 저장되었습니다"
         },
         {
-          body: "새 비동기 슈퍼비전 의뢰 초안이 생성되었습니다. 결제 완료 후 검토 대기열에 표시됩니다.",
+          body: "새 비동기 슈퍼비전 의뢰가 임시 저장되었습니다. 결제 완료 후 검토 목록에 표시됩니다.",
           href: "/supervisor/requests",
           kind: "supervision_request_draft_created_supervisor",
           metadata: { requestId: created.id },
           origin,
           target: { role: "supervisor", userId: created.supervisorId },
-          title: "새 의뢰 초안이 생성되었습니다"
+          title: "새 의뢰가 임시 저장되었습니다"
         }
       ]);
     }

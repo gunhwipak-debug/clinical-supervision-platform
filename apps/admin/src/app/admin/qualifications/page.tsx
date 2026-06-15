@@ -2,10 +2,11 @@ import type { ReactNode } from "react";
 import { decryptPhi } from "@csp/shared/crypto/phi";
 import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
-import { FileCheck2, Menu, Search, ShieldCheck } from "lucide-react";
+import { Search } from "lucide-react";
 import { AdminActionPanel } from "../../../components/admin-action-panel";
 import {
   AdminCard,
+  AdminDarkPanel,
   AdminLockedState,
   AdminShell
 } from "../../../components/admin-shell";
@@ -55,11 +56,11 @@ export default async function AdminQualificationsPage({
       <AdminShell title="자격 승인" subtitle="관리자 로그인과 2단계 인증이 필요합니다.">
         <AdminLockedState
           title="슈퍼바이저 자격 검토는 관리자 전용입니다"
-          description="공개 목록에 오르기 전 자격 증빙, 전문 분야, 승인 상태를 확인합니다."
+          description="공개 목록에 오르기 전 자격 증빙, 전문 분야, 심사 상태를 확인합니다."
           returnPath="/admin/qualifications"
           previewItems={[
             "제출된 자격 증빙과 발급 기관",
-            "승인, 반려, 보완 요청 상태",
+            "승인, 반려, 추가 확인 상태",
             "공개 프로필 반영 여부"
           ]}
         />
@@ -73,7 +74,7 @@ export default async function AdminQualificationsPage({
     {
       userId: current.session.userId,
       role: "admin",
-      adminReason: "운영 자격 승인 큐 조회를 위한 관리자 사유입니다.",
+      adminReason: "운영 자격 심사 조회를 위한 처리 사유입니다.",
       phiAccess: true
     },
     (tx) => listQualifications(tx)
@@ -86,201 +87,232 @@ export default async function AdminQualificationsPage({
           value.toLowerCase().includes(query.toLowerCase())
         ))
   );
+  const firstPendingItem = queue.find((item) => item.status === "pending") ?? queue[0];
 
   return (
-    <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-6 py-6 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <span className="inline-flex items-center gap-3">
-            <Menu aria-hidden size={28} />
-            <span className="text-3xl font-bold">ClinicFlow 운영</span>
-          </span>
-          <span className="rounded-pill bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
-            자격 심사
-          </span>
-        </div>
-      </header>
-
-      <div className="mx-auto grid max-w-6xl gap-6 px-6 py-8">
-        <section>
-          <h1 className="text-4xl font-bold">자격 관리</h1>
-          <p className="mt-3 text-xl text-ink-700">
-            슈퍼바이저 신청 내역을 검토하고 승인하세요.
-          </p>
-        </section>
-
-        <form
-          action="/admin/qualifications"
-          className="flex h-16 items-center gap-4 rounded-2xl border border-line bg-surface-elevated px-5 text-xl text-ink-500 shadow-card"
-        >
-          <Search aria-hidden size={30} />
-          <input name="status" type="hidden" value={status} />
-          <input
-            className="min-w-0 flex-1 bg-transparent text-xl text-ink-900 outline-none placeholder:text-ink-500"
-            defaultValue={query}
-            name="q"
-            placeholder="신청자, 자격명, 발급기관 검색"
-          />
-          <button
-            className="rounded-xl bg-brand-600 px-4 py-2 text-sm font-bold text-white"
-            type="submit"
+    <AdminShell
+      currentPath="/admin/qualifications"
+      eyebrow="심사 대기"
+      primaryAction={{
+        href: firstPendingItem
+          ? `#qualification-${firstPendingItem.id}`
+          : "#qualification-list",
+        label: firstPendingItem ? "첫 심사 열기" : "심사 목록 보기"
+      }}
+      title="자격 심사"
+      subtitle="슈퍼바이저 자격 증빙과 공개 조건을 검토합니다."
+    >
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid gap-4">
+          <form
+            action="/admin/qualifications"
+            className="flex min-h-14 items-center gap-4 rounded-full border border-line bg-surface-elevated px-5 text-ink-500"
           >
-            검색
-          </button>
-        </form>
-
-        <div className="flex gap-3 overflow-x-auto pb-1">
-          {statusTabs.map((tab) => (
-            <a
-              className={`shrink-0 rounded-full border px-6 py-3 text-lg font-medium ${
-                tab.value === status
-                  ? "border-brand-500 bg-brand-500 text-white"
-                  : "border-line bg-surface-elevated text-ink-700"
-              }`}
-              href={qualificationHref(tab.value, query)}
-              key={tab.value}
+            <Search aria-hidden size={20} />
+            <input name="status" type="hidden" value={status} />
+            <input
+              className="min-w-0 flex-1 bg-transparent py-4 text-base text-ink-900 outline-none placeholder:text-ink-500"
+              defaultValue={query}
+              name="q"
+              placeholder="신청자, 자격명, 발급기관 검색"
+            />
+            <button
+              className="rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white"
+              type="submit"
             >
-              {tab.label}
-            </a>
-          ))}
-        </div>
+              검색
+            </button>
+          </form>
 
-        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
-                <ShieldCheck aria-hidden size={22} />
-              </span>
-              <div>
-                <h2 className="text-xl font-bold">자격 검증 목록</h2>
-                <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  자격번호는 공개 화면에 노출하지 않고 운영자 검증 목적으로만 다룹니다.
-                </p>
-              </div>
-            </div>
-            <BadgePill>표시 중 {String(queue.length)}건</BadgePill>
+          <div className="flex flex-wrap gap-2">
+            {statusTabs.map((tab) => (
+              <a
+                className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${
+                  tab.value === status
+                    ? "border-brand-500 bg-brand-500 text-white"
+                    : "border-line bg-surface-elevated text-ink-700 hover:bg-surface-sunken"
+                }`}
+                href={qualificationHref(tab.value, query)}
+                key={tab.value}
+              >
+                {tab.label}
+              </a>
+            ))}
           </div>
-        </AdminCard>
 
-        <section className="grid gap-4">
-          {queue.length === 0 ? (
-            <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-              <strong className="text-xl text-ink-900">
-                표시할 자격 신청이 없습니다
-              </strong>
-              <p className="mt-1 text-sm text-ink-500">
+          <AdminCard className="overflow-hidden p-0" id="qualification-list">
+            {queue.length === 0 ? (
+              <p className="px-6 py-8 text-sm font-semibold text-ink-500">
                 조건에 맞는 자격 신청이 등록되면 이곳에 표시됩니다.
               </p>
-            </AdminCard>
-          ) : (
-            queue.map((item) => (
-              <AdminCard
-                key={item.id}
-                className="grid gap-4 rounded-xl border-line bg-surface-elevated p-6 shadow-card"
-              >
-                <div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <div className="flex items-start gap-3">
-                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-600">
-                      <FileCheck2 aria-hidden size={22} />
-                    </span>
-                    <div>
-                      <p className="text-sm font-semibold text-ink-500">
-                        {formatDate(item.createdAt)} 제출
-                      </p>
-                      <h2 className="mt-1 text-2xl font-bold text-ink-900">
-                        {item.supervisorName}
-                      </h2>
-                      <p className="mt-1 text-lg text-ink-700">{item.name}</p>
-                      <p className="mt-2 text-sm leading-relaxed text-ink-500">
-                        {item.issuingBody ?? "발급기관 미입력"} ·{" "}
-                        {item.supervisorHeadline ?? "슈퍼바이저 한줄 소개가 없습니다."}
-                      </p>
-                      <dl className="mt-4 grid gap-3 rounded-2xl bg-surface-sunken p-4 text-sm text-ink-700 md:grid-cols-2">
-                        <div>
-                          <dt className="font-bold text-ink-900">자격번호</dt>
-                          <dd>{item.number ?? "미입력"}</dd>
-                        </div>
-                        <div>
-                          <dt className="font-bold text-ink-900">유효기간</dt>
-                          <dd>
-                            {formatFullDate(item.issuedAt) ?? "발급일 없음"} -{" "}
-                            {formatFullDate(item.expiresAt) ?? "만료일 없음"}
-                          </dd>
-                        </div>
-                        <div className="md:col-span-2">
-                          <dt className="font-bold text-ink-900">증빙 파일</dt>
-                          <dd className="mt-1 flex flex-wrap items-center gap-2">
-                            {item.evidenceFileId && item.evidenceOriginalFilename ? (
-                              <>
-                                <AdminDownloadLink
-                                  filename={item.evidenceOriginalFilename}
-                                  url={`/api/admin/qualification-evidence/${item.evidenceFileId}/download`}
-                                />
-                                <span>
-                                  {item.evidenceMimeType ?? "형식 확인 필요"} ·{" "}
-                                  {formatBytes(item.evidenceSizeBytes)}
-                                </span>
-                                <span>
-                                  {qualificationEvidenceStatusLabel(
-                                    item.evidenceVirusScanStatus
-                                  )}
-                                </span>
-                              </>
-                            ) : (
-                              <span className="font-semibold text-danger">
-                                증빙 파일 없음
-                              </span>
-                            )}
-                          </dd>
-                        </div>
-                      </dl>
+            ) : (
+              <div className="grid divide-y divide-line">
+                {queue.map((item) => (
+                  <article
+                    className="grid gap-5 px-6 py-6"
+                    id={`qualification-${item.id}`}
+                    key={item.id}
+                  >
+                    <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_88px_auto] md:items-start">
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-ink-400">
+                          {item.evidenceFileId ? "자격 심사" : "증빙 자료"}
+                        </p>
+                        <h2 className="mt-3 break-keep text-[32px] font-bold leading-tight text-ink-900">
+                          {item.name}
+                        </h2>
+                        <p className="mt-4 break-keep text-base leading-8 text-ink-700">
+                          {item.supervisorName} ·{" "}
+                          {item.issuingBody ?? "발급기관 확인 필요"} ·{" "}
+                          {item.supervisorHeadline ?? "공개 소개 문구 확인 필요"}
+                        </p>
+                        <p className="mt-2 text-sm font-semibold text-ink-400">
+                          {formatDate(item.createdAt)} 제출
+                        </p>
+                      </div>
+                      <strong className="pt-1 text-base font-bold text-ink-900">
+                        운영자
+                      </strong>
+                      <StatusPill status={item.status}>
+                        {qualificationStatusCallout(item.status)}
+                      </StatusPill>
                     </div>
-                  </div>
-                  <BadgePill>{qualificationStatusLabel(item.status)}</BadgePill>
-                </div>
-                {item.status === "pending" ? (
-                  <AdminActionPanel
-                    actions={[
-                      {
-                        label: "승인",
-                        tone: "primary",
-                        url: `/api/admin/qualifications/${item.id}/approve`,
-                        ...(item.evidenceFileId &&
-                        item.evidenceVirusScanStatus === "clean"
-                          ? {}
-                          : {
-                              disabledReason:
-                                "검토 가능한 증빙이 있어야 승인할 수 있습니다."
-                            })
-                      },
-                      {
-                        label: "반려",
-                        tone: "secondary",
-                        url: `/api/admin/qualifications/${item.id}/reject`
-                      }
-                    ]}
-                    reasonPlaceholder="예: 제출된 자격 증빙, 발급기관, 프로필 기재 내용을 확인했고 승인/반려합니다."
-                  />
-                ) : (
-                  <p className="rounded-2xl bg-surface-sunken px-4 py-3 text-sm text-ink-600">
-                    이미 {qualificationStatusLabel(item.status)} 처리된 자격입니다.
-                  </p>
-                )}
-              </AdminCard>
-            ))
-          )}
-        </section>
-      </div>
-    </main>
+
+                    <dl className="grid gap-3 border-t border-line pt-5 text-sm text-ink-700 md:grid-cols-2">
+                      <div>
+                        <dt className="font-bold text-ink-900">자격번호</dt>
+                        <dd className="mt-1">{item.number ?? "미입력"}</dd>
+                      </div>
+                      <div>
+                        <dt className="font-bold text-ink-900">유효기간</dt>
+                        <dd className="mt-1">
+                          {formatFullDate(item.issuedAt) ?? "발급일 없음"} -{" "}
+                          {formatFullDate(item.expiresAt) ?? "만료일 없음"}
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="font-bold text-ink-900">검토 대상</dt>
+                        <dd className="mt-1">
+                          자격 증빙 · 공개 프로필 · 전문분야 일치 여부
+                        </dd>
+                      </div>
+                      <div>
+                        <dt className="font-bold text-ink-900">증빙 파일</dt>
+                        <dd className="mt-1 flex flex-wrap items-center gap-2">
+                          {item.evidenceFileId && item.evidenceOriginalFilename ? (
+                            <>
+                              <AdminDownloadLink
+                                filename={item.evidenceOriginalFilename}
+                                url={`/api/admin/qualification-evidence/${item.evidenceFileId}/download`}
+                              />
+                              <span>
+                                {item.evidenceMimeType ?? "형식 확인 필요"} ·{" "}
+                                {formatBytes(item.evidenceSizeBytes)}
+                              </span>
+                              <span>
+                                {qualificationEvidenceStatusLabel(
+                                  item.evidenceVirusScanStatus
+                                )}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="font-semibold text-danger">
+                              증빙 파일 없음
+                            </span>
+                          )}
+                        </dd>
+                      </div>
+                    </dl>
+
+                    {item.status === "pending" ? (
+                      <AdminActionPanel
+                        actions={[
+                          {
+                            label: "승인",
+                            tone: "primary",
+                            url: `/api/admin/qualifications/${item.id}/approve`,
+                            ...(item.evidenceFileId &&
+                            item.evidenceVirusScanStatus === "clean"
+                              ? {}
+                              : {
+                                  disabledReason:
+                                    "검토 가능한 증빙이 있어야 승인할 수 있습니다."
+                                })
+                          },
+                          {
+                            label: "반려",
+                            tone: "secondary",
+                            url: `/api/admin/qualifications/${item.id}/reject`
+                          }
+                        ]}
+                        reasonPlaceholder="예: 제출된 자격 증빙, 발급기관, 프로필 기재 내용을 확인했고 승인/반려합니다."
+                      />
+                    ) : (
+                      <p className="rounded-2xl bg-surface-sunken px-4 py-3 text-sm text-ink-600">
+                        이미 {qualificationStatusLabel(item.status)} 처리된 자격입니다.
+                      </p>
+                    )}
+                  </article>
+                ))}
+              </div>
+            )}
+          </AdminCard>
+        </div>
+
+        <AdminDarkPanel
+          title="심사 기준"
+          description="공개 프로필에 표시될 자격, 전문분야, 소개 문구가 제출 증빙과 맞는지 확인합니다."
+          className="h-fit lg:sticky lg:top-8"
+        >
+          <dl className="grid gap-4 border-t border-white/10 pt-6 text-sm leading-7 text-slate-200">
+            <div>
+              <dt className="font-semibold text-white">표시 중</dt>
+              <dd className="mt-1">{queue.length.toLocaleString("ko-KR")}건</dd>
+            </div>
+            <div>
+              <dt className="font-semibold text-white">현재 필터</dt>
+              <dd className="mt-1 break-keep">
+                {statusTabs.find((tab) => tab.value === status)?.label ?? "대기 중"}
+                {query ? ` · 검색어 "${query}"` : ""}
+              </dd>
+            </div>
+          </dl>
+        </AdminDarkPanel>
+      </section>
+    </AdminShell>
   );
 }
 
-function BadgePill({ children }: { children: ReactNode }) {
+function StatusPill({
+  children,
+  status
+}: {
+  children: ReactNode;
+  status: QualificationQueueItem["status"];
+}) {
+  const statusClassName =
+    status === "pending"
+      ? "border-[#f3cf85] text-[#cb6f12]"
+      : status === "approved"
+        ? "border-brand-200 text-brand-700"
+        : "border-line text-ink-500";
+
   return (
-    <span className="w-fit rounded-xl bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600">
+    <span
+      className={`w-fit rounded-full border px-4 py-2 text-sm font-semibold ${statusClassName}`}
+    >
       {children}
     </span>
   );
+}
+
+function qualificationStatusCallout(status: QualificationQueueItem["status"]): string {
+  const labels = {
+    approved: "검토 완료",
+    pending: "심사 필요",
+    rejected: "재확인 필요"
+  } satisfies Record<QualificationQueueItem["status"], string>;
+  return labels[status];
 }
 
 const statusTabs = [

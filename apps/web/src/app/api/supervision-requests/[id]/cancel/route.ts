@@ -95,10 +95,10 @@ export async function POST(
 
 function cancelNotificationBody(calendarSync: string): string {
   if (calendarSync === "cancelled") {
-    return "슈퍼바이지가 예약된 슈퍼비전 의뢰를 취소했습니다. 연결된 구글 캘린더 일정도 함께 정리되었습니다.";
+    return "신청자가 예약된 슈퍼비전 의뢰를 취소했습니다. 연결된 외부 일정도 함께 정리되었습니다.";
   }
   if (calendarSync === "needs_reauth_or_config" || calendarSync === "failed") {
-    return "슈퍼바이지가 예약된 슈퍼비전 의뢰를 취소했습니다. 구글 캘린더 일정은 자동 정리에 실패했으니 캘린더에서 직접 확인해주세요.";
+    return "신청자가 예약된 슈퍼비전 의뢰를 취소했습니다. 외부 일정은 자동 정리에 실패했으니 일정표에서 직접 확인해주세요.";
   }
-  return "슈퍼바이지가 예약된 슈퍼비전 의뢰를 취소했습니다.";
+  return "신청자가 예약된 슈퍼비전 의뢰를 취소했습니다.";
 }

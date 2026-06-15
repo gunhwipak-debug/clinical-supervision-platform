@@ -37,7 +37,7 @@ export async function GET(
       {
         error: {
           code: "admin_reason_required",
-          message: "증빙 다운로드에는 30자 이상의 관리자 사유가 필요합니다."
+          message: "증빙 다운로드에는 30자 이상의 처리 사유가 필요합니다."
         }
       },
       { status: 403 }

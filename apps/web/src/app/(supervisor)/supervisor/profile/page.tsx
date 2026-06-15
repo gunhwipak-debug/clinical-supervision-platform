@@ -1,15 +1,15 @@
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { profiles, withUserContext } from "@csp/db";
+import { AppShell } from "../../../../components/app-shell";
 import {
-  CalendarClock,
-  ClipboardList,
-  ShieldCheck,
-  User
-} from "lucide-react";
-import { SiteHeader } from "../../../../components/clinicflow-shell";
-import { Card } from "../../../../components/ui/card";
-import { DemoSupervisorProfilePreview } from "../../../../components/workflow-preview-pages";
+  PrimaryActionPanel,
+  SectionBlock
+} from "../../../../components/clinicflow-shell";
+import { Button } from "../../../../components/ui/button";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { SupervisorProfileEditor, SupervisorVisibilityForm } from "./profile-form";
@@ -19,8 +19,18 @@ export const dynamic = "force-dynamic";
 export default async function SupervisorProfilePage() {
   const current = await getCurrentUser();
 
-  if (!current || current.user.role !== "supervisor") {
-    return <DemoSupervisorProfilePreview />;
+  if (!current) {
+    return (
+      <LoginRequiredState title="슈퍼바이저 프로필" returnTo="/supervisor/profile" />
+    );
+  }
+  if (current.user.role !== "supervisor") {
+    return (
+      <RoleRequiredState
+        title="슈퍼바이저 프로필"
+        description="프로필 관리는 슈퍼바이저 계정에서만 사용할 수 있습니다."
+      />
+    );
   }
 
   const db = createRuntimeDatabase();
@@ -55,43 +65,45 @@ export default async function SupervisorProfilePage() {
   });
 
   return (
-    <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <SiteHeader
-        active="supervisor"
-        actionHref="/supervisor/requests"
-        actionLabel="의뢰 큐"
-      />
+    <AppShell
+      active="supervisor"
+      title="슈퍼바이저 프로필"
+      subtitle="신청자가 사진, 자격, 전문분야, 소개를 보고 자신에게 맞는 슈퍼바이저인지 판단할 수 있게 정리합니다."
+      action={
+        <Button asChild variant="secondary">
+          <Link href="/supervisor">업무 홈</Link>
+        </Button>
+      }
+    >
+      <PrimaryActionPanel
+        title={canPublish ? "검색 공개 상태를 확인하세요" : "공개 전 확인이 필요합니다"}
+      >
+        {publishBlockedReason ??
+          "프로필을 검색 공개로 전환할 수 있습니다. 공개 전 이름, 사진, 자격, 전문분야, 소개 문구를 한 번 더 확인하세요."}
+      </PrimaryActionPanel>
 
-      <div className="mx-auto grid max-w-5xl gap-5 px-5 py-6">
-        <section className="grid gap-5 lg:grid-cols-1">
-          <div className="w-full">
-            <SupervisorProfileEditor
-              profile={profile}
-              qualifications={qualifications}
-              specialties={specialties}
-              initialProducts={products}
+      <section className="grid gap-8 lg:grid-cols-[1fr_340px]">
+        <SupervisorProfileEditor
+          profile={profile}
+          qualifications={qualifications}
+          specialties={specialties}
+          initialProducts={products}
+        />
+
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <SectionBlock
+            subtitle="자격 승인과 계정 확인이 완료되어야 공개 목록에 노출됩니다."
+            title="공개 상태"
+          >
+            <SupervisorVisibilityForm
+              canPublish={canPublish}
+              initialVisibility={profile?.visibility ?? null}
+              publishBlockedReason={publishBlockedReason}
             />
-          </div>
-
-          <div className="grid gap-4">
-            <InfoCard
-              icon={<ShieldCheck aria-hidden size={21} />}
-              title="공개 전 확인"
-              body="자격 승인과 계정 확인이 완료되어야 공개 목록에 노출됩니다. 소개에는 식별 가능한 사례 정보를 적지 마세요."
-            />
-            <Card className="rounded-xl border-line bg-surface-elevated p-5 shadow-card">
-              <SupervisorVisibilityForm
-                canPublish={canPublish}
-                initialVisibility={profile?.visibility ?? null}
-                publishBlockedReason={publishBlockedReason}
-              />
-            </Card>
-          </div>
-        </section>
-      </div>
-
-      <SupervisorBottomNav active="프로필" />
-    </main>
+          </SectionBlock>
+        </aside>
+      </section>
+    </AppShell>
   );
 }
 
@@ -108,64 +120,4 @@ function publishBlockReason({
     return "운영자가 자격 정보를 승인한 뒤 검색 공개로 전환할 수 있습니다.";
   }
   return null;
-}
-
-function InfoCard({
-  icon,
-  title,
-  body
-}: {
-  icon: ReactNode;
-  title: string;
-  body: string;
-}) {
-  return (
-    <Card className="rounded-xl border-line bg-surface-elevated p-5 shadow-card">
-      <div className="flex items-start gap-3">
-        <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
-          {icon}
-        </span>
-        <div>
-          <h2 className="font-bold text-ink-900">{title}</h2>
-          <p className="mt-1 text-sm leading-relaxed text-ink-500">{body}</p>
-        </div>
-      </div>
-    </Card>
-  );
-}
-
-function SupervisorBottomNav({ active }: { active: string }) {
-  return (
-    <nav className="border-t border-line bg-surface-elevated px-4 py-3">
-      <div className="mx-auto grid max-w-5xl grid-cols-4 gap-2 text-center text-sm font-medium text-ink-700">
-        {(
-          [
-            { href: "/supervisor", label: "업무 홈", icon: ClipboardList },
-            { href: "/supervisor/requests", label: "의뢰 검토", icon: ShieldCheck },
-            {
-              href: "/supervisor/availability",
-              label: "일정",
-              icon: CalendarClock
-            },
-            { href: "/supervisor/profile", label: "프로필", icon: User }
-          ] as const
-        ).map((item) => {
-          const Icon = item.icon;
-          const selected = item.label === active;
-          return (
-            <Link
-              className={`grid place-items-center gap-1 rounded-full px-3 py-2 ${
-                selected ? "bg-brand-500 text-white" : "text-ink-700"
-              }`}
-              href={item.href}
-              key={item.label}
-            >
-              <Icon aria-hidden size={24} />
-              <span>{item.label}</span>
-            </Link>
-          );
-        })}
-      </div>
-    </nav>
-  );
 }

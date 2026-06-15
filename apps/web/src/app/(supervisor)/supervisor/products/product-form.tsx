@@ -26,7 +26,7 @@ export function ProductForm() {
     });
     const body = (await response.json()) as { error?: { code: string } };
     const next = response.ok
-      ? "제공 항목을 추가했습니다."
+      ? "슈퍼비전 방식을 추가했습니다."
       : (body.error?.code ?? "추가 실패");
     setMessage(next);
     if (response.ok) {
@@ -39,16 +39,16 @@ export function ProductForm() {
   }
 
   return (
-    <Card className="rounded-2xl">
+    <Card className="rounded-xl">
       <form className="grid gap-4" onSubmit={submit}>
         <div>
-          <h2 className="text-xl font-bold">제공 항목 추가</h2>
+          <h2 className="text-xl font-bold">슈퍼비전 방식 추가</h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-500">
-            검색 상세에서 슈퍼바이지가 선택할 수 있는 세션 유형입니다.
+            신청자가 슈퍼비전 전에 선택할 수 있는 세션 유형입니다.
           </p>
         </div>
         <Field>
-          <Label htmlFor="title">제공 항목명</Label>
+          <Label htmlFor="title">세션명</Label>
           <Input id="title" name="title" required />
         </Field>
         <Field>
@@ -90,7 +90,7 @@ export function ProductForm() {
         <div className="flex flex-wrap items-center gap-3">
           <Button type="submit">
             <PlusCircle aria-hidden size={16} />
-            제공 항목 추가
+            슈퍼비전 방식 추가
           </Button>
           {message ? (
             <p className="text-sm font-semibold text-brand-700">{message}</p>
@@ -116,8 +116,8 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
     });
     const body = (await response.json()) as { error?: { code: string } };
     const next = response.ok
-      ? "제공 항목을 저장했습니다."
-      : productErrorMessage(body.error?.code, "제공 항목 저장 실패");
+      ? "슈퍼비전 방식을 저장했습니다."
+      : productErrorMessage(body.error?.code, "슈퍼비전 방식 저장 실패");
     setMessage(next);
     setBusy(false);
     if (response.ok) {
@@ -129,15 +129,15 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
   }
 
   async function deactivate() {
-    if (!window.confirm("이 제공 항목을 공개 목록에서 중지할까요?")) return;
+    if (!window.confirm("이 슈퍼비전 방식을 공개 목록에서 중지할까요?")) return;
     setBusy(true);
     const response = await fetch(`/api/me/products/${product.id}`, {
       method: "DELETE"
     });
     const body = (await response.json()) as { error?: { code: string } };
     const next = response.ok
-      ? "제공 항목 운영을 중지했습니다."
-      : productErrorMessage(body.error?.code, "제공 항목 중지 실패");
+      ? "슈퍼비전 방식 운영을 중지했습니다."
+      : productErrorMessage(body.error?.code, "슈퍼비전 방식 중지 실패");
     setMessage(next);
     setBusy(false);
     if (response.ok) {
@@ -151,7 +151,7 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
   return (
     <form className="grid gap-3 border-t border-line pt-4" onSubmit={update}>
       <Field>
-        <Label htmlFor={`title-${product.id}`}>제공 항목명</Label>
+        <Label htmlFor={`title-${product.id}`}>세션명</Label>
         <Input
           defaultValue={product.title}
           id={`title-${product.id}`}
@@ -221,7 +221,7 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
           </Button>
         ) : (
           <span className="rounded-md bg-surface-sunken px-3 py-2 text-sm font-semibold text-ink-500">
-            중지된 제공 항목
+            중지된 슈퍼비전 방식
           </span>
         )}
         {message ? (
@@ -256,9 +256,9 @@ function productPayload(form: FormData) {
 
 function productErrorMessage(code: string | undefined, fallback: string): string {
   const labels: Record<string, string> = {
-    forbidden: "슈퍼바이저 계정에서만 제공 항목을 관리할 수 있습니다.",
-    invalid_request: "제공 항목 정보를 다시 확인해주세요.",
-    not_found: "요청한 제공 항목을 찾을 수 없습니다.",
+    forbidden: "슈퍼바이저 계정에서만 슈퍼비전 방식을 관리할 수 있습니다.",
+    invalid_request: "슈퍼비전 방식 정보를 다시 확인해주세요.",
+    not_found: "요청한 슈퍼비전 방식을 찾을 수 없습니다.",
     unauthorized: "로그인이 필요합니다."
   };
   return labels[code ?? ""] ?? fallback;

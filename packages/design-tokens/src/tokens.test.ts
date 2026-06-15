@@ -2,27 +2,27 @@ import { describe, expect, it } from "vitest";
 import { tokens } from "./tokens";
 
 const colorCases = [
-  ["color.brand.50", tokens.color.brand[50], "#F0F3FF"],
-  ["color.brand.100", tokens.color.brand[100], "#DAE2FD"],
-  ["color.brand.500", tokens.color.brand[500], "#2170E4"],
-  ["color.brand.600", tokens.color.brand[600], "#0058BE"],
-  ["color.brand.700", tokens.color.brand[700], "#131B2E"],
-  ["color.accent.100", tokens.color.accent[100], "#D8E2FF"],
-  ["color.accent.500", tokens.color.accent[500], "#ADC6FF"],
-  ["color.accent.600", tokens.color.accent[600], "#004395"],
-  ["color.surface.base", tokens.color.surface.base, "#F9F9FF"],
+  ["color.brand.50", tokens.color.brand[50], "#F4F8FF"],
+  ["color.brand.100", tokens.color.brand[100], "#EEF4FF"],
+  ["color.brand.500", tokens.color.brand[500], "#2563FF"],
+  ["color.brand.600", tokens.color.brand[600], "#2563FF"],
+  ["color.brand.700", tokens.color.brand[700], "#1D4ED8"],
+  ["color.accent.100", tokens.color.accent[100], "#EEF4FF"],
+  ["color.accent.500", tokens.color.accent[500], "#2563FF"],
+  ["color.accent.600", tokens.color.accent[600], "#1D4ED8"],
+  ["color.surface.base", tokens.color.surface.base, "#FFFFFF"],
   ["color.surface.elevated", tokens.color.surface.elevated, "#FFFFFF"],
-  ["color.surface.sunken", tokens.color.surface.sunken, "#E7EEFF"],
-  ["color.ink.900", tokens.color.ink[900], "#111C2D"],
-  ["color.ink.700", tokens.color.ink[700], "#45464D"],
-  ["color.ink.500", tokens.color.ink[500], "#76777D"],
-  ["color.ink.300", tokens.color.ink[300], "#C6C6CD"],
-  ["color.ink.100", tokens.color.ink[100], "#D8E3FB"],
-  ["color.line", tokens.color.line, "#C6C6CD"],
-  ["color.success", tokens.color.success, "#0058BE"],
+  ["color.surface.sunken", tokens.color.surface.sunken, "#F4F8FF"],
+  ["color.ink.900", tokens.color.ink[900], "#081225"],
+  ["color.ink.700", tokens.color.ink[700], "#344054"],
+  ["color.ink.500", tokens.color.ink[500], "#667085"],
+  ["color.ink.300", tokens.color.ink[300], "#98A2B3"],
+  ["color.ink.100", tokens.color.ink[100], "#E7EBF1"],
+  ["color.line", tokens.color.line, "#E7EBF1"],
+  ["color.success", tokens.color.success, "#2563FF"],
   ["color.danger", tokens.color.danger, "#BA1A1A"],
   ["color.warn", tokens.color.warn, "#F59E0B"],
-  ["color.info", tokens.color.info, "#0058BE"]
+  ["color.info", tokens.color.info, "#2563FF"]
 ] as const;
 
 const radiusCases = [
@@ -86,8 +86,8 @@ describe("design tokens", () => {
     expect(actual).toBe(expected);
   });
 
-  it("uses Pretendard as the first sans font", () => {
-    expect(tokens.font.family.sans.startsWith("Pretendard Variable")).toBe(true);
+  it("uses Noto Sans KR as the first sans font", () => {
+    expect(tokens.font.family.sans.startsWith("Noto Sans KR")).toBe(true);
   });
 
   it("keeps card and pop shadows defined", () => {

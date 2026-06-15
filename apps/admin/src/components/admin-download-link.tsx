@@ -16,11 +16,11 @@ export function AdminDownloadLink({
 
   async function download() {
     const reason = window.prompt(
-      "증빙 원본을 내려받는 관리자 사유를 30자 이상 입력하세요."
+      "증빙 원본을 내려받는 처리 사유를 30자 이상 입력하세요."
     );
     if (!reason) return;
     if (reason.trim().length < minReasonLength) {
-      setMessage("관리자 사유는 30자 이상이어야 합니다.");
+      setMessage("처리 사유는 30자 이상이어야 합니다.");
       return;
     }
 

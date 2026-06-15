@@ -15,7 +15,7 @@ It is not a production route implementation and it is not deployment evidence.
 - Reference rhythm: `designprompts.dev/saas` Tech Style, translated into ClinicFlow's clinical supervision context.
 - Tone: modern SaaS polish, but calm, professional, education-oriented, and not a generic sales page.
 - Homepage hierarchy: what ClinicFlow is, who uses it, what the user does next, and what the supervision flow looks like.
-- Header: a floating fixed header with a compact `메뉴` control. It must avoid mechanical navigation labels.
+- Header: a floating fixed header with direct public links only: `ClinicFlow`, `슈퍼바이저 찾기`, `이용 가이드`, `로그인`, and the start CTA when appropriate. It must not expose workflow-step links such as 자료 제출, 결제, 수락 대기, or 학습 기록.
 - Primary workflow: `슈퍼바이저 찾기 -> 세션 선택 -> 일정 선택 -> 사례 자료 업로드 -> 확인·결제 -> 수락 대기 -> 슈퍼비전·검토 -> 피드백 확인 -> 학습 기록`.
 
 ## What Was Cleaned Up

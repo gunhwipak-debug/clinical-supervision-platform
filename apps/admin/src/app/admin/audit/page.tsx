@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { audit, withUserContext } from "@csp/db";
-import { ArrowLeft, Eye, FileClock, ShieldCheck } from "lucide-react";
+import { Eye, FileClock, ShieldCheck } from "lucide-react";
 import {
   AdminCard,
   AdminLockedState,
@@ -39,7 +39,7 @@ export default async function AuditPage() {
     {
       userId: current.session.userId,
       role: "admin",
-      adminReason: "운영 처리 기록 조회를 위한 관리자 사유입니다."
+      adminReason: "운영 처리 기록 조회를 위한 처리 사유입니다."
     },
     async (tx) => ({
       accessLogs: await audit.listAccessLogs(tx, { limit: 80 }),
@@ -48,127 +48,130 @@ export default async function AuditPage() {
   );
 
   return (
-    <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-5 py-6 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between">
-          <a aria-label="관리자 대시보드" href="/admin">
-            <ArrowLeft aria-hidden className="text-ink-700" size={30} />
-          </a>
-          <h1 className="text-2xl font-bold">처리 기록</h1>
-          <ShieldCheck aria-hidden className="text-ink-700" size={26} />
-        </div>
-      </header>
-
-      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-7">
-        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="grid size-11 place-items-center rounded-xl bg-brand-50 text-brand-600">
-                <FileClock aria-hidden size={22} />
-              </span>
-              <div>
-                <h2 className="text-xl font-bold">운영 추적 상태</h2>
-                <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  관리자 조치와 자료 접근 이력을 함께 확인합니다. 사례 자료 본문은 이
-                  화면에 노출하지 않습니다.
-                </p>
-              </div>
+    <AdminShell
+      currentPath="/admin/audit"
+      title="처리 기록"
+      subtitle="관리자 조치와 자료 접근 이력을 필요한 범위 안에서 다시 확인합니다."
+    >
+      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <AdminCard>
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
+              <FileClock aria-hidden size={22} />
+            </span>
+            <div>
+              <h2 className="text-xl font-bold text-ink-900">운영 추적 상태</h2>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                관리자 조치와 자료 접근 이력을 함께 확인합니다. 사례 자료 본문은 이
+                화면에 노출하지 않습니다.
+              </p>
             </div>
-            <div className="flex flex-wrap gap-2">
-              <Badge>
-                관리자 조치 {logs.auditLogs.length.toLocaleString("ko-KR")}건
-              </Badge>
-              <Badge>
-                자료 접근 {logs.accessLogs.length.toLocaleString("ko-KR")}건
-              </Badge>
-            </div>
+          </div>
+          <div className="mt-5 flex flex-wrap gap-2">
+            <Badge>관리자 조치 {logs.auditLogs.length.toLocaleString("ko-KR")}건</Badge>
+            <Badge>자료 접근 {logs.accessLogs.length.toLocaleString("ko-KR")}건</Badge>
           </div>
         </AdminCard>
 
-        <section className="grid gap-6 xl:grid-cols-2">
-          <AdminCard className="rounded-xl border-line bg-surface-elevated p-0 shadow-card">
-            <div className="border-b border-line px-6 py-5">
-              <h2 className="text-xl font-bold">관리자 조치 기록</h2>
-              <p className="mt-1 text-sm text-ink-500">
-                승인, 반려, 접근 링크 발급, 운영 조회 같은 관리자 행위입니다.
+        <AdminCard className="h-fit">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
+              <ShieldCheck aria-hidden size={22} />
+            </span>
+            <div>
+              <h2 className="text-xl font-bold text-ink-900">조회 원칙</h2>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                최근 기록만 확인하고, 필요한 경우에만 접근 링크와 처리 사유를 다시
+                대조합니다.
               </p>
             </div>
-            <div className="grid divide-y divide-line">
-              {logs.auditLogs.length === 0 ? (
-                <EmptyLog message="표시할 관리자 조치 기록이 없습니다." />
-              ) : (
-                logs.auditLogs.map((row) => (
-                  <article className="grid gap-3 p-5" key={row.id}>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <strong className="text-lg text-ink-900">
-                        {actionLabel(row.action)}
-                      </strong>
-                      <span className="rounded-xl bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
-                        {formatDate(row.createdAt)}
-                      </span>
-                    </div>
-                    <dl className="grid gap-2 text-sm text-ink-700">
-                      <LogItem
-                        label="대상"
-                        value={targetLabel(row.targetType, row.targetId)}
-                      />
-                      <LogItem
-                        label="관리자"
-                        value={row.actorUserId ? row.actorUserId.slice(0, 8) : "시스템"}
-                      />
-                      <LogItem label="사유" value={row.reason ?? "사유 없음"} />
-                    </dl>
-                    {contextSummary(row.context) ? (
-                      <p className="rounded-lg bg-surface-sunken px-4 py-3 text-xs leading-relaxed text-ink-500">
-                        {contextSummary(row.context)}
-                      </p>
-                    ) : null}
-                  </article>
-                ))
-              )}
-            </div>
-          </AdminCard>
+          </div>
+        </AdminCard>
+      </section>
 
-          <AdminCard className="rounded-xl border-line bg-surface-elevated p-0 shadow-card">
-            <div className="border-b border-line px-6 py-5">
-              <h2 className="text-xl font-bold">자료 접근 기록</h2>
-              <p className="mt-1 text-sm text-ink-500">
-                파일 미리보기, 다운로드, 업로드, 삭제 이력을 확인합니다.
-              </p>
-            </div>
-            <div className="grid divide-y divide-line">
-              {logs.accessLogs.length === 0 ? (
-                <EmptyLog message="표시할 자료 접근 기록이 없습니다." />
-              ) : (
-                logs.accessLogs.map((row) => (
-                  <article className="grid gap-3 p-5" key={row.id}>
-                    <div className="flex flex-wrap items-center justify-between gap-3">
-                      <span className="inline-flex items-center gap-2">
-                        <Eye aria-hidden className="text-brand-600" size={18} />
-                        <strong className="text-lg text-ink-900">
-                          {fileActionLabel(row.action)}
-                        </strong>
-                      </span>
-                      <span className="rounded-xl bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
-                        {formatDate(row.createdAt)}
-                      </span>
-                    </div>
-                    <dl className="grid gap-2 text-sm text-ink-700">
-                      <LogItem label="파일" value={row.fileId.slice(0, 8)} />
-                      <LogItem label="사용자" value={row.userId.slice(0, 8)} />
-                      <LogItem
-                        label="접근 링크"
-                        value={row.signedUrlId ? row.signedUrlId.slice(0, 8) : "없음"}
-                      />
-                    </dl>
-                  </article>
-                ))
-              )}
-            </div>
-          </AdminCard>
-        </section>
-      </div>
-    </main>
+      <section className="grid gap-5 xl:grid-cols-2">
+        <AdminCard className="overflow-hidden p-0">
+          <div className="border-b border-line px-5 py-4">
+            <h2 className="text-2xl font-bold text-ink-900">관리자 조치 기록</h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-500">
+              승인, 반려, 접근 링크 발급, 운영 조회 같은 관리자 행위입니다.
+            </p>
+          </div>
+          <div className="grid divide-y divide-line">
+            {logs.auditLogs.length === 0 ? (
+              <EmptyLog message="표시할 관리자 조치 기록이 없습니다." />
+            ) : (
+              logs.auditLogs.map((row) => (
+                <article className="grid gap-3 p-5" key={row.id}>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <strong className="text-lg text-ink-900">
+                      {actionLabel(row.action)}
+                    </strong>
+                    <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
+                      {formatDate(row.createdAt)}
+                    </span>
+                  </div>
+                  <dl className="grid gap-2 text-sm text-ink-700">
+                    <LogItem
+                      label="대상"
+                      value={targetLabel(row.targetType, row.targetId)}
+                    />
+                    <LogItem
+                      label="관리자"
+                      value={row.actorUserId ? row.actorUserId.slice(0, 8) : "시스템"}
+                    />
+                    <LogItem label="사유" value={row.reason ?? "사유 없음"} />
+                  </dl>
+                  {contextSummary(row.context) ? (
+                    <p className="rounded-lg bg-surface-sunken px-4 py-3 text-xs leading-relaxed text-ink-500">
+                      {contextSummary(row.context)}
+                    </p>
+                  ) : null}
+                </article>
+              ))
+            )}
+          </div>
+        </AdminCard>
+
+        <AdminCard className="overflow-hidden p-0">
+          <div className="border-b border-line px-5 py-4">
+            <h2 className="text-2xl font-bold text-ink-900">자료 접근 기록</h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-500">
+              파일 미리보기, 다운로드, 업로드, 삭제 이력을 확인합니다.
+            </p>
+          </div>
+          <div className="grid divide-y divide-line">
+            {logs.accessLogs.length === 0 ? (
+              <EmptyLog message="표시할 자료 접근 기록이 없습니다." />
+            ) : (
+              logs.accessLogs.map((row) => (
+                <article className="grid gap-3 p-5" key={row.id}>
+                  <div className="flex flex-wrap items-center justify-between gap-3">
+                    <span className="inline-flex items-center gap-2">
+                      <Eye aria-hidden className="text-brand-600" size={18} />
+                      <strong className="text-lg text-ink-900">
+                        {fileActionLabel(row.action)}
+                      </strong>
+                    </span>
+                    <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
+                      {formatDate(row.createdAt)}
+                    </span>
+                  </div>
+                  <dl className="grid gap-2 text-sm text-ink-700">
+                    <LogItem label="파일" value={row.fileId.slice(0, 8)} />
+                    <LogItem label="사용자" value={row.userId.slice(0, 8)} />
+                    <LogItem
+                      label="접근 링크"
+                      value={row.signedUrlId ? row.signedUrlId.slice(0, 8) : "없음"}
+                    />
+                  </dl>
+                </article>
+              ))
+            )}
+          </div>
+        </AdminCard>
+      </section>
+    </AdminShell>
   );
 }
 

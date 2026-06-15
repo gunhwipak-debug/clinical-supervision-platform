@@ -82,13 +82,13 @@ export async function POST(
 
   if (result.request.supervisorId) {
     await sendUserNotification(db, {
-      body: "슈퍼바이지가 지도 의견을 확인하고 승인했습니다. 완료 기록 발급이 필요한 의뢰라면 다음 단계를 진행해주세요.",
+      body: "신청자가 슈퍼비전 피드백을 확인하고 승인했습니다. 학습 기록 발급이 필요한 의뢰라면 다음 단계를 진행해주세요.",
       href: `/supervisor/requests/${result.request.id}`,
       kind: "feedback_approved_supervisor",
       metadata: { requestId: result.request.id },
       origin: new URL(request.url).origin,
       target: { role: "supervisor", userId: result.request.supervisorId },
-      title: "지도 의견이 승인되었습니다"
+      title: "슈퍼비전 피드백이 승인되었습니다"
     });
   }
 

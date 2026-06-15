@@ -1,84 +1,94 @@
-import {
-  ArrowRight,
-  BadgeCheck,
-  Banknote,
-  ClipboardList,
-  Gauge,
-  ListChecks,
-  LockKeyhole,
-  RotateCcw,
-} from "lucide-react";
+import { ArrowRight } from "lucide-react";
 
 const navItems = [
-  { href: "/admin", label: "운영 홈", icon: Gauge },
-  { href: "/admin/queue", label: "대기열", icon: ListChecks },
-  { href: "/admin/qualifications", label: "자격 승인", icon: BadgeCheck },
-  { href: "/admin/refunds", label: "환불 큐", icon: RotateCcw },
-  { href: "/admin/payouts", label: "정산", icon: Banknote }
+  { href: "/admin", label: "운영 홈" },
+  { href: "/admin/queue", label: "운영 대기열" },
+  { href: "/admin/qualifications", label: "자격 심사" },
+  { href: "/admin/refunds", label: "환불 심사" },
+  { href: "/admin/payouts", label: "정산 확인" },
+  { href: "/admin/audit", label: "처리 기록" }
 ] as const;
 
 export function AdminShell({
+  currentPath,
+  eyebrow,
+  primaryAction,
   title,
   subtitle,
   children
 }: {
+  currentPath?: string;
+  eyebrow?: string;
+  primaryAction?: {
+    href: string;
+    label: string;
+  };
   title: string;
   subtitle?: string;
   children: React.ReactNode;
 }) {
   return (
     <main className="min-h-screen bg-surface-base">
-      <div className="mx-auto grid max-w-7xl gap-6 px-5 py-6 lg:grid-cols-[260px_1fr]">
-        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 shadow-card lg:sticky lg:top-6">
+      <div className="bg-surface-base px-4 py-3">
+        <div className="mx-auto flex max-w-6xl flex-col gap-4 rounded-[18px] border border-line bg-surface-elevated px-5 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:flex-row lg:items-center lg:justify-between">
           <a className="flex items-center gap-3 font-bold text-ink-900" href="/">
-            <span className="grid size-10 place-items-center rounded-lg bg-brand-600 text-sm text-surface-elevated">
-              운영
-            </span>
+            <span className="size-4 rounded-full bg-ink-900" aria-hidden="true" />
             <span>
-              <span className="block text-lg">ClinicFlow 운영</span>
-              <span className="block text-xs font-semibold text-ink-500">
-                운영 콘솔
-              </span>
+              <span className="block text-base">ClinicFlow 운영</span>
             </span>
           </a>
-          <div className="mt-5 rounded-lg bg-brand-50 p-3 text-sm text-brand-700">
-            <div className="flex items-center gap-2 font-semibold">
-              <ClipboardList aria-hidden size={17} />
-              처리할 업무부터 확인
-            </div>
-            <p className="mt-1 text-xs leading-relaxed text-ink-500">
-              자격 승인, 환불, 정산, 처리 기록을 대기열 기준으로 확인합니다.
-            </p>
-          </div>
           <nav
-            className="mt-5 grid gap-2 text-sm font-semibold text-ink-700"
+            className="flex flex-wrap gap-2 text-sm font-semibold text-ink-700"
             aria-label="운영 메뉴"
           >
             {navItems.map((item) => (
               <a
-                className="flex items-center gap-3 rounded-lg px-3 py-3 transition hover:bg-surface-sunken"
+                aria-current={currentPath === item.href ? "page" : undefined}
+                className={`rounded-md px-3 py-2 transition ${
+                  currentPath === item.href
+                    ? "bg-brand-50 text-brand-700"
+                    : "text-ink-600 hover:bg-surface-sunken hover:text-ink-900"
+                }`}
                 href={item.href}
                 key={item.href}
               >
-                <item.icon aria-hidden size={18} />
                 {item.label}
               </a>
             ))}
           </nav>
-        </aside>
-        <section className="grid gap-6">
-          <header className="grid gap-3 rounded-xl border border-line bg-surface-elevated p-5 shadow-card">
-            <p className="inline-flex w-fit items-center gap-2 rounded-pill bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
-              <ClipboardList aria-hidden size={16} />
-              운영 콘솔
-            </p>
-            <h1 className="text-3xl font-bold leading-tight text-ink-900 md:text-4xl">
-              {title}
-            </h1>
-            {subtitle ? <p className="max-w-2xl text-ink-500">{subtitle}</p> : null}
-          </header>
-          {children}
-        </section>
+        </div>
+      </div>
+
+      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 md:gap-10 md:py-14">
+        <header className="grid gap-6 border-b border-line pb-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div className="grid gap-5">
+            {eyebrow ? (
+              <span className="inline-flex w-fit rounded-full border border-[#f3cf85] px-4 py-2 text-sm font-semibold text-[#cb6f12]">
+                {eyebrow}
+              </span>
+            ) : null}
+            <div className="grid gap-3">
+              <h1 className="break-keep text-5xl font-bold leading-none tracking-normal text-ink-900 md:text-[64px]">
+                {title}
+              </h1>
+              {subtitle ? (
+                <p className="max-w-3xl break-keep text-lg leading-8 text-ink-500">
+                  {subtitle}
+                </p>
+              ) : null}
+            </div>
+          </div>
+          {primaryAction ? (
+            <a
+              className="inline-flex w-fit items-center gap-2 rounded-md bg-brand-600 px-5 py-3 text-base font-bold text-white shadow-[0_12px_24px_rgba(37,99,235,0.18)] transition hover:bg-brand-700"
+              href={primaryAction.href}
+            >
+              {primaryAction.label}
+              <ArrowRight aria-hidden size={18} />
+            </a>
+          ) : null}
+        </header>
+        {children}
       </div>
     </main>
   );
@@ -86,17 +96,42 @@ export function AdminShell({
 
 export function AdminCard({
   children,
+  id,
   className = ""
 }: {
   children: React.ReactNode;
+  id?: string;
   className?: string;
 }) {
   return (
     <article
-      className={`rounded-xl border border-line bg-surface-elevated p-5 shadow-card ${className}`}
+      id={id}
+      className={`rounded-xl border border-line bg-surface-elevated p-6 ${className}`}
     >
       {children}
     </article>
+  );
+}
+
+export function AdminDarkPanel({
+  title,
+  description,
+  children,
+  className = ""
+}: {
+  title: string;
+  description: string;
+  children?: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <aside className={`rounded-xl bg-ink-900 p-8 text-white ${className}`}>
+      <h2 className="text-[32px] font-bold leading-tight">{title}</h2>
+      <p className="mt-6 break-keep text-base leading-8 text-slate-200">
+        {description}
+      </p>
+      {children ? <div className="mt-8">{children}</div> : null}
+    </aside>
   );
 }
 
@@ -114,45 +149,33 @@ export function AdminLockedState({
   const webOrigin =
     process.env["NEXT_PUBLIC_WEB_APP_URL"] ?? "https://clinicflow-web-beta.vercel.app";
   const adminOrigin =
-    process.env["NEXT_PUBLIC_ADMIN_APP_URL"] ?? "https://clinicflow-admin-six.vercel.app";
+    process.env["NEXT_PUBLIC_ADMIN_APP_URL"] ??
+    "https://clinicflow-admin-six.vercel.app";
   const loginHref = `${webOrigin}/login?returnTo=${encodeURIComponent(
     `${adminOrigin}${returnPath}`
   )}`;
 
   return (
-    <AdminCard className="grid gap-5 p-6">
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex min-w-0 gap-4">
-          <span className="grid size-12 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-            <LockKeyhole aria-hidden size={22} />
-          </span>
-          <div className="min-w-0">
-            <h2 className="break-keep text-2xl font-bold leading-tight text-ink-900">
-              {title}
-            </h2>
-            <p className="mt-2 max-w-2xl break-keep text-sm leading-relaxed text-ink-600">
-              {description}
-            </p>
-          </div>
-        </div>
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <AdminDarkPanel title={title} description={description} className="grid gap-6">
         <a
-          className="inline-flex w-fit shrink-0 items-center gap-2 rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-surface-elevated transition hover:bg-brand-700"
+          className="inline-flex w-fit items-center gap-2 rounded-md bg-brand-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-brand-700"
           href={loginHref}
         >
           관리자 로그인
           <ArrowRight aria-hidden size={16} />
         </a>
-      </div>
-      <div className="grid gap-3 rounded-lg bg-surface-sunken/60 p-4 md:grid-cols-3">
-        {previewItems.map((item) => (
-          <div
-            className="rounded-lg border border-line bg-surface-elevated px-4 py-3 text-sm font-semibold text-ink-700"
-            key={item}
-          >
-            {item}
-          </div>
-        ))}
-      </div>
-    </AdminCard>
+      </AdminDarkPanel>
+      <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-6 lg:sticky lg:top-8">
+        <h3 className="text-xl font-bold text-ink-900">로그인 후 확인</h3>
+        <div className="mt-5 grid gap-3" aria-label="로그인 후 확인할 항목">
+          {previewItems.map((item) => (
+            <div className="border-b border-line pb-3 last:border-b-0" key={item}>
+              <span className="text-sm font-semibold text-ink-700">{item}</span>
+            </div>
+          ))}
+        </div>
+      </aside>
+    </div>
   );
 }

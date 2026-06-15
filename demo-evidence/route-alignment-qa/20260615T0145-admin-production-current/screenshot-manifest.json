@@ -1,0 +1,78 @@
+{
+  "base": "https://clinicflow-admin-six.vercel.app",
+  "capturedAt": "2026-06-15T01:52:54.864Z",
+  "routes": [
+    {
+      "name": "36-admin-root",
+      "route": "/",
+      "url": "https://clinicflow-admin-six.vercel.app/",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin",
+      "file": "36-admin-root.png"
+    },
+    {
+      "name": "37-admin-home",
+      "route": "/admin",
+      "url": "https://clinicflow-admin-six.vercel.app/admin",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin",
+      "file": "37-admin-home.png"
+    },
+    {
+      "name": "38-admin-queue",
+      "route": "/admin/queue",
+      "url": "https://clinicflow-admin-six.vercel.app/admin/queue",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/queue",
+      "file": "38-admin-queue.png"
+    },
+    {
+      "name": "39-admin-qualifications",
+      "route": "/admin/qualifications",
+      "url": "https://clinicflow-admin-six.vercel.app/admin/qualifications",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/qualifications",
+      "file": "39-admin-qualifications.png"
+    },
+    {
+      "name": "40-admin-refunds",
+      "route": "/admin/refunds",
+      "url": "https://clinicflow-admin-six.vercel.app/admin/refunds",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/refunds",
+      "file": "40-admin-refunds.png"
+    },
+    {
+      "name": "41-admin-payouts",
+      "route": "/admin/payouts",
+      "url": "https://clinicflow-admin-six.vercel.app/admin/payouts",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/payouts",
+      "file": "41-admin-payouts.png"
+    },
+    {
+      "name": "42-admin-audit",
+      "route": "/admin/audit",
+      "url": "https://clinicflow-admin-six.vercel.app/admin/audit",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/audit",
+      "file": "42-admin-audit.png"
+    },
+    {
+      "name": "43-admin-payouts-alias",
+      "route": "/payouts",
+      "url": "https://clinicflow-admin-six.vercel.app/payouts",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/payouts",
+      "file": "43-admin-payouts-alias.png"
+    },
+    {
+      "name": "44-admin-refunds-alias",
+      "route": "/refunds",
+      "url": "https://clinicflow-admin-six.vercel.app/refunds",
+      "status": 200,
+      "finalUrl": "https://clinicflow-admin-six.vercel.app/admin/refunds",
+      "file": "44-admin-refunds-alias.png"
+    }
+  ]
+}

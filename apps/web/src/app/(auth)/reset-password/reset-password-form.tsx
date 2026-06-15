@@ -65,48 +65,67 @@ export function ResetPasswordForm({ initialToken }: { initialToken: string }) {
   return (
     <form className="grid gap-4" onSubmit={form.handleSubmit(submit)}>
       <Field>
-        <Label htmlFor="reset-code">메일 확인 정보</Label>
+        <Label className="text-sm font-semibold text-[#8b94ad]" htmlFor="reset-code">
+          메일 확인 정보
+        </Label>
         <Input
           autoComplete="one-time-code"
+          className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
           id="reset-code"
           placeholder="메일 확인 정보"
           {...form.register("mailCode")}
         />
         {form.formState.errors.mailCode ? (
-          <p className="text-sm text-danger">
+          <p className="text-sm text-[#c24141]">
             {form.formState.errors.mailCode.message}
           </p>
         ) : null}
       </Field>
       <Field>
-        <Label htmlFor="reset-password">새 비밀번호</Label>
+        <Label
+          className="text-sm font-semibold text-[#8b94ad]"
+          htmlFor="reset-password"
+        >
+          새 비밀번호
+        </Label>
         <Input
           autoComplete="new-password"
+          className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none focus-visible:outline-[#2563ff]"
           id="reset-password"
           type="password"
           {...form.register("password")}
         />
         {form.formState.errors.password ? (
-          <p className="text-sm text-danger">
+          <p className="text-sm text-[#c24141]">
             {form.formState.errors.password.message}
           </p>
         ) : null}
       </Field>
       <Field>
-        <Label htmlFor="reset-confirm-password">새 비밀번호 확인</Label>
+        <Label
+          className="text-sm font-semibold text-[#8b94ad]"
+          htmlFor="reset-confirm-password"
+        >
+          새 비밀번호 확인
+        </Label>
         <Input
           autoComplete="new-password"
+          className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none focus-visible:outline-[#2563ff]"
           id="reset-confirm-password"
           type="password"
           {...form.register("confirmPassword")}
         />
         {form.formState.errors.confirmPassword ? (
-          <p className="text-sm text-danger">
+          <p className="text-sm text-[#c24141]">
             {form.formState.errors.confirmPassword.message}
           </p>
         ) : null}
       </Field>
-      <Button disabled={form.formState.isSubmitting || done} type="submit">
+      <Button
+        className="h-12 rounded-[16px] bg-[#2563ff] text-base font-semibold text-white hover:bg-[#1f58e6]"
+        disabled={form.formState.isSubmitting || done}
+        type="submit"
+      >
         <KeyRound aria-hidden size={18} />
         {form.formState.isSubmitting ? "변경 중" : "비밀번호 변경"}
       </Button>
@@ -114,7 +133,11 @@ export function ResetPasswordForm({ initialToken }: { initialToken: string }) {
         <InlineMessage tone={done ? "brand" : "danger"}>{message}</InlineMessage>
       ) : null}
       {done ? (
-        <Button asChild variant="secondary">
+        <Button
+          asChild
+          className="h-12 rounded-[16px] border border-[#e7ebf1] bg-white text-base font-semibold text-[#081225] hover:bg-[#f8faff]"
+          variant="secondary"
+        >
           <Link href="/login">로그인하기</Link>
         </Button>
       ) : null}

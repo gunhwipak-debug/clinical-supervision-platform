@@ -18,7 +18,7 @@ export const Input = forwardRef<
     <input
       ref={ref}
       className={cn(
-        "h-11 w-full rounded-md border border-line bg-surface-elevated px-3 text-ink-900 shadow-sm placeholder:text-ink-300",
+        "h-11 w-full rounded-md border border-line bg-surface-elevated px-3 text-ink-900 shadow-sm placeholder:text-ink-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600",
         className
       )}
       {...props}
@@ -34,7 +34,7 @@ export const Textarea = forwardRef<
     <textarea
       ref={ref}
       className={cn(
-        "min-h-28 w-full rounded-md border border-line bg-surface-elevated px-3 py-3 text-ink-900 shadow-sm placeholder:text-ink-300",
+        "min-h-28 w-full rounded-md border border-line bg-surface-elevated px-3 py-3 text-ink-900 shadow-sm placeholder:text-ink-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-3 focus-visible:outline-brand-600",
         className
       )}
       {...props}

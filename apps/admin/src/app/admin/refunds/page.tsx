@@ -1,5 +1,5 @@
 import { payments, withUserContext } from "@csp/db";
-import { ArrowLeft, Clock3, ReceiptText, RotateCcw, ShieldCheck } from "lucide-react";
+import { Clock3, ReceiptText, RotateCcw, ShieldCheck } from "lucide-react";
 import { AdminActionPanel } from "../../../components/admin-action-panel";
 import {
   AdminCard,
@@ -18,7 +18,7 @@ export default async function RefundsPage() {
 
   if (!current) {
     return (
-      <AdminShell title="환불 큐" subtitle="관리자 로그인이 필요합니다.">
+      <AdminShell title="환불 검토" subtitle="관리자 로그인이 필요합니다.">
         <AdminLockedState
           title="환불 검토는 관리자 계정에서 진행합니다"
           description="요청 사유, 결제 상태, 슈퍼비전 진행 단계를 함께 보고 승인 여부를 결정합니다."
@@ -39,69 +39,85 @@ export default async function RefundsPage() {
     {
       userId: current.session.userId,
       role: "admin",
-      adminReason: "운영 환불 큐 조회를 위한 관리자 사유입니다."
+      adminReason: "운영 환불 검토 조회를 위한 처리 사유입니다."
     },
     (tx) => payments.listRefundRequests(tx, "requested")
   );
 
   return (
-    <main className="min-h-screen bg-surface-base pb-10 text-ink-900">
-      <header className="sticky top-0 z-20 border-b border-line bg-surface-elevated/95 px-5 py-6 backdrop-blur">
-        <div className="mx-auto flex max-w-5xl items-center justify-between">
-          <a aria-label="관리자 대시보드" href="/admin">
-            <ArrowLeft aria-hidden className="text-ink-700" size={30} />
-          </a>
-          <h1 className="text-2xl font-bold">환불 큐</h1>
-          <span className="rounded-pill bg-brand-50 px-3 py-1 text-sm font-semibold text-brand-700">
-            검토 대기
-          </span>
-        </div>
-      </header>
-
-      <div className="mx-auto grid max-w-5xl gap-6 px-5 py-7">
-        <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-          <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="grid size-11 place-items-center rounded-2xl bg-brand-50 text-brand-600">
-                <RotateCcw aria-hidden size={22} />
-              </span>
-              <div>
-                <h2 className="text-xl font-bold">환불 요청 상태</h2>
-                <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  실제 승인·반려는 API에서 30자 이상 관리자 사유를 요구합니다.
-                </p>
-              </div>
-            </div>
-            <span className="w-fit rounded-xl bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600">
-              요청됨 {String(refunds.length)}건
+    <AdminShell
+      currentPath="/admin/refunds"
+      title="환불 검토"
+      subtitle="요청 사유, 결제 상태, 진행 단계를 함께 보고 승인 여부를 결정합니다."
+    >
+      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
+        <AdminCard>
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
+              <RotateCcw aria-hidden size={22} />
             </span>
+            <div>
+              <h2 className="text-xl font-bold text-ink-900">환불 요청 상태</h2>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                실제 승인과 반려는 처리 사유를 30자 이상 남겨야 진행됩니다.
+              </p>
+            </div>
           </div>
+          <dl className="mt-5 grid gap-4 text-sm leading-relaxed sm:grid-cols-2">
+            <div>
+              <dt className="font-bold text-ink-500">검토 대기</dt>
+              <dd className="mt-1 text-ink-900">
+                {refunds.length.toLocaleString("ko-KR")}건
+              </dd>
+            </div>
+            <div>
+              <dt className="font-bold text-ink-500">처리 기준</dt>
+              <dd className="mt-1 break-keep text-ink-900">
+                결제 상태와 의뢰 진행 단계를 함께 확인한 뒤 처리합니다.
+              </dd>
+            </div>
+          </dl>
         </AdminCard>
 
-        <section className="grid gap-4" aria-label="환불 요청">
-          {refunds.length === 0 ? (
-            <AdminCard className="rounded-xl border-line bg-surface-elevated p-6 shadow-card">
-              <div className="flex items-start gap-3">
-                <span className="grid size-10 place-items-center rounded-xl bg-brand-50 text-brand-600">
-                  <ShieldCheck aria-hidden size={20} />
-                </span>
-                <div>
-                  <strong className="text-xl text-ink-900">대기 중인 환불 없음</strong>
-                  <p className="mt-1 text-sm text-ink-500">
-                    환불 요청이 접수되면 이곳에 표시됩니다.
-                  </p>
-                </div>
-              </div>
-            </AdminCard>
-          ) : (
-            refunds.map((refund) => (
-              <AdminCard
-                key={refund.id}
-                className="rounded-xl border-line bg-surface-elevated p-6 shadow-card"
-              >
-                <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-center">
+        <AdminCard className="h-fit">
+          <div className="flex items-start gap-3">
+            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
+              <ShieldCheck aria-hidden size={22} />
+            </span>
+            <div>
+              <h2 className="text-xl font-bold text-ink-900">운영 메모</h2>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                환불 사유, 결제 완료 여부, 현재 의뢰 상태가 서로 맞는지 먼저 확인합니다.
+              </p>
+            </div>
+          </div>
+        </AdminCard>
+      </section>
+
+      <AdminCard className="overflow-hidden p-0">
+        <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+          <div>
+            <h2 className="text-2xl font-bold text-ink-900">환불 요청 목록</h2>
+            <p className="mt-1 text-sm leading-relaxed text-ink-500">
+              요청 사유와 연결된 결제 상태를 같은 행에서 확인합니다.
+            </p>
+          </div>
+          <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
+            {refunds.length.toLocaleString("ko-KR")}건
+          </span>
+        </div>
+
+        {refunds.length === 0 ? (
+          <p className="p-6 text-sm font-semibold text-ink-500">
+            환불 요청이 접수되면 이곳에 표시됩니다.
+          </p>
+        ) : (
+          <div className="grid divide-y divide-line" aria-label="환불 요청">
+            {refunds.map((refund) => (
+              <article className="grid gap-5 p-5" key={refund.id}>
+                <div className="grid gap-4 md:grid-cols-[1fr_260px] md:items-start">
                   <div className="flex items-start gap-3">
-                    <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-brand-50 text-brand-600">
+                    <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
                       <ReceiptText aria-hidden size={22} />
                     </span>
                     <div>
@@ -109,11 +125,11 @@ export default async function RefundsPage() {
                         <strong className="text-2xl text-ink-900">
                           ₩{refund.amountKrw.toLocaleString("ko-KR")}
                         </strong>
-                        <span className="rounded-xl bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
+                        <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
                           {refundStatusLabel(refund.status)}
                         </span>
                       </div>
-                      <p className="mt-2 text-sm leading-relaxed text-ink-500">
+                      <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
                         {refund.reason ?? "사유 없음"}
                       </p>
                       <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-ink-500">
@@ -122,7 +138,8 @@ export default async function RefundsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="grid gap-2 rounded-2xl bg-brand-50 p-4 text-sm text-ink-700 md:min-w-[260px]">
+
+                  <div className="grid gap-2 rounded-xl bg-surface-sunken p-4 text-sm text-ink-700">
                     <span className="flex justify-between gap-3">
                       <span>결제 상태</span>
                       <strong>{paymentStatusLabel(refund.paymentStatus)}</strong>
@@ -132,34 +149,33 @@ export default async function RefundsPage() {
                       <strong>{requestStatusLabel(refund.requestStatus)}</strong>
                     </span>
                     <span className="flex justify-between gap-3">
-                      <span>환불 ID</span>
+                      <span>환불 접수번호</span>
                       <strong>{refund.id.slice(0, 8)}</strong>
                     </span>
                   </div>
                 </div>
-                <div className="mt-5">
-                  <AdminActionPanel
-                    actions={[
-                      {
-                        label: "환불 승인",
-                        tone: "primary",
-                        url: `/api/admin/refunds/${refund.id}/approve`
-                      },
-                      {
-                        label: "환불 반려",
-                        tone: "secondary",
-                        url: `/api/admin/refunds/${refund.id}/reject`
-                      }
-                    ]}
-                    reasonPlaceholder="예: 환불 요청 사유, 결제 상태, 환불 가능 금액을 확인했고 정책상 승인/거절합니다."
-                  />
-                </div>
-              </AdminCard>
-            ))
-          )}
-        </section>
-      </div>
-    </main>
+
+                <AdminActionPanel
+                  actions={[
+                    {
+                      label: "환불 승인",
+                      tone: "primary",
+                      url: `/api/admin/refunds/${refund.id}/approve`
+                    },
+                    {
+                      label: "환불 반려",
+                      tone: "secondary",
+                      url: `/api/admin/refunds/${refund.id}/reject`
+                    }
+                  ]}
+                  reasonPlaceholder="예: 환불 요청 사유, 결제 상태, 환불 가능 금액을 확인했고 정책상 승인/거절합니다."
+                />
+              </article>
+            ))}
+          </div>
+        )}
+      </AdminCard>
+    </AdminShell>
   );
 }
 
@@ -199,7 +215,7 @@ function paymentStatusLabel(status: string): string {
 function requestStatusLabel(status: string): string {
   const labels: Record<string, string> = {
     accepted: "수락됨",
-    additional_info_requested: "보완 요청",
+    additional_info_requested: "추가 자료 요청",
     awaiting_payment: "결제 대기",
     awaiting_supervisor_review: "검토 대기",
     cancelled: "취소됨",

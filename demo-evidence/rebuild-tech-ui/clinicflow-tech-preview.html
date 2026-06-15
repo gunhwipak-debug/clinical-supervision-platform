@@ -30,7 +30,7 @@
         margin: 0;
         background: var(--page);
         color: var(--ink);
-        font-family: Inter, "Noto Sans KR", system-ui, sans-serif;
+        font-family: "Noto Sans KR", Inter, system-ui, sans-serif;
         overflow-x: hidden;
         scroll-behavior: smooth;
       }
@@ -92,88 +92,8 @@
       .nav-links {
         gap: 28px;
         color: #667085;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 600;
-      }
-
-      .nav-menu {
-        display: none;
-        position: relative;
-      }
-
-      .nav-trigger {
-        display: inline-flex;
-        min-height: 36px;
-        align-items: center;
-        border: 1px solid var(--line);
-        border-radius: 12px;
-        background: #fff;
-        padding: 0 14px;
-        color: var(--ink);
-        font-family: inherit;
-        font-size: 12px;
-        font-weight: 800;
-        cursor: default;
-      }
-
-      .nav-trigger::after {
-        margin-left: 8px;
-        color: var(--blue);
-        content: "⌄";
-        font-size: 13px;
-      }
-
-      .nav-dropdown {
-        position: absolute;
-        top: calc(100% + 10px);
-        left: 50%;
-        z-index: 110;
-        width: min(560px, calc(100vw - 48px));
-        transform: translate(-50%, -6px);
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 12px;
-        border: 1px solid var(--line);
-        border-radius: 16px;
-        background: #fff;
-        padding: 14px;
-        opacity: 0;
-        pointer-events: none;
-        box-shadow: 0 18px 42px rgba(15, 23, 42, 0.14);
-        transition:
-          opacity 0.16s ease,
-          transform 0.16s ease;
-      }
-
-      .nav-menu:hover .nav-dropdown,
-      .nav-menu:focus-within .nav-dropdown {
-        transform: translate(-50%, 0);
-        opacity: 1;
-        pointer-events: auto;
-      }
-
-      .nav-group h3 {
-        margin: 0 0 10px;
-        color: #98a2b3;
-        font-size: 11px;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-      }
-
-      .nav-group a {
-        display: block;
-        border-radius: 10px;
-        padding: 8px 10px;
-        color: #344054;
-        font-size: 13px;
-        font-weight: 700;
-      }
-
-      .nav-group a:hover,
-      .nav-group a:focus-visible {
-        background: var(--blue-soft);
-        color: var(--blue);
-        outline: none;
       }
 
       .nav-actions {
@@ -193,7 +113,7 @@
         border: 1px solid transparent;
         padding: 0 20px;
         font-family: inherit;
-        font-size: 13px;
+        font-size: 14px;
         font-weight: 700;
         cursor: pointer;
       }
@@ -234,7 +154,7 @@
         background: #f4f8ff;
         padding: 6px 12px;
         color: var(--blue);
-        font-size: 11px;
+        font-size: 14px;
         font-weight: 800;
         letter-spacing: 0.2em;
         text-transform: uppercase;
@@ -273,8 +193,9 @@
         max-width: 560px;
         margin-top: 28px;
         color: var(--muted);
-        font-size: 15px;
+        font-size: 16px;
         line-height: 1.8;
+        word-break: keep-all;
       }
 
       .actions {
@@ -791,17 +712,18 @@
 
       .field dt {
         color: #98a2b3;
-        font-size: 11px;
+        font-size: 13px;
         font-weight: 800;
-        letter-spacing: 0.13em;
-        text-transform: uppercase;
+        letter-spacing: 0;
       }
 
       .field dd {
         margin: 5px 0 0;
         color: #475467;
-        font-size: 13px;
+        font-size: 14px;
         line-height: 1.6;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
       }
 
       .workflow-title {
@@ -833,7 +755,7 @@
         border-radius: 10px;
         padding: 10px 12px;
         color: #667085;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 800;
         text-align: center;
       }
@@ -895,6 +817,8 @@
         color: var(--muted);
         font-size: 14px;
         line-height: 1.65;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
       }
 
       .current-task-card {
@@ -947,6 +871,15 @@
         margin-top: 20px;
       }
 
+      .upload-board.single-support {
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+      }
+
+      .upload-board.single-column {
+        grid-template-columns: 1fr;
+      }
+
       .upload-dropzone {
         display: grid;
         min-height: 270px;
@@ -956,6 +889,11 @@
         background: #f7fbff;
         padding: 34px;
         text-align: center;
+      }
+
+      .upload-dropzone.compact {
+        min-height: 210px;
+        margin-top: 18px;
       }
 
       .upload-icon {
@@ -1025,7 +963,21 @@
       .upload-file p {
         margin: 5px 0 0;
         color: var(--muted);
-        font-size: 12px;
+        font-size: 14px;
+        word-break: keep-all;
+        overflow-wrap: anywhere;
+      }
+
+      .fixed-summary {
+        position: sticky;
+        top: 104px;
+        align-self: start;
+      }
+
+      .line-stack {
+        display: grid;
+        gap: 10px;
+        margin-top: 18px;
       }
 
       .check-list {
@@ -1260,7 +1212,7 @@
         background: #fffaeb;
         padding: 6px 10px;
         color: #b54708;
-        font-size: 12px;
+        font-size: 14px;
         font-weight: 800;
         white-space: nowrap;
       }
@@ -1295,33 +1247,12 @@
         }
 
         .nav-actions {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .nav-actions > a:first-child {
           display: none;
-        }
-
-        .nav-menu {
-          display: block;
-          flex: 0 0 auto;
-          grid-column: 2;
-          margin-left: auto;
-        }
-
-        .nav-trigger {
-          min-height: 34px;
-          padding: 0 12px;
-        }
-
-        .nav-dropdown {
-          top: calc(100% + 8px);
-          left: auto;
-          right: 0;
-          width: min(320px, calc(100vw - 32px));
-          grid-template-columns: 1fr;
-          transform: translate(0, -6px);
-        }
-
-        .nav-menu:hover .nav-dropdown,
-        .nav-menu:focus-within .nav-dropdown {
-          transform: translate(0, 0);
         }
 
         .hero,
@@ -1464,41 +1395,11 @@
       <a class="brand" href="#home"><span class="brand-dot"></span>ClinicFlow</a>
       <div class="nav-links">
         <a href="#supervisors">슈퍼바이저 찾기</a>
-        <a href="#guide">진행 방식</a>
-        <a href="#material-upload">자료 제출</a>
-        <a href="#case-archive">학습 기록</a>
-      </div>
-      <div class="nav-menu">
-        <button class="nav-trigger" type="button" aria-haspopup="true">전체</button>
-        <div class="nav-dropdown" role="menu" aria-label="주요 화면">
-          <div class="nav-group">
-            <h3>안내</h3>
-            <a href="#home" role="menuitem">홈</a>
-            <a href="#supervisors" role="menuitem">슈퍼바이저 찾기</a>
-            <a href="#guide" role="menuitem">진행 방식</a>
-            <a href="#login" role="menuitem">로그인</a>
-          </div>
-          <div class="nav-group">
-            <h3>의뢰자 화면</h3>
-            <a href="#request-new" role="menuitem">새 슈퍼비전 신청</a>
-            <a href="#material-upload" role="menuitem">자료 업로드</a>
-            <a href="#payments" role="menuitem">최종 확인·결제</a>
-            <a href="#waiting" role="menuitem">수락 대기</a>
-            <a href="#request-detail" role="menuitem">신청 상세</a>
-            <a href="#case-archive" role="menuitem">학습 기록</a>
-          </div>
-          <div class="nav-group">
-            <h3>슈퍼바이저·운영</h3>
-            <a href="#supervisor-dashboard" role="menuitem">검토할 의뢰</a>
-            <a href="#supervisor-workspace" role="menuitem">사례 검토</a>
-            <a href="#admin-qualifications" role="menuitem">자격 심사</a>
-            <a href="#admin" role="menuitem">운영 처리 목록</a>
-          </div>
-        </div>
+        <a href="#guide">이용 가이드</a>
       </div>
       <div class="nav-actions">
         <a href="#login">로그인</a
-        ><a class="button primary" href="#request-new">슈퍼비전 신청하기</a>
+        ><a class="button secondary" href="#request-new">슈퍼비전 신청하기</a>
       </div>
     </header>
 
@@ -1524,9 +1425,9 @@
             <div style="display: flex; justify-content: space-between">
               <div>
                 <div class="label">진행 예시</div>
-                <h3 style="margin: 6px 0 0; font-size: 22px">사례 자료 제출 중</h3>
+                <h3 style="margin: 6px 0 0; font-size: 22px">사례 자료 정리 중</h3>
               </div>
-              <span class="status">현재 단계</span>
+              <span class="status">진행 위치</span>
             </div>
             <div class="preview-stack">
               <div class="preview-row">
@@ -1535,7 +1436,7 @@
               </div>
               <div class="preview-row">
                 <strong>사례 자료</strong>
-                <p>보고서 초안, 검사 결과, 면담 요약을 제출 준비 중입니다.</p>
+                <p>보고서, 검사 결과, 면담 요약을 제출 준비 중입니다.</p>
               </div>
               <div class="preview-row">
                 <strong>다음 행동</strong>
@@ -1551,14 +1452,14 @@
       <div class="flow-band">
         <div class="wrap flow-steps" aria-label="ClinicFlow 진행 흐름">
           <div class="flow-step">
-            <span class="step-kicker">슈퍼바이저 선택</span>
+            <span class="step-kicker">슈퍼바이저</span>
             <div class="step-title">슈퍼바이저를 선택합니다</div>
             <div class="step-desc">
               사진, 자격, 전문분야, 소개를 보고 내 사례에 맞는 슈퍼바이저를 비교합니다.
             </div>
           </div>
           <div class="flow-step">
-            <span class="step-kicker">자료 업로드</span>
+            <span class="step-kicker">사례 자료</span>
             <div class="step-title">필요한 자료만 정리합니다</div>
             <div class="step-desc">
               상담 흐름, 질문, 참고 자료를 한 화면에서 확인하고 제출합니다.
@@ -1598,9 +1499,7 @@
           <article class="home-story-card">
             <span class="home-story-number">02</span>
             <h3>자료를 한곳에 모읍니다</h3>
-            <p>
-              주호소, 의뢰 사유, 보고서 초안, 검사 결과를 제출 흐름 안에서 정리합니다.
-            </p>
+            <p>주호소, 의뢰 사유, 보고서, 검사 결과를 제출 흐름 안에서 정리합니다.</p>
           </article>
           <article class="home-story-card">
             <span class="home-story-number">03</span>
@@ -1622,11 +1521,11 @@
         <article class="home-proof-card">
           <h3>처음 이용해도 다음 단계가 보입니다</h3>
           <p>
-            신청, 자료 제출, 수락 대기, 피드백 확인이 같은 진행선 위에서 이어집니다.
+            신청, 사례 자료, 수락 대기, 피드백 확인이 같은 진행선 위에서 이어집니다.
           </p>
         </article>
         <article class="home-proof-card">
-          <h3>자료 제출 전에 빠뜨린 것을 줄입니다</h3>
+          <h3>사례 자료 준비 전에 빠뜨린 것을 줄입니다</h3>
           <p>
             의뢰 사유, 참고 자료, 질문을 한 화면에서 확인하고 필요한 내용만 보냅니다.
           </p>
@@ -1770,7 +1669,7 @@
           >
             내 슈퍼비전 현황을 확인합니다
           </h2>
-          <p class="lead">의뢰 현황, 피드백, 학습기록을 확인하려면 로그인하세요.</p>
+          <p class="lead">의뢰 현황, 피드백, 학습 기록을 확인하려면 로그인하세요.</p>
         </div>
         <aside class="panel" style="box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08)">
           <h3>로그인</h3>
@@ -1838,7 +1737,7 @@
               <div class="guide-step">
                 <span class="guide-index">4</span>
                 <div>
-                  <h3>사례 자료 업로드</h3>
+                  <h3>사례 자료 준비</h3>
                   <p>주호소, 의뢰 사유, 참고 자료를 필요한 항목에 맞춰 정리합니다.</p>
                 </div>
               </div>
@@ -1896,7 +1795,7 @@
             </p>
           </article>
           <article class="guide-material">
-            <h3>학습기록 활용</h3>
+            <h3>학습 기록 활용</h3>
             <p>완료된 피드백을 다시 읽고 기관 교육 이력으로 관리하는 방법입니다.</p>
           </article>
         </div>
@@ -1907,29 +1806,28 @@
       <div class="wrap">
         <div class="workflow-title">
           <div>
-            <span class="status">초안 작성</span>
+            <span class="status">신청 단계</span>
             <h2>새 슈퍼비전 의뢰</h2>
             <p class="lead">
-              한 번에 한 단계씩 진행합니다. 현재 선택 내용은 선택 요약에 정리됩니다.
+              선택한 내용을 확인하고, 다음에 준비할 사례 자료만 봅니다.
             </p>
           </div>
-          <a class="button primary" href="#material-upload">사례자료 작성하기 →</a>
+          <a class="button primary" href="#material-upload">사례 자료 올리기 →</a>
         </div>
         <div class="stepper">
-          <div class="step">슈퍼바이저 선택</div>
+          <div class="step">슈퍼바이저</div>
           <div class="step">세션·일정</div>
-          <div class="step active">자료 업로드</div>
+          <div class="step active">사례 자료</div>
           <div class="step">확인·결제</div>
-          <div class="step">학습기록</div>
+          <div class="step">기록</div>
         </div>
         <div class="workspace">
           <div>
             <div class="current-task-card">
-              <span class="status">현재 단계</span>
-              <h3>사례자료를 올리고 질문을 남깁니다</h3>
+              <span class="status">다음 행동</span>
+              <h3>사례 자료를 올릴 준비를 합니다</h3>
               <p class="lead" style="margin-top: 12px">
-                주호소, 의뢰 사유, 참고 자료를 정리하면 슈퍼바이저가 검토를 시작할 수
-                있습니다.
+                질문을 적고, 필요한 파일을 올린 뒤, 제출 전 확인을 합니다.
               </p>
               <ul class="task-points">
                 <li>주호소</li>
@@ -1937,9 +1835,6 @@
                 <li>첨부 문서</li>
               </ul>
               <div class="actions">
-                <a class="button primary" href="#material-upload"
-                  >자료 업로드로 이동 →</a
-                >
                 <a class="button secondary" href="#guide">작성 기준 보기</a>
               </div>
             </div>
@@ -1990,66 +1885,66 @@
       <div class="wrap">
         <div class="workflow-title">
           <div>
-            <span class="status">자료 업로드</span>
-            <h2>사례자료 업로드</h2>
+            <span class="status">사례 자료</span>
+            <h2>사례 자료 정리</h2>
             <p class="lead">
-              슈퍼비전에 필요한 파일을 올리고, 슈퍼바이저에게 묻고 싶은 내용을 함께
-              정리합니다.
+              질문을 적고, 필요한 파일을 올린 뒤, 제출 전 확인을 합니다.
             </p>
           </div>
-          <a class="button primary" href="#payments">최종 확인하기 →</a>
+          <a class="button primary" href="#payments">자료를 올린 뒤 최종 확인 →</a>
         </div>
         <div class="stepper">
-          <div class="step">슈퍼바이저 선택</div>
+          <div class="step">슈퍼바이저</div>
           <div class="step">세션·일정</div>
-          <div class="step active">자료 업로드</div>
+          <div class="step active">사례 자료</div>
           <div class="step">확인·결제</div>
-          <div class="step">학습기록</div>
+          <div class="step">기록</div>
         </div>
         <div class="workspace">
           <div>
-            <div class="dark-panel">
-              <span class="eyebrow">업로드 준비</span>
-              <h3>질문과 자료를 같은 화면에서 정리합니다</h3>
-              <p>
-                보고서 초안, 검사 결과, 면담 요약을 올리고 이번 슈퍼비전에서 꼭 확인받고
-                싶은 질문을 함께 남깁니다.
-              </p>
+            <div class="completed-summary">
+              <div class="panel-row">
+                <div>
+                  <h3>1. 질문</h3>
+                  <p>이번 슈퍼비전에서 꼭 확인받고 싶은 질문을 한 문장으로 적습니다.</p>
+                </div>
+                <strong>작성</strong>
+              </div>
+              <div class="panel-row">
+                <div>
+                  <h3>2. 자료 파일</h3>
+                  <p>보고서, 검사 결과, 면담 요약처럼 필요한 자료만 올립니다.</p>
+                </div>
+                <strong>준비</strong>
+              </div>
+              <div class="panel-row">
+                <div>
+                  <h3>3. 최종 확인</h3>
+                  <p>선택한 슈퍼바이저, 세션, 일정과 자료를 확인합니다.</p>
+                </div>
+                <strong>다음</strong>
+              </div>
             </div>
-            <div class="upload-board">
+            <div class="upload-board single-column">
               <div>
-                <div class="upload-dropzone">
+                <div class="upload-dropzone compact">
                   <div>
                     <div class="upload-icon">+</div>
                     <h3>자료 파일을 선택하세요</h3>
                     <p>
-                      보고서 초안, 검사 결과, 채점표, 면담 요약, 관찰 기록을 한 번에
+                      보고서, 검사 결과, 채점표, 면담 요약, 관찰 기록을 한 번에
                       정리합니다. 실행파일과 압축파일은 받지 않습니다.
                     </p>
                     <div class="actions" style="justify-content: center">
-                      <button class="button primary" type="button">파일 선택</button>
+                      <button class="button secondary" type="button">파일 선택</button>
                       <a class="button secondary" href="#guide">작성 기준 보기</a>
                     </div>
-                  </div>
-                </div>
-                <div class="upload-meta-grid">
-                  <div class="upload-meta">
-                    <div class="label">자료 종류</div>
-                    <div class="value">보고서 초안</div>
-                  </div>
-                  <div class="upload-meta">
-                    <div class="label">보관 기간</div>
-                    <div class="value">90일</div>
-                  </div>
-                  <div class="upload-meta">
-                    <div class="label">허용 형식</div>
-                    <div class="value">PDF · HWPX · DOCX</div>
                   </div>
                 </div>
                 <div class="upload-list" aria-label="업로드된 자료">
                   <div class="upload-file">
                     <div>
-                      <strong>보고서_초안.pdf</strong>
+                      <strong>보고서_검토용.pdf</strong>
                       <p>1.8MB · 제출 준비 완료 · 미리보기 생성 중</p>
                     </div>
                     <span class="status">준비 중</span>
@@ -2063,40 +1958,17 @@
                   </div>
                 </div>
               </div>
-              <aside class="panel">
-                <h3>제출 전 체크</h3>
-                <div class="check-list">
-                  <div class="check-item">
-                    <span class="check-dot">✓</span>
-                    이번 슈퍼비전에서 묻고 싶은 질문을 적었습니다.
-                  </div>
-                  <div class="check-item">
-                    <span class="check-dot">✓</span>
-                    보고서 초안과 검사 결과를 함께 올렸습니다.
-                  </div>
-                  <div class="check-item">
-                    <span class="check-dot">✓</span>
-                    슈퍼바이저에게 묻고 싶은 질문을 한 문장으로 적었습니다.
-                  </div>
-                </div>
-                <div class="field">
-                  <dt>다음 행동</dt>
-                  <dd>
-                    업로드된 자료를 확인한 뒤 의뢰 상세에서 최종 제출 상태를 봅니다.
-                  </dd>
-                </div>
-              </aside>
             </div>
           </div>
-          <aside class="panel">
+          <aside class="panel fixed-summary">
             <h3>자료 요약</h3>
             <div class="field">
               <dt>의뢰</dt>
               <dd>신청 번호 1042 · 사례 개념화 50분</dd>
             </div>
             <div class="field">
-              <dt>현재 단계</dt>
-              <dd>자료 업로드와 제출 확인</dd>
+              <dt>진행 위치</dt>
+              <dd>사례 자료 준비</dd>
             </div>
             <div class="field">
               <dt>제출 예정</dt>
@@ -2115,14 +1987,14 @@
             <h2>의뢰 상세</h2>
             <p class="lead">신청 번호 1042 · 필요한 자료를 먼저 보완하세요.</p>
           </div>
-          <a class="button primary" href="#material-upload">추가자료 업로드 →</a>
+          <a class="button primary" href="#material-upload">추가 자료 보완 →</a>
         </div>
         <div class="stepper">
-          <div class="step">슈퍼바이저 선택</div>
+          <div class="step">슈퍼바이저</div>
           <div class="step">세션·일정</div>
-          <div class="step active">자료 업로드</div>
+          <div class="step active">사례 자료</div>
           <div class="step">확인·결제</div>
-          <div class="step">학습기록</div>
+          <div class="step">기록</div>
         </div>
         <div class="workspace">
           <div>
@@ -2174,11 +2046,11 @@
           <a class="button primary" href="#waiting">결제하고 신청 완료 →</a>
         </div>
         <div class="stepper">
-          <div class="step">슈퍼바이저 선택</div>
+          <div class="step">슈퍼바이저</div>
           <div class="step">세션·일정</div>
-          <div class="step">자료 업로드</div>
+          <div class="step">사례 자료</div>
           <div class="step active">확인·결제</div>
-          <div class="step">학습기록</div>
+          <div class="step">기록</div>
         </div>
         <div class="queue">
           <div class="queue-row">
@@ -2192,7 +2064,7 @@
           <div class="queue-row">
             <div>
               <div class="label">제출 자료</div>
-              <h3>보고서 초안 외 2건</h3>
+              <h3>보고서 외 2건</h3>
               <p>검사 결과, 면담 요약, 슈퍼바이저에게 묻고 싶은 질문</p>
             </div>
             <strong>3건</strong><span class="status">확인 완료</span>
@@ -2216,18 +2088,18 @@
             <span class="status">수락 대기</span>
             <h2>슈퍼바이저 확인을 기다립니다</h2>
             <p class="lead">
-              결제와 자료 제출이 끝났습니다. 슈퍼바이저가 일정과 자료를 확인하면
+              결제와 사례 자료 정리가 끝났습니다. 슈퍼바이저가 일정과 자료를 확인하면
               슈퍼비전이 시작됩니다.
             </p>
           </div>
           <a class="button primary" href="#request-detail">의뢰 상태 보기 →</a>
         </div>
         <div class="stepper">
-          <div class="step">슈퍼바이저 선택</div>
+          <div class="step">슈퍼바이저</div>
           <div class="step">세션·일정</div>
-          <div class="step">자료 업로드</div>
+          <div class="step">사례 자료</div>
           <div class="step active">수락 대기</div>
-          <div class="step">학습기록</div>
+          <div class="step">기록</div>
         </div>
         <div class="workspace">
           <div class="dark-panel">
@@ -2250,7 +2122,7 @@
             </div>
             <div class="field">
               <dt>자료</dt>
-              <dd>보고서 초안, 검사 결과, 면담 요약</dd>
+              <dd>보고서, 검사 결과, 면담 요약</dd>
             </div>
           </aside>
         </div>
@@ -2297,7 +2169,7 @@
                 <article class="case-node">
                   <div class="case-header">
                     <strong>이OO</strong>
-                    <span class="record-status">학습기록 발급</span>
+                    <span class="record-status">학습 기록 발급</span>
                   </div>
                   <p>초기 상담 구조화 · 회기 목표와 질문 순서 정리</p>
                   <div class="record-leaves">
@@ -2421,15 +2293,15 @@
           <div>
             <strong>지금 이어갈 요청</strong>
             <p>
-              새 자료 확인, 수락 여부 결정, 피드백 초안 마무리처럼 바로 처리할 일을 한
+              새 자료 확인, 수락 여부 결정, 피드백 문장 마무리처럼 바로 처리할 일을 한
               줄로 정리합니다.
             </p>
           </div>
           <div class="queue-tabs" aria-label="슈퍼바이저 요청 필터">
-            <button class="queue-tab active" type="button">전체 3</button>
+            <button class="queue-tab active" type="button">먼저 볼 요청</button>
             <button class="queue-tab" type="button">자료 도착 1</button>
             <button class="queue-tab" type="button">수락 대기 1</button>
-            <button class="queue-tab" type="button">초안 1</button>
+            <button class="queue-tab" type="button">작성 중 1</button>
           </div>
         </div>
         <div class="priority-list" aria-label="검토할 의뢰 목록">
@@ -2437,7 +2309,7 @@
             <div>
               <strong>신청 번호 1042 · 김OO 사례</strong>
               <p>
-                추가자료가 도착했습니다. 새 자료를 확인한 뒤 피드백 초안을 이어 씁니다.
+                추가자료가 도착했습니다. 새 자료를 확인한 뒤 피드백 문장을 이어 씁니다.
               </p>
               <div class="request-meta">
                 <span class="request-chip">자료 4건</span>
@@ -2465,10 +2337,11 @@
             <div>
               <strong>REQ-1038 · 이OO 사례</strong>
               <p>
-                피드백 초안이 저장되어 있습니다. 작성 중인 의견을 열어 마무리합니다.
+                작성 중인 피드백이 저장되어 있습니다. 작성 중인 의견을 열어
+                마무리합니다.
               </p>
               <div class="request-meta">
-                <span class="request-chip">초안 저장</span>
+                <span class="request-chip">작성 중</span>
                 <span class="request-chip">상담 구조화</span>
                 <span class="request-chip">마지막 변경 1시간 전</span>
               </div>
@@ -2504,7 +2377,7 @@
                 <p>성인 우울 평가, MMPI-2, BDI 포함, 보호자 면담 없음</p>
               </div>
               <div class="panel">
-                <h3>피드백 초안</h3>
+                <h3>피드백 문장</h3>
                 <p>진단 가설, 추가 확인 질문, 보고서 문장 수정</p>
               </div>
             </div>

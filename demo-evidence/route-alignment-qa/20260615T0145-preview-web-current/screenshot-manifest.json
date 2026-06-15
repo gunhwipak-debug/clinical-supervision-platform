@@ -1,0 +1,321 @@
+{
+  "base": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app",
+  "capturedAt": "2026-06-15T01:47:51.765Z",
+  "routes": [
+    {
+      "name": "01-home",
+      "route": "/",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/",
+      "title": "ClinicFlow",
+      "file": "01-home.png"
+    },
+    {
+      "name": "02-supervisors",
+      "route": "/supervisors",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisors",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisors",
+      "title": "ClinicFlow",
+      "file": "02-supervisors.png"
+    },
+    {
+      "name": "03-supervisor-detail",
+      "route": "/supervisors/demo-supervisor",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisors/demo-supervisor",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisors/demo-supervisor",
+      "title": "ClinicFlow",
+      "file": "03-supervisor-detail.png"
+    },
+    {
+      "name": "04-guide",
+      "route": "/guide",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/guide",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/guide",
+      "title": "ClinicFlow",
+      "file": "04-guide.png"
+    },
+    {
+      "name": "05-resources",
+      "route": "/resources",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/resources",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/resources",
+      "title": "ClinicFlow",
+      "file": "05-resources.png"
+    },
+    {
+      "name": "06-clinical-guidelines",
+      "route": "/clinical-guidelines",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/clinical-guidelines",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/clinical-guidelines",
+      "title": "ClinicFlow",
+      "file": "06-clinical-guidelines.png"
+    },
+    {
+      "name": "07-security",
+      "route": "/security",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/security",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/security",
+      "title": "ClinicFlow",
+      "file": "07-security.png"
+    },
+    {
+      "name": "08-privacy",
+      "route": "/privacy",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/privacy",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/privacy",
+      "title": "ClinicFlow",
+      "file": "08-privacy.png"
+    },
+    {
+      "name": "09-terms",
+      "route": "/terms",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/terms",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/terms",
+      "title": "ClinicFlow",
+      "file": "09-terms.png"
+    },
+    {
+      "name": "10-sensitive-consent",
+      "route": "/sensitive-consent",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/sensitive-consent",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/sensitive-consent",
+      "title": "ClinicFlow",
+      "file": "10-sensitive-consent.png"
+    },
+    {
+      "name": "11-login",
+      "route": "/login",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/login",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/login",
+      "title": "ClinicFlow",
+      "file": "11-login.png"
+    },
+    {
+      "name": "12-signup",
+      "route": "/signup",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/signup",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/signup",
+      "title": "ClinicFlow",
+      "file": "12-signup.png"
+    },
+    {
+      "name": "13-forgot-password",
+      "route": "/forgot-password",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/forgot-password",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/forgot-password",
+      "title": "ClinicFlow",
+      "file": "13-forgot-password.png"
+    },
+    {
+      "name": "14-reset-password",
+      "route": "/reset-password",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/reset-password",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/reset-password",
+      "title": "ClinicFlow",
+      "file": "14-reset-password.png"
+    },
+    {
+      "name": "15-email-verify",
+      "route": "/email/verify",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/email/verify",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/email/verify",
+      "title": "ClinicFlow",
+      "file": "15-email-verify.png"
+    },
+    {
+      "name": "16-verify-email",
+      "route": "/verify-email",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/verify-email",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/email/verify",
+      "title": "ClinicFlow",
+      "file": "16-verify-email.png"
+    },
+    {
+      "name": "17-requests",
+      "route": "/requests",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/requests",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/requests",
+      "title": "ClinicFlow",
+      "file": "17-requests.png"
+    },
+    {
+      "name": "18-requests-new",
+      "route": "/requests/new",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/requests/new",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/requests/new",
+      "title": "ClinicFlow",
+      "file": "18-requests-new.png"
+    },
+    {
+      "name": "19-request-detail",
+      "route": "/requests/demo-request",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/requests/demo-request",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/requests/demo-request",
+      "title": "ClinicFlow",
+      "file": "19-request-detail.png"
+    },
+    {
+      "name": "20-payments",
+      "route": "/payments",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/payments",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/payments",
+      "title": "ClinicFlow",
+      "file": "20-payments.png"
+    },
+    {
+      "name": "21-payment-detail",
+      "route": "/payments/demo-payment",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/payments/demo-payment",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/payments/demo-payment",
+      "title": "ClinicFlow",
+      "file": "21-payment-detail.png"
+    },
+    {
+      "name": "22-payment-confirm",
+      "route": "/payments/confirm",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/payments/confirm",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/payments/confirm",
+      "title": "ClinicFlow",
+      "file": "22-payment-confirm.png"
+    },
+    {
+      "name": "23-case-archive",
+      "route": "/case-archive",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/case-archive",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/case-archive",
+      "title": "ClinicFlow",
+      "file": "23-case-archive.png"
+    },
+    {
+      "name": "24-settings",
+      "route": "/settings",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/settings",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/settings",
+      "title": "ClinicFlow",
+      "file": "24-settings.png"
+    },
+    {
+      "name": "25-notifications",
+      "route": "/notifications",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/notifications",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/notifications",
+      "title": "ClinicFlow",
+      "file": "25-notifications.png"
+    },
+    {
+      "name": "26-me",
+      "route": "/me",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/me",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/login?returnTo=/me",
+      "title": "ClinicFlow",
+      "file": "26-me.png"
+    },
+    {
+      "name": "27-supervisor-home",
+      "route": "/supervisor",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor",
+      "title": "ClinicFlow",
+      "file": "27-supervisor-home.png"
+    },
+    {
+      "name": "28-supervisor-profile",
+      "route": "/supervisor/profile",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/profile",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/profile",
+      "title": "ClinicFlow",
+      "file": "28-supervisor-profile.png"
+    },
+    {
+      "name": "29-supervisor-availability",
+      "route": "/supervisor/availability",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/availability",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/availability",
+      "title": "ClinicFlow",
+      "file": "29-supervisor-availability.png"
+    },
+    {
+      "name": "30-supervisor-requests",
+      "route": "/supervisor/requests",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/requests",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/requests",
+      "title": "ClinicFlow",
+      "file": "30-supervisor-requests.png"
+    },
+    {
+      "name": "31-supervisor-request-detail",
+      "route": "/supervisor/requests/demo-request",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/requests/demo-request",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/requests/demo-request",
+      "title": "ClinicFlow",
+      "file": "31-supervisor-request-detail.png"
+    },
+    {
+      "name": "32-supervisor-memory",
+      "route": "/supervisor/memory",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/memory",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/memory",
+      "title": "ClinicFlow",
+      "file": "32-supervisor-memory.png"
+    },
+    {
+      "name": "33-supervisor-products",
+      "route": "/supervisor/products",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/products",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/products",
+      "title": "ClinicFlow",
+      "file": "33-supervisor-products.png"
+    },
+    {
+      "name": "34-supervisor-payouts",
+      "route": "/supervisor/payouts",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/payouts",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/payouts",
+      "title": "ClinicFlow",
+      "file": "34-supervisor-payouts.png"
+    },
+    {
+      "name": "35-supervisor-qualifications",
+      "route": "/supervisor/qualifications",
+      "url": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/qualifications",
+      "status": 200,
+      "finalUrl": "https://clinicflow-30fgcpwpn-gunhwipak-debugs-projects.vercel.app/supervisor/qualifications",
+      "title": "ClinicFlow",
+      "file": "35-supervisor-qualifications.png"
+    }
+  ]
+}

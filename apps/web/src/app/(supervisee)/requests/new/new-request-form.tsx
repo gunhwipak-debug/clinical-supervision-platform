@@ -5,9 +5,11 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
+import { FlowStepNav } from "../../../../components/clinicflow-shell";
+import { Button } from "../../../../components/ui/button";
 
 const requestSchema = z.object({
-  serviceProductId: z.uuid("제공 항목 선택이 필요합니다."),
+  serviceProductId: z.uuid("세션 선택이 필요합니다."),
   retentionDays: z.coerce
     .number()
     .refine((value) => value === 7 || value === 30 || value === 90, {
@@ -21,9 +23,6 @@ const requestSchema = z.object({
 
 type RequestInput = z.input<typeof requestSchema>;
 type RequestValues = z.output<typeof requestSchema>;
-
-const steps = ["선택 확인", "제공 항목·일정 확인", "보관기간", "긴급도 확인"] as const;
-const asyncSteps = ["선택 확인", "슈퍼비전 방식 확인", "보관기간", "긴급도 확인"] as const;
 
 export function NewRequestForm({
   selectedSlot,
@@ -46,12 +45,10 @@ export function NewRequestForm({
 }) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [message, setMessage] = useState("");
-  const [step, setStep] = useState(0);
   const hasSelectedProduct = serviceProductId.length > 0;
   const requiresSelectedSlot = isTimedBookingProduct(selection.productKind);
   const hasSelectedSlot = Boolean(selectedSlotStart && selectedSlotEnd);
-  const canProceed = hasSelectedProduct && (!requiresSelectedSlot || hasSelectedSlot);
-  const stepLabels = requiresSelectedSlot ? steps : asyncSteps;
+  const canSubmit = hasSelectedProduct && (!requiresSelectedSlot || hasSelectedSlot);
   const form = useForm<RequestInput, unknown, RequestValues>({
     resolver: zodResolver(requestSchema),
     defaultValues: {
@@ -63,6 +60,16 @@ export function NewRequestForm({
       selectedSlotStart: selectedSlotStart ?? ""
     }
   });
+  const retentionDaysField = form.register("retentionDays", { valueAsNumber: true });
+  const selectedRetentionDays = form.watch("retentionDays");
+  const currentActionLabel = canSubmit
+    ? "신청 초안 저장"
+    : !hasSelectedProduct
+      ? "세션을 먼저 선택하세요"
+      : "일정을 먼저 선택하세요";
+  const timingValue = requiresSelectedSlot
+    ? selectedSlot || "시간 선택 필요"
+    : "일정 예약 없음";
 
   useEffect(() => {
     setIsHydrated(true);
@@ -85,8 +92,8 @@ export function NewRequestForm({
       error?: { code: string };
     };
     if (response.ok && body.data?.request?.id) {
-      toast.success("초안이 생성되었습니다.");
-      window.location.href = `/requests/${body.data.request.id}`;
+      toast.success("초안을 저장했습니다. 이어서 사례 자료를 정리해주세요.");
+      window.location.href = `/requests/${body.data.request.id}#case-files`;
       return;
     }
     const nextMessage = requestErrorMessage(body.error?.code);
@@ -95,345 +102,218 @@ export function NewRequestForm({
   }
 
   return (
-    <main className="flex-grow px-gutter pb-xl pt-sm md:px-0">
-      <div className="mx-auto max-w-container-max md:px-gutter">
-        <div className="mb-xl text-center md:text-left">
-          <h1 className="mb-sm font-headline-lg text-headline-lg text-on-surface">
-            새로운 슈퍼비전 요청
-          </h1>
-          <p className="max-w-2xl font-body-lg text-body-lg text-on-surface-variant">
-            선택한 슈퍼바이저와 세션 유형을 확인한 뒤, 사례 자료를 제출할 초안을
-            만듭니다.
-          </p>
-        </div>
+    <form className="grid gap-6" onSubmit={form.handleSubmit(submit)}>
+      <FlowStepNav
+        current="세션·일정"
+        steps={[
+          "슈퍼바이저 선택",
+          "세션·일정",
+          "사례자료 정리",
+          "확인·결제",
+          "학습 기록"
+        ]}
+      />
 
-        <div className="flex flex-col gap-xl lg:flex-row">
-          <div className="flex-shrink-0 lg:w-1/4">
-            <div className="sticky top-[104px] rounded-lg border border-outline-variant bg-surface-container-lowest p-md">
-              <h2 className="mb-md font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">
-                진행 단계
-              </h2>
-              <ul className="space-y-sm">
-                {stepLabels.map((label, index) => (
-                  <li
-                    className={`flex items-center gap-sm ${index > step ? "opacity-50" : ""}`}
-                    key={label}
-                  >
-                    <div
-                      className={`flex h-8 w-8 items-center justify-center rounded-full font-label-md text-label-md ${
-                        index === step
-                          ? "bg-secondary text-on-primary"
-                          : index < step
-                            ? "bg-secondary-container text-on-secondary-container"
-                            : "border border-outline-variant bg-surface-container-highest text-on-surface-variant"
-                      }`}
-                    >
-                      {index + 1}
-                    </div>
-                    <span
-                      className={`font-label-md text-label-md ${
-                        index === step ? "text-secondary" : "text-on-surface-variant"
-                      }`}
-                    >
-                      {label}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-
-          <div className="flex-grow lg:w-3/4">
-            <form
-              className="rounded-lg border border-outline-variant bg-surface-container-lowest shadow-sm"
-              onSubmit={form.handleSubmit(submit)}
-            >
-              <div className="flex items-center justify-between rounded-t-lg border-b border-outline-variant bg-surface-bright p-lg">
-                <div>
-                  <h3 className="font-headline-md text-headline-md text-on-surface">
-                    {step + 1}. {stepLabels[step]}
-                  </h3>
-                  <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
-                    {requiresSelectedSlot
-                      ? "프로필 캘린더에서 선택한 제공 항목과 일정을 확인한 뒤 초안을 생성합니다."
-                      : "비동기 항목은 일정 예약 없이 자료 제출 초안을 먼저 생성합니다."}
+      <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+        <div className="grid gap-6">
+          <section className="rounded-2xl bg-ink-900 px-6 py-7 text-white">
+            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              <div className="grid gap-3">
+                <span className="inline-flex w-fit rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-700">
+                  이번 단계
+                </span>
+                <div className="grid gap-2">
+                  <h2 className="text-3xl font-bold tracking-tight">
+                    슈퍼바이저와 세션을 먼저 확정합니다
+                  </h2>
+                  <p className="max-w-2xl text-sm leading-7 text-white/80">
+                    지금은 신청 초안을 만드는 단계입니다. 저장이 끝나면 별도의 의뢰 상세
+                    화면에서 사례 자료와 질문을 한 줄씩 정리합니다.
                   </p>
                 </div>
-                <span className="material-symbols-outlined text-[32px] font-light text-secondary">
-                  medical_services
-                </span>
               </div>
+              {hasSelectedProduct ? (
+                <Button
+                  disabled={!isHydrated || !canSubmit || form.formState.isSubmitting}
+                  type="submit"
+                >
+                  {currentActionLabel}
+                </Button>
+              ) : (
+                <Button asChild>
+                  <a href="/supervisors">슈퍼바이저 찾기</a>
+                </Button>
+              )}
+            </div>
+          </section>
 
-              <div className="space-y-xl p-lg">
-                {step === 0 ? (
-                  <>
-                    <div className="rounded-lg border border-secondary bg-surface p-md shadow-sm ring-1 ring-secondary">
-                      <div className="flex items-start justify-between gap-md">
-                        <div className="flex items-center gap-sm">
-                          <span className="material-symbols-outlined filled text-secondary">
-                            medical_services
-                          </span>
-                          <div>
-                            <p className="font-label-md text-label-md text-on-surface">
-                              선택한 슈퍼비전 제공 항목
-                            </p>
-                            <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
-                              {requiresSelectedSlot
-                                ? "슈퍼바이저 프로필의 일정 캘린더에서 고른 항목과 시간으로 요청서를 작성합니다."
-                                : "비동기 검토 항목은 자료를 제출하면 슈퍼바이저가 작업 화면에서 검토합니다."}
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex h-5 w-5 items-center justify-center rounded-full border border-secondary bg-secondary">
-                          <span className="material-symbols-outlined text-[14px] text-on-primary">
-                            check
-                          </span>
-                        </div>
-                      </div>
-                      {!hasSelectedProduct ? (
-                        <p className="mt-md rounded-lg border border-outline-variant bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                          아직 선택된 제공 항목이 없습니다. 슈퍼바이저 프로필에서 가능
-                          일정을 먼저 선택해주세요.
-                        </p>
-                      ) : null}
-                      {hasSelectedProduct &&
-                      requiresSelectedSlot &&
-                      !hasSelectedSlot ? (
-                        <p className="mt-md rounded-lg border border-outline-variant bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                          신청 전에 슈퍼바이저의 가능 일정에서 시간대를 먼저 선택해야
-                          합니다.
-                        </p>
-                      ) : null}
-                      {hasSelectedProduct && !requiresSelectedSlot ? (
-                        <p className="mt-md rounded-lg border border-secondary bg-surface-container p-sm font-body-sm text-body-sm text-secondary">
-                          이 항목은 비동기 검토 방식이라 시간대를 고르지 않고 초안을
-                          만들 수 있습니다.
-                        </p>
-                      ) : null}
-                      {selectedSlot ? (
-                        <p className="mt-md rounded-lg border border-secondary bg-surface-container p-sm font-body-sm text-body-sm text-secondary">
-                          선택한 일정: {selectedSlot}
-                        </p>
-                      ) : null}
-                      {selection.supervisorName || selection.productTitle ? (
-                        <div className="mt-md grid gap-xs rounded-lg border border-outline-variant bg-surface-container-lowest p-sm font-body-sm text-body-sm text-on-surface-variant">
-                          {selection.supervisorName ? (
-                            <p>
-                              <span className="font-label-md text-label-md text-on-surface">
-                                슈퍼바이저
-                              </span>
-                              : {selection.supervisorName}
-                            </p>
-                          ) : null}
-                          {selection.productTitle ? (
-                            <p>
-                              <span className="font-label-md text-label-md text-on-surface">
-                                제공 항목
-                              </span>
-                              : {selection.productTitle}
-                            </p>
-                          ) : null}
-                          {selection.productPriceKrw !== null ? (
-                            <p>
-                              <span className="font-label-md text-label-md text-on-surface">
-                                금액
-                              </span>
-                              : ₩ {selection.productPriceKrw.toLocaleString("ko-KR")}
-                            </p>
-                          ) : null}
-                        </div>
-                      ) : null}
-                    </div>
+          <section className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5">
+            <RequestRow
+              description={
+                selection.supervisorName
+                  ? "선택한 슈퍼바이저가 맞는지 확인합니다."
+                  : "슈퍼바이저 프로필에서 먼저 선택합니다."
+              }
+              label="1. 슈퍼바이저"
+              status={selection.supervisorName ? "완료" : "선택 필요"}
+              value={selection.supervisorName ?? "아직 선택되지 않았습니다"}
+            />
+            <RequestRow
+              description={
+                selection.productDescription ??
+                "세션 종류와 금액은 슈퍼바이저 프로필에서 고른 내용을 그대로 가져옵니다."
+              }
+              label="2. 세션"
+              status={hasSelectedProduct ? "완료" : "선택 필요"}
+              value={selection.productTitle ?? "선택된 세션이 없습니다"}
+            />
+            <RequestRow
+              description={
+                requiresSelectedSlot
+                  ? "가능 일정에서 고른 시간이 맞는지 확인합니다."
+                  : "이 세션은 자료를 올리면 일정 예약 없이 검토가 시작됩니다."
+              }
+              label="3. 일정"
+              status={!requiresSelectedSlot || hasSelectedSlot ? "완료" : "선택 필요"}
+              value={timingValue}
+            />
+            <RequestRow
+              description="신청 초안 저장 후 의뢰 상세 화면에서 사례 요약, 검사 결과, 질문을 정리합니다."
+              label="4. 사례자료 정리"
+              status={canSubmit ? "다음" : "준비 중"}
+              value={currentActionLabel}
+            />
 
-                    <p className="rounded-lg border border-outline-variant bg-surface-container-lowest p-md font-body-sm text-body-sm text-on-surface-variant">
-                      사례 설명, 주호소, 검사자료, 보완 요청사항은 초안 생성 후 상세
-                      화면의 사례 패킷에서 저장합니다.
-                    </p>
-                  </>
-                ) : null}
+            <input type="hidden" {...form.register("serviceProductId")} />
+            <input type="hidden" {...form.register("selectedSlotStart")} />
+            <input type="hidden" {...form.register("selectedSlotEnd")} />
 
-                {step === 1 ? (
-                  <div className="grid gap-md">
-                    <label className="grid gap-xs">
-                      <span className="font-label-md text-label-md text-on-surface">
-                        선택한 제공 항목
-                      </span>
-                      {hasSelectedProduct ? (
-                        <>
-                          <input type="hidden" {...form.register("serviceProductId")} />
-                          <span className="rounded-lg border border-outline-variant bg-surface p-sm font-body-sm text-body-sm text-on-surface-variant">
-                            {selection.productTitle ?? "프로필에서 선택한 제공 항목"}
-                            {selection.productPriceKrw !== null
-                              ? ` · ₩ ${selection.productPriceKrw.toLocaleString("ko-KR")}`
-                              : ""}
-                          </span>
-                          {selection.productDescription ? (
-                            <span className="rounded-lg bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                              {selection.productDescription}
-                            </span>
-                          ) : null}
-                        </>
-                      ) : (
-                        <span className="rounded-lg border border-outline-variant bg-surface p-sm font-body-sm text-body-sm text-on-surface-variant">
-                          선택된 제공 항목이 없습니다.
+            <details className="rounded-xl border border-line bg-surface-base px-4 py-3">
+              <summary className="cursor-pointer text-sm font-bold text-ink-900">
+                기본 설정 조정
+              </summary>
+              <div className="mt-4 grid gap-4">
+                <div className="grid divide-y divide-line rounded-xl border border-line">
+                  {[7, 30, 90].map((days) => (
+                    <label
+                      className="flex cursor-pointer items-center justify-between gap-4 px-4 py-3"
+                      key={days}
+                    >
+                      <span>
+                        <span className="text-base font-bold text-ink-900">
+                          {days}일
                         </span>
-                      )}
-                    </label>
-                    <input type="hidden" {...form.register("selectedSlotStart")} />
-                    <input type="hidden" {...form.register("selectedSlotEnd")} />
-                    {selection.supervisorName ? (
-                      <p className="rounded-lg bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                        선택한 슈퍼바이저: {selection.supervisorName}
-                      </p>
-                    ) : null}
-                    {requiresSelectedSlot && selectedSlot ? (
-                      <p className="rounded-lg bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                        선택한 희망 일정: {selectedSlot}
-                      </p>
-                    ) : requiresSelectedSlot ? (
-                      <p className="rounded-lg bg-surface-container p-sm font-body-sm text-body-sm text-error">
-                        선택된 희망 일정이 없습니다. 가능 일정에서 시간대를
-                        선택해주세요.
-                      </p>
-                    ) : (
-                      <p className="rounded-lg bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
-                        비동기 검토 항목입니다. 자료 제출 후 슈퍼바이저가 검토 작업을
-                        시작합니다.
-                      </p>
-                    )}
-                    {form.formState.errors.serviceProductId ? (
-                      <p className="text-sm text-error">
-                        {form.formState.errors.serviceProductId.message}
-                      </p>
-                    ) : null}
-                  </div>
-                ) : null}
-
-                {step === 2 ? (
-                  <fieldset className="grid gap-md">
-                    <legend className="font-label-md text-label-md text-on-surface">
-                      원자료 보관기간
-                    </legend>
-                    <div className="grid gap-md md:grid-cols-3">
-                      {[7, 30, 90].map((days) => (
-                        <label
-                          className="grid cursor-pointer gap-sm rounded-lg border border-outline-variant bg-surface p-md"
-                          key={days}
-                        >
-                          <span className="flex items-center justify-between">
-                            <span className="font-headline-md text-headline-md text-primary">
-                              {days}일
-                            </span>
-                            <input
-                              type="radio"
-                              value={days}
-                              {...form.register("retentionDays", {
-                                valueAsNumber: true
-                              })}
-                            />
-                          </span>
-                          <span className="font-body-sm text-body-sm text-on-surface-variant">
-                            완료 후 정책에 따라 원자료 삭제 일정을 관리합니다.
-                          </span>
-                        </label>
-                      ))}
-                    </div>
-                  </fieldset>
-                ) : null}
-
-                {step === 3 ? (
-                  <div className="grid gap-md">
-                    <label className="grid gap-xs">
-                      <span className="font-label-md text-label-md text-on-surface">
-                        긴급 여부
-                      </span>
-                      <select
-                        className="rounded-lg border border-outline-variant bg-surface px-sm py-2"
-                        {...form.register("urgency")}
-                      >
-                        <option value="normal">일반</option>
-                        <option value="urgent_24h">24시간 긴급</option>
-                      </select>
-                    </label>
-                    <label className="grid gap-xs">
-                      <span className="font-label-md text-label-md text-on-surface">
-                        희망 마감일
+                        <span className="ml-3 text-sm text-ink-500">
+                          완료 후 선택한 기간에 맞춰 원자료를 관리합니다.
+                        </span>
                       </span>
                       <input
-                        className="rounded-lg border border-outline-variant bg-surface px-sm py-2"
-                        type="date"
-                        {...form.register("desiredDeadline")}
+                        checked={Number(selectedRetentionDays) === days}
+                        name={retentionDaysField.name}
+                        onBlur={retentionDaysField.onBlur}
+                        onChange={retentionDaysField.onChange}
+                        ref={retentionDaysField.ref}
+                        type="radio"
+                        value={days}
                       />
                     </label>
-                    <p className="rounded-lg bg-surface-container p-md font-body-sm text-body-sm text-on-surface-variant">
-                      결제는 사례 패킷과 첨부파일을 제출한 뒤 진행합니다. 초안 생성 후
-                      상세 화면에서 자료를 이어서 작성하세요.
-                    </p>
-                  </div>
-                ) : null}
+                  ))}
+                </div>
+                <label className="grid gap-2">
+                  <span className="text-sm font-bold text-ink-900">검토 속도</span>
+                  <select
+                    className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm text-ink-900"
+                    {...form.register("urgency")}
+                  >
+                    <option value="normal">일반</option>
+                    <option value="urgent_24h">24시간 긴급</option>
+                  </select>
+                </label>
+                <label className="grid gap-2">
+                  <span className="text-sm font-bold text-ink-900">희망 마감일</span>
+                  <input
+                    className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm text-ink-900"
+                    type="date"
+                    {...form.register("desiredDeadline")}
+                  />
+                </label>
               </div>
+            </details>
 
-              <div className="flex justify-end gap-md rounded-b-lg border-t border-outline-variant bg-surface-bright p-lg">
-                {step > 0 ? (
-                  <button
-                    className="cursor-pointer rounded border border-outline-variant px-lg py-sm font-label-md text-label-md text-on-surface transition-colors hover:bg-surface-container active:opacity-80"
-                    onClick={() => setStep((current) => Math.max(0, current - 1))}
-                    type="button"
-                  >
-                    이전
-                  </button>
-                ) : null}
-                {step < stepLabels.length - 1 ? (
-                  <button
-                    className="flex cursor-pointer items-center gap-xs rounded bg-primary px-lg py-sm font-label-md text-label-md text-on-primary transition-opacity hover:bg-opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
-                    onClick={() =>
-                      setStep((current) => Math.min(stepLabels.length - 1, current + 1))
-                    }
-                    disabled={!canProceed}
-                    type="button"
-                  >
-                    다음 단계
-                    <span className="material-symbols-outlined text-[18px]">
-                      arrow_forward
-                    </span>
-                  </button>
-                ) : (
-                  <button
-                    className="flex cursor-pointer items-center gap-xs rounded bg-primary px-lg py-sm font-label-md text-label-md text-on-primary transition-opacity hover:bg-opacity-90 active:opacity-80 disabled:cursor-not-allowed disabled:opacity-60"
-                    disabled={!isHydrated || form.formState.isSubmitting}
-                    type="submit"
-                  >
-                    초안 생성
-                    <span className="material-symbols-outlined text-[18px]">check</span>
-                  </button>
-                )}
-              </div>
-              {message ? (
-                <p className="px-lg pb-lg font-body-sm text-body-sm text-on-surface-variant">
-                  {message}
-                </p>
-              ) : null}
-            </form>
-          </div>
+            {message ? (
+              <p aria-live="polite" className="text-sm text-ink-500">
+                {message}
+              </p>
+            ) : null}
+          </section>
         </div>
+
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <h2 className="text-lg font-bold text-ink-900">선택 요약</h2>
+          <div className="mt-4 grid divide-y divide-line">
+            <SummaryLine
+              label="슈퍼바이저"
+              value={selection.supervisorName ?? "미선택"}
+            />
+            <SummaryLine label="세션" value={selection.productTitle ?? "미선택"} />
+            <SummaryLine label="일정" value={timingValue} />
+            <SummaryLine
+              label="금액"
+              value={formatCurrency(selection.productPriceKrw)}
+            />
+            <SummaryLine label="다음" value="사례 자료 정리" />
+          </div>
+        </aside>
       </div>
-    </main>
+    </form>
+  );
+}
+
+function RequestRow({
+  description,
+  label,
+  status,
+  value
+}: {
+  description: string;
+  label: string;
+  status: string;
+  value: string;
+}) {
+  return (
+    <div className="grid gap-3 rounded-2xl border border-line px-5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+      <div className="min-w-0">
+        <p className="text-2xl font-bold tracking-tight text-ink-900">{label}</p>
+        <p className="mt-2 break-keep text-base font-semibold text-ink-700">{value}</p>
+        <p className="mt-2 text-sm leading-relaxed text-ink-500">{description}</p>
+      </div>
+      <p className="text-base font-bold text-ink-900">{status}</p>
+    </div>
+  );
+}
+
+function SummaryLine({ label, value }: { label: string; value: string }) {
+  return (
+    <p className="grid gap-1 py-3 text-sm">
+      <span className="font-bold text-ink-400">{label}</span>
+      <span className="font-semibold leading-relaxed text-ink-800">{value}</span>
+    </p>
   );
 }
 
 function requestErrorMessage(code: string | undefined): string {
   const labels: Record<string, string> = {
     calendar_config_required:
-      "서비스의 구글 캘린더 연동 설정이 완료되지 않아 일정 예약을 진행할 수 없습니다.",
+      "일정 연동 설정이 완료되지 않아 예약을 진행할 수 없습니다.",
     calendar_not_connected:
-      "슈퍼바이저의 구글 캘린더가 아직 연결되지 않아 이 시간대는 예약할 수 없습니다.",
+      "슈퍼바이저의 일정 연동이 아직 완료되지 않아 이 시간대는 예약할 수 없습니다.",
     calendar_reauth_required:
-      "슈퍼바이저의 구글 캘린더 재연동이 필요합니다. 캘린더 확인 전까지 이 시간대는 예약할 수 없습니다.",
+      "슈퍼바이저의 일정 연동을 다시 확인해야 합니다. 확인 전까지 이 시간대는 예약할 수 없습니다.",
     calendar_sync_failed:
-      "구글 캘린더와 예약 시간을 확인하지 못했습니다. 캘린더 확인 전까지 이 시간대는 예약할 수 없습니다.",
+      "예약 시간을 일정표에 반영하지 못했습니다. 확인 전까지 이 시간대는 예약할 수 없습니다.",
     invalid_request: "요청 형식이 올바르지 않습니다.",
     invalid_slot: "선택한 일정이 올바르지 않습니다.",
-    product_unavailable: "선택한 제공 항목을 이용할 수 없습니다.",
+    product_unavailable: "선택한 세션을 이용할 수 없습니다.",
     slot_required: "희망 일정을 먼저 선택해주세요.",
     slot_unavailable: "이미 예약되었거나 선택할 수 없는 시간입니다."
   };
@@ -442,4 +322,10 @@ function requestErrorMessage(code: string | undefined): string {
 
 function isTimedBookingProduct(kind: string | null | undefined): boolean {
   return kind === "zoom_60" || kind === "zoom_90";
+}
+
+function formatCurrency(value: number | null): string {
+  return value !== null
+    ? `₩ ${value.toLocaleString("ko-KR")}`
+    : "세션 선택 후 표시됩니다";
 }

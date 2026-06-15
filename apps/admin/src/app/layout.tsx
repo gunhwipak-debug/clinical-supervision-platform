@@ -3,7 +3,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "ClinicFlow 운영",
-  description: "ClinicFlow 운영 콘솔"
+  description: "ClinicFlow 운영 화면"
 };
 
 export default function RootLayout({

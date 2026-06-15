@@ -60,7 +60,7 @@ export async function PUT(
   if (basic.status !== "draft") {
     return envelope(
       null,
-      apiError("invalid_state", "초안 상태에서만 수정할 수 있습니다."),
+      apiError("invalid_state", "임시 저장 상태에서만 수정할 수 있습니다."),
       409
     );
   }

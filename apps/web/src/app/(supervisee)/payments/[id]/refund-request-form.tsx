@@ -7,7 +7,6 @@ import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "../../../../components/ui/button";
-import { Card } from "../../../../components/ui/card";
 import { Field, Input, Label, Textarea } from "../../../../components/ui/form";
 
 const refundSchema = z.object({
@@ -53,60 +52,52 @@ export function RefundRequestForm({
   }
 
   return (
-    <Card className="h-fit rounded-xl">
-      <form className="grid gap-4" onSubmit={form.handleSubmit(submit)}>
-        <div>
-          <h2 className="text-xl font-bold text-ink-900">환불 요청</h2>
-          <p className="mt-1 text-sm leading-relaxed text-ink-500">
-            요청은 관리자 큐로 접수됩니다. 실제 환불 처리는 운영자 승인 후 진행됩니다.
-          </p>
-        </div>
-        <Field>
-          <Label htmlFor="amount">금액</Label>
-          <Input
-            className="h-12 rounded-lg"
-            id="amount"
-            max={maxAmount}
-            min={1}
-            placeholder="비우면 전액"
-            type="number"
-            {...form.register("amount")}
-          />
-          {form.formState.errors.amount ? (
-            <p className="text-sm text-danger">
-              {form.formState.errors.amount.message}
-            </p>
-          ) : (
-            <p className="text-xs text-ink-500">
-              비워두면 결제 금액 전체를 요청합니다.
-            </p>
-          )}
-        </Field>
-        <Field>
-          <Label htmlFor="reason">사유</Label>
-          <Textarea
-            className="rounded-lg"
-            id="reason"
-            placeholder="환불이 필요한 사유를 10자 이상 남겨주세요."
-            {...form.register("reason")}
-          />
-          {form.formState.errors.reason ? (
-            <p className="text-sm text-danger">
-              {form.formState.errors.reason.message}
-            </p>
-          ) : null}
-        </Field>
-        <Button disabled={form.formState.isSubmitting} type="submit">
-          <RotateCcw aria-hidden size={18} />
-          환불 요청
-        </Button>
-        {message ? (
-          <p className="rounded-lg bg-surface-sunken px-4 py-3 text-sm text-ink-700">
-            {message}
-          </p>
+    <form className="grid gap-4" onSubmit={form.handleSubmit(submit)}>
+      <div>
+        <h2 className="text-xl font-bold text-ink-900">환불 요청</h2>
+        <p className="mt-1 text-sm leading-relaxed text-ink-500">
+          요청은 관리자 큐로 접수됩니다. 실제 환불 처리는 운영자 승인 후 진행됩니다.
+        </p>
+      </div>
+      <Field>
+        <Label htmlFor="amount">금액</Label>
+        <Input
+          className="h-12 rounded-lg"
+          id="amount"
+          max={maxAmount}
+          min={1}
+          placeholder="비우면 전액"
+          type="number"
+          {...form.register("amount")}
+        />
+        {form.formState.errors.amount ? (
+          <p className="text-sm text-danger">{form.formState.errors.amount.message}</p>
+        ) : (
+          <p className="text-xs text-ink-500">비워두면 결제 금액 전체를 요청합니다.</p>
+        )}
+      </Field>
+      <Field>
+        <Label htmlFor="reason">사유</Label>
+        <Textarea
+          className="rounded-lg"
+          id="reason"
+          placeholder="환불이 필요한 사유를 10자 이상 남겨주세요."
+          {...form.register("reason")}
+        />
+        {form.formState.errors.reason ? (
+          <p className="text-sm text-danger">{form.formState.errors.reason.message}</p>
         ) : null}
-      </form>
-    </Card>
+      </Field>
+      <Button disabled={form.formState.isSubmitting} type="submit">
+        <RotateCcw aria-hidden size={18} />
+        환불 요청
+      </Button>
+      {message ? (
+        <p className="rounded-2xl bg-surface-sunken px-4 py-3 text-sm text-ink-700">
+          {message}
+        </p>
+      ) : null}
+    </form>
   );
 }
 

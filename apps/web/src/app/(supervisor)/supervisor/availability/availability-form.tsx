@@ -4,6 +4,8 @@ import type { profiles } from "@csp/db";
 import type { calendar } from "@csp/db";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import { Button } from "../../../../components/ui/button";
+import { Card } from "../../../../components/ui/card";
 
 const days = [
   { value: 1, label: "월" },
@@ -89,7 +91,7 @@ export function AvailabilityForm({
     });
     const body = (await response.json()) as { error?: { code: string } };
     const next = response.ok
-      ? "가능시간을 저장했습니다."
+      ? "가능 시간을 저장했습니다."
       : (body.error?.code ?? "저장 실패");
     setMessage(next);
     setBusy(false);
@@ -103,7 +105,7 @@ export function AvailabilityForm({
   async function disconnectCalendar() {
     const response = await fetch("/api/me/google-calendar", { method: "DELETE" });
     if (response.ok) {
-      toast.success("구글 캘린더 연동을 해제했습니다.");
+      toast.success("일정 연동을 해제했습니다.");
       window.location.href = "/supervisor/availability?calendar=disconnected";
       return;
     }
@@ -112,7 +114,7 @@ export function AvailabilityForm({
 
   async function checkCalendarSync() {
     setCheckingCalendar(true);
-    setCalendarCheckMessage("구글 캘린더 연결을 점검하는 중입니다.");
+    setCalendarCheckMessage("일정 연결을 점검하는 중입니다.");
     const response = await fetch("/api/me/google-calendar/sync-check", {
       method: "POST"
     });
@@ -124,7 +126,7 @@ export function AvailabilityForm({
     setCheckingCalendar(false);
     if (response.ok) {
       const busyCount = body.data?.busyCount ?? 0;
-      const next = `연동 정상: 향후 2주 동안 구글 일정 ${String(busyCount)}개를 반영했습니다.`;
+      const next = `연동 정상: 향후 2주 동안 겹치는 일정 ${String(busyCount)}개를 반영했습니다.`;
       setCalendarCheckMessage(next);
       toast.success(next);
       return;
@@ -136,204 +138,172 @@ export function AvailabilityForm({
   }
 
   return (
-    <div className="grid grid-cols-1 gap-lg xl:grid-cols-12">
-      <div className="space-y-md xl:col-span-8">
-        <div className="flex h-full flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest">
-          <div className="flex items-center justify-between border-b border-outline-variant bg-surface-bright p-md">
-            <div>
-              <h3 className="font-label-md text-label-md text-on-background">
-                주간 예약 슬롯
-              </h3>
-              <p className="mt-xs font-body-sm text-body-sm text-on-surface-variant">
-                {currentWeek.title} 기준 미리보기입니다. 저장되는 값은 매주 반복되는
-                요일별 가능시간입니다.
-              </p>
-            </div>
-            <div className="flex items-center gap-md font-label-sm text-label-sm text-on-surface-variant">
-              <div className="flex items-center gap-xs">
-                <div className="h-3 w-3 rounded-full border border-dashed border-outline-variant bg-surface-container-lowest" />
-                <span>비어있음</span>
-              </div>
-              <div className="flex items-center gap-xs">
-                <div className="h-3 w-3 rounded-full bg-secondary-container" />
-                <span>예약 가능</span>
-              </div>
-            </div>
+    <div className="grid gap-6">
+      <Card className="overflow-hidden rounded-xl p-0">
+        <div className="flex items-center justify-between border-b border-line bg-surface-base px-5 py-4">
+          <div>
+            <h3 className="text-lg font-bold text-ink-900">주간 예약 시간대</h3>
+            <p className="mt-1 text-sm leading-relaxed text-ink-500">
+              {currentWeek.title} 기준 미리보기입니다. 저장되는 값은 매주 반복되는
+              요일별 가능 시간입니다.
+            </p>
           </div>
-          <div className="calendar-scroll overflow-x-auto p-md">
-            <div className="grid min-w-[600px] grid-cols-8 gap-xs">
-              <div className="flex flex-col gap-sm pr-sm pt-8 text-right font-label-sm text-label-sm text-on-surface-variant">
-                {times.map((time) => (
-                  <div className="flex h-10 items-center justify-end" key={time}>
-                    {time}
-                  </div>
-                ))}
-              </div>
-              {currentWeek.days.map((day) => (
-                <div
-                  className={`flex flex-col gap-sm ${day.value === 0 || day.value === 6 ? "opacity-50" : ""}`}
-                  key={day.value}
-                >
-                  <div className="mb-xs border-b border-outline-variant pb-sm text-center">
-                    <div
-                      className={`font-label-md text-label-md ${
-                        day.value === 0 ? "text-error" : "text-on-background"
-                      }`}
-                    >
-                      {day.label}
-                    </div>
-                    <div className="font-body-sm text-body-sm text-on-surface-variant">
-                      {day.monthDayLabel}
-                    </div>
-                  </div>
-                  {times.map((time) => {
-                    const isSelected = selected.has(`${String(day.value)}-${time}`);
-                    return (
-                      <button
-                        className={`slot-btn flex h-10 w-full items-center justify-center gap-xs rounded border font-label-sm text-[12px] transition-all duration-200 active:scale-95 hover:scale-[1.025] ${
-                          isSelected 
-                            ? "bg-secondary text-on-primary border-secondary shadow-sm" 
-                            : "bg-surface border-dashed border-outline-variant text-on-surface-variant hover:border-secondary/60 hover:bg-surface-bright"
-                        }`}
-                        key={time}
-                        onClick={() => toggle(day.value, time)}
-                        type="button"
-                      >
-                        {isSelected ? (
-                          <>
-                            <span className="material-symbols-outlined text-[14px] font-bold animate-[scaleIn_0.15s_ease-out]">check</span>
-                            <span>가능</span>
-                          </>
-                        ) : (
-                          <span>+ 추가</span>
-                        )}
-                      </button>
-                    );
-                  })}
-                </div>
-              ))}
+          <div className="hidden items-center gap-4 text-sm text-ink-500 md:flex">
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full border border-dashed border-line bg-surface-base" />
+              <span>선택 전</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="h-3 w-3 rounded-full bg-brand-600" />
+              <span>예약 가능</span>
             </div>
           </div>
         </div>
-      </div>
+        <div className="calendar-scroll overflow-x-auto p-5">
+          <div className="grid min-w-[600px] grid-cols-8 gap-2">
+            <div className="flex flex-col gap-3 pr-3 pt-8 text-right text-sm text-ink-500">
+              {times.map((time) => (
+                <div className="flex h-10 items-center justify-end" key={time}>
+                  {time}
+                </div>
+              ))}
+            </div>
+            {currentWeek.days.map((day) => (
+              <div
+                className={`flex flex-col gap-3 ${day.value === 0 || day.value === 6 ? "opacity-50" : ""}`}
+                key={day.value}
+              >
+                <div className="mb-1 border-b border-line pb-3 text-center">
+                  <div
+                    className={`text-sm font-semibold ${
+                      day.value === 0 ? "text-danger" : "text-ink-900"
+                    }`}
+                  >
+                    {day.label}
+                  </div>
+                  <div className="text-xs text-ink-500">{day.monthDayLabel}</div>
+                </div>
+                {times.map((time) => {
+                  const isSelected = selected.has(`${String(day.value)}-${time}`);
+                  return (
+                    <button
+                      aria-label={`${day.label}요일 ${day.monthDayLabel} ${time} 가능 시간 ${isSelected ? "해제" : "추가"}`}
+                      aria-pressed={isSelected}
+                      className={`flex h-10 w-full items-center justify-center rounded-md border text-xs font-semibold transition-colors ${
+                        isSelected
+                          ? "border-brand-600 bg-brand-600 text-white"
+                          : "border-dashed border-line bg-surface-base text-ink-500 hover:border-brand-300 hover:bg-brand-50"
+                      }`}
+                      key={time}
+                      onClick={() => toggle(day.value, time)}
+                      type="button"
+                    >
+                      {isSelected ? "가능" : "+ 추가"}
+                    </button>
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </Card>
 
-      <div className="space-y-md xl:col-span-4">
-        <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-          <h3 className="mb-sm font-label-md text-label-md text-on-background">
-            외부 캘린더 연동
-          </h3>
+      <details className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
+        <summary className="cursor-pointer list-none p-4 text-sm font-bold text-ink-900">
+          외부 일정 연동
+        </summary>
+        <div className="grid gap-4 border-t border-line p-4">
           {calendarNotice(calendarMessage) ? (
-            <p className="mb-sm rounded-lg border border-outline-variant bg-surface-container p-sm font-body-sm text-body-sm text-on-surface-variant">
+            <p className="rounded-lg border border-line bg-surface-sunken p-3 text-sm text-ink-600">
               {calendarNotice(calendarMessage)}
             </p>
           ) : null}
-          <div className="flex items-center justify-between rounded-lg border border-outline-variant bg-surface p-sm">
-            <div className="flex items-center gap-sm">
-              <span className="material-symbols-outlined text-secondary">
-                calendar_today
-              </span>
-              <div>
-                <p className="font-label-md text-label-md text-on-background">
-                  구글 캘린더
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold text-ink-900">연동 상태</p>
+              <p
+                className={`mt-1 text-sm ${
+                  calendarConnection?.syncStatus === "connected"
+                    ? "text-brand-700"
+                    : "text-ink-500"
+                }`}
+              >
+                {calendarConnection
+                  ? calendarStatusLabel(calendarConnection.syncStatus)
+                  : "연동되지 않음"}
+              </p>
+              {calendarConnection?.providerAccountEmail ? (
+                <p className="mt-1 text-xs text-ink-500">
+                  {calendarConnection.providerAccountEmail}
                 </p>
-                <p
-                  className={`font-label-sm text-label-sm ${
-                    calendarConnection?.syncStatus === "connected"
-                      ? "text-secondary"
-                      : "text-on-surface-variant"
-                  }`}
-                >
-                  {calendarConnection
-                    ? calendarStatusLabel(calendarConnection.syncStatus)
-                    : "연동되지 않음"}
-                </p>
-                {calendarConnection?.providerAccountEmail ? (
-                  <p className="mt-xs font-label-sm text-[10px] text-on-surface-variant">
-                    {calendarConnection.providerAccountEmail}
-                  </p>
-                ) : null}
-              </div>
+              ) : null}
             </div>
-            {calendarConnection ? (
-              <div className="flex items-center gap-xs">
-                <button
-                  className="font-label-sm text-label-sm text-secondary transition-colors hover:underline disabled:opacity-50"
-                  disabled={checkingCalendar}
-                  onClick={() => void checkCalendarSync()}
-                  type="button"
-                >
-                  점검
-                </button>
-                <a
-                  className="font-label-sm text-label-sm text-on-surface-variant transition-colors hover:text-secondary hover:underline"
-                  href="/api/me/google-calendar/connect"
-                >
-                  재연동
-                </a>
-                <button
-                  className="font-label-sm text-label-sm text-on-surface-variant transition-colors hover:text-on-background"
-                  onClick={() => void disconnectCalendar()}
-                  type="button"
-                >
-                  해제
-                </button>
-              </div>
-            ) : (
-              <>
-                {calendarConfigReady ? (
+            <div className="flex flex-wrap items-center gap-3 text-sm">
+              {calendarConnection ? (
+                <>
+                  <button
+                    className="font-semibold text-brand-700 transition-colors hover:underline disabled:opacity-50"
+                    disabled={checkingCalendar}
+                    onClick={() => void checkCalendarSync()}
+                    type="button"
+                  >
+                    점검
+                  </button>
                   <a
-                    className="font-label-sm text-label-sm text-secondary hover:underline"
+                    className="text-ink-500 transition-colors hover:text-brand-700 hover:underline"
                     href="/api/me/google-calendar/connect"
                   >
-                    연동
+                    다시 연결
                   </a>
-                ) : (
-                  <span className="font-label-sm text-label-sm text-error">
-                    운영 설정 필요
-                  </span>
-                )}
-              </>
-            )}
+                  <button
+                    className="text-ink-500 transition-colors hover:text-ink-900"
+                    onClick={() => void disconnectCalendar()}
+                    type="button"
+                  >
+                    해제
+                  </button>
+                </>
+              ) : calendarConfigReady ? (
+                <a
+                  className="font-semibold text-brand-700 hover:underline"
+                  href="/api/me/google-calendar/connect"
+                >
+                  연결
+                </a>
+              ) : (
+                <span className="text-danger">운영 설정 필요</span>
+              )}
+            </div>
           </div>
-          <p className="mt-sm font-body-sm text-body-sm text-on-surface-variant">
-            플랫폼 가능시간과 구글 캘린더의 바쁜 시간이 함께 반영됩니다. 개인 일정이
-            있는 시간대는 공개 예약 화면에서 자동으로 제외됩니다.
+          <p className="text-sm leading-relaxed text-ink-500">
+            외부 일정이 연결되어 있으면 개인 일정이 있는 시간대는 공개 예약 화면에서
+            제외됩니다.
           </p>
           {calendarCheckMessage ? (
-            <p className="mt-sm rounded-lg border border-outline-variant bg-surface-container p-sm font-label-sm text-label-sm text-on-surface-variant">
+            <p className="rounded-lg border border-line bg-surface-sunken p-3 text-sm text-ink-600">
               {calendarCheckMessage}
             </p>
           ) : null}
           {!calendarConfigReady ? (
-            <p className="mt-sm font-label-sm text-label-sm text-error">
-              현재는 새 캘린더 연결을 시작할 수 없습니다. 이미 연결된 캘린더가 있으면
-              예약 충돌 확인은 계속 반영됩니다.
+            <p className="text-sm text-danger">
+              현재는 새 일정 연결을 시작할 수 없습니다. 이미 연결된 일정이 있으면 예약
+              충돌 확인은 계속 반영됩니다.
             </p>
           ) : null}
         </div>
+      </details>
 
-        <div className="flex flex-col gap-md rounded-xl border border-outline-variant bg-surface-container-lowest p-md">
-          <h3 className="font-label-md text-label-md text-on-background">
-            반복 일정 설정
-          </h3>
-          <p className="font-body-sm text-body-sm text-on-surface-variant">
-            선택한 슬롯은 로그인한 슈퍼바이저 프로필에만 저장됩니다. 다른 슈퍼바이저의
-            공개 캘린더와 섞이지 않습니다.
+      <div className="grid gap-3 rounded-xl border border-line bg-surface-elevated p-4">
+        <div>
+          <h3 className="text-lg font-bold text-ink-900">가능 시간 저장</h3>
+          <p className="mt-1 text-sm leading-relaxed text-ink-500">
+            선택한 시간대만 신청자에게 예약 가능한 시간으로 보입니다.
           </p>
-          <button
-            className="mt-sm w-full rounded-lg bg-primary py-sm font-label-md text-label-md text-on-primary transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-60"
-            disabled={busy}
-            onClick={() => void save()}
-            type="button"
-          >
-            일괄 적용 저장
-          </button>
-          {message ? (
-            <p className="font-label-sm text-label-sm text-on-surface-variant">
-              {message}
-            </p>
-          ) : null}
         </div>
+        <Button disabled={busy} onClick={() => void save()} type="button">
+          일정 저장
+        </Button>
+        {message ? <p className="text-sm text-ink-600">{message}</p> : null}
       </div>
     </div>
   );
@@ -353,10 +323,10 @@ function calendarStatusLabel(
 
 function calendarNotice(code: string): string {
   const labels: Record<string, string> = {
-    connected: "구글 캘린더 연동이 완료되었습니다.",
-    "config-required": "구글 캘린더 계정 인증을 위한 운영 설정이 필요합니다.",
-    "connect-failed": "구글 캘린더 인증을 완료하지 못했습니다.",
-    disconnected: "구글 캘린더 연동을 해제했습니다.",
+    connected: "일정 연동이 완료되었습니다.",
+    "config-required": "일정 연결 준비가 완료되지 않았습니다.",
+    "connect-failed": "일정 연결을 완료하지 못했습니다.",
+    disconnected: "일정 연동을 해제했습니다.",
     "invalid-state": "인증 요청이 만료되었습니다. 다시 시도해주세요.",
     "profile-required": "먼저 슈퍼바이저 프로필을 저장해주세요."
   };
@@ -366,15 +336,14 @@ function calendarNotice(code: string): string {
 function calendarCheckError(code: string | undefined): string {
   const labels: Record<string, string> = {
     calendar_config_required:
-      "서비스의 구글 캘린더 OAuth 설정이 없어 연동 상태를 점검할 수 없습니다.",
-    calendar_not_connected: "먼저 구글 캘린더 계정을 연동해주세요.",
-    calendar_reauth_required: "구글 캘린더 재인증이 필요합니다.",
-    calendar_sync_failed:
-      "구글 캘린더와 통신하지 못했습니다. 잠시 후 다시 점검해주세요.",
+      "일정 연결 준비가 완료되지 않아 연동 상태를 점검할 수 없습니다.",
+    calendar_not_connected: "먼저 외부 일정을 연결해주세요.",
+    calendar_reauth_required: "일정 연결을 다시 확인해야 합니다.",
+    calendar_sync_failed: "외부 일정과 연결하지 못했습니다. 잠시 후 다시 점검해주세요.",
     forbidden: "슈퍼바이저 계정에서만 연동을 점검할 수 있습니다.",
     unauthorized: "로그인이 필요합니다."
   };
-  return labels[code ?? ""] ?? "구글 캘린더 연동 점검에 실패했습니다.";
+  return labels[code ?? ""] ?? "일정 연동 점검에 실패했습니다.";
 }
 
 function addHour(startTime: string): string {

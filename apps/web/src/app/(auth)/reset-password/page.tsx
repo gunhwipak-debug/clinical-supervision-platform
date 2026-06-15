@@ -13,12 +13,13 @@ export default async function ResetPasswordPage({
     <AuthScaffold
       action={
         <Link
-          className="text-sm font-semibold text-brand-700 hover:underline"
+          className="text-sm font-semibold text-[#2563ff] hover:underline"
           href="/login"
         >
           로그인으로 돌아가기
         </Link>
       }
+      eyebrow="계정 지원"
       subtitle="메일로 받은 확인 정보와 새 비밀번호를 입력합니다."
       title="새 비밀번호 설정"
     >

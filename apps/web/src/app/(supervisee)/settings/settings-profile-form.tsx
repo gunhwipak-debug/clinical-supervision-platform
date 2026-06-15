@@ -43,7 +43,7 @@ export function SettingsProfileForm({
     }
 
     setSavedAt(new Date());
-    toast.success("슈퍼바이지 프로필을 저장했습니다.");
+    toast.success("신청자 프로필을 저장했습니다.");
   }
 
   return (

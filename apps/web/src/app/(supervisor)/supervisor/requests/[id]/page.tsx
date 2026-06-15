@@ -1,9 +1,18 @@
 import Link from "next/link";
 import { files, supervision, withUserContext } from "@csp/db";
-import { History } from "lucide-react";
+import { AppShell } from "../../../../../components/app-shell";
 import { CaseFilesPanel } from "../../../../../components/case-files-panel";
+import {
+  FlowStepNav,
+  PrimaryActionPanel,
+  SectionBlock
+} from "../../../../../components/clinicflow-shell";
+import { Button } from "../../../../../components/ui/button";
 import { EmptyState } from "../../../../../components/ui/state";
-import { DemoSupervisorRequestDetailPreview } from "../../../../../components/workflow-preview-pages";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../../lib/auth/current-user";
 import { RequestWorkflow } from "./request-workflow";
@@ -14,8 +23,21 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   const current = await getCurrentUser();
   const { id } = await params;
 
-  if (!current || current.user.role !== "supervisor") {
-    return <DemoSupervisorRequestDetailPreview />;
+  if (!current) {
+    return (
+      <LoginRequiredState
+        title="슈퍼바이저 검토"
+        returnTo={`/supervisor/requests/${id}`}
+      />
+    );
+  }
+  if (current.user.role !== "supervisor") {
+    return (
+      <RoleRequiredState
+        title="슈퍼바이저 검토"
+        description="이 검토 화면은 담당 슈퍼바이저 계정에서만 확인합니다."
+      />
+    );
   }
 
   const db = createRuntimeDatabase();
@@ -27,12 +49,19 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
 
   if (!detail || detail.supervisorId !== current.session.userId) {
     return (
-      <main className="min-h-screen bg-background p-gutter">
+      <AppShell
+        action={
+          <Button asChild variant="secondary">
+            <Link href="/supervisor/requests">검토할 의뢰</Link>
+          </Button>
+        }
+        title="의뢰를 찾지 못했습니다"
+      >
         <EmptyState
           title="의뢰가 없습니다"
-          description="의뢰 큐로 돌아가 다시 선택해주세요."
+          description="검토할 의뢰 목록으로 돌아가 다시 선택해주세요."
         />
-      </main>
+      </AppShell>
     );
   }
 
@@ -47,288 +76,255 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
     (tx) => files.latestDocumentReviewCycle(tx, id)
   );
 
+  const nextAction = nextSupervisorAction(detail.status);
+
   return (
-    <div className="min-h-screen bg-background font-body-md text-on-background antialiased selection:bg-secondary-container selection:text-on-secondary-container">
-      <header className="sticky top-0 z-50 border-b border-outline-variant bg-surface-container-lowest dark:border-outline dark:bg-primary-container">
-        <div className="mx-auto flex h-16 w-full max-w-container-max items-center justify-between px-lg">
-          <div className="flex items-center gap-md">
-            <Link
-              className="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed"
-              href="/supervisor"
-            >
-              ClinicFlow
-            </Link>
-          </div>
-          <div className="flex items-center gap-md text-on-surface-variant dark:text-surface-variant">
-            <Link
-              className="ml-2 grid h-8 w-8 place-items-center overflow-hidden rounded-full border border-outline-variant bg-surface-container-high"
-              href="/supervisor/profile"
-            >
-              <span className="material-symbols-outlined text-on-surface-variant">
-                person
-              </span>
-            </Link>
-          </div>
-        </div>
-      </header>
+    <AppShell
+      action={
+        <Button asChild>
+          <a href="#supervisor-actions">{nextAction.label}</a>
+        </Button>
+      }
+      subtitle={`${statusLabel(detail.status)} · ${formatBookingSlot(detail)}`}
+      title={detail.title ?? shortRequestId(detail.id)}
+    >
+      <FlowStepNav current={flowStepForStatus(detail.status)} steps={supervisorSteps} />
 
-      <div className="sticky top-16 z-40 border-b border-outline-variant bg-surface/90 backdrop-blur-md">
-        <div className="mx-auto flex max-w-container-max flex-col items-start justify-between gap-sm px-gutter py-sm sm:flex-row sm:items-center">
-          <div className="flex flex-wrap items-center gap-sm">
-            <Link
-              className="flex items-center gap-xs font-label-md text-label-md text-on-surface-variant transition-colors hover:text-on-surface"
-              href="/supervisor/requests"
-            >
-              <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-              목록으로
-            </Link>
-            <div className="mx-2 h-4 w-px bg-outline-variant" />
-            <h1 className="m-0 font-headline-md text-headline-md text-on-surface">
-              {shortRequestId(detail.id)}
-            </h1>
-            <span className="ml-2 rounded-full border border-outline-variant bg-surface-container-high px-2 py-1 font-label-sm text-label-sm text-on-surface">
-              {statusLabel(detail.status)}
-            </span>
-          </div>
-          <RequestWorkflow
-            compact
-            latestReviewStatus={latestReviewCycle?.status ?? null}
-            bookingStatus={detail.bookingStatus}
-            meetingUrl={detail.meetingUrl}
-            needsCompletionRecord={detail.needsCompletionRecord}
-            requestId={id}
-            scheduledEnd={detail.scheduledEnd}
-            scheduledStart={detail.scheduledStart}
-            serviceProductSupervisionType={detail.serviceProductSupervisionType}
-            status={detail.status}
-          />
-        </div>
-      </div>
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div className="grid gap-6">
+          <PrimaryActionPanel title={nextAction.title}>
+            {nextAction.description}
+          </PrimaryActionPanel>
 
-      <main className="mx-auto grid max-w-container-max grid-cols-1 items-start gap-gutter px-gutter py-lg lg:grid-cols-12">
-        <aside className="col-span-1 flex flex-col gap-gutter lg:col-span-3">
-          <div className="relative flex flex-col overflow-hidden rounded-xl border border-outline-variant bg-surface-container-lowest shadow-sm">
-            <div className="relative z-10 flex items-center gap-xs border-b border-outline-variant bg-surface-container px-md py-sm">
-              <span className="material-symbols-outlined icon-filled text-[18px] text-secondary">
-                shield_locked
-              </span>
-              <span className="font-label-md text-label-md text-secondary">
-                검토 화면
-              </span>
-            </div>
-            <div className="pattern-bg relative z-0 flex flex-col gap-md p-md">
-              <div className="rounded-lg border border-outline-variant bg-surface-container-lowest/90 p-sm backdrop-blur-sm">
-                <div className="grid grid-cols-2 gap-sm">
-                  <Info label="의뢰 번호" value={shortRequestId(detail.id)} />
-                  <Info label="상태" value={statusLabel(detail.status)} />
-                  <Info
-                    label="세션 유형"
+          <section className="grid gap-6 md:grid-cols-2">
+            <SectionBlock
+              subtitle="검토에 필요한 핵심만 한 줄씩 확인합니다."
+              title="사례 요약"
+            >
+              <div className="rounded-xl border border-line bg-surface-elevated p-5">
+                <div className="grid divide-y divide-line text-sm">
+                  <SummaryLine label="의뢰 번호" value={shortRequestId(detail.id)} />
+                  <SummaryLine
+                    label="세션"
                     value={detail.productTitle ?? "슈퍼비전 의뢰"}
-                    wide
                   />
-                  <Info label="예약 일정" value={formatBookingSlot(detail)} wide />
-                  <Info
+                  <SummaryLine label="예약 일정" value={formatBookingSlot(detail)} />
+                  <SummaryLine
                     label="예약 상태"
                     value={bookingStatusLabel(detail.bookingStatus)}
-                    wide
                   />
-                  <Info
-                    label="화상 세션"
-                    value={detail.meetingUrl ? "입장 링크 동기화됨" : "링크 대기"}
-                    wide
-                  />
-                  <Info
-                    label="의뢰 제목"
-                    value={detail.title ?? "저장된 제목이 없습니다."}
-                    wide
-                  />
-                  <Info
+                  <SummaryLine
                     label="주호소"
                     value={detail.chiefComplaint ?? "저장된 주호소가 없습니다."}
-                    wide
                   />
-                  <Info
+                  <SummaryLine
                     label="의뢰 사유"
                     value={detail.referralReason ?? "저장된 의뢰 사유가 없습니다."}
-                    wide
                   />
                 </div>
               </div>
-            </div>
-          </div>
+            </SectionBlock>
 
-          <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-md shadow-sm">
-            <h3 className="mb-md flex items-center gap-xs font-label-md text-label-md text-on-surface">
-              <span className="material-symbols-outlined text-[18px] text-on-surface-variant">
-                folder_open
-              </span>
-              사례 패킷 (첨부파일)
-            </h3>
-            <ul className="flex flex-col gap-sm">
-              {caseFiles.length === 0 ? (
-                <li className="rounded-lg border border-outline-variant p-sm font-label-sm text-label-sm text-on-surface-variant">
-                  첨부파일이 없습니다.
-                </li>
-              ) : (
-                caseFiles.map((file) => (
-                  <li
-                    className="flex items-center justify-between rounded-lg border border-outline-variant p-sm"
-                    key={file.id}
-                  >
-                    <div className="flex min-w-0 items-center gap-sm">
-                      <div className="flex h-8 w-8 items-center justify-center rounded bg-surface-container-high text-on-surface">
-                        <span className="material-symbols-outlined text-[16px]">
-                          {file.mimeType.includes("pdf")
-                            ? "picture_as_pdf"
-                            : "description"}
-                        </span>
-                      </div>
-                      <div className="min-w-0">
-                        <span className="block truncate font-label-sm text-label-sm text-on-surface">
-                          {file.originalFilename}
-                        </span>
-                        <span className="font-label-sm text-[10px] text-on-surface-variant">
-                          {formatBytes(file.sizeBytes)}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                ))
-              )}
-            </ul>
-          </div>
-        </aside>
+            <SectionBlock
+              subtitle="현재 상태에서 작성하거나 확인해야 할 산출물을 바로 붙여 봅니다."
+              title="검토 초점"
+            >
+              <div className="rounded-xl border border-line bg-surface-elevated p-5">
+                <div className="grid divide-y divide-line text-sm">
+                  <SummaryLine label="진행 상태" value={statusLabel(detail.status)} />
+                  <SummaryLine
+                    label="다음 제출물"
+                    value={nextDeliverableLabel(detail.status)}
+                  />
+                  <SummaryLine
+                    label="화상 세션"
+                    value={detail.meetingUrl ? "입장 링크 준비됨" : "링크 대기"}
+                  />
+                  <SummaryLine
+                    label="자료 검토 상태"
+                    value={
+                      caseFiles.length > 0
+                        ? `${String(caseFiles.length)}개 확인 가능`
+                        : "첨부 자료 없음"
+                    }
+                  />
+                </div>
+              </div>
+            </SectionBlock>
+          </section>
 
-        <section className="col-span-1 flex min-h-[600px] flex-col lg:col-span-6">
-          <CaseFilesPanel
-            canAnnotate={detail.status === "accepted" || detail.status === "in_review"}
-            canDelete={false}
-            canRequestRevision={
-              detail.status === "in_review" || detail.status === "feedback_submitted"
-            }
-            canStampReturn={detail.status === "completion_record_issued"}
-            canUpload={false}
-            initialFiles={caseFiles.map((file) => ({
-              id: file.id,
-              kind: file.kind,
-              originalFilename: file.originalFilename,
-              mimeType: file.mimeType,
-              sizeBytes: file.sizeBytes,
-              virusScanStatus: file.virusScanStatus,
-              phiScanStatus: file.phiScanStatus,
-              uploadedAt: file.uploadedAt
-            }))}
-            requestId={id}
-          />
-        </section>
-
-        <aside className="col-span-1 space-y-gutter lg:col-span-3">
-          <div id="supervisor-actions">
-            <RequestWorkflow
-              latestReviewStatus={latestReviewCycle?.status ?? null}
-              bookingStatus={detail.bookingStatus}
-              meetingUrl={detail.meetingUrl}
-              needsCompletionRecord={detail.needsCompletionRecord}
-              requestId={id}
-              scheduledEnd={detail.scheduledEnd}
-              scheduledStart={detail.scheduledStart}
-              serviceProductSupervisionType={detail.serviceProductSupervisionType}
-              status={detail.status}
-            />
-          </div>
-          <div className="rounded-xl border border-outline-variant bg-surface-container-lowest p-md shadow-sm">
-            <h3 className="mb-md flex items-center gap-xs font-label-md text-label-md text-on-surface">
-              <History aria-hidden className="text-on-surface-variant" size={18} />
-              검토 이력
-            </h3>
-            <div className="relative ml-2 space-y-lg border-l border-outline-variant pl-4">
-              <HistoryItem
-                label="현재 상태"
-                primary={statusLabel(detail.status)}
-                secondary={`${formatDate(detail.updatedAt)} - 시스템`}
-              />
-              <HistoryItem
-                label="이전 상태"
-                primary="의뢰 생성"
-                secondary={`${formatDate(detail.createdAt)} - 시스템`}
-                muted
+          <SectionBlock
+            subtitle="수락, 피드백 작성, 추가 자료 요청, 학습 기록 발급을 이 영역에서 이어갑니다."
+            title="검토 작업"
+          >
+            <div id="supervisor-actions">
+              <RequestWorkflow
+                latestReviewStatus={latestReviewCycle?.status ?? null}
+                bookingStatus={detail.bookingStatus}
+                meetingUrl={detail.meetingUrl}
+                needsCompletionRecord={detail.needsCompletionRecord}
+                requestId={id}
+                scheduledEnd={detail.scheduledEnd}
+                scheduledStart={detail.scheduledStart}
+                serviceProductSupervisionType={detail.serviceProductSupervisionType}
+                status={detail.status}
               />
             </div>
+          </SectionBlock>
+
+          <SectionBlock
+            subtitle="보고서, 검사 결과, 면담 요약을 한 화면에서 확인하고 필요한 위치에 메모를 남깁니다."
+            title={`첨부 자료 ${String(caseFiles.length)}개`}
+          >
+            <div className="rounded-xl border border-line bg-surface-elevated p-5">
+              <CaseFilesPanel
+                canAnnotate={
+                  detail.status === "accepted" || detail.status === "in_review"
+                }
+                canDelete={false}
+                canRequestRevision={
+                  detail.status === "in_review" ||
+                  detail.status === "feedback_submitted"
+                }
+                canStampReturn={detail.status === "completion_record_issued"}
+                canUpload={false}
+                initialFiles={caseFiles.map((file) => ({
+                  id: file.id,
+                  kind: file.kind,
+                  originalFilename: file.originalFilename,
+                  mimeType: file.mimeType,
+                  sizeBytes: file.sizeBytes,
+                  virusScanStatus: file.virusScanStatus,
+                  phiScanStatus: file.phiScanStatus,
+                  uploadedAt: file.uploadedAt
+                }))}
+                requestId={id}
+              />
+            </div>
+          </SectionBlock>
+        </div>
+
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <p className="text-sm font-bold text-brand-700">검토 요약</p>
+          <h2 className="mt-2 text-xl font-bold text-ink-900">지금 열어둔 의뢰</h2>
+          <div className="mt-5 grid divide-y divide-line text-sm">
+            <SummaryLine label="의뢰" value={shortRequestId(detail.id)} />
+            <SummaryLine label="상태" value={statusLabel(detail.status)} />
+            <SummaryLine label="자료" value={`${String(caseFiles.length)}건 제출`} />
+            <SummaryLine label="최근 변경" value={formatDate(detail.updatedAt)} />
+            <SummaryLine label="의뢰 생성" value={formatDate(detail.createdAt)} />
           </div>
+          <div className="mt-5 grid gap-3">
+            <Button asChild variant="secondary">
+              <Link href="/supervisor/requests">검토할 의뢰</Link>
+            </Button>
+            <Button asChild variant="secondary">
+              <Link href="/supervisor/memory">학습 기록 보기</Link>
+            </Button>
+          </div>
+          <p className="mt-4 text-sm leading-relaxed text-ink-500">
+            식별정보는 검토 목적 안에서만 확인하고, 제출할 피드백은 한 번 더 읽은 뒤
+            저장하세요.
+          </p>
         </aside>
-      </main>
-    </div>
+      </section>
+    </AppShell>
   );
 }
 
-function Info({
-  label,
-  value,
-  wide = false
-}: {
-  label: string;
-  value: string;
-  wide?: boolean;
-}) {
+const supervisorSteps = ["자료 확인", "검토 진행", "피드백 작성", "학습 기록"] as const;
+
+function SummaryLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className={`flex flex-col ${wide ? "col-span-2" : ""}`}>
-      <span className="mb-xs font-label-sm text-label-sm text-on-surface-variant">
-        {label}
-      </span>
-      <span className="whitespace-pre-wrap font-body-sm text-body-sm font-medium text-on-surface">
+    <div className="grid gap-1 py-3">
+      <span className="font-bold text-ink-400">{label}</span>
+      <span className="whitespace-pre-wrap font-semibold leading-relaxed text-ink-900">
         {value}
       </span>
     </div>
   );
 }
 
-function HistoryItem({
-  label,
-  muted = false,
-  primary,
-  secondary
-}: {
+function flowStepForStatus(status: string): (typeof supervisorSteps)[number] {
+  if (
+    status === "awaiting_supervisor_review" ||
+    status === "accepted" ||
+    status === "additional_info_requested"
+  ) {
+    return "자료 확인";
+  }
+  if (status === "in_review") return "검토 진행";
+  if (status === "feedback_submitted") return "피드백 작성";
+  if (status === "completion_record_issued" || status === "completed") {
+    return "학습 기록";
+  }
+  return "자료 확인";
+}
+
+function nextDeliverableLabel(status: string): string {
+  if (status === "awaiting_supervisor_review") return "수락 여부 결정";
+  if (status === "accepted" || status === "in_review") return "요약 피드백과 권고";
+  if (status === "additional_info_requested") return "보완 자료 재검토";
+  if (status === "feedback_submitted") return "학습 기록 발급 확인";
+  if (status === "completion_record_issued" || status === "completed") {
+    return "완료 기록 확인";
+  }
+  return "현재 상태 확인";
+}
+
+function nextSupervisorAction(status: string): {
+  description: string;
   label: string;
-  muted?: boolean;
-  primary: string;
-  secondary: string;
-}) {
-  return (
-    <div className="relative">
-      <div
-        className={`absolute -left-[21px] top-1 h-2.5 w-2.5 rounded-full ring-4 ring-surface-container-lowest ${
-          muted
-            ? "border border-outline-variant bg-surface-container-high"
-            : "bg-secondary"
-        }`}
-      />
-      <div className="flex flex-col gap-xs">
-        <span
-          className={`font-label-sm text-label-sm ${
-            muted ? "text-on-surface-variant" : "text-secondary"
-          }`}
-        >
-          {label}
-        </span>
-        <span className="font-body-sm text-body-sm font-medium text-on-surface">
-          {primary}
-        </span>
-        <span className="font-label-sm text-label-sm text-on-surface-variant">
-          {secondary}
-        </span>
-      </div>
-    </div>
-  );
+  title: string;
+} {
+  if (status === "awaiting_supervisor_review") {
+    return {
+      description:
+        "사례 요약과 첨부 자료를 확인한 뒤 수락 여부를 결정합니다. 판단에 필요한 내용만 먼저 확인하세요.",
+      label: "수락 여부 결정",
+      title: "의뢰를 수락할지 결정하세요"
+    };
+  }
+  if (status === "accepted" || status === "in_review") {
+    return {
+      description: "첨부 자료를 읽고 필요한 위치에 메모를 남긴 뒤 피드백을 작성합니다.",
+      label: "피드백 작성",
+      title: "자료를 검토하고 피드백을 작성하세요"
+    };
+  }
+  if (status === "additional_info_requested") {
+    return {
+      description:
+        "신청자가 추가 자료를 올리면 다시 검토를 이어갑니다. 요청 사유는 처리 기록에 남습니다.",
+      label: "추가 자료 확인",
+      title: "추가 자료를 기다리는 상태입니다"
+    };
+  }
+  if (status === "feedback_submitted") {
+    return {
+      description:
+        "피드백 제출은 끝났습니다. 이수 기록이 필요한 의뢰라면 발급 범위를 확인하세요.",
+      label: "학습 기록 준비",
+      title: "학습 기록 발급을 확인하세요"
+    };
+  }
+  if (status === "completion_record_issued" || status === "completed") {
+    return {
+      description:
+        "이번 슈퍼비전은 마무리되었습니다. 처리 기록과 자료 보관 상태만 확인합니다.",
+      label: "처리 기록 확인",
+      title: "마무리된 의뢰입니다"
+    };
+  }
+  return {
+    description: "현재 상태에 맞는 처리 작업을 확인합니다.",
+    label: "작업 확인",
+    title: "처리 작업을 확인하세요"
+  };
 }
 
 function shortRequestId(id: string): string {
   return `의뢰-${id.slice(0, 8)}`;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes < 1024) return `${String(bytes)}B`;
-  if (bytes < 1024 * 1024) return `${String(Math.round(bytes / 1024))}KB`;
-  return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
 }
 
 function formatDate(value: Date | string | null): string {
@@ -360,20 +356,20 @@ function formatBookingSlot(request: supervision.SupervisionRequestDetails): stri
 
 function statusLabel(status: string): string {
   const labels: Record<string, string> = {
-    awaiting_supervisor_review: "검토 대기",
+    awaiting_supervisor_review: "수락 대기",
     accepted: "수락됨",
-    awaiting_payment: "결제 대기",
-    in_review: "검토 중",
+    awaiting_payment: "결제 필요",
+    in_review: "검토 진행 중",
     paid: "결제 완료",
-    feedback_submitted: "피드백 완료",
-    additional_info_requested: "보완 요청",
-    completion_record_issued: "완료기록 발급",
+    feedback_submitted: "피드백 도착",
+    additional_info_requested: "추가 자료 요청",
+    completion_record_issued: "학습 기록 발급",
     completed: "완료",
     draft: "작성 중",
     expired: "만료",
     meeting_completed: "상담 완료",
     meeting_scheduled: "일정 확정",
-    rejected: "반려",
+    rejected: "수락되지 않음",
     refunded: "환불",
     submitted: "제출됨",
     cancelled: "취소"
@@ -385,7 +381,7 @@ function bookingStatusLabel(status: string | null): string {
   const labels: Record<string, string> = {
     cancelled: "취소됨",
     completed: "세션 완료",
-    no_show_supervisee: "슈퍼바이지 불참",
+    no_show_supervisee: "신청자 불참",
     no_show_supervisor: "슈퍼바이저 불참",
     rescheduled: "일정 변경됨",
     scheduled: "예약됨"

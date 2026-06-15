@@ -132,7 +132,7 @@ export async function POST(
       null,
       apiError(
         "feedback_approval_required",
-        "피드백 승인 후 완료 기록을 발급할 수 있습니다."
+        "피드백 확인 완료 후 학습 기록을 발급할 수 있습니다."
       ),
       422
     );

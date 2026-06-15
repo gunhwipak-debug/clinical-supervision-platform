@@ -3,23 +3,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { supervision } from "@csp/db";
 import { detectPhi } from "@csp/shared/supervision/phi-regex";
-import {
-  AlertTriangle,
-  CalendarClock,
-  CheckCircle2,
-  Circle,
-  CreditCard,
-  FileText,
-  ShieldCheck,
-  Video
-} from "lucide-react";
-import { useMemo, useState } from "react";
+import { AlertTriangle, CreditCard, ShieldCheck, Video } from "lucide-react";
+import { useMemo, useState, type ReactNode } from "react";
 import { useForm, type UseFormRegisterReturn } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
-import { Card } from "../../../../components/ui/card";
 import { Field, Input, Label, Textarea } from "../../../../components/ui/form";
 
 const checklistFields = [
@@ -131,34 +121,33 @@ const statusCopy: Record<
   }
 > = {
   draft: {
-    label: "초안",
-    title: "케이스 패킷을 저장하면 제출할 수 있습니다",
-    description:
-      "자료 점검 체크리스트는 선택 확인 절차이며, 제출 자체는 패킷 저장 후 가능합니다.",
+    label: "작성 중",
+    title: "사례 정보를 저장하면 제출할 수 있습니다",
+    description: "주호소와 의뢰 사유를 저장한 뒤 필요한 자료를 첨부합니다.",
     tone: "accent"
   },
   submitted: {
     label: "제출됨",
     title: "제출이 완료되었습니다",
-    description: "결제를 완료하면 슈퍼바이저 검토 대기 상태로 넘어갑니다.",
+    description: "결제를 완료하면 슈퍼바이저 수락 대기 상태로 넘어갑니다.",
     tone: "brand"
   },
   awaiting_payment: {
-    label: "결제 대기",
+    label: "결제 필요",
     title: "결제 확인이 필요합니다",
-    description: "결제창에서 결제를 완료하면 슈퍼바이저 검토 대기 상태로 이동합니다.",
+    description: "결제를 완료하면 슈퍼바이저 수락 대기 상태로 이동합니다.",
     tone: "accent"
   },
   paid: {
     label: "결제 완료",
     title: "결제가 완료되었습니다",
-    description: "곧 슈퍼바이저 검토 대기 상태로 정리됩니다.",
+    description: "곧 슈퍼바이저 수락 대기 상태로 정리됩니다.",
     tone: "brand"
   },
   awaiting_supervisor_review: {
-    label: "슈퍼바이저 검토 대기",
+    label: "수락 대기",
     title: "슈퍼바이저 응답을 기다리고 있습니다",
-    description: "자료는 잠겼고, 배정된 슈퍼바이저가 수락 또는 반려를 결정합니다.",
+    description: "배정된 슈퍼바이저가 일정과 자료를 확인하고 수락 여부를 결정합니다.",
     tone: "brand"
   },
   accepted: {
@@ -177,25 +166,25 @@ const statusCopy: Record<
   feedback_submitted: {
     label: "피드백 도착",
     title: "슈퍼비전 피드백이 제출되었습니다",
-    description: "완료 기록 발급이 필요한 의뢰라면 슈퍼바이저의 발급을 기다립니다.",
+    description: "학습 기록 발급이 필요한 의뢰라면 슈퍼바이저의 발급을 기다립니다.",
     tone: "brand"
   },
   completion_record_issued: {
-    label: "완료 기록 발급",
-    title: "완료 기록이 발급되었습니다",
+    label: "학습 기록 발급",
+    title: "학습 기록이 발급되었습니다",
     description: "리뷰를 작성하면 의뢰가 완료 상태로 정리됩니다.",
     tone: "brand"
   },
   completed: {
     label: "완료",
     title: "의뢰가 완료되었습니다",
-    description: "패킷과 첨부파일은 보관기간 안에서만 조회됩니다.",
+    description: "사례 정보와 첨부파일은 보관기간 안에서만 조회됩니다.",
     tone: "brand"
   },
   rejected: {
-    label: "반려",
-    title: "슈퍼바이저가 의뢰를 반려했습니다",
-    description: "필요하면 다른 제공 항목으로 새 의뢰를 시작하세요.",
+    label: "수락되지 않음",
+    title: "이번 의뢰는 수락되지 않았습니다",
+    description: "필요하면 다른 세션으로 새 의뢰를 시작하세요.",
     tone: "danger"
   },
   cancelled: {
@@ -253,7 +242,7 @@ const checklistFormSchema = z
     >
   )
   .refine((value) => Object.values(value).every(Boolean), {
-    message: "저장하려면 12개 자료 점검 항목을 모두 확인해 주세요."
+    message: "점검 기록을 저장하려면 12개 항목을 모두 확인해 주세요."
   });
 
 const reviewScore = z.coerce.number().int().min(1).max(5);
@@ -399,48 +388,24 @@ export function RequestDetailClient({
     (status === "feedback_submitted" &&
       (serviceProductSupervisionType === "counseling" ||
         initialNeedsCompletionRecord === false));
+  const showPaymentSection =
+    [
+      "submitted",
+      "awaiting_payment",
+      "paid",
+      "awaiting_supervisor_review",
+      "feedback_submitted",
+      "completion_record_issued",
+      "completed"
+    ].includes(status) ||
+    Boolean(completionRecord) ||
+    canWriteFinalReview;
   const copy = statusCopy[status] ?? {
     label: status,
     title: "진행 상태를 확인하고 있습니다",
     description: "현재 상태에 맞는 다음 행동만 사용할 수 있습니다.",
     tone: "neutral" as const
   };
-  const readiness =
-    status === "draft"
-      ? [
-          {
-            label: "케이스 패킷",
-            done: packetComplete,
-            description: "제목, 주호소, 의뢰 사유 저장"
-          },
-          {
-            label: "자료 점검",
-            done: deidentificationComplete,
-            description: "권장 확인 항목"
-          },
-          {
-            label: "제출 가능",
-            done: packetComplete && canSubmit,
-            description: "초안 상태에서 패킷 저장 완료"
-          }
-        ]
-      : [
-          {
-            label: "상태 확정",
-            done: true,
-            description: copy.label
-          },
-          {
-            label: "자료 잠금",
-            done: true,
-            description: "제출 이후 직접 수정 제한"
-          },
-          {
-            label: "보관 정책",
-            done: true,
-            description: "보관기간 안에서만 조회"
-          }
-        ];
   const packetForm = useForm<PacketFormValues>({
     resolver: zodResolver(packetFormSchema),
     defaultValues: {
@@ -633,89 +598,84 @@ export function RequestDetailClient({
     }
   }
 
+  const primaryAction = canSubmit ? (
+    <Button onClick={() => void transition("submit")} type="button">
+      슈퍼바이저에게 보내기
+    </Button>
+  ) : status === "submitted" ? (
+    <Button onClick={() => void startPayment()} type="button">
+      결제하기
+    </Button>
+  ) : status === "awaiting_payment" ? (
+    <Button onClick={() => void startPayment()} type="button">
+      결제 다시 시도
+    </Button>
+  ) : status === "feedback_submitted" && !canWriteFinalReview ? (
+    <Button onClick={() => void approveFeedback()} type="button">
+      피드백 확인 완료
+    </Button>
+  ) : status === "completed" ? (
+    <Button asChild variant="secondary">
+      <a href="/case-archive">학습 기록 보기</a>
+    </Button>
+  ) : null;
+
   return (
-    <div className="grid gap-5">
-      <Card className="grid gap-5 rounded-xl border-brand-100 bg-brand-50/50">
+    <div className="grid gap-6">
+      <section className="rounded-2xl bg-ink-900 px-6 py-7 text-white">
         <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
           <div className="grid gap-3">
-            <Badge className="w-fit" tone={copy.tone}>
+            <Badge className="w-fit bg-white text-brand-700" tone={copy.tone}>
               {copy.label}
             </Badge>
             <div>
-              <h2 className="text-2xl font-bold text-ink-900">{copy.title}</h2>
-              <p className="mt-1 text-sm leading-relaxed text-ink-600">
+              <h2 className="text-3xl font-bold tracking-tight text-white">
+                {copy.title}
+              </h2>
+              <p className="mt-2 max-w-3xl text-sm leading-7 text-white/80">
                 {copy.description}
               </p>
             </div>
           </div>
-          <div className="grid gap-2 rounded-lg border border-line bg-surface-elevated p-3 text-sm shadow-card md:min-w-72">
-            {readiness.map((item) => (
-              <div className="flex items-start gap-2" key={item.label}>
-                {item.done ? (
-                  <CheckCircle2
-                    className="mt-0.5 shrink-0 text-brand-600"
-                    aria-hidden
-                    size={17}
-                  />
-                ) : (
-                  <Circle
-                    className="mt-0.5 shrink-0 text-ink-300"
-                    aria-hidden
-                    size={17}
-                  />
-                )}
-                <div>
-                  <p className="font-semibold text-ink-900">{item.label}</p>
-                  <p className="text-xs text-ink-500">{item.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+          {primaryAction ? <div className="shrink-0">{primaryAction}</div> : null}
         </div>
-      </Card>
+      </section>
 
-      <Card className="grid gap-4 rounded-xl">
-        <div className="flex items-start gap-3">
-          <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-            <CalendarClock aria-hidden size={20} />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold">예약 일정</h2>
-            <p className="mt-1 text-sm text-ink-500">
-              예약 일정은 슈퍼바이저의 구글 캘린더와 동기화됩니다. 변경은 세션 24시간
-              전까지만 가능합니다.
-            </p>
-          </div>
+      <section className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-ink-900">일정 확인</h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink-500">
+            예약 일정과 화상 세션 링크를 먼저 확인합니다. 일정 변경은 세션 24시간
+            전까지만 가능합니다.
+          </p>
         </div>
-        <div className="grid gap-3 rounded-lg border border-line bg-surface-base p-4 text-sm text-ink-700">
-          <p>
-            현재 일정 ·{" "}
-            <strong className="text-ink-900">
-              {formatBookingRange(initialScheduledStart, initialScheduledEnd)}
-            </strong>
-          </p>
-          <p>
-            예약 상태 ·{" "}
-            <strong className="text-ink-900">
-              {bookingStatusLabel(bookingStatus)}
-            </strong>
-          </p>
-          {initialMeetingUrl ? (
-            <Button asChild>
-              <a href={initialMeetingUrl} rel="noreferrer" target="_blank">
-                <Video aria-hidden size={18} />
-                화상 세션 입장
-              </a>
-            </Button>
-          ) : (
-            <p className="rounded-lg bg-surface-sunken p-3 text-sm text-ink-600">
-              구글 캘린더 회의 링크가 아직 없습니다. 슈퍼바이저의 캘린더 재연동 또는
-              관리자 확인이 필요합니다.
-            </p>
-          )}
+        <div className="grid divide-y divide-line rounded-2xl border border-line">
+          <DetailLine
+            label="현재 일정"
+            value={formatBookingRange(initialScheduledStart, initialScheduledEnd)}
+          />
+          <DetailLine label="예약 상태" value={bookingStatusLabel(bookingStatus)} />
+          <DetailLine
+            label="화상 세션"
+            value={
+              initialMeetingUrl ? (
+                <a
+                  className="inline-flex items-center gap-2 font-semibold text-brand-700"
+                  href={initialMeetingUrl}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  <Video aria-hidden size={18} />
+                  화상 세션 입장
+                </a>
+              ) : (
+                "화상 세션 링크가 아직 없습니다."
+              )
+            }
+          />
         </div>
         {canReschedule ? (
-          <div className="grid gap-3 rounded-lg border border-line bg-surface-base p-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+          <div className="grid gap-3 rounded-2xl border border-line bg-surface-base p-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
             <Field>
               <Label htmlFor="reschedule-start">새 시작 시간</Label>
               <Input
@@ -739,24 +699,20 @@ export function RequestDetailClient({
             </Button>
           </div>
         ) : null}
-      </Card>
+      </section>
 
-      <Card className="rounded-xl">
+      <section className="grid gap-5 rounded-2xl border border-line bg-surface-elevated p-5">
+        <div>
+          <h2 className="text-2xl font-bold tracking-tight text-ink-900">사례 정보</h2>
+          <p className="mt-2 text-sm leading-relaxed text-ink-500">
+            주호소, 의뢰 사유, 검사명처럼 슈퍼바이저가 먼저 확인할 내용을 한 줄씩
+            정리합니다.
+          </p>
+        </div>
         {editablePacket ? (
           <form className="grid gap-4" onSubmit={packetForm.handleSubmit(savePacket)}>
-            <div className="flex items-start gap-3">
-              <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-                <FileText aria-hidden size={20} />
-              </div>
-              <div>
-                <h2 className="text-xl font-bold">케이스 패킷</h2>
-                <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  실명, 연락처, 이메일, 주민번호, 계좌번호는 서버 검증에서 차단됩니다.
-                </p>
-              </div>
-            </div>
             {phiDisabled ? (
-              <p className="rounded-lg bg-warn/10 p-3 text-sm text-ink-700">
+              <p className="rounded-2xl bg-warn/10 p-4 text-sm text-ink-700">
                 현재 사례 자료를 안전하게 저장할 수 없습니다. 잠시 후 다시 시도하거나
                 운영자에게 문의해주세요.
               </p>
@@ -794,27 +750,31 @@ export function RequestDetailClient({
             </Field>
             <div className="grid gap-3 md:grid-cols-2">
               <Field>
-                <Label>의뢰 목적</Label>
+                <Label htmlFor="purpose">의뢰 목적</Label>
                 <Input
+                  id="purpose"
                   {...packetForm.register("purpose")}
                   placeholder="예: 해석 점검"
                 />
               </Field>
               <Field>
-                <Label>검사명</Label>
+                <Label htmlFor="testsUsed">검사명</Label>
                 <Input
+                  id="testsUsed"
                   {...packetForm.register("testsUsed")}
                   placeholder="예: MMPI, SCT"
                 />
               </Field>
               <Field>
-                <Label>요청 항목</Label>
+                <Label htmlFor="requestItems">이번에 받고 싶은 도움</Label>
                 <Input
+                  id="requestItems"
                   {...packetForm.register("requestItems")}
                   placeholder="예: 보고서 코멘트"
                 />
               </Field>
               <select
+                aria-label="연령대"
                 className="h-11 rounded-lg border border-line bg-surface-elevated px-3"
                 {...packetForm.register("clientAgeBand")}
               >
@@ -826,17 +786,19 @@ export function RequestDetailClient({
                 <option value="65+">65+</option>
               </select>
               <Field>
-                <Label>성별/표현</Label>
+                <Label htmlFor="clientGender">성별/표현</Label>
                 <Input
+                  id="clientGender"
                   {...packetForm.register("clientGender")}
                   placeholder="예: 여성"
                 />
               </Field>
               <select
+                aria-label="사례가 나온 기관"
                 className="h-11 rounded-lg border border-line bg-surface-elevated px-3"
                 {...packetForm.register("setting")}
               >
-                <option value="">장면</option>
+                <option value="">사례가 나온 기관</option>
                 <option value="hospital">병원</option>
                 <option value="counseling_center">상담센터</option>
                 <option value="community_center">지역사회기관</option>
@@ -844,10 +806,11 @@ export function RequestDetailClient({
                 <option value="other">기타</option>
               </select>
               <select
+                aria-label="받고 싶은 진행 방식"
                 className="h-11 rounded-lg border border-line bg-surface-elevated px-3"
                 {...packetForm.register("preferredMethod")}
               >
-                <option value="">선호 방식</option>
+                <option value="">받고 싶은 진행 방식</option>
                 <option value="async_comment">코멘트</option>
                 <option value="direct_edit">직접 수정</option>
                 <option value="zoom">Zoom</option>
@@ -859,11 +822,11 @@ export function RequestDetailClient({
                 type="checkbox"
                 {...packetForm.register("needsCompletionRecord")}
               />{" "}
-              완료 기록 필요
+              검토 후 기록서 필요
             </Label>
             {phiMatches.length > 0 ? (
               <p
-                className="flex items-start gap-2 rounded-lg bg-danger/10 p-3 text-sm text-danger"
+                className="flex items-start gap-2 rounded-2xl bg-danger/10 p-4 text-sm text-danger"
                 role="alert"
               >
                 <AlertTriangle className="mt-0.5 shrink-0" aria-hidden size={16} />
@@ -873,78 +836,82 @@ export function RequestDetailClient({
                 </span>
               </p>
             ) : null}
-            <Button type="submit">패킷 저장</Button>
+            <Button className="w-full sm:w-auto" type="submit">
+              사례 정보 저장
+            </Button>
           </form>
         ) : (
           <div className="grid gap-4">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="text-xl font-bold">케이스 패킷</h2>
+            <div className="flex items-center justify-between gap-3 border-b border-line pb-4">
+              <h3 className="text-xl font-bold text-ink-900">정리된 사례 정보</h3>
               <Badge tone={packetComplete ? "brand" : "danger"}>
-                {packetComplete ? "저장 완료" : "패킷 미완료"}
+                {packetComplete ? "저장 완료" : "작성 필요"}
               </Badge>
             </div>
-            <SummaryBlock label="제목" value={initialTitle} />
-            <SummaryBlock
-              label="의뢰 목적"
-              value={displayList(initialPurpose, purposeLabel)}
-            />
-            <SummaryBlock
-              label="내담자 정보"
-              value={[
-                initialClientAgeBand
-                  ? `연령대: ${ageBandLabel(initialClientAgeBand)}`
-                  : "",
-                initialClientGender ? `성별/표현: ${initialClientGender}` : "",
-                initialSetting ? `장면: ${settingLabel(initialSetting)}` : ""
-              ]
-                .filter(Boolean)
-                .join("\n")}
-            />
-            <SummaryBlock label="주호소" value={initialChiefComplaint} />
-            <SummaryBlock label="의뢰 사유" value={initialReferralReason} />
-            <SummaryBlock
-              label="검사명"
-              value={displayList(initialTestsUsed, identityLabel)}
-            />
-            <SummaryBlock
-              label="요청 항목"
-              value={displayList(initialRequestItems, requestItemLabel)}
-            />
-            <SummaryBlock
-              label="진행 선호"
-              value={[
-                initialPreferredMethod
-                  ? preferredMethodLabel(initialPreferredMethod)
-                  : "",
-                initialNeedsCompletionRecord === null
-                  ? ""
-                  : `완료 기록: ${initialNeedsCompletionRecord ? "필요" : "불필요"}`
-              ]
-                .filter(Boolean)
-                .join("\n")}
-            />
-            <p className="rounded-lg bg-surface-sunken p-3 text-sm text-ink-600">
+            <div className="grid divide-y divide-line rounded-2xl border border-line">
+              <SummaryBlock label="제목" value={initialTitle} />
+              <SummaryBlock
+                label="의뢰 목적"
+                value={displayList(initialPurpose, purposeLabel)}
+              />
+              <SummaryBlock
+                label="내담자 정보"
+                value={[
+                  initialClientAgeBand
+                    ? `연령대: ${ageBandLabel(initialClientAgeBand)}`
+                    : "",
+                  initialClientGender ? `성별/표현: ${initialClientGender}` : "",
+                  initialSetting ? `기관: ${settingLabel(initialSetting)}` : ""
+                ]
+                  .filter(Boolean)
+                  .join("\n")}
+              />
+              <SummaryBlock label="주호소" value={initialChiefComplaint} />
+              <SummaryBlock label="의뢰 사유" value={initialReferralReason} />
+              <SummaryBlock
+                label="검사명"
+                value={displayList(initialTestsUsed, identityLabel)}
+              />
+              <SummaryBlock
+                label="이번에 받고 싶은 도움"
+                value={displayList(initialRequestItems, requestItemLabel)}
+              />
+              <SummaryBlock
+                label="받고 싶은 진행 방식"
+                value={[
+                  initialPreferredMethod
+                    ? preferredMethodLabel(initialPreferredMethod)
+                    : "",
+                  initialNeedsCompletionRecord === null
+                    ? ""
+                    : `학습 기록: ${initialNeedsCompletionRecord ? "필요" : "불필요"}`
+                ]
+                  .filter(Boolean)
+                  .join("\n")}
+              />
+            </div>
+            <p className="rounded-2xl bg-surface-sunken p-4 text-sm text-ink-600">
               제출 이후에는 의뢰 내용을 직접 수정할 수 없습니다. 추가 자료는 첨부 파일로
               보완하고, 상태 변경은 아래 진행 카드에서 확인하세요.
             </p>
           </div>
         )}
-      </Card>
+      </section>
 
       {status === "feedback_submitted" ||
       status === "completion_record_issued" ||
       status === "completed" ? (
-        <Card className="grid gap-4 rounded-xl">
-          <div className="flex items-start gap-3">
-            <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-              <CheckCircle2 aria-hidden size={20} />
-            </div>
-            <div>
-              <h2 className="text-xl font-bold">슈퍼바이저 피드백</h2>
-              <p className="mt-1 text-sm text-ink-500">
-                제출된 지도 의견을 확인한 뒤 승인하거나 최종 리뷰를 남깁니다.
-              </p>
-            </div>
+        <section
+          className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5"
+          id="feedback"
+        >
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-ink-900">
+              슈퍼바이저 피드백
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-500">
+              도착한 피드백을 확인하고 필요한 경우 학습 기록으로 남깁니다.
+            </p>
           </div>
           {feedbackSummary || feedbackRecommendations ? (
             <div className="grid gap-3">
@@ -958,100 +925,102 @@ export function RequestDetailClient({
               />
             </div>
           ) : (
-            <p className="rounded-lg bg-surface-sunken p-3 text-sm text-ink-600">
-              피드백 상태이지만 표시할 지도 의견 본문을 찾지 못했습니다. 새로고침 후에도
-              계속 비어 있으면 운영자에게 문의해주세요.
+            <p className="rounded-2xl bg-surface-sunken p-4 text-sm text-ink-600">
+              피드백 상태이지만 표시할 슈퍼비전 피드백 본문을 찾지 못했습니다. 새로고침
+              후에도 계속 비어 있으면 운영자에게 문의해주세요.
             </p>
           )}
-        </Card>
+        </section>
       ) : null}
 
-      <Card className="rounded-xl">
-        {editableChecklist ? (
-          <form
-            className="grid gap-3"
-            onSubmit={checklistForm.handleSubmit(saveChecklist)}
-          >
-            <div className="flex items-start gap-3">
-              <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-                <ShieldCheck aria-hidden size={20} />
-              </div>
-              <div className="min-w-0 flex-1">
-                <div className="flex items-center justify-between gap-3">
-                  <h2 className="text-xl font-bold">자료 점검 체크리스트</h2>
-                  <span className="text-sm font-semibold text-brand-700">
-                    {checkedCount} / {checklistItems.length}
-                  </span>
-                </div>
-                <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                  제출 필수 조건은 아니며, 자료 전달 전 확인 기록으로 남깁니다.
-                </p>
-              </div>
-            </div>
-            <div
-              aria-label={`자료 점검 확인률 ${String(checklistProgress)}%`}
-              aria-valuemax={100}
-              aria-valuemin={0}
-              aria-valuenow={checklistProgress}
-              className="h-2 rounded-pill bg-surface-sunken"
-              role="progressbar"
+      <details className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
+        <summary className="cursor-pointer list-none p-4 text-sm font-bold text-ink-900">
+          제출 전 개인정보 점검
+        </summary>
+        <div className="border-t border-line p-4">
+          {editableChecklist ? (
+            <form
+              className="grid gap-3"
+              onSubmit={checklistForm.handleSubmit(saveChecklist)}
             >
-              <div
-                className="h-2 rounded-pill bg-brand-600"
-                style={{ width: `${String(checklistProgress)}%` }}
-              />
-            </div>
-            <div className="grid gap-2 md:grid-cols-2">
-              {checklistItems.map((item) => (
-                <Label
-                  className="flex items-start gap-3 rounded-lg border border-line bg-surface-base p-3 transition hover:border-brand-500 hover:bg-brand-50"
-                  key={item.field}
-                >
-                  <input
-                    className="mt-1"
-                    type="checkbox"
-                    {...checklistForm.register(item.field)}
-                  />
-                  <span>
-                    <span className="block font-semibold">{item.label}</span>
-                    <span className="block text-sm text-ink-500">
-                      {item.description}
+              <div className="flex items-start gap-3">
+                <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
+                  <ShieldCheck aria-hidden size={20} />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-center justify-between gap-3">
+                    <h2 className="text-xl font-bold">제출 전 개인정보 점검</h2>
+                    <span className="text-sm font-semibold text-brand-700">
+                      {checkedCount} / {checklistItems.length}
                     </span>
-                  </span>
-                </Label>
-              ))}
+                  </div>
+                  <p className="mt-1 text-sm leading-relaxed text-ink-500">
+                    제출 전 권장 점검입니다. 모두 확인했을 때만 점검 기록을 저장할 수
+                    있습니다.
+                  </p>
+                </div>
+              </div>
+              <div
+                aria-label={`개인정보 점검률 ${String(checklistProgress)}%`}
+                aria-valuemax={100}
+                aria-valuemin={0}
+                aria-valuenow={checklistProgress}
+                className="h-2 rounded-pill bg-surface-sunken"
+                role="progressbar"
+              >
+                <div
+                  className="h-2 rounded-pill bg-brand-600"
+                  style={{ width: `${String(checklistProgress)}%` }}
+                />
+              </div>
+              <div className="grid gap-2 md:grid-cols-2">
+                {checklistItems.map((item) => (
+                  <Label
+                    className="flex items-start gap-3 rounded-2xl border border-line bg-surface-base p-3 transition hover:border-brand-500 hover:bg-brand-50"
+                    key={item.field}
+                  >
+                    <input
+                      className="mt-1"
+                      type="checkbox"
+                      {...checklistForm.register(item.field)}
+                    />
+                    <span>
+                      <span className="block font-semibold">{item.label}</span>
+                      <span className="block text-sm text-ink-500">
+                        {item.description}
+                      </span>
+                    </span>
+                  </Label>
+                ))}
+              </div>
+              <FormError message={checklistForm.formState.errors.root?.message} />
+              <Button type="submit" variant="secondary">
+                점검 기록 저장
+              </Button>
+            </form>
+          ) : (
+            <div className="grid gap-3">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="text-xl font-bold">제출 전 개인정보 점검</h2>
+                <Badge tone={deidentificationComplete ? "brand" : "neutral"}>
+                  {deidentificationComplete ? "기록됨" : "기록 없음"}
+                </Badge>
+              </div>
+              <p className="rounded-lg bg-surface-sunken p-3 text-sm text-ink-600">
+                {deidentificationComplete
+                  ? "개인정보 점검 기록이 저장된 의뢰입니다."
+                  : "점검 기록이 없어도 사례 정보가 준비되면 전송할 수 있습니다."}
+              </p>
             </div>
-            <FormError message={checklistForm.formState.errors.root?.message} />
-            <Button type="submit" variant="secondary">
-              체크리스트 저장
-            </Button>
-          </form>
-        ) : (
-          <div className="grid gap-3">
-            <div className="flex items-center justify-between gap-3">
-              <h2 className="text-xl font-bold">자료 점검 체크리스트</h2>
-              <Badge tone={deidentificationComplete ? "brand" : "neutral"}>
-                {deidentificationComplete ? "기록됨" : "기록 없음"}
-              </Badge>
-            </div>
-            <p className="rounded-lg bg-surface-sunken p-3 text-sm text-ink-600">
-              {deidentificationComplete
-                ? "자료 점검 확인 기록이 저장된 의뢰입니다."
-                : "체크리스트 기록이 없어도 제출은 케이스 패킷 기준으로 가능합니다."}
-            </p>
-          </div>
-        )}
-      </Card>
+          )}
+        </div>
+      </details>
 
-      {canSubmit || canCancel || message ? (
-        <Card className="flex flex-wrap items-center gap-3 rounded-xl">
-          {canSubmit ? (
-            <Button onClick={() => void transition("submit")} type="button">
-              제출
-            </Button>
-          ) : status === "draft" ? (
+      {status === "draft" || canCancel || message ? (
+        <section className="flex flex-wrap items-center gap-3 rounded-2xl border border-line bg-surface-elevated p-4">
+          {status === "draft" && !packetComplete ? (
             <p className="rounded-md bg-surface-sunken px-3 py-2 text-sm font-semibold text-ink-500">
-              케이스 패킷을 저장하면 제출할 수 있습니다.
+              사례 정보를 저장하면 슈퍼바이저에게 보낼 수 있습니다.
             </p>
           ) : null}
           {canCancel ? (
@@ -1064,150 +1033,150 @@ export function RequestDetailClient({
             </Button>
           ) : null}
           {message ? <Badge tone="accent">{message}</Badge> : null}
-        </Card>
+        </section>
       ) : null}
 
-      <Card className="grid gap-4 rounded-xl">
-        <div className="flex items-start gap-3">
-          <div className="grid size-10 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-700">
-            <CreditCard aria-hidden size={20} />
-          </div>
+      {showPaymentSection ? (
+        <section
+          className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5"
+          id="payment"
+        >
           <div>
-            <h2 className="text-xl font-bold">결제</h2>
-            <p className="mt-1 text-sm text-ink-500">
-              제출 후 결제가 완료되면 슈퍼바이저 검토 대기로 이동합니다.
+            <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-ink-900">
+              <CreditCard aria-hidden size={20} />
+              결제와 완료
+            </h2>
+            <p className="mt-2 text-sm leading-relaxed text-ink-500">
+              제출 후 결제가 완료되면 슈퍼바이저 수락 대기로 이동합니다.
             </p>
           </div>
-        </div>
-        {status === "submitted" ? (
-          <Button onClick={() => void startPayment()} type="button">
-            결제하기
-          </Button>
-        ) : null}
-        {status === "awaiting_payment" ? (
-          <div className="grid gap-3 rounded-lg border border-line bg-surface-sunken p-4">
-            <p className="text-sm leading-relaxed text-ink-700">
-              결제 요청이 만들어졌습니다. 결제창이 닫혔거나 중단된 경우 같은 결제를 다시
-              이어서 진행할 수 있습니다.
+          {status === "submitted" ? (
+            <p className="rounded-2xl bg-surface-sunken p-4 text-sm leading-relaxed text-ink-700">
+              상단의 결제하기 버튼으로 다음 단계를 진행합니다.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <Button onClick={() => void startPayment()} type="button">
-                결제 다시 시도
-              </Button>
-              <Button asChild variant="secondary">
-                <a href="/payments">결제 내역 보기</a>
-              </Button>
-            </div>
-          </div>
-        ) : null}
-        {status === "paid" || status === "awaiting_supervisor_review" ? (
-          <p className="text-sm text-ink-700">결제가 완료되었습니다.</p>
-        ) : null}
-        {status === "completed" ? (
-          <p className="text-sm text-ink-700">
-            결제, 피드백, 완료 기록, 리뷰까지 모두 마무리된 의뢰입니다.
-          </p>
-        ) : null}
-        {completionRecord ? (
-          <section className="grid gap-3 rounded-lg border border-line bg-surface-base p-4">
-            <div>
-              <h3 className="font-bold text-ink-900">완료 기록</h3>
-              <p className="mt-1 text-sm text-ink-600">
-                기록번호 {completionRecord.recordNo} · 발급일{" "}
-                {formatDateTime(completionRecord.issuedAt)}
+          ) : null}
+          {status === "awaiting_payment" ? (
+            <div className="grid gap-3 rounded-2xl border border-line bg-surface-sunken p-4">
+              <p className="text-sm leading-relaxed text-ink-700">
+                결제 요청이 만들어졌습니다. 결제창이 닫혔거나 중단된 경우 같은 결제를
+                다시 이어서 진행할 수 있습니다.
               </p>
+              <div className="flex flex-wrap gap-2">
+                <Button asChild variant="secondary">
+                  <a href="/payments">결제 내역 보기</a>
+                </Button>
+              </div>
             </div>
-            <CompletionRecordList
-              label="검토한 자료"
-              values={completionRecord.reviewedMaterials}
-            />
-            <CompletionRecordList label="확인 범위" values={completionRecord.scope} />
-            {completionRecord.limitations ? (
+          ) : null}
+          {status === "paid" || status === "awaiting_supervisor_review" ? (
+            <p className="text-sm text-ink-700">결제가 완료되었습니다.</p>
+          ) : null}
+          {status === "completed" ? (
+            <p className="text-sm text-ink-700">
+              결제, 피드백, 학습 기록, 리뷰까지 모두 마무리된 의뢰입니다.
+            </p>
+          ) : null}
+          {completionRecord ? (
+            <section className="grid gap-3 rounded-2xl border border-line bg-surface-base p-4">
               <div>
-                <p className="text-sm font-semibold text-ink-900">검토 한계</p>
-                <p className="mt-1 whitespace-pre-wrap rounded-lg bg-surface-sunken p-3 text-sm leading-relaxed text-ink-700">
-                  {completionRecord.limitations}
+                <h3 className="font-bold text-ink-900">학습 기록</h3>
+                <p className="mt-1 text-sm text-ink-600">
+                  기록번호 {completionRecord.recordNo} · 발급일{" "}
+                  {formatDateTime(completionRecord.issuedAt)}
                 </p>
               </div>
-            ) : null}
-            {completionRecord.responsibilityNotice ? (
+              <CompletionRecordList
+                label="검토한 자료"
+                values={completionRecord.reviewedMaterials}
+              />
+              <CompletionRecordList label="확인 범위" values={completionRecord.scope} />
+              {completionRecord.limitations ? (
+                <div>
+                  <p className="text-sm font-semibold text-ink-900">검토 한계</p>
+                  <p className="mt-1 whitespace-pre-wrap rounded-lg bg-surface-sunken p-3 text-sm leading-relaxed text-ink-700">
+                    {completionRecord.limitations}
+                  </p>
+                </div>
+              ) : null}
+              {completionRecord.responsibilityNotice ? (
+                <div>
+                  <p className="text-sm font-semibold text-ink-900">책임 고지</p>
+                  <p className="mt-1 whitespace-pre-wrap rounded-lg bg-surface-sunken p-3 text-sm leading-relaxed text-ink-700">
+                    {completionRecord.responsibilityNotice}
+                  </p>
+                </div>
+              ) : null}
+              <p className="text-xs leading-relaxed text-ink-500">
+                이 기록은 플랫폼 안에서 확인되는 슈퍼비전 학습 기록입니다. 공식 증명서나
+                법적 제출용 문서처럼 오해되지 않도록 검토 범위와 한계를 함께 확인하세요.
+              </p>
+            </section>
+          ) : null}
+          {status === "feedback_submitted" && !canWriteFinalReview ? (
+            <p className="rounded-2xl bg-surface-sunken p-4 text-sm leading-relaxed text-ink-700">
+              상단의 피드백 확인 완료 버튼으로 의뢰를 마무리합니다.
+            </p>
+          ) : null}
+          {canWriteFinalReview ? (
+            <form
+              className="grid gap-3 rounded-2xl border border-line bg-surface-base p-4"
+              onSubmit={reviewForm.handleSubmit(submitFinalReview)}
+            >
               <div>
-                <p className="text-sm font-semibold text-ink-900">책임 고지</p>
-                <p className="mt-1 whitespace-pre-wrap rounded-lg bg-surface-sunken p-3 text-sm leading-relaxed text-ink-700">
-                  {completionRecord.responsibilityNotice}
+                <h3 className="font-bold text-ink-900">피드백 확인 및 완료</h3>
+                <p className="mt-1 text-sm text-ink-600">
+                  슈퍼바이저 피드백을 확인한 뒤 평가를 남기면 의뢰가 완료됩니다.
                 </p>
               </div>
-            ) : null}
-            <p className="text-xs leading-relaxed text-ink-500">
-              이 기록은 플랫폼 안에서 확인되는 슈퍼비전 완료 기록입니다. 공식 증명서나
-              법적 제출용 문서처럼 오해되지 않도록 검토 범위와 한계를 함께 확인하세요.
-            </p>
-          </section>
-        ) : null}
-        {status === "feedback_submitted" && !canWriteFinalReview ? (
-          <Button onClick={() => void approveFeedback()} type="button">
-            피드백 승인
-          </Button>
-        ) : null}
-        {canWriteFinalReview ? (
-          <form
-            className="grid gap-3 rounded-lg border border-line bg-surface-base p-4"
-            onSubmit={reviewForm.handleSubmit(submitFinalReview)}
-          >
-            <div>
-              <h3 className="font-bold text-ink-900">최종 리뷰 및 완료</h3>
-              <p className="mt-1 text-sm text-ink-600">
-                슈퍼바이저 피드백을 확인한 뒤 평가를 남기면 의뢰가 완료됩니다.
-              </p>
-            </div>
-            <div className="grid gap-3 md:grid-cols-2">
-              <ScoreSelect
-                label="전문성"
-                registration={reviewForm.register("expertise")}
-              />
-              <ScoreSelect
-                label="구체성"
-                registration={reviewForm.register("specificity")}
-              />
-              <ScoreSelect
-                label="도움 정도"
-                registration={reviewForm.register("helpfulness")}
-              />
-              <ScoreSelect
-                label="윤리성"
-                registration={reviewForm.register("ethics")}
-              />
-              <ScoreSelect
-                label="응답 속도"
-                registration={reviewForm.register("responseSpeed")}
-              />
-              <ScoreSelect
-                label="시간 준수"
-                registration={reviewForm.register("onTime")}
-              />
-              <ScoreSelect
-                label="교육적 가치"
-                registration={reviewForm.register("educational")}
-              />
-              <ScoreSelect
-                label="재의뢰 의향"
-                registration={reviewForm.register("reuseIntent")}
-              />
-            </div>
-            <Field>
-              <Label htmlFor="review-free-text">남길 말</Label>
-              <Textarea
-                id="review-free-text"
-                placeholder="피드백에서 특히 도움이 되었던 점이나 다음 이용자를 위한 참고를 적어주세요."
-                {...reviewForm.register("freeText")}
-              />
-            </Field>
-            <Button disabled={reviewForm.formState.isSubmitting} type="submit">
-              리뷰 제출 및 완료
-            </Button>
-          </form>
-        ) : null}
-      </Card>
+              <div className="grid gap-3 md:grid-cols-2">
+                <ScoreSelect
+                  label="전문성"
+                  registration={reviewForm.register("expertise")}
+                />
+                <ScoreSelect
+                  label="구체성"
+                  registration={reviewForm.register("specificity")}
+                />
+                <ScoreSelect
+                  label="도움 정도"
+                  registration={reviewForm.register("helpfulness")}
+                />
+                <ScoreSelect
+                  label="윤리성"
+                  registration={reviewForm.register("ethics")}
+                />
+                <ScoreSelect
+                  label="응답 속도"
+                  registration={reviewForm.register("responseSpeed")}
+                />
+                <ScoreSelect
+                  label="시간 준수"
+                  registration={reviewForm.register("onTime")}
+                />
+                <ScoreSelect
+                  label="교육적 가치"
+                  registration={reviewForm.register("educational")}
+                />
+                <ScoreSelect
+                  label="재의뢰 의향"
+                  registration={reviewForm.register("reuseIntent")}
+                />
+              </div>
+              <Field>
+                <Label htmlFor="review-free-text">한마디 남기기(선택)</Label>
+                <Textarea
+                  id="review-free-text"
+                  placeholder="피드백에서 특히 도움이 되었던 점이나 다음 이용자를 위한 참고를 적어주세요."
+                  {...reviewForm.register("freeText")}
+                />
+              </Field>
+              <Button disabled={reviewForm.formState.isSubmitting} type="submit">
+                평가 남기고 종료
+              </Button>
+            </form>
+          ) : null}
+        </section>
+      ) : null}
     </div>
   );
 }
@@ -1301,20 +1270,20 @@ function preferredMethodLabel(value: string): string {
 function apiErrorMessage(code: string | undefined): string {
   const labels: Record<string, string> = {
     calendar_config_required:
-      "서비스의 구글 캘린더 연동 설정이 완료되지 않아 일정을 변경할 수 없습니다.",
+      "일정 연동 설정이 완료되지 않아 일정을 변경할 수 없습니다.",
     calendar_not_connected:
-      "슈퍼바이저의 구글 캘린더가 아직 연결되지 않아 일정을 변경할 수 없습니다.",
+      "슈퍼바이저의 일정 연동이 아직 완료되지 않아 일정을 변경할 수 없습니다.",
     calendar_reauth_required:
-      "슈퍼바이저의 구글 캘린더 재연동이 필요합니다. 캘린더 확인 전까지 일정을 변경할 수 없습니다.",
+      "슈퍼바이저의 일정 연동을 다시 확인해야 합니다. 확인 전까지 일정을 변경할 수 없습니다.",
     calendar_sync_failed:
-      "구글 캘린더와 예약 시간을 동기화하지 못했습니다. 캘린더 확인 전까지 일정을 변경할 수 없습니다.",
+      "예약 시간을 일정표에 반영하지 못했습니다. 확인 전까지 일정을 변경할 수 없습니다.",
     booking_not_found: "변경할 예약 일정을 찾지 못했습니다.",
-    deid_incomplete: "자료 점검 항목을 모두 확인해주세요.",
+    deid_incomplete: "개인정보 점검 항목을 모두 체크해주세요.",
     forbidden: "이 의뢰를 처리할 권한이 없습니다.",
     invalid_slot: "선택한 일정이 올바르지 않습니다.",
     invalid_request: "입력값을 다시 확인해주세요.",
     invalid_state: "현재 상태에서는 이 작업을 진행할 수 없습니다.",
-    packet_incomplete: "케이스 패킷을 먼저 저장해주세요.",
+    packet_incomplete: "사례 정보를 먼저 저장해주세요.",
     past_slot: "지난 시간대는 선택할 수 없습니다.",
     phi_detected:
       "개인정보로 보이는 내용이 있습니다. 비식별 처리 후 다시 저장해주세요.",
@@ -1440,7 +1409,7 @@ function bookingStatusLabel(status: string | null): string {
   const labels: Record<string, string> = {
     cancelled: "취소됨",
     completed: "세션 완료",
-    no_show_supervisee: "슈퍼바이지 불참",
+    no_show_supervisee: "신청자 불참",
     no_show_supervisor: "슈퍼바이저 불참",
     rescheduled: "일정 변경됨",
     scheduled: "예약됨"
@@ -1455,10 +1424,13 @@ function ScoreSelect({
   label: string;
   registration: UseFormRegisterReturn;
 }) {
+  const id = `score-${registration.name}`;
+
   return (
     <Field>
-      <Label>{label}</Label>
+      <Label htmlFor={id}>{label}</Label>
       <select
+        id={id}
         className="h-11 rounded-lg border border-line bg-surface-elevated px-3"
         {...registration}
       >
@@ -1495,11 +1467,20 @@ function FormError({ message }: { message: string | undefined }) {
 
 function SummaryBlock({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-md border border-line p-3">
-      <p className="text-sm font-semibold text-ink-500">{label}</p>
-      <p className="mt-1 whitespace-pre-wrap text-ink-900">
+    <div className="grid gap-1 px-4 py-3">
+      <p className="text-sm font-bold text-ink-400">{label}</p>
+      <p className="whitespace-pre-wrap font-semibold leading-relaxed text-ink-900">
         {value.trim() || "저장된 내용이 없습니다."}
       </p>
+    </div>
+  );
+}
+
+function DetailLine({ label, value }: { label: string; value: ReactNode }) {
+  return (
+    <div className="grid gap-1 px-4 py-3">
+      <p className="text-sm font-bold text-ink-400">{label}</p>
+      <div className="font-semibold leading-relaxed text-ink-900">{value}</div>
     </div>
   );
 }

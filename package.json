@@ -34,9 +34,14 @@
     "verify:stitch-coverage": "tsx scripts/verify-stitch-coverage.ts",
     "design:handoff": "tsx scripts/design-handoff.ts && prettier demo-evidence/DESIGN-HANDOFF.md demo-evidence/DESIGN-HANDOFF.json --write",
     "design:stitch-prompts": "pnpm design:handoff && tsx scripts/design-stitch-prompts.ts && prettier demo-evidence/STITCH-PROMPTS.md demo-evidence/STITCH-PROMPTS.json --write",
+    "origin14:guard": "node scripts/clinicflow-origin14-guard.mjs",
+    "origin14:check": "node scripts/clinicflow-origin14-guard.mjs",
     "release:web:fast-check": "node scripts/clinicflow-fast-release.mjs check",
+    "release:web:ui-check": "node scripts/clinicflow-fast-release.mjs ui-check",
     "release:web:preview": "node scripts/clinicflow-fast-release.mjs preview",
-    "release:web:prod": "node scripts/clinicflow-fast-release.mjs prod"
+    "release:web:ui-preview": "node scripts/clinicflow-fast-release.mjs ui-preview",
+    "release:web:prod": "node scripts/clinicflow-fast-release.mjs prod",
+    "release:web:ui-prod": "node scripts/clinicflow-fast-release.mjs ui-prod"
   },
   "devDependencies": {
     "@electric-sql/pglite": "^0.4.5",

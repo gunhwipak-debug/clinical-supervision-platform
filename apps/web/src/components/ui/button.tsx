@@ -1,7 +1,9 @@
+import type { ButtonHTMLAttributes } from "react";
+
 import { Slot } from "./slot";
 import { cn } from "../../lib/ui/cn";
 
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   asChild?: boolean;
   variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md" | "lg";
@@ -16,8 +18,8 @@ const variants = {
 } as const;
 
 const sizes = {
-  sm: "h-9 px-3 text-sm",
-  md: "h-11 px-4 text-sm",
+  sm: "h-11 px-3 text-sm",
+  md: "h-11 px-4 text-base",
   lg: "h-12 px-5 text-base"
 } as const;
 
@@ -28,16 +30,16 @@ export function Button({
   size = "md",
   ...props
 }: ButtonProps) {
-  const Component = asChild ? Slot : "button";
-  return (
-    <Component
-      className={cn(
-        "inline-flex items-center justify-center gap-2 rounded-md font-semibold transition disabled:pointer-events-none disabled:opacity-50",
-        variants[variant],
-        sizes[size],
-        className
-      )}
-      {...props}
-    />
+  const buttonClassName = cn(
+    "inline-flex items-center justify-center gap-2 rounded-md font-semibold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600 disabled:pointer-events-none disabled:opacity-50",
+    variants[variant],
+    sizes[size],
+    className
   );
+
+  if (asChild) {
+    return <Slot className={buttonClassName} {...props} />;
+  }
+
+  return <button className={buttonClassName} {...props} />;
 }

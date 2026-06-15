@@ -1,0 +1,78 @@
+{
+  "base": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app",
+  "capturedAt": "2026-06-15T02:05:44.055Z",
+  "routes": [
+    {
+      "name": "36-admin-root",
+      "route": "/",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252F%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "36-admin-root.png"
+    },
+    {
+      "name": "37-admin-home",
+      "route": "/admin",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/admin",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fadmin%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "37-admin-home.png"
+    },
+    {
+      "name": "38-admin-queue",
+      "route": "/admin/queue",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/admin/queue",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Fqueue%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "38-admin-queue.png"
+    },
+    {
+      "name": "39-admin-qualifications",
+      "route": "/admin/qualifications",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/admin/qualifications",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Fqualifications%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "39-admin-qualifications.png"
+    },
+    {
+      "name": "40-admin-refunds",
+      "route": "/admin/refunds",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/admin/refunds",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Frefunds%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "40-admin-refunds.png"
+    },
+    {
+      "name": "41-admin-payouts",
+      "route": "/admin/payouts",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/admin/payouts",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Fpayouts%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "41-admin-payouts.png"
+    },
+    {
+      "name": "42-admin-audit",
+      "route": "/admin/audit",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/admin/audit",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fadmin%252Faudit%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "42-admin-audit.png"
+    },
+    {
+      "name": "43-admin-payouts-alias",
+      "route": "/payouts",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/payouts",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Fpayouts%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "43-admin-payouts-alias.png"
+    },
+    {
+      "name": "44-admin-refunds-alias",
+      "route": "/refunds",
+      "url": "https://clinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app/refunds",
+      "status": 401,
+      "finalUrl": "https://vercel.com/login?next=%2Fsso-api%3Furl%3Dhttps%253A%252F%252Fclinicflow-admin-l62u19gjq-gunhwipak-debugs-projects.vercel.app%252Frefunds%26nonce%3D987000ddc36ebae01037d78d816d7d3ae7b5745c07ea616f436aef7f4a9233ab",
+      "file": "44-admin-refunds-alias.png"
+    }
+  ]
+}

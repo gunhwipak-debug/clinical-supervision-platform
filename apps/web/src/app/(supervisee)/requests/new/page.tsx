@@ -1,6 +1,8 @@
 import { AppShell } from "../../../../components/app-shell";
-import { EmptyState } from "../../../../components/ui/state";
-import { DemoNewRequestPreview } from "../../../../components/workflow-preview-pages";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../../components/locked-state";
 import { profiles } from "@csp/db";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
@@ -23,20 +25,17 @@ export default async function Page({
   const params = await searchParams;
   const current = await getCurrentUser();
   if (!current) {
-    return <DemoNewRequestPreview />;
+    return <LoginRequiredState title="새 슈퍼비전 의뢰" returnTo="/requests/new" />;
   }
 
   if (!isSupervisee(current)) {
     return (
-      <AppShell
+      <RoleRequiredState
         title="새 슈퍼비전 의뢰"
-        subtitle="슈퍼비전 의뢰는 슈퍼바이지 계정에서 진행합니다."
-      >
-        <EmptyState
-          title="의뢰를 만들 수 없습니다"
-          description="관리자 계정은 운영 콘솔에서만 사용할 수 있습니다."
-        />
-      </AppShell>
+        description="새 의뢰는 신청자 계정에서 진행합니다. 슈퍼바이저 계정은 업무 화면에서 배정된 의뢰를 검토합니다."
+        actionHref="/supervisor"
+        actionLabel="슈퍼바이저 업무 보기"
+      />
     );
   }
 
@@ -49,7 +48,7 @@ export default async function Page({
   return (
     <AppShell
       title="새 슈퍼비전 의뢰"
-      subtitle="제공 항목과 희망 일정을 확인한 뒤 초안을 만들고, 자료 제출과 선택 점검을 이어갑니다."
+      subtitle="슈퍼바이저, 세션, 일정을 확인한 뒤 사례 자료를 정리하고 최종 확인으로 이어갑니다."
     >
       <NewRequestForm
         serviceProductId={serviceProductId}
