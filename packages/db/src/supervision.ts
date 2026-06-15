@@ -509,7 +509,7 @@ export async function listSupervisionRequests(
       sp.display_name as "supervisorDisplayName",
       b.scheduled_start as "scheduledStart",
       b.scheduled_end as "scheduledEnd",
-      b.meeting_url as "meetingUrl",
+      null::text as "meetingUrl",
       b.status as "bookingStatus"
     from supervision_requests sr
     left join service_products p on p.id = sr.service_product_id
@@ -518,7 +518,7 @@ export async function listSupervisionRequests(
       select
         scheduled_start,
         scheduled_end,
-        ${decryptPhi(sql`meeting_url_enc`)} as meeting_url,
+        null::text as meeting_url,
         status
       from bookings
       where supervision_request_id = sr.id
@@ -534,8 +534,12 @@ export async function listSupervisionRequests(
 export async function getSupervisionRequestDetails(
   db: SupervisionDatabase,
   requestId: string,
-  options: { includePhi?: boolean } = {}
+  options: { includePhi?: boolean; includeMeetingUrl?: boolean } = {}
 ): Promise<SupervisionRequestDetails | null> {
+  const meetingUrl =
+    (options.includeMeetingUrl ?? options.includePhi) === true
+      ? nullableDecrypt(sql`b.meeting_url_enc`)
+      : sql<string | null>`null`;
   const title = options.includePhi
     ? decryptPhi(sql`cp.title_enc`)
     : sql<string | null>`null`;
@@ -571,7 +575,7 @@ export async function getSupervisionRequestDetails(
       sp.display_name as "supervisorDisplayName",
       b.scheduled_start as "scheduledStart",
       b.scheduled_end as "scheduledEnd",
-      b.meeting_url as "meetingUrl",
+      ${meetingUrl} as "meetingUrl",
       b.status as "bookingStatus",
       cp.id as "casePacketId",
       ${title} as title,
@@ -616,7 +620,7 @@ export async function getSupervisionRequestDetails(
       select
         scheduled_start,
         scheduled_end,
-        ${decryptPhi(sql`meeting_url_enc`)} as meeting_url,
+        meeting_url_enc,
         status
       from bookings
       where supervision_request_id = sr.id
@@ -1094,9 +1098,12 @@ export async function createReview(
 }
 
 function nullableDecrypt(ciphertext: SQLWrapper): SQL<string | null> {
-  return sql<
-    string | null
-  >`case when ${ciphertext} is null then null else ${decryptPhi(ciphertext)} end`;
+  return sql<string | null>`case
+    when ${ciphertext} is null
+      or nullif(current_setting('app.phi_key', true), '') is null
+    then null
+    else ${decryptPhi(ciphertext)}
+  end`;
 }
 
 function jsonb(value: string[]): SQL<string[]> {

@@ -9,7 +9,7 @@ import {
   LoginRequiredState,
   RoleRequiredState
 } from "../../../../components/locked-state";
-import { getCurrentUser } from "@/lib/auth/current-user";
+import { getCurrentUser, type CurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { contextFor, isRequestOwner } from "@/lib/supervision/authz";
 import { RequestDetailClient } from "./request-detail-client";
@@ -39,7 +39,7 @@ export default async function RequestDetailPage({
 
   const db = createRuntimeDatabase();
   const basic = await withUserContext(db, contextFor(current), (tx) =>
-    supervision.getSupervisionRequestDetails(tx, id)
+    supervision.getSupervisionRequestDetails(tx, id, { includeMeetingUrl: false })
   );
   if (!basic || !isRequestOwner(current, basic)) {
     return (
@@ -52,19 +52,11 @@ export default async function RequestDetailPage({
     );
   }
 
-  const detail = await withUserContext(
-    db,
-    contextFor(current, undefined, { phiAccess: true }),
-    (tx) => supervision.getSupervisionRequestDetails(tx, id, { includePhi: true })
-  );
+  const detail = await readPhiDetail(db, current, id);
   const caseFiles = await withUserContext(db, contextFor(current), (tx) =>
     files.listCaseFilesForRequest(tx, id)
   );
-  const completionRecord = await withUserContext(
-    db,
-    contextFor(current, undefined, { phiAccess: true }),
-    (tx) => supervision.getCompletionRecordForRequest(tx, id)
-  );
+  const completionRecord = await readCompletionRecord(db, current, id);
 
   return (
     <AppShell
@@ -106,7 +98,7 @@ export default async function RequestDetailPage({
                 feedbackSummary={detail?.feedbackSummary ?? null}
                 bookingStatus={basic.bookingStatus}
                 deidentificationComplete={basic.deidentificationComplete}
-                initialMeetingUrl={basic.meetingUrl}
+                initialMeetingUrl={detail?.meetingUrl ?? basic.meetingUrl}
                 initialScheduledEnd={basic.scheduledEnd}
                 initialScheduledStart={basic.scheduledStart}
                 packetComplete={basic.packetComplete}
@@ -171,6 +163,49 @@ export default async function RequestDetailPage({
       </section>
     </AppShell>
   );
+}
+
+type RuntimeDatabase = ReturnType<typeof createRuntimeDatabase>;
+
+async function readPhiDetail(
+  db: RuntimeDatabase,
+  current: CurrentUser,
+  requestId: string
+) {
+  try {
+    return await withUserContext(
+      db,
+      contextFor(current, undefined, { phiAccess: true }),
+      (tx) =>
+        supervision.getSupervisionRequestDetails(tx, requestId, {
+          includePhi: true
+        })
+    );
+  } catch (error) {
+    console.warn("[requests.detail.phi]", describeError(error));
+    return null;
+  }
+}
+
+async function readCompletionRecord(
+  db: RuntimeDatabase,
+  current: CurrentUser,
+  requestId: string
+) {
+  try {
+    return await withUserContext(
+      db,
+      contextFor(current, undefined, { phiAccess: true }),
+      (tx) => supervision.getCompletionRecordForRequest(tx, requestId)
+    );
+  } catch (error) {
+    console.warn("[requests.detail.completion-record]", describeError(error));
+    return null;
+  }
+}
+
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : "Unknown error";
 }
 
 const requestFlowSteps = [

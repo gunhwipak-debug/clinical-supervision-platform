@@ -1,10 +1,10 @@
 import { auth } from "@csp/db";
-import { hashPassword, verifyPassword } from "@csp/shared/auth/password";
-import { sql, type SQL } from "drizzle-orm";
+import { verifyPassword } from "@csp/shared/auth/password";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { apiError, envelope } from "@/lib/api/envelope";
 import { createAuthDatabase } from "@/lib/auth/database";
+import { ensureSeededDemoUser, isSeededDemoLogin } from "@/lib/auth/demo-auth";
 import { dummyHash } from "@/lib/auth/dummy-hash";
 import { verifyLoginPassword } from "@/lib/auth/login-verification";
 import {
@@ -26,84 +26,7 @@ const loginSchema = z.object({
   password: z.string().min(1).max(1024)
 });
 
-type DemoRole = "supervisee" | "supervisor" | "admin";
-type DemoAuthAccount = {
-  id: string;
-  role: DemoRole;
-  totpEnabled: boolean;
-};
-type LoginUser = {
-  id: string;
-  email: string;
-  role: DemoRole;
-};
-type DemoAuthDatabase = {
-  execute: (query: SQL) => Promise<unknown>;
-};
-
-const DEMO_PASSWORD = "DemoPass!23";
-const DEMO_AUTH_ACCOUNTS: Record<string, DemoAuthAccount> = {
-  "supervisee@demo.local": {
-    id: "10000000-0000-4000-8000-000000000001",
-    role: "supervisee",
-    totpEnabled: false
-  },
-  "draft-author@demo.local": {
-    id: "10000000-0000-4000-8000-000000000002",
-    role: "supervisee",
-    totpEnabled: false
-  },
-  "approved-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000003",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "hidden-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000004",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "admin@demo.local": {
-    id: "10000000-0000-4000-8000-000000000005",
-    role: "admin",
-    totpEnabled: true
-  },
-  "trauma-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000006",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "child-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000007",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "neuro-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000008",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "forensic-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000009",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "geriatric-sup@demo.local": {
-    id: "10000000-0000-4000-8000-000000000010",
-    role: "supervisor",
-    totpEnabled: true
-  },
-  "case-owner@demo.local": {
-    id: "10000000-0000-4000-8000-000000000011",
-    role: "supervisee",
-    totpEnabled: false
-  },
-  "reviewer@demo.local": {
-    id: "10000000-0000-4000-8000-000000000012",
-    role: "supervisee",
-    totpEnabled: false
-  }
-};
+type LoginUser = Pick<auth.AuthUser, "id" | "email" | "role">;
 
 export async function POST(request: NextRequest) {
   const body = await parseJson(request);
@@ -125,8 +48,15 @@ export async function POST(request: NextRequest) {
       try {
         user = await ensureSeededDemoUser(db, parsed.data.email);
       } catch (error) {
-        console.warn("[auth.login.demo]", error);
-        return await createLoginResponse(seedLoginUser(parsed.data.email));
+        console.warn("[auth.login.demo]", describeError(error));
+        return envelope(
+          null,
+          apiError(
+            "server_unavailable",
+            "데모 계정을 준비하지 못했습니다. 잠시 후 다시 시도해주세요."
+          ),
+          503
+        );
       }
     }
 
@@ -172,7 +102,7 @@ export async function POST(request: NextRequest) {
 
     return await createLoginResponse(user);
   } catch (error) {
-    console.error("[auth.login]", error);
+    console.error("[auth.login]", describeError(error));
     return envelope(
       null,
       apiError("server_unavailable", "로그인 서버 설정을 확인해주세요."),
@@ -187,64 +117,6 @@ async function parseJson(request: NextRequest): Promise<unknown> {
   } catch {
     return null;
   }
-}
-
-function isSeededDemoLogin(email: string, password: string): boolean {
-  return email in DEMO_AUTH_ACCOUNTS && password === DEMO_PASSWORD;
-}
-
-function seedLoginUser(email: string): LoginUser {
-  const account = DEMO_AUTH_ACCOUNTS[email];
-  if (!account) {
-    throw new Error(`Unknown demo account: ${email}`);
-  }
-
-  return {
-    id: account.id,
-    email,
-    role: account.role
-  };
-}
-
-async function ensureSeededDemoUser(db: DemoAuthDatabase, email: string) {
-  const account = DEMO_AUTH_ACCOUNTS[email];
-  if (!account) return null;
-
-  const passwordHash = await hashPassword(DEMO_PASSWORD);
-  await db.execute(sql`
-    insert into users (
-      id,
-      email,
-      password_hash,
-      role,
-      totp_enabled,
-      email_verified_at,
-      failed_login_count,
-      locked_until,
-      status
-    ) values (
-      ${account.id},
-      ${email},
-      ${passwordHash},
-      ${account.role},
-      ${account.totpEnabled},
-      now(),
-      0,
-      null,
-      'active'
-    )
-    on conflict (email) do update set
-      password_hash = excluded.password_hash,
-      role = excluded.role,
-      totp_enabled = excluded.totp_enabled,
-      email_verified_at = coalesce(users.email_verified_at, now()),
-      failed_login_count = 0,
-      locked_until = null,
-      status = 'active',
-      updated_at = now()
-  `);
-
-  return auth.findUserByEmail(db, email);
 }
 
 async function createLoginResponse(user: LoginUser) {
@@ -270,4 +142,8 @@ async function createLoginResponse(user: LoginUser) {
   response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions());
 
   return response;
+}
+
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : "Unknown error";
 }

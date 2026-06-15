@@ -5,6 +5,7 @@
   "type": "module",
   "exports": {
     ".": "./src/index.ts",
+    "./demo-accounts": "./src/demo-accounts.ts",
     "./schema": "./src/schema.ts",
     "./context": "./src/context.ts"
   },

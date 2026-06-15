@@ -1,83 +1,8 @@
 import { hashPassword } from "@csp/shared/auth/password";
 import { sql, type SQL } from "drizzle-orm";
+import { DEMO_AUTH_ACCOUNTS, DEMO_IDS, DEMO_PASSWORD } from "./demo-accounts";
 
-export const DEMO_PASSWORD = "DemoPass!23";
-
-export const DEMO_IDS = {
-  supervisee: "10000000-0000-4000-8000-000000000001",
-  draftAuthor: "10000000-0000-4000-8000-000000000002",
-  approvedSupervisor: "10000000-0000-4000-8000-000000000003",
-  hiddenSupervisor: "10000000-0000-4000-8000-000000000004",
-  admin: "10000000-0000-4000-8000-000000000005",
-  traumaSupervisor: "10000000-0000-4000-8000-000000000006",
-  childSupervisor: "10000000-0000-4000-8000-000000000007",
-  neuroSupervisor: "10000000-0000-4000-8000-000000000008",
-  forensicSupervisor: "10000000-0000-4000-8000-000000000009",
-  geriatricSupervisor: "10000000-0000-4000-8000-000000000010",
-  superviseeTwo: "10000000-0000-4000-8000-000000000011",
-  superviseeThree: "10000000-0000-4000-8000-000000000012",
-  approvedSupervisorProfile: "10000000-0000-4000-8000-000000000101",
-  hiddenSupervisorProfile: "10000000-0000-4000-8000-000000000102",
-  traumaSupervisorProfile: "10000000-0000-4000-8000-000000000103",
-  childSupervisorProfile: "10000000-0000-4000-8000-000000000104",
-  neuroSupervisorProfile: "10000000-0000-4000-8000-000000000105",
-  forensicSupervisorProfile: "10000000-0000-4000-8000-000000000106",
-  geriatricSupervisorProfile: "10000000-0000-4000-8000-000000000107",
-  qualification: "10000000-0000-4000-8000-000000000201",
-  pendingQualification: "10000000-0000-4000-8000-000000000202",
-  qualificationTrauma: "10000000-0000-4000-8000-000000000203",
-  qualificationChild: "10000000-0000-4000-8000-000000000204",
-  qualificationNeuro: "10000000-0000-4000-8000-000000000205",
-  qualificationForensic: "10000000-0000-4000-8000-000000000206",
-  qualificationGeriatric: "10000000-0000-4000-8000-000000000207",
-  productAsync: "10000000-0000-4000-8000-000000000301",
-  productDirect: "10000000-0000-4000-8000-000000000302",
-  productZoom: "10000000-0000-4000-8000-000000000303",
-  productTrauma: "10000000-0000-4000-8000-000000000304",
-  productChild: "10000000-0000-4000-8000-000000000305",
-  productNeuro: "10000000-0000-4000-8000-000000000306",
-  productForensic: "10000000-0000-4000-8000-000000000307",
-  productGeriatric: "10000000-0000-4000-8000-000000000308",
-  productTraumaZoom: "10000000-0000-4000-8000-000000000309",
-  productChildAsync: "10000000-0000-4000-8000-000000000310",
-  productNeuroZoom: "10000000-0000-4000-8000-000000000311",
-  productForensicZoom: "10000000-0000-4000-8000-000000000312",
-  productGeriatricAsync: "10000000-0000-4000-8000-000000000313",
-  slotMonday: "10000000-0000-4000-8000-000000000401",
-  slotWednesday: "10000000-0000-4000-8000-000000000402",
-  slotFriday: "10000000-0000-4000-8000-000000000403",
-  slotTraumaMonday: "10000000-0000-4000-8000-000000000404",
-  slotTraumaThursday: "10000000-0000-4000-8000-000000000405",
-  slotTraumaSaturday: "10000000-0000-4000-8000-000000000406",
-  slotChildTuesday: "10000000-0000-4000-8000-000000000407",
-  slotChildWednesday: "10000000-0000-4000-8000-000000000408",
-  slotChildFriday: "10000000-0000-4000-8000-000000000409",
-  slotNeuroMonday: "10000000-0000-4000-8000-000000000410",
-  slotNeuroWednesday: "10000000-0000-4000-8000-000000000411",
-  slotNeuroFriday: "10000000-0000-4000-8000-000000000412",
-  slotForensicTuesday: "10000000-0000-4000-8000-000000000413",
-  slotForensicThursday: "10000000-0000-4000-8000-000000000414",
-  slotForensicFriday: "10000000-0000-4000-8000-000000000415",
-  slotGeriatricMonday: "10000000-0000-4000-8000-000000000416",
-  slotGeriatricTuesday: "10000000-0000-4000-8000-000000000417",
-  slotGeriatricThursday: "10000000-0000-4000-8000-000000000418",
-  termsTos: "10000000-0000-4000-8000-000000000501",
-  termsPrivacy: "10000000-0000-4000-8000-000000000502",
-  termsSensitive: "10000000-0000-4000-8000-000000000503",
-  requestDraft: "10000000-0000-4000-8000-000000000601",
-  requestSubmitted: "10000000-0000-4000-8000-000000000602",
-  requestAwaitingPayment: "10000000-0000-4000-8000-000000000603",
-  requestPaid: "10000000-0000-4000-8000-000000000604",
-  requestInReview: "10000000-0000-4000-8000-000000000605",
-  requestFeedback: "10000000-0000-4000-8000-000000000606",
-  requestCompletion: "10000000-0000-4000-8000-000000000607",
-  requestCompleted: "10000000-0000-4000-8000-000000000608",
-  requestRejected: "10000000-0000-4000-8000-000000000609",
-  paymentPaid: "10000000-0000-4000-8000-000000000701",
-  reviewOne: "10000000-0000-4000-8000-000000000801",
-  reviewTwo: "10000000-0000-4000-8000-000000000802",
-  reviewThree: "10000000-0000-4000-8000-000000000803"
-} as const;
+export { DEMO_IDS, DEMO_PASSWORD } from "./demo-accounts";
 
 type DevSeedDatabase = {
   execute: (query: SQL) => Promise<unknown>;
@@ -121,6 +46,20 @@ async function seedUsers(
   log: SeedLogger
 ): Promise<void> {
   log("Seeding demo users");
+  const demoUserRows = DEMO_AUTH_ACCOUNTS.map(
+    (account) => sql`
+    (
+      ${account.id},
+      ${account.email},
+      ${passwordHash},
+      ${account.role},
+      ${account.totpEnabled},
+      now(),
+      'active'
+    )
+  `
+  );
+
   await db.execute(sql`
     insert into users (
       id,
@@ -130,19 +69,7 @@ async function seedUsers(
       totp_enabled,
       email_verified_at,
       status
-    ) values
-      (${DEMO_IDS.supervisee}, 'supervisee@demo.local', ${passwordHash}, 'supervisee', false, now(), 'active'),
-      (${DEMO_IDS.draftAuthor}, 'draft-author@demo.local', ${passwordHash}, 'supervisee', false, now(), 'active'),
-      (${DEMO_IDS.approvedSupervisor}, 'approved-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.hiddenSupervisor}, 'hidden-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.admin}, 'admin@demo.local', ${passwordHash}, 'admin', true, now(), 'active'),
-      (${DEMO_IDS.traumaSupervisor}, 'trauma-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.childSupervisor}, 'child-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.neuroSupervisor}, 'neuro-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.forensicSupervisor}, 'forensic-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.geriatricSupervisor}, 'geriatric-sup@demo.local', ${passwordHash}, 'supervisor', true, now(), 'active'),
-      (${DEMO_IDS.superviseeTwo}, 'case-owner@demo.local', ${passwordHash}, 'supervisee', false, now(), 'active'),
-      (${DEMO_IDS.superviseeThree}, 'reviewer@demo.local', ${passwordHash}, 'supervisee', false, now(), 'active')
+    ) values ${sql.join(demoUserRows, sql`, `)}
     on conflict do nothing
   `);
 }

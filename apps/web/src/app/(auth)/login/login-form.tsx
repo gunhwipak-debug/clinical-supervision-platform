@@ -156,7 +156,7 @@ function roleHome(role: string | undefined): string {
     ? "/supervisor"
     : role === "admin"
       ? "/admin"
-      : "/supervisors";
+      : "/requests";
 }
 
 function safeReturnTo(value: string): string | null {
@@ -172,6 +172,8 @@ function loginErrorMessage(code: string | undefined): string {
     email_unverified: "이메일 인증을 먼저 완료해주세요.",
     invalid_credentials: "이메일 또는 비밀번호가 올바르지 않습니다.",
     invalid_request: "입력값을 다시 확인해주세요.",
+    locked:
+      "로그인 시도가 여러 번 실패해 계정이 잠시 잠겼습니다. 잠시 후 다시 시도해주세요.",
     rate_limited: "요청이 너무 많습니다. 잠시 후 다시 시도해주세요.",
     server_unavailable:
       "일시적인 문제로 로그인할 수 없습니다. 잠시 후 다시 시도하거나 관리자에게 문의해주세요.",

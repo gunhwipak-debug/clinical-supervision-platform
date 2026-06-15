@@ -221,7 +221,10 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
+    const body = (await response.json()) as {
+      data?: { calendarSync?: string };
+      error?: unknown;
+    };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
@@ -308,7 +311,10 @@ describe("supervision request integration", () => {
     const detail = await withUserContext(
       db,
       { userId: superviseeId, role: "supervisee", phiAccess: true },
-      (tx) => supervision.getSupervisionRequestDetails(tx, body.data?.request?.id ?? "")
+      (tx) =>
+        supervision.getSupervisionRequestDetails(tx, body.data?.request?.id ?? "", {
+          includeMeetingUrl: true
+        })
     );
     expect(detail?.meetingUrl).toBe("https://meet.google.com/abc-defg-hij");
     const createdNotifications = await db.execute<{
@@ -408,7 +414,10 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
+    const body = (await response.json()) as {
+      data?: { calendarSync?: string };
+      error?: unknown;
+    };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
@@ -505,7 +514,10 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
+    const body = (await response.json()) as {
+      data?: { calendarSync?: string };
+      error?: unknown;
+    };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
@@ -544,7 +556,10 @@ describe("supervision request integration", () => {
         urgency: "normal"
       }
     );
-    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
+    const body = (await response.json()) as {
+      data?: { calendarSync?: string };
+      error?: unknown;
+    };
     const bookingCount = await db.execute<{ count: number }>(sql`
       select count(*)::int as count
       from bookings
@@ -803,7 +818,10 @@ describe("supervision request integration", () => {
     const detail = await withUserContext(
       db,
       { userId: superviseeId, role: "supervisee", phiAccess: true },
-      (tx) => supervision.getSupervisionRequestDetails(tx, request?.id ?? "")
+      (tx) =>
+        supervision.getSupervisionRequestDetails(tx, request?.id ?? "", {
+          includeMeetingUrl: true
+        })
     );
     expect(detail?.bookingStatus).toBe("rescheduled");
     expect(detail?.meetingUrl).toBe("https://meet.google.com/rescheduled");
@@ -828,7 +846,10 @@ describe("supervision request integration", () => {
         selectedSlotStart: "2026-06-01T13:00:00+09:00"
       }
     );
-    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
+    const body = (await response.json()) as {
+      data?: { calendarSync?: string };
+      error?: unknown;
+    };
 
     expect(response.status, JSON.stringify(body)).toBe(200);
     expect(body.data?.calendarSync).toBe("not_required");
@@ -854,7 +875,10 @@ describe("supervision request integration", () => {
         selectedSlotStart: "2026-06-01T13:00:00+09:00"
       }
     );
-    const body = (await response.json()) as { data?: { calendarSync?: string }; error?: unknown };
+    const body = (await response.json()) as {
+      data?: { calendarSync?: string };
+      error?: unknown;
+    };
 
     expect(response.status, JSON.stringify(body)).toBe(200);
     expect(body.data?.calendarSync).toBe("not_required");
@@ -1363,12 +1387,16 @@ async function callCancelRoute(
   );
 }
 
-async function callDisconnectGoogleCalendarRoute(current: CurrentUser): Promise<Response> {
+async function callDisconnectGoogleCalendarRoute(
+  current: CurrentUser
+): Promise<Response> {
   mockRuntime(current, db);
   const { DELETE } = await import("../../app/api/me/google-calendar/route");
-  return DELETE(new NextRequest("http://localhost/api/me/google-calendar", {
-    method: "DELETE"
-  }));
+  return DELETE(
+    new NextRequest("http://localhost/api/me/google-calendar", {
+      method: "DELETE"
+    })
+  );
 }
 
 async function callRescheduleRoute(

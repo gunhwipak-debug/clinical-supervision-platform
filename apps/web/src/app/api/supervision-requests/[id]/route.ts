@@ -45,7 +45,9 @@ export async function GET(
 
   const db = createRuntimeDatabase();
   const basic = await withUserContext(db, contextFor(current, request), (tx) =>
-    supervision.getSupervisionRequestDetails(tx, parsed.data.id)
+    supervision.getSupervisionRequestDetails(tx, parsed.data.id, {
+      includeMeetingUrl: false
+    })
   );
 
   if (!basic)
@@ -63,18 +65,28 @@ export async function GET(
     (current.session.role === "supervisor" &&
       basic.supervisorId === current.session.userId);
 
-  const detail = canReadPhi
-    ? await withUserContext(
-        db,
-        contextFor(current, request, { phiAccess: true }),
-        (tx) =>
-          supervision.getSupervisionRequestDetails(tx, parsed.data.id, {
-            includePhi: true
-          })
-      )
-    : basic;
+  let detail = basic;
+  if (canReadPhi) {
+    try {
+      detail =
+        (await withUserContext(
+          db,
+          contextFor(current, request, { phiAccess: true }),
+          (tx) =>
+            supervision.getSupervisionRequestDetails(tx, parsed.data.id, {
+              includePhi: true
+            })
+        )) ?? basic;
+    } catch (error) {
+      console.warn("[supervision-requests.detail.phi]", describeError(error));
+    }
+  }
 
   return envelope({ request: detail }, null, 200);
+}
+
+function describeError(error: unknown): string {
+  return error instanceof Error ? error.message : "Unknown error";
 }
 
 export async function DELETE(
@@ -99,7 +111,9 @@ export async function DELETE(
 
   const db = createRuntimeDatabase();
   const basic = await withUserContext(db, contextFor(current), (tx) =>
-    supervision.getSupervisionRequestDetails(tx, parsed.data.id)
+    supervision.getSupervisionRequestDetails(tx, parsed.data.id, {
+      includeMeetingUrl: false
+    })
   );
   if (!basic)
     return envelope(

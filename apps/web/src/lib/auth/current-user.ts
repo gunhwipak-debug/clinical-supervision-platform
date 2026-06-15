@@ -28,7 +28,11 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     async (tx) => auth.findTotpUserById(tx, payload.userId)
   );
 
-  if (!user || user.status !== "active" || user.role !== payload.role) {
+  if (!user) {
+    return null;
+  }
+
+  if (user.status !== "active" || user.role !== payload.role) {
     return null;
   }
 
