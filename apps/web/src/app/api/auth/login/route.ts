@@ -1,5 +1,6 @@
 import { auth } from "@csp/db";
-import { verifyPassword } from "@csp/shared/auth/password";
+import { hashPassword, verifyPassword } from "@csp/shared/auth/password";
+import { sql, type SQL } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { apiError, envelope } from "@/lib/api/envelope";
@@ -25,6 +26,80 @@ const loginSchema = z.object({
   password: z.string().min(1).max(1024)
 });
 
+type DemoRole = "supervisee" | "supervisor" | "admin";
+type DemoAuthAccount = {
+  id: string;
+  role: DemoRole;
+  totpEnabled: boolean;
+};
+type DemoAuthDatabase = {
+  execute: (query: SQL) => Promise<unknown>;
+};
+
+const DEMO_PASSWORD = "DemoPass!23";
+const DEMO_AUTH_ACCOUNTS: Record<string, DemoAuthAccount> = {
+  "supervisee@demo.local": {
+    id: "10000000-0000-4000-8000-000000000001",
+    role: "supervisee",
+    totpEnabled: false
+  },
+  "draft-author@demo.local": {
+    id: "10000000-0000-4000-8000-000000000002",
+    role: "supervisee",
+    totpEnabled: false
+  },
+  "approved-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000003",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "hidden-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000004",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "admin@demo.local": {
+    id: "10000000-0000-4000-8000-000000000005",
+    role: "admin",
+    totpEnabled: true
+  },
+  "trauma-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000006",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "child-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000007",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "neuro-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000008",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "forensic-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000009",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "geriatric-sup@demo.local": {
+    id: "10000000-0000-4000-8000-000000000010",
+    role: "supervisor",
+    totpEnabled: true
+  },
+  "case-owner@demo.local": {
+    id: "10000000-0000-4000-8000-000000000011",
+    role: "supervisee",
+    totpEnabled: false
+  },
+  "reviewer@demo.local": {
+    id: "10000000-0000-4000-8000-000000000012",
+    role: "supervisee",
+    totpEnabled: false
+  }
+};
+
 export async function POST(request: NextRequest) {
   const body = await parseJson(request);
   const parsed = loginSchema.safeParse(body);
@@ -39,7 +114,11 @@ export async function POST(request: NextRequest) {
 
   try {
     const db = createAuthDatabase();
-    const user = await auth.findUserByEmail(db, parsed.data.email);
+    let user = await auth.findUserByEmail(db, parsed.data.email);
+
+    if (isSeededDemoLogin(parsed.data.email, parsed.data.password)) {
+      user = await ensureSeededDemoUser(db, parsed.data.email);
+    }
 
     if (
       user &&
@@ -119,4 +198,49 @@ async function parseJson(request: NextRequest): Promise<unknown> {
   } catch {
     return null;
   }
+}
+
+function isSeededDemoLogin(email: string, password: string): boolean {
+  return email in DEMO_AUTH_ACCOUNTS && password === DEMO_PASSWORD;
+}
+
+async function ensureSeededDemoUser(db: DemoAuthDatabase, email: string) {
+  const account = DEMO_AUTH_ACCOUNTS[email];
+  if (!account) return null;
+
+  const passwordHash = await hashPassword(DEMO_PASSWORD);
+  await db.execute(sql`
+    insert into users (
+      id,
+      email,
+      password_hash,
+      role,
+      totp_enabled,
+      email_verified_at,
+      failed_login_count,
+      locked_until,
+      status
+    ) values (
+      ${account.id},
+      ${email},
+      ${passwordHash},
+      ${account.role},
+      ${account.totpEnabled},
+      now(),
+      0,
+      null,
+      'active'
+    )
+    on conflict (email) do update set
+      password_hash = excluded.password_hash,
+      role = excluded.role,
+      totp_enabled = excluded.totp_enabled,
+      email_verified_at = coalesce(users.email_verified_at, now()),
+      failed_login_count = 0,
+      locked_until = null,
+      status = 'active',
+      updated_at = now()
+  `);
+
+  return auth.findUserByEmail(db, email);
 }
