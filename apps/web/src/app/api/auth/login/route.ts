@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
         user = await ensureSeededDemoUser(db, parsed.data.email);
       } catch (error) {
         console.warn("[auth.login.demo]", error);
-        return createLoginResponse(seedLoginUser(parsed.data.email));
+        return await createLoginResponse(seedLoginUser(parsed.data.email));
       }
     }
 
@@ -170,7 +170,7 @@ export async function POST(request: NextRequest) {
     await auth.clearLoginFailures(db, user.id);
     await auth.touchLastLogin(db, user.id);
 
-    return createLoginResponse(user);
+    return await createLoginResponse(user);
   } catch (error) {
     console.error("[auth.login]", error);
     return envelope(
