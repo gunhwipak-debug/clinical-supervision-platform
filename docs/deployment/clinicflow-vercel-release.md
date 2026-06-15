@@ -31,10 +31,17 @@ pnpm release:admin:check
 
 ## Why the release wrapper exists
 
-- Vercel project를 `--project clinicflow-web` 또는 `--project clinicflow-admin`으로 명시한다.
+- raw `vercel deploy`를 직접 실행하지 않는다. root `.vercel/project.json`은 기본적으로 `clinicflow-web`을 가리키므로, release wrapper가 배포 중에만 선택한 프로젝트 링크를 임시로 쓰고 종료 시 원복한다.
 - 배포 중 Vercel 출력을 실시간으로 보여준다.
+- Vercel CLI가 조용한 구간에도 30초마다 진행 heartbeat를 출력한다.
 - `git status`나 `git diff`처럼 로컬 파일 수가 많을 때 멈춰 보이는 검사를 기본 경로에서 제외한다.
 - 결과 요약에는 불변 배포 URL과 stable URL을 같이 남긴다.
+
+기본 배포 제한 시간은 15분이다. 오래 걸리는 배포가 확실할 때만 늘린다.
+
+```sh
+VERCEL_DEPLOY_TIMEOUT_MS=1800000 pnpm release:web:ui-prod
+```
 
 ## Optional slower checks
 
@@ -58,3 +65,7 @@ Type error: Type 'HomeQueueItem | undefined' is not assignable to type 'HomeQueu
 
 현재 코드에서는 `prioritizedAction(items: [HomeQueueItem, ...HomeQueueItem[]])`로 보정되어 있다.
 새 admin 배포 전에는 `pnpm release:admin:check`를 먼저 실행한다.
+
+반복 실패 메일을 막기 위해 admin 배포는 raw CLI 대신 `pnpm release:admin:prod`만 사용한다.
+배포 객체가 생성되기 전 `Retrieving project...`에서 멈춘 경우에는 새 Vercel 실패 메일이 만들어진 상태가 아니다.
+그때는 재시도 전에 Vercel 대시보드에서 최신 admin deployment가 READY인지 먼저 확인한다.

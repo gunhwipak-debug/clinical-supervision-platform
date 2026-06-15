@@ -16,15 +16,25 @@ const command = args[0] || "help";
 const timestamp = new Date().toISOString().replace(/[-:]/g, "").replace(/\..+/, "");
 const evidenceDir = join(".omo", "evidence", "fast-release", timestamp);
 const latestPath = join(".omo", "evidence", "fast-release", "LATEST.md");
+const vercelProjectPath = join(".vercel", "project.json");
+let restoreVercelProjectLink = null;
 const projects = {
   web: {
+    buildCommand: "pnpm --filter @csp/web build",
+    outputDirectory: "apps/web/.next",
     packageFilter: "@csp/web",
+    projectId: "prj_PRtoExoWznCEbmA9bdQVmrBbX9iS",
     projectName: "clinicflow-web",
+    teamId: "team_ORdMo2OL3e6nonZv8j4y63GG",
     stableUrl: "https://clinicflow-web-beta.vercel.app"
   },
   admin: {
+    buildCommand: "pnpm --filter @csp/admin build",
+    outputDirectory: "apps/admin/.next",
     packageFilter: "@csp/admin",
+    projectId: "prj_ZPJaelyzzY0uLMIT8ea8jya2qVsP",
     projectName: "clinicflow-admin",
+    teamId: "team_ORdMo2OL3e6nonZv8j4y63GG",
     stableUrl: "https://clinicflow-admin-six.vercel.app"
   }
 };
@@ -44,6 +54,21 @@ const supportedPrettierFiles = new Set([
 ]);
 
 const generatedEvidencePrefixes = ["demo-evidence/route-alignment-qa/"];
+
+function restoreVercelProjectLinkNow() {
+  if (!restoreVercelProjectLink) return;
+  const restore = restoreVercelProjectLink;
+  restoreVercelProjectLink = null;
+  restore();
+}
+
+function handleReleaseSignal(signal) {
+  restoreVercelProjectLinkNow();
+  process.exit(signal === "SIGINT" ? 130 : 143);
+}
+
+process.once("SIGINT", () => handleReleaseSignal("SIGINT"));
+process.once("SIGTERM", () => handleReleaseSignal("SIGTERM"));
 
 function usage() {
   console.log(`ClinicFlow fast release
@@ -111,6 +136,7 @@ function runStep(label, cmd, cmdArgs, options = {}) {
 
 function runStepLive(label, cmd, cmdArgs, options = {}) {
   const timeout = options.timeoutMs ?? 120_000;
+  const heartbeatMs = options.heartbeatMs ?? 30_000;
   console.log(`→ ${label}`);
 
   return new Promise((resolve, reject) => {
@@ -121,6 +147,8 @@ function runStepLive(label, cmd, cmdArgs, options = {}) {
     let stdout = "";
     let stderr = "";
     let settled = false;
+    let lastOutputAt = Date.now();
+    const startedAt = Date.now();
 
     const timer = setTimeout(() => {
       if (settled) return;
@@ -128,16 +156,25 @@ function runStepLive(label, cmd, cmdArgs, options = {}) {
       child.kill("SIGTERM");
       reject(new Error(`${label} failed: timed out after ${timeout}ms`));
     }, timeout);
+    const heartbeat = setInterval(() => {
+      if (settled) return;
+      if (Date.now() - lastOutputAt < heartbeatMs) return;
+      const elapsed = Math.round((Date.now() - startedAt) / 1000);
+      lastOutputAt = Date.now();
+      process.stdout.write(`\n… ${label} still running after ${elapsed}s\n`);
+    }, heartbeatMs);
 
     child.stdout.on("data", (chunk) => {
       const text = chunk.toString();
       stdout += text;
+      lastOutputAt = Date.now();
       process.stdout.write(text);
     });
 
     child.stderr.on("data", (chunk) => {
       const text = chunk.toString();
       stderr += text;
+      lastOutputAt = Date.now();
       process.stderr.write(text);
     });
 
@@ -145,6 +182,7 @@ function runStepLive(label, cmd, cmdArgs, options = {}) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
+      clearInterval(heartbeat);
       reject(new Error(`${label} failed: ${error.message}`));
     });
 
@@ -152,6 +190,7 @@ function runStepLive(label, cmd, cmdArgs, options = {}) {
       if (settled) return;
       settled = true;
       clearTimeout(timer);
+      clearInterval(heartbeat);
       const output = [
         `$ ${[cmd, ...cmdArgs].join(" ")}`,
         stdout || "",
@@ -290,6 +329,51 @@ function writeSummary(lines) {
   console.log(summary);
 }
 
+function projectLink(project) {
+  return {
+    projectId: project.projectId,
+    orgId: project.teamId,
+    projectName: project.projectName,
+    settings: {
+      createdAt: null,
+      framework: "nextjs",
+      devCommand: null,
+      installCommand: "pnpm install --frozen-lockfile",
+      buildCommand: project.buildCommand,
+      outputDirectory: project.outputDirectory,
+      rootDirectory: null,
+      directoryListing: false,
+      nodeVersion: "24.x"
+    }
+  };
+}
+
+async function withTemporaryProjectLink(project, callback) {
+  const prior = existsSync(vercelProjectPath)
+    ? readFileSync(vercelProjectPath, "utf8")
+    : null;
+  mkdirSync(dirname(vercelProjectPath), { recursive: true });
+
+  restoreVercelProjectLink = () => {
+    if (prior === null) {
+      rmSync(vercelProjectPath, { force: true });
+    } else {
+      writeFileSync(vercelProjectPath, prior);
+    }
+  };
+
+  writeFileSync(
+    vercelProjectPath,
+    `${JSON.stringify(projectLink(project), null, 2)}\n`
+  );
+
+  try {
+    return await callback();
+  } finally {
+    restoreVercelProjectLinkNow();
+  }
+}
+
 function selectedProject(app) {
   const project = projects[app];
   if (!project) {
@@ -401,27 +485,17 @@ async function deploy(target, app = "web") {
   fastCheck(app);
 
   const [vercelCmd, baseArgs] = detectVercelCommand();
-  const deployArgs = [
-    ...baseArgs,
-    "deploy",
-    "--yes",
-    "--project",
-    project.projectName,
-    "--meta",
-    `clinicflowApp=${app}`
-  ];
+  const deployArgs = [...baseArgs, "deploy", "--yes", "--meta", `clinicflowApp=${app}`];
   if (target === "prod") {
     deployArgs.push("--prod");
   }
 
-  const output = await runStepLive(
-    `Vercel ${app} ${target} deploy`,
-    vercelCmd,
-    deployArgs,
-    {
-      timeoutMs: Number(process.env.VERCEL_DEPLOY_TIMEOUT_MS || 1_800_000),
+  const output = await withTemporaryProjectLink(project, () =>
+    runStepLive(`Vercel ${app} ${target} deploy`, vercelCmd, deployArgs, {
+      timeoutMs: Number(process.env.VERCEL_DEPLOY_TIMEOUT_MS || 900_000),
+      heartbeatMs: Number(process.env.VERCEL_DEPLOY_HEARTBEAT_MS || 30_000),
       logFile: `vercel-${app}-${target}.log`
-    }
+    })
   );
   const deployedUrl = parseVercelAppUrl(output);
   if (!deployedUrl) {
