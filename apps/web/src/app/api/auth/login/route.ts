@@ -32,6 +32,11 @@ type DemoAuthAccount = {
   role: DemoRole;
   totpEnabled: boolean;
 };
+type LoginUser = {
+  id: string;
+  email: string;
+  role: DemoRole;
+};
 type DemoAuthDatabase = {
   execute: (query: SQL) => Promise<unknown>;
 };
@@ -117,7 +122,12 @@ export async function POST(request: NextRequest) {
     let user = await auth.findUserByEmail(db, parsed.data.email);
 
     if (isSeededDemoLogin(parsed.data.email, parsed.data.password)) {
-      user = await ensureSeededDemoUser(db, parsed.data.email);
+      try {
+        user = await ensureSeededDemoUser(db, parsed.data.email);
+      } catch (error) {
+        console.warn("[auth.login.demo]", error);
+        return createLoginResponse(seedLoginUser(parsed.data.email));
+      }
     }
 
     if (
@@ -160,28 +170,7 @@ export async function POST(request: NextRequest) {
     await auth.clearLoginFailures(db, user.id);
     await auth.touchLastLogin(db, user.id);
 
-    const { token, payload } = await signSession({
-      userId: user.id,
-      role: user.role
-    });
-    const response = envelope(
-      {
-        user: {
-          id: user.id,
-          email: user.email,
-          role: user.role
-        },
-        session: {
-          expiresAt: payload.expiresAt
-        }
-      },
-      null,
-      200
-    );
-
-    response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions());
-
-    return response;
+    return createLoginResponse(user);
   } catch (error) {
     console.error("[auth.login]", error);
     return envelope(
@@ -202,6 +191,19 @@ async function parseJson(request: NextRequest): Promise<unknown> {
 
 function isSeededDemoLogin(email: string, password: string): boolean {
   return email in DEMO_AUTH_ACCOUNTS && password === DEMO_PASSWORD;
+}
+
+function seedLoginUser(email: string): LoginUser {
+  const account = DEMO_AUTH_ACCOUNTS[email];
+  if (!account) {
+    throw new Error(`Unknown demo account: ${email}`);
+  }
+
+  return {
+    id: account.id,
+    email,
+    role: account.role
+  };
 }
 
 async function ensureSeededDemoUser(db: DemoAuthDatabase, email: string) {
@@ -243,4 +245,29 @@ async function ensureSeededDemoUser(db: DemoAuthDatabase, email: string) {
   `);
 
   return auth.findUserByEmail(db, email);
+}
+
+async function createLoginResponse(user: LoginUser) {
+  const { token, payload } = await signSession({
+    userId: user.id,
+    role: user.role
+  });
+  const response = envelope(
+    {
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role
+      },
+      session: {
+        expiresAt: payload.expiresAt
+      }
+    },
+    null,
+    200
+  );
+
+  response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions());
+
+  return response;
 }
