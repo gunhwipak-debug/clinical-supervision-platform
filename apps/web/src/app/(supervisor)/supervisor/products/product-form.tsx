@@ -19,15 +19,24 @@ export function ProductForm() {
   async function submit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
     const form = new FormData(event.currentTarget);
-    const response = await fetch("/api/me/products", {
-      method: "POST",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(productPayload(form))
-    });
-    const body = (await response.json()) as { error?: { code: string } };
+    let response: Response;
+    try {
+      response = await fetch("/api/me/products", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(productPayload(form))
+      });
+    } catch {
+      const next = productErrorMessage("server_unavailable", "추가 실패");
+      setMessage(next);
+      toast.error(next);
+      return;
+    }
+
+    const body = await safeJson(response);
     const next = response.ok
       ? "슈퍼비전 방식을 추가했습니다."
-      : (body.error?.code ?? "추가 실패");
+      : productErrorMessage(body.error?.code, "추가 실패");
     setMessage(next);
     if (response.ok) {
       toast.success(next);
@@ -73,6 +82,7 @@ export function ProductForm() {
               id="priceKrw"
               min={10000}
               name="priceKrw"
+              required
               type="number"
             />
           </Field>
@@ -83,6 +93,7 @@ export function ProductForm() {
               id="turnaroundHours"
               min={1}
               name="turnaroundHours"
+              required
               type="number"
             />
           </Field>
@@ -109,12 +120,22 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
     event.preventDefault();
     setBusy(true);
     const form = new FormData(event.currentTarget);
-    const response = await fetch(`/api/me/products/${product.id}`, {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify(productPayload(form))
-    });
-    const body = (await response.json()) as { error?: { code: string } };
+    let response: Response;
+    try {
+      response = await fetch(`/api/me/products/${product.id}`, {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(productPayload(form))
+      });
+    } catch {
+      const next = productErrorMessage("server_unavailable", "슈퍼비전 방식 저장 실패");
+      setMessage(next);
+      setBusy(false);
+      toast.error(next);
+      return;
+    }
+
+    const body = await safeJson(response);
     const next = response.ok
       ? "슈퍼비전 방식을 저장했습니다."
       : productErrorMessage(body.error?.code, "슈퍼비전 방식 저장 실패");
@@ -131,10 +152,20 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
   async function deactivate() {
     if (!window.confirm("이 슈퍼비전 방식을 공개 목록에서 중지할까요?")) return;
     setBusy(true);
-    const response = await fetch(`/api/me/products/${product.id}`, {
-      method: "DELETE"
-    });
-    const body = (await response.json()) as { error?: { code: string } };
+    let response: Response;
+    try {
+      response = await fetch(`/api/me/products/${product.id}`, {
+        method: "DELETE"
+      });
+    } catch {
+      const next = productErrorMessage("server_unavailable", "슈퍼비전 방식 중지 실패");
+      setMessage(next);
+      setBusy(false);
+      toast.error(next);
+      return;
+    }
+
+    const body = await safeJson(response);
     const next = response.ok
       ? "슈퍼비전 방식 운영을 중지했습니다."
       : productErrorMessage(body.error?.code, "슈퍼비전 방식 중지 실패");
@@ -259,9 +290,20 @@ function productErrorMessage(code: string | undefined, fallback: string): string
     forbidden: "슈퍼바이저 계정에서만 슈퍼비전 방식을 관리할 수 있습니다.",
     invalid_request: "슈퍼비전 방식 정보를 다시 확인해주세요.",
     not_found: "요청한 슈퍼비전 방식을 찾을 수 없습니다.",
+    profile_required: "먼저 공개 프로필을 저장해주세요.",
+    server_unavailable:
+      "일시적인 문제로 저장하지 못했습니다. 잠시 후 다시 시도해주세요.",
     unauthorized: "로그인이 필요합니다."
   };
   return labels[code ?? ""] ?? fallback;
+}
+
+async function safeJson(response: Response): Promise<{ error?: { code?: string } }> {
+  try {
+    return (await response.json()) as { error?: { code?: string } };
+  } catch {
+    return {};
+  }
 }
 
 function emptyToNull(value: FormDataEntryValue | null): string | null {

@@ -1384,6 +1384,7 @@ function formatBookingRange(
     year: "numeric"
   }).format(start);
   const time = new Intl.DateTimeFormat("ko-KR", {
+    hourCycle: "h23",
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Asia/Seoul"
@@ -1397,6 +1398,7 @@ function formatDateTime(value: Date | string | null): string {
   if (Number.isNaN(date.getTime())) return "기록 확인 필요";
   return new Intl.DateTimeFormat("ko-KR", {
     day: "numeric",
+    hourCycle: "h23",
     hour: "2-digit",
     month: "long",
     minute: "2-digit",

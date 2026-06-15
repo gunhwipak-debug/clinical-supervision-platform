@@ -77,7 +77,7 @@
   --color-warn: #f59e0b;
   --color-info: #2563ff;
 
-  /* === Border radius (Stitch is source of truth) === */
+  /* === Border radius (Origin-14 is current source; Stitch names stay for compatibility) === */
   --radius-sm: 0.25rem;
   --radius: 0.5rem;
   --radius-md: 0.75rem;
@@ -85,7 +85,7 @@
   --radius-xl: 1.5rem;
   --radius-full: 9999px;
 
-  /* === Spacing (named tokens from Stitch design) === */
+  /* === Spacing (historical Stitch naming retained; values follow current ClinicFlow contract) === */
   --spacing-base: 8px;
   --spacing-xs: 4px;
   --spacing-sm: 12px;

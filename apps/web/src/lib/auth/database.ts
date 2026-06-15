@@ -1,4 +1,4 @@
-import { createDatabase } from "@csp/db";
+import { createDatabase } from "@csp/db/client";
 
 export function createAuthDatabase() {
   return createDatabase(process.env["SERVICE_DATABASE_URL"]);

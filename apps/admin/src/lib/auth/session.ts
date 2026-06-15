@@ -1,4 +1,5 @@
 export const SESSION_COOKIE_NAME = "csp_session";
+export const SESSION_TTL_MS = 30 * 60 * 1000;
 
 const encoder = new TextEncoder();
 const decoder = new TextDecoder();
@@ -10,6 +11,32 @@ export type SessionPayload = {
   expiresAt: number;
   sessionId: string;
 };
+
+export type SessionCookieOptions = {
+  httpOnly: true;
+  maxAge: number;
+  path: "/";
+  sameSite: "lax";
+  secure: boolean;
+};
+
+export async function signSession(input: {
+  role: "admin";
+  userId: string;
+}): Promise<{ payload: SessionPayload; token: string }> {
+  const now = Date.now();
+  const payload: SessionPayload = {
+    userId: input.userId,
+    role: input.role,
+    issuedAt: now,
+    expiresAt: now + SESSION_TTL_MS,
+    sessionId: crypto.randomUUID()
+  };
+  const encodedPayload = base64UrlEncode(encoder.encode(JSON.stringify(payload)));
+  const signature = await signData(encodedPayload);
+
+  return { payload, token: `${encodedPayload}.${signature}` };
+}
 
 export async function verifySession(token: string): Promise<SessionPayload | null> {
   const parts = token.split(".");
@@ -45,6 +72,16 @@ export async function verifySession(token: string): Promise<SessionPayload | nul
   } catch {
     return null;
   }
+}
+
+export function sessionCookieOptions(): SessionCookieOptions {
+  return {
+    httpOnly: true,
+    maxAge: SESSION_TTL_MS / 1000,
+    path: "/",
+    sameSite: "lax",
+    secure: process.env["NODE_ENV"] === "production"
+  };
 }
 
 async function signData(data: string): Promise<string> {

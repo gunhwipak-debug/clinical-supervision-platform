@@ -1,5 +1,7 @@
 # Stitch Prompt Pack
 
+> Historical reference only. This prompt pack predates the Origin-14 contract and must not be used as current ClinicFlow implementation guidance. It remains in place for provenance and script compatibility.
+
 Generated at: 2026-05-21T12:06:15.993Z
 
 Use this file by copying one phase prompt or one screen prompt into Stitch/Figma-oriented generation tools. The prompts assume the screenshot files under `demo-evidence/screenshots/` are available as visual references.

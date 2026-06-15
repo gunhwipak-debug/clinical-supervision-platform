@@ -1,8 +1,10 @@
 # STITCH-MIGRATION
 
+> Historical migration note. The statement below is superseded: current UI work follows Origin-14, not Stitch HTML exports.
+
 ## Decision
 
-Stitch HTML exports are treated as visual source of truth for the UI migration. Existing route paths, API handlers, database queries, RLS policies, `withUserContext`, PHI access boundaries, session logic, and zod schemas are preserved. Stitch markup is translated into React JSX and wired to the existing server components or client forms.
+Stitch HTML exports were treated as visual source material for an older UI migration. This is now superseded by Origin-14. Existing route paths, API handlers, database queries, RLS policies, `withUserContext`, PHI access boundaries, session logic, and zod schemas were preserved during that historical pass.
 
 ## Asset Location
 

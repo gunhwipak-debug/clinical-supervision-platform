@@ -11,6 +11,7 @@ import {
   createRuntimeDatabase,
   getCurrentAdmin
 } from "../../../lib/auth/current-admin";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -51,15 +52,35 @@ export default async function AdminQueuePage() {
     );
   }
 
-  const counts = await withUserContext(
-    createRuntimeDatabase(),
-    {
-      userId: current.session.userId,
-      role: "admin",
-      adminReason: "운영 업무 목록 조회를 위한 처리 사유입니다."
-    },
-    (tx) => loadCounts(tx)
-  );
+  let counts: QueueCounts;
+  let countsUnavailable = false;
+  try {
+    counts = await withUserContext(
+      createRuntimeDatabase(),
+      {
+        userId: current.session.userId,
+        role: "admin",
+        adminReason: "운영 업무 목록 조회를 위한 처리 사유입니다."
+      },
+      (tx) => loadCounts(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[admin.queue.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    counts = {
+      openPayouts: 0,
+      pendingQualifications: 0,
+      requestedRefunds: 0,
+      reviewRequests: 0
+    };
+    countsUnavailable = true;
+  }
 
   const items: Array<{
     href: AdminQueueHref;
@@ -101,6 +122,7 @@ export default async function AdminQueuePage() {
 
   return (
     <AdminShell
+      currentAdmin={{ email: current.user.email }}
       currentPath="/admin/queue"
       title="운영 대기열"
       subtitle="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 먼저 확인합니다."
@@ -113,11 +135,15 @@ export default async function AdminQueuePage() {
                 처리가 필요한 운영 항목
               </h2>
               <p className="mt-1 text-sm leading-relaxed text-ink-500">
-                오늘 확인해야 할 요청만 남겼습니다.
+                {countsUnavailable
+                  ? "현재 처리 항목을 불러오지 못했습니다. 연결되면 이 목록에 순서대로 표시됩니다."
+                  : "오늘 확인해야 할 요청만 남겼습니다."}
               </p>
             </div>
             <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
-              {totalCount.toLocaleString("ko-KR")}건
+              {countsUnavailable
+                ? "확인 필요"
+                : `${totalCount.toLocaleString("ko-KR")}건`}
             </span>
           </div>
           <div className="grid divide-y divide-line">
@@ -140,7 +166,9 @@ export default async function AdminQueuePage() {
                 </span>
                 <span className="flex shrink-0 items-center gap-3">
                   <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
-                    {item.count.toLocaleString("ko-KR")}건
+                    {countsUnavailable
+                      ? "확인 필요"
+                      : `${item.count.toLocaleString("ko-KR")}건`}
                   </span>
                   <ArrowRight
                     aria-hidden

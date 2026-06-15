@@ -12,11 +12,13 @@
     "@csp/db": "workspace:*",
     "@csp/design-tokens": "workspace:*",
     "@csp/shared": "workspace:*",
+    "@hookform/resolvers": "^5.2.2",
     "@netlify/database": "^1.0.0",
     "next": "15.5.18",
     "otplib": "^13.4.0",
     "react": "19.0.0",
     "react-dom": "19.0.0",
+    "react-hook-form": "^7.76.0",
     "zod": "^4.1.13"
   },
   "devDependencies": {

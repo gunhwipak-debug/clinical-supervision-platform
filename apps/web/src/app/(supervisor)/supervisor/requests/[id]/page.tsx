@@ -15,6 +15,11 @@ import {
 } from "../../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../../lib/auth/current-user";
+import {
+  getDemoSupervisionRequestDetails,
+  listDemoCaseFilesForRequest
+} from "../../../../../lib/demo/supervision";
+import { isMissingDatabaseRelation } from "../../../../../lib/db/missing-relation";
 import { RequestWorkflow } from "./request-workflow";
 
 export const dynamic = "force-dynamic";
@@ -34,6 +39,7 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="슈퍼바이저 검토"
         description="이 검토 화면은 담당 슈퍼바이저 계정에서만 확인합니다."
       />
@@ -41,45 +47,94 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
   }
 
   const db = createRuntimeDatabase();
-  const detail = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role, phiAccess: true },
-    (tx) => supervision.getSupervisionRequestDetails(tx, id, { includePhi: true })
-  );
+  let detail: supervision.SupervisionRequestDetails | null;
+  let detailUnavailable = false;
+  try {
+    detail = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role, phiAccess: true },
+      (tx) => supervision.getSupervisionRequestDetails(tx, id, { includePhi: true })
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    detail = getDemoSupervisionRequestDetails(id);
+    detailUnavailable = !detail;
+  }
 
   if (!detail || detail.supervisorId !== current.session.userId) {
     return (
       <AppShell
+        active="supervisor-requests"
+        currentUser={current.user}
         action={
           <Button asChild variant="secondary">
             <Link href="/supervisor/requests">검토할 의뢰</Link>
           </Button>
         }
-        title="의뢰를 찾지 못했습니다"
+        title={
+          detailUnavailable
+            ? "검토할 의뢰를 불러오지 못했습니다"
+            : "의뢰를 찾지 못했습니다"
+        }
       >
         <EmptyState
-          title="의뢰가 없습니다"
-          description="검토할 의뢰 목록으로 돌아가 다시 선택해주세요."
+          title={
+            detailUnavailable
+              ? "현재 의뢰 정보를 확인할 수 없습니다"
+              : "의뢰가 없습니다"
+          }
+          description={
+            detailUnavailable
+              ? "연결이 복구되면 사례 자료, 검토 작업, 피드백 작성 흐름이 다시 표시됩니다."
+              : "검토할 의뢰 목록으로 돌아가 다시 선택해주세요."
+          }
         />
       </AppShell>
     );
   }
 
-  const caseFiles = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => files.listCaseFilesForRequest(tx, id)
-  );
-  const latestReviewCycle = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role, phiAccess: true },
-    (tx) => files.latestDocumentReviewCycle(tx, id)
-  );
+  let caseFiles: Awaited<ReturnType<typeof files.listCaseFilesForRequest>>;
+  try {
+    caseFiles = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => files.listCaseFilesForRequest(tx, id)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    caseFiles = listDemoCaseFilesForRequest(id);
+  }
+  let latestReviewCycle: Awaited<ReturnType<typeof files.latestDocumentReviewCycle>>;
+  try {
+    latestReviewCycle = await withUserContext(
+      db,
+      {
+        userId: current.session.userId,
+        role: current.session.role,
+        phiAccess: true
+      },
+      (tx) => files.latestDocumentReviewCycle(tx, id)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    latestReviewCycle = null;
+  }
 
   const nextAction = nextSupervisorAction(detail.status);
 
   return (
     <AppShell
+      active="supervisor-requests"
+      currentUser={current.user}
       action={
         <Button asChild>
           <a href="#supervisor-actions">{nextAction.label}</a>
@@ -347,6 +402,7 @@ function formatBookingSlot(request: supervision.SupervisionRequestDetails): stri
     year: "numeric"
   }).format(start);
   const time = new Intl.DateTimeFormat("ko-KR", {
+    hourCycle: "h23",
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Asia/Seoul"
@@ -374,7 +430,7 @@ function statusLabel(status: string): string {
     submitted: "제출됨",
     cancelled: "취소"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function bookingStatusLabel(status: string | null): string {

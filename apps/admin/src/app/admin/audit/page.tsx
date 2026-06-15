@@ -10,6 +10,7 @@ import {
   createRuntimeDatabase,
   getCurrentAdmin
 } from "../../../lib/auth/current-admin";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -33,22 +34,44 @@ export default async function AuditPage() {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const logs = await withUserContext(
-    db,
-    {
-      userId: current.session.userId,
-      role: "admin",
-      adminReason: "운영 처리 기록 조회를 위한 처리 사유입니다."
-    },
-    async (tx) => ({
-      accessLogs: await audit.listAccessLogs(tx, { limit: 80 }),
-      auditLogs: await audit.listAuditLogs(tx, { limit: 80 })
-    })
-  );
+  let logs: {
+    accessLogs: Awaited<ReturnType<typeof audit.listAccessLogs>>;
+    auditLogs: Awaited<ReturnType<typeof audit.listAuditLogs>>;
+  };
+  let logsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    logs = await withUserContext(
+      db,
+      {
+        userId: current.session.userId,
+        role: "admin",
+        adminReason: "운영 처리 기록 조회를 위한 처리 사유입니다."
+      },
+      async (tx) => ({
+        accessLogs: await audit.listAccessLogs(tx, { limit: 80 }),
+        auditLogs: await audit.listAuditLogs(tx, { limit: 80 })
+      })
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[admin.audit.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    logs = {
+      accessLogs: [],
+      auditLogs: []
+    };
+    logsUnavailable = true;
+  }
 
   return (
     <AdminShell
+      currentAdmin={{ email: current.user.email }}
       currentPath="/admin/audit"
       title="처리 기록"
       subtitle="관리자 조치와 자료 접근 이력을 필요한 범위 안에서 다시 확인합니다."
@@ -68,8 +91,18 @@ export default async function AuditPage() {
             </div>
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
-            <Badge>관리자 조치 {logs.auditLogs.length.toLocaleString("ko-KR")}건</Badge>
-            <Badge>자료 접근 {logs.accessLogs.length.toLocaleString("ko-KR")}건</Badge>
+            <Badge>
+              관리자 조치{" "}
+              {logsUnavailable
+                ? "확인 필요"
+                : `${logs.auditLogs.length.toLocaleString("ko-KR")}건`}
+            </Badge>
+            <Badge>
+              자료 접근{" "}
+              {logsUnavailable
+                ? "확인 필요"
+                : `${logs.accessLogs.length.toLocaleString("ko-KR")}건`}
+            </Badge>
           </div>
         </AdminCard>
 
@@ -99,7 +132,13 @@ export default async function AuditPage() {
           </div>
           <div className="grid divide-y divide-line">
             {logs.auditLogs.length === 0 ? (
-              <EmptyLog message="표시할 관리자 조치 기록이 없습니다." />
+              <EmptyLog
+                message={
+                  logsUnavailable
+                    ? "현재 관리자 조치 기록을 불러오지 못했습니다."
+                    : "표시할 관리자 조치 기록이 없습니다."
+                }
+              />
             ) : (
               logs.auditLogs.map((row) => (
                 <article className="grid gap-3 p-5" key={row.id}>
@@ -142,7 +181,13 @@ export default async function AuditPage() {
           </div>
           <div className="grid divide-y divide-line">
             {logs.accessLogs.length === 0 ? (
-              <EmptyLog message="표시할 자료 접근 기록이 없습니다." />
+              <EmptyLog
+                message={
+                  logsUnavailable
+                    ? "현재 자료 접근 기록을 불러오지 못했습니다."
+                    : "표시할 자료 접근 기록이 없습니다."
+                }
+              />
             ) : (
               logs.accessLogs.map((row) => (
                 <article className="grid gap-3 p-5" key={row.id}>

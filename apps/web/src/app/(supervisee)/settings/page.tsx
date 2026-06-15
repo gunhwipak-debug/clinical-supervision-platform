@@ -7,6 +7,7 @@ import { LoginRequiredState } from "../../../components/locked-state";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { isSupervisor } from "../../../lib/auth/guards";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 import { contextFor } from "../../../lib/supervision/authz";
 import { SettingsProfileForm } from "./settings-profile-form";
 import { SupervisorApplicationButton } from "./supervisor-application-button";
@@ -20,14 +21,32 @@ export default async function SettingsPage() {
     return <LoginRequiredState title="계정 설정" returnTo="/settings" />;
   }
 
-  const db = createRuntimeDatabase();
-  const superviseeProfile = await withUserContext(db, contextFor(current), (tx) =>
-    profiles.getSuperviseeProfileByUserId(tx, current.session.userId)
-  );
+  let superviseeProfile: profiles.SuperviseeProfile | null;
+  try {
+    const db = createRuntimeDatabase();
+    superviseeProfile = await withUserContext(db, contextFor(current), (tx) =>
+      profiles.getSuperviseeProfileByUserId(tx, current.session.userId)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.settings.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    superviseeProfile = null;
+  }
   const supervisorMode = isSupervisor(current);
 
   return (
-    <AppShell title="계정 설정" subtitle="로그인 계정과 신청자 프로필만 정리합니다.">
+    <AppShell
+      active="settings"
+      currentUser={current.user}
+      title="계정 설정"
+      subtitle="로그인 계정과 신청자 프로필만 정리합니다."
+    >
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <section className="grid gap-6">
           <SectionBlock
@@ -127,7 +146,7 @@ function statusLabel(status: string): string {
     suspended: "정지",
     withdrawn: "탈퇴"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function formatDate(value: Date | string): string {

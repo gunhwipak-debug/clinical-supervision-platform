@@ -9,7 +9,7 @@ export default async function CurrentUserRedirectPage() {
   }
 
   if (current.user.role === "admin") {
-    redirect("/settings");
+    redirect(adminConsoleUrl() as never);
   }
 
   if (current.user.role === "supervisor") {
@@ -17,4 +17,12 @@ export default async function CurrentUserRedirectPage() {
   }
 
   redirect("/requests");
+}
+
+function adminConsoleUrl(): string {
+  const origin =
+    process.env["NEXT_PUBLIC_ADMIN_APP_URL"] ??
+    process.env["NEXT_PUBLIC_ADMIN_URL"] ??
+    "https://clinicflow-admin-six.vercel.app";
+  return `${origin.replace(/\/$/u, "")}/admin`;
 }

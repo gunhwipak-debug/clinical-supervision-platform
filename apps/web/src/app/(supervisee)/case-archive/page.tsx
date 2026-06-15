@@ -1,20 +1,17 @@
 import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
-import {
-  FlowStepNav,
-  PrimaryActionPanel,
-  SectionBlock
-} from "../../../components/clinicflow-shell";
+import { FlowStepNav, SectionBlock } from "../../../components/clinicflow-shell";
 import { AppShell } from "../../../components/app-shell";
 import { Button } from "../../../components/ui/button";
-import { EmptyState } from "../../../components/ui/state";
 import {
   LoginRequiredState,
   RoleRequiredState
 } from "../../../components/locked-state";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
+import { listDemoSuperviseeRequests } from "../../../lib/demo/supervision";
 import { isSupervisee } from "../../../lib/auth/guards";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 import { contextFor } from "../../../lib/supervision/authz";
 
 export const dynamic = "force-dynamic";
@@ -35,9 +32,11 @@ export default async function CaseArchivePage() {
   if (!current) {
     return <LoginRequiredState title="학습 기록" returnTo="/case-archive" />;
   }
+  const currentShellUser = current.user;
   if (!isSupervisee(current)) {
     return (
       <RoleRequiredState
+        currentUser={currentShellUser}
         title="학습 기록"
         description="학습 기록은 신청자 계정에서 확인합니다. 슈퍼바이저는 업무 화면에서 검토 기록을 확인합니다."
         actionHref="/supervisor"
@@ -46,11 +45,26 @@ export default async function CaseArchivePage() {
     );
   }
 
-  const requests = await withUserContext(
-    createRuntimeDatabase(),
-    contextFor(current),
-    (tx) => supervision.listSupervisionRequests(tx)
-  );
+  let requests: RequestSummary[];
+  let archiveUnavailable = false;
+  try {
+    requests = await withUserContext(
+      createRuntimeDatabase(),
+      contextFor(current),
+      (tx) => supervision.listSupervisionRequests(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.case-archive.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    requests = listDemoSuperviseeRequests(current.session.userId);
+    archiveUnavailable = requests.length === 0;
+  }
   const own = requests.filter(
     (request) => request.superviseeId === current.session.userId
   );
@@ -64,6 +78,7 @@ export default async function CaseArchivePage() {
   return (
     <AppShell
       active="case-archive"
+      currentUser={current.user}
       title="학습 기록"
       subtitle="완료된 슈퍼비전은 파일 목록이 아니라 슈퍼바이저와 사례 단위의 노트처럼 정리됩니다."
       action={
@@ -74,24 +89,55 @@ export default async function CaseArchivePage() {
     >
       <FlowStepNav current="학습 기록" steps={flowSteps} />
       {completed.length === 0 ? (
-        <EmptyState
-          title="아직 보관된 학습 기록이 없습니다"
-          description="피드백을 받은 의뢰가 완료되면 이곳에 슈퍼바이저별 폴더로 표시됩니다."
-          action={
-            <Button asChild>
-              <Link href="/requests">내 의뢰 보기</Link>
-            </Button>
-          }
-        />
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <SectionBlock
+            title="슈퍼바이저별 기록"
+            subtitle="슈퍼바이저 이름을 열고, 그 아래 사례별 기록을 바로 확인합니다."
+          >
+            <div className="rounded-xl border border-dashed border-line bg-surface-elevated px-5 py-6">
+              <p className="text-lg font-bold text-ink-900">
+                {archiveUnavailable
+                  ? "현재 학습 기록 폴더를 불러오지 못했습니다"
+                  : "아직 열린 학습 기록 폴더가 없습니다"}
+              </p>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                {archiveUnavailable
+                  ? "연결이 복구되면 슈퍼바이저별 폴더와 사례 기록이 이곳에 표시됩니다."
+                  : "피드백이 완료되면 슈퍼바이저별 폴더 아래에 사례 기록이 표시됩니다."}
+              </p>
+            </div>
+          </SectionBlock>
+          <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+            <h2 className="text-xl font-bold text-ink-900">선택한 기록</h2>
+            <div className="mt-5 grid gap-4 text-sm">
+              <ArchiveSummaryLine
+                label="현재 폴더"
+                value={archiveUnavailable ? "확인 필요" : "기록 없음"}
+              />
+              <ArchiveSummaryLine
+                label="주요 내용"
+                value={
+                  archiveUnavailable
+                    ? "기록 연결 상태를 확인한 뒤 다시 표시됩니다."
+                    : "피드백 완료 후 선택할 기록이 생깁니다."
+                }
+              />
+              {!archiveUnavailable ? (
+                <Button asChild className="mt-2 w-full" variant="secondary">
+                  <Link href="/requests">내 의뢰 보기</Link>
+                </Button>
+              ) : null}
+            </div>
+          </aside>
+        </div>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid gap-6">
-            <PrimaryActionPanel title="슈퍼바이저 폴더를 열어 필요한 기록을 바로 찾습니다">
-              기록이 많아질수록 목록형 파일함보다 폴더형 구조가 찾기 쉽습니다. 각
-              슈퍼바이저 아래에 사례별 피드백과 완료 기록이 쌓입니다.
-            </PrimaryActionPanel>
-            <SectionBlock title="슈퍼비전 노트">
-              <div className="overflow-hidden rounded-2xl border border-line bg-surface-elevated">
+            <SectionBlock
+              title="슈퍼바이저별 기록"
+              subtitle="슈퍼바이저 이름을 열고, 그 아래 사례별 기록을 바로 확인합니다."
+            >
+              <div className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
                 {folders.map((folder) => (
                   <details
                     className="border-b border-line px-5 py-5 last:border-b-0"
@@ -114,10 +160,10 @@ export default async function CaseArchivePage() {
                         </span>
                       </div>
                     </summary>
-                    <div className="mt-5 grid gap-3 border-l border-line pl-4">
+                    <div className="mt-5 border-l border-line pl-4">
                       {folder.items.map((request) => (
                         <Link
-                          className="grid gap-2 rounded-2xl border border-line px-4 py-4 transition hover:bg-surface-sunken"
+                          className="grid gap-2 border-b border-line py-4 transition last:border-b-0 hover:bg-surface-sunken"
                           href={`/requests/${request.id}`}
                           key={request.id}
                         >
@@ -141,7 +187,7 @@ export default async function CaseArchivePage() {
             </SectionBlock>
           </div>
 
-          <aside className="h-fit rounded-2xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
             <h2 className="text-xl font-bold text-ink-900">선택한 기록</h2>
             <div className="mt-5 grid gap-4 text-sm">
               <ArchiveSummaryLine

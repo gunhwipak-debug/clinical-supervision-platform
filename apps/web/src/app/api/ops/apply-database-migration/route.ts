@@ -1,4 +1,4 @@
-import { createDatabase } from "@csp/db";
+import { createDatabase } from "@csp/db/client";
 import { sql } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 import { manualMigrations } from "@/lib/ops/netlify-migrations.generated";
@@ -31,7 +31,9 @@ export async function POST(request: NextRequest) {
       from csp_manual_migrations
       order by name
     `);
-    const applied = new Set(rowsOf<AppliedMigration>(appliedResult).map((row) => row.name));
+    const applied = new Set(
+      rowsOf<AppliedMigration>(appliedResult).map((row) => row.name)
+    );
     const requestedName = request.nextUrl.searchParams.get("name");
     const migration = requestedName
       ? manualMigrations.find((candidate) => candidate.name === requestedName)

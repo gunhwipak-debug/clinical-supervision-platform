@@ -12,6 +12,8 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
+import { SupervisorPageLoadError } from "../_components/supervisor-page-load-error";
 import { SupervisorProfileEditor, SupervisorVisibilityForm } from "./profile-form";
 
 export const dynamic = "force-dynamic";
@@ -27,35 +29,60 @@ export default async function SupervisorProfilePage() {
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="슈퍼바이저 프로필"
         description="프로필 관리는 슈퍼바이저 계정에서만 사용할 수 있습니다."
       />
     );
   }
 
-  const db = createRuntimeDatabase();
-  const profile = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => profiles.getSupervisorProfileByUserId(tx, current.session.userId)
-  );
-  const [qualifications, specialties, products] = await Promise.all([
-    withUserContext(
+  let profile: profiles.SupervisorProfile | null;
+  let qualifications: profiles.Qualification[];
+  let specialties: profiles.Specialty[];
+  let products: profiles.Product[];
+
+  try {
+    const db = createRuntimeDatabase();
+    profile = await withUserContext(
       db,
       { userId: current.session.userId, role: current.session.role },
-      (tx) => profiles.listQualifications(tx, current.session.userId)
-    ),
-    withUserContext(
-      db,
-      { userId: current.session.userId, role: current.session.role },
-      (tx) => profiles.listSelectedSpecialties(tx, current.session.userId)
-    ),
-    withUserContext(
-      db,
-      { userId: current.session.userId, role: current.session.role },
-      (tx) => profiles.listProducts(tx, current.session.userId)
-    )
-  ]);
+      (tx) => profiles.getSupervisorProfileByUserId(tx, current.session.userId)
+    );
+    [qualifications, specialties, products] = await Promise.all([
+      withUserContext(
+        db,
+        { userId: current.session.userId, role: current.session.role },
+        (tx) => profiles.listQualifications(tx, current.session.userId)
+      ),
+      withUserContext(
+        db,
+        { userId: current.session.userId, role: current.session.role },
+        (tx) => profiles.listSelectedSpecialties(tx, current.session.userId)
+      ),
+      withUserContext(
+        db,
+        { userId: current.session.userId, role: current.session.role },
+        (tx) => profiles.listProducts(tx, current.session.userId)
+      )
+    ]);
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      console.error("[supervisor.profile.page]", error);
+      return (
+        <SupervisorPageLoadError
+          active="supervisor-profile"
+          currentUser={current.user}
+          title="슈퍼바이저 프로필"
+          subtitle="프로필 정보를 불러오는 동안 문제가 생겼습니다."
+        />
+      );
+    }
+
+    profile = null;
+    qualifications = [];
+    specialties = [];
+    products = [];
+  }
   const canPublish = Boolean(
     profile && current.user.totpEnabled && profile.verificationStatus === "approved"
   );
@@ -66,7 +93,8 @@ export default async function SupervisorProfilePage() {
 
   return (
     <AppShell
-      active="supervisor"
+      active="supervisor-profile"
+      currentUser={current.user}
       title="슈퍼바이저 프로필"
       subtitle="신청자가 사진, 자격, 전문분야, 소개를 보고 자신에게 맞는 슈퍼바이저인지 판단할 수 있게 정리합니다."
       action={

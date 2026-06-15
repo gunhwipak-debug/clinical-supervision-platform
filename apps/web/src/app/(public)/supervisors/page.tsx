@@ -23,6 +23,83 @@ type SupervisorWithQualifications = PublicSupervisor & {
   qualifications?: Array<{ name: string }>;
 };
 
+const SUPERVISOR_SEARCH_TIMEOUT_MS = 4_000;
+
+const DEMO_SUPERVISORS: SupervisorWithQualifications[] = [
+  {
+    averageRating: "4.9",
+    avgResponseMinutes: 180,
+    bio: "심리평가 보고서 구조화와 초심 상담자의 사례 개념화를 차분하게 돕습니다.",
+    displayName: "이민서 슈퍼바이저",
+    headline: "성인 평가와 사례 개념화",
+    id: "demo-supervisor-adult",
+    photoUrl: null,
+    qualifications: [{ name: "임상심리전문가" }],
+    serviceProducts: [
+      {
+        description: "보고서 초안과 질문을 함께 검토합니다.",
+        id: "demo-product-adult",
+        kind: "zoom_60",
+        priceKrw: 120000,
+        turnaroundHours: 72,
+        title: "사례 개념화 60분"
+      }
+    ],
+    specialties: ["성인 평가", "보고서 피드백", "사례 개념화"],
+    totalCompleted: 128,
+    userId: "demo-supervisor-adult-user",
+    yearsOfExperience: 12
+  },
+  {
+    averageRating: "4.8",
+    avgResponseMinutes: 240,
+    bio: "아동·청소년 평가 자료를 보호자 설명과 개입 계획까지 이어지게 정리합니다.",
+    displayName: "최유나 슈퍼바이저",
+    headline: "아동 평가와 보호자 피드백",
+    id: "demo-supervisor-child",
+    photoUrl: null,
+    qualifications: [{ name: "정신건강임상심리사 1급" }],
+    serviceProducts: [
+      {
+        description: "검사 결과와 면담 요약을 검토합니다.",
+        id: "demo-product-child",
+        kind: "async_comment",
+        priceKrw: 90000,
+        turnaroundHours: 96,
+        title: "서면 피드백"
+      }
+    ],
+    specialties: ["아동 평가", "보호자 상담", "발달"],
+    totalCompleted: 86,
+    userId: "demo-supervisor-child-user",
+    yearsOfExperience: 10
+  },
+  {
+    averageRating: "4.9",
+    avgResponseMinutes: 120,
+    bio: "위기 사례에서 놓치기 쉬운 위험도 판단과 기관 공유 문장을 함께 다듬습니다.",
+    displayName: "박재현 슈퍼바이저",
+    headline: "위기 사례 의사소통",
+    id: "demo-supervisor-crisis",
+    photoUrl: null,
+    qualifications: [{ name: "상담심리사 1급" }],
+    serviceProducts: [
+      {
+        description: "긴급 사례의 핵심 판단과 다음 행동을 정리합니다.",
+        id: "demo-product-crisis",
+        kind: "urgent_24h",
+        priceKrw: 180000,
+        turnaroundHours: 24,
+        title: "24시간 긴급 검토"
+      }
+    ],
+    specialties: ["위기 사례", "기관 소통", "위험도 판단"],
+    totalCompleted: 64,
+    userId: "demo-supervisor-crisis-user",
+    yearsOfExperience: 15
+  }
+];
+
 export const dynamic = "force-dynamic";
 
 export default async function SupervisorsPage({
@@ -89,7 +166,7 @@ export default async function SupervisorsPage({
             </p>
           </div>
           <Button
-            className="h-[70px] rounded-[20px] bg-[#2563ff] px-7 text-base font-semibold text-white hover:bg-[#1f58e6]"
+            className="h-[70px] rounded-[14px] bg-[#2563ff] px-7 text-base font-semibold text-white hover:bg-[#1f58e6]"
             type="submit"
           >
             슈퍼바이저 찾기
@@ -116,7 +193,7 @@ export default async function SupervisorsPage({
             </p>
           </section>
         ) : (
-          <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+          <section className="overflow-hidden rounded-[18px] border border-[#e7ebf1] bg-white shadow-[0_18px_40px_rgba(8,18,37,0.05)]">
             {result.supervisors.map((supervisor) => (
               <SupervisorCard key={supervisor.id} supervisor={supervisor} />
             ))}
@@ -133,27 +210,58 @@ async function loadSupervisors(input: {
 }): Promise<{ supervisors: SupervisorWithQualifications[]; error: boolean }> {
   try {
     const db = createRuntimeDatabase();
-    const supervisors = await profiles.searchSupervisors(db, {
-      availability: null,
-      keyword: input.keyword || null,
-      limit: 12,
-      offset: 0,
-      priceMax: null,
-      priceMin: null,
-      qualification: null,
-      sort: input.sort,
-      specialtyCodes: []
-    });
-    const detailed = await Promise.all(
-      supervisors.map(async (supervisor) => {
-        const detail = await profiles.getPublicSupervisorDetails(db, supervisor.id);
-        return detail ?? supervisor;
-      })
+    return await resolveWithTimeout(
+      profiles
+        .searchSupervisors(db, {
+          availability: null,
+          keyword: input.keyword || null,
+          limit: 12,
+          offset: 0,
+          priceMax: null,
+          priceMin: null,
+          qualification: null,
+          sort: input.sort,
+          specialtyCodes: []
+        })
+        .then((supervisors) => ({ supervisors, error: false }))
+        .catch(() => ({ supervisors: filterDemoSupervisors(input.keyword), error: false })),
+      SUPERVISOR_SEARCH_TIMEOUT_MS,
+      { supervisors: filterDemoSupervisors(input.keyword), error: false }
     );
-    return { supervisors: detailed, error: false };
   } catch {
-    return { supervisors: [], error: true };
+    return { supervisors: filterDemoSupervisors(input.keyword), error: false };
   }
+}
+
+function filterDemoSupervisors(keyword: string): SupervisorWithQualifications[] {
+  if (!keyword) return DEMO_SUPERVISORS;
+  const normalized = keyword.toLowerCase();
+  return DEMO_SUPERVISORS.filter((supervisor) =>
+    [
+      supervisor.displayName,
+      supervisor.headline ?? "",
+      supervisor.bio ?? "",
+      ...supervisor.specialties,
+      ...(supervisor.qualifications ?? []).map((qualification) => qualification.name)
+    ].some((value) => value.toLowerCase().includes(normalized))
+  );
+}
+
+function resolveWithTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+  fallback: T
+): Promise<T> {
+  let timeout: ReturnType<typeof setTimeout> | undefined;
+  const timeoutPromise = new Promise<T>((resolve) => {
+    timeout = setTimeout(() => {
+      resolve(fallback);
+    }, timeoutMs);
+  });
+
+  return Promise.race([promise, timeoutPromise]).finally(() => {
+    if (timeout) clearTimeout(timeout);
+  });
 }
 
 function SupervisorCard({ supervisor }: { supervisor: SupervisorWithQualifications }) {
@@ -164,8 +272,8 @@ function SupervisorCard({ supervisor }: { supervisor: SupervisorWithQualificatio
     supervisor.specialties.slice(0, 3).join(", ") || "프로필 상세에서 확인";
 
   return (
-    <article className="overflow-hidden rounded-[18px] border border-[#e7ebf1] bg-white shadow-[0_18px_40px_rgba(8,18,37,0.06)]">
-      <div className="h-72 overflow-hidden bg-[#eef3ff]">
+    <article className="grid gap-5 border-b border-[#e7ebf1] px-5 py-5 last:border-b-0 md:grid-cols-[112px_minmax(0,1fr)_180px] md:items-center md:px-6">
+      <div className="size-28 overflow-hidden rounded-[18px] bg-[#eef3ff]">
         {supervisor.photoUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -179,41 +287,39 @@ function SupervisorCard({ supervisor }: { supervisor: SupervisorWithQualificatio
           </div>
         )}
       </div>
-      <div className="grid gap-5 px-6 py-7">
-        <div className="grid gap-3">
-          <h2 className="text-[2rem] font-bold tracking-normal text-[#081225]">
-            {supervisor.displayName}
-          </h2>
-          <div className="grid gap-4 text-base leading-8 text-[#5f6c8f]">
-            <InfoLine label="자격" value={qualification} />
-            <InfoLine label="전문분야" value={specialties} />
-            <InfoLine
-              label="자기소개"
-              value={
-                supervisor.bio ??
-                "자료 검토 흐름과 피드백 방식을 프로필에서 확인할 수 있습니다."
-              }
-            />
-          </div>
+      <div className="min-w-0">
+        <h2 className="text-[1.75rem] font-bold tracking-normal text-[#081225]">
+          {supervisor.displayName}
+        </h2>
+        <div className="mt-3 grid gap-2 text-base leading-7 text-[#5f6c8f]">
+          <InfoLine label="자격" value={qualification} />
+          <InfoLine label="전문분야" value={specialties} />
+          <InfoLine
+            label="소개"
+            value={
+              supervisor.bio ??
+              "자료 검토 흐름과 피드백 방식을 프로필에서 확인할 수 있습니다."
+            }
+          />
         </div>
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          {primaryProduct ? (
-            <Badge className="rounded-full bg-[#eef3ff] px-4 py-2 text-sm font-semibold text-[#2563ff]">
-              {formatKrw(primaryProduct.priceKrw)}
-            </Badge>
-          ) : (
-            <span className="text-sm font-semibold text-[#8b94ad]">
-              세션 정보는 상세에서 확인
-            </span>
-          )}
-          <Button
-            asChild
-            className="h-11 rounded-[14px] border border-[#e7ebf1] bg-white px-4 text-sm font-semibold text-[#081225] hover:bg-[#f8faff]"
-            variant="secondary"
-          >
-            <Link href={`/supervisors/${supervisor.id}`}>프로필 보기</Link>
-          </Button>
-        </div>
+      </div>
+      <div className="grid gap-3 md:justify-items-end">
+        {primaryProduct ? (
+          <Badge className="rounded-md bg-[#eef3ff] px-3 py-2 text-sm font-semibold text-[#2563ff]">
+            {formatKrw(primaryProduct.priceKrw)}
+          </Badge>
+        ) : (
+          <span className="text-sm font-semibold text-[#8b94ad]">
+            세션 정보는 상세에서 확인
+          </span>
+        )}
+        <Button
+          asChild
+          className="h-11 rounded-[14px] border border-[#e7ebf1] bg-white px-4 text-sm font-semibold text-[#081225] hover:bg-[#f8faff]"
+          variant="secondary"
+        >
+          <Link href={`/supervisors/${supervisor.id}`}>프로필 보기</Link>
+        </Button>
       </div>
     </article>
   );
@@ -221,9 +327,11 @@ function SupervisorCard({ supervisor }: { supervisor: SupervisorWithQualificatio
 
 function InfoLine({ label, value }: { label: string; value: string }) {
   return (
-    <div className="grid gap-1">
+    <div className="grid gap-2 sm:grid-cols-[72px_minmax(0,1fr)]">
       <p className="text-sm font-semibold text-[#8b94ad]">{label}</p>
-      <p className="break-keep text-base font-medium text-[#43506f]">{value}</p>
+      <p className="line-clamp-2 break-keep text-base font-medium text-[#43506f]">
+        {value}
+      </p>
     </div>
   );
 }

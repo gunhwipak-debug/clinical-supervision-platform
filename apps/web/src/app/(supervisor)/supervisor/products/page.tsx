@@ -14,6 +14,8 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
+import { SupervisorPageLoadError } from "../_components/supervisor-page-load-error";
 import { ProductForm, ProductManageForm } from "./product-form";
 
 export const dynamic = "force-dynamic";
@@ -27,24 +29,44 @@ export default async function SupervisorProductsPage() {
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="슈퍼비전 방식"
         description="슈퍼비전 방식 관리는 슈퍼바이저 계정에서만 사용할 수 있습니다."
       />
     );
   }
 
-  const db = createRuntimeDatabase();
-  const products = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => profiles.listProducts(tx, current.session.userId)
-  );
+  let products: profiles.Product[];
+
+  try {
+    const db = createRuntimeDatabase();
+    products = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => profiles.listProducts(tx, current.session.userId)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      console.error("[supervisor.products.page]", error);
+      return (
+        <SupervisorPageLoadError
+          active="supervisor-products"
+          currentUser={current.user}
+          title="슈퍼비전 방식"
+          subtitle="슈퍼비전 방식 정보를 불러오는 동안 문제가 생겼습니다."
+        />
+      );
+    }
+
+    products = [];
+  }
 
   const activeProducts = products.filter((product) => product.active);
 
   return (
     <AppShell
-      active="supervisor"
+      active="supervisor-products"
+      currentUser={current.user}
       title="슈퍼비전 방식"
       subtitle="신청자가 선택할 세션 유형, 가격, 응답 기준을 간결하게 정리합니다."
       action={

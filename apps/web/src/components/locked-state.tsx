@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "./app-shell";
+import type { AppShellUser } from "./app-navigation";
 import { Button } from "./ui/button";
 import { EmptyState, FocusState } from "./ui/state";
 
@@ -55,16 +56,22 @@ export function LoginRequiredState({
 export function RoleRequiredState({
   actionHref = "/requests",
   actionLabel = "내 의뢰 보기",
+  currentUser,
   description,
   title
 }: {
   actionHref?: string;
   actionLabel?: string;
+  currentUser?: {
+    email: AppShellUser["email"];
+    role: AppShellUser["role"];
+  };
   description: string;
   title: string;
 }) {
   return (
     <AppShell
+      {...(currentUser ? { currentUser } : {})}
       title={title}
       subtitle="현재 계정 권한으로는 이 작업을 진행할 수 없습니다."
     >

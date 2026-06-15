@@ -15,6 +15,7 @@ import {
   createRuntimeDatabase,
   getCurrentAdmin
 } from "../../../lib/auth/current-admin";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -68,17 +69,32 @@ export default async function AdminQualificationsPage({
     );
   }
 
-  const db = createRuntimeDatabase();
-  const allItems = await withUserContext(
-    db,
-    {
-      userId: current.session.userId,
-      role: "admin",
-      adminReason: "운영 자격 심사 조회를 위한 처리 사유입니다.",
-      phiAccess: true
-    },
-    (tx) => listQualifications(tx)
-  );
+  let allItems: QualificationQueueItem[];
+  let qualificationsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    allItems = await withUserContext(
+      db,
+      {
+        userId: current.session.userId,
+        role: "admin",
+        adminReason: "운영 자격 심사 조회를 위한 처리 사유입니다.",
+        phiAccess: true
+      },
+      (tx) => listQualifications(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[admin.qualifications.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    allItems = [];
+    qualificationsUnavailable = true;
+  }
   const queue = allItems.filter(
     (item) =>
       (status === "all" || item.status === status) &&
@@ -91,6 +107,7 @@ export default async function AdminQualificationsPage({
 
   return (
     <AdminShell
+      currentAdmin={{ email: current.user.email }}
       currentPath="/admin/qualifications"
       eyebrow="심사 대기"
       primaryAction={{
@@ -143,7 +160,9 @@ export default async function AdminQualificationsPage({
           <AdminCard className="overflow-hidden p-0" id="qualification-list">
             {queue.length === 0 ? (
               <p className="px-6 py-8 text-sm font-semibold text-ink-500">
-                조건에 맞는 자격 신청이 등록되면 이곳에 표시됩니다.
+                {qualificationsUnavailable
+                  ? "현재 자격 신청을 불러오지 못했습니다. 제출된 자격 증빙과 공개 조건은 연결되면 이 목록에 표시됩니다."
+                  : "조건에 맞는 자격 신청이 등록되면 이곳에 표시됩니다."}
               </p>
             ) : (
               <div className="grid divide-y divide-line">
@@ -267,7 +286,11 @@ export default async function AdminQualificationsPage({
           <dl className="grid gap-4 border-t border-white/10 pt-6 text-sm leading-7 text-slate-200">
             <div>
               <dt className="font-semibold text-white">표시 중</dt>
-              <dd className="mt-1">{queue.length.toLocaleString("ko-KR")}건</dd>
+              <dd className="mt-1">
+                {qualificationsUnavailable
+                  ? "확인 필요"
+                  : `${queue.length.toLocaleString("ko-KR")}건`}
+              </dd>
             </div>
             <div>
               <dt className="font-semibold text-white">현재 필터</dt>

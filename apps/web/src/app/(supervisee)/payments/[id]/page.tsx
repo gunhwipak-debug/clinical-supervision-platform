@@ -17,6 +17,7 @@ import {
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
+import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
 import { RefundRequestForm } from "./refund-request-form";
 
@@ -32,9 +33,11 @@ export default async function PaymentDetailPage({
   if (!current) {
     return <LoginRequiredState title="결제 상세" returnTo={`/payments/${id}`} />;
   }
+  const currentShellUser = current.user;
   if (!isSupervisee(current)) {
     return (
       <RoleRequiredState
+        currentUser={currentShellUser}
         title="결제 상세"
         description="결제 상세는 신청자 계정에서 확인합니다."
         actionHref="/supervisor"
@@ -43,14 +46,32 @@ export default async function PaymentDetailPage({
     );
   }
 
-  const payment = await withUserContext(
-    createRuntimeDatabase(),
-    contextFor(current),
-    (tx) => payments.getPaymentById(tx, id)
-  );
+  let payment: payments.PaymentRecord | null;
+  try {
+    payment = await withUserContext(
+      createRuntimeDatabase(),
+      contextFor(current),
+      (tx) => payments.getPaymentById(tx, id)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.payment-detail.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    payment = null;
+  }
   if (!payment || payment.superviseeId !== current.session.userId) {
     return (
-      <AppShell title="영수증 상세" subtitle="접근 가능한 결제를 찾지 못했습니다.">
+      <AppShell
+        active="payments"
+        currentUser={current.user}
+        title="영수증 상세"
+        subtitle="접근 가능한 결제를 찾지 못했습니다."
+      >
         <EmptyState
           title="결제가 없습니다"
           description="결제 목록에서 다시 선택해주세요."
@@ -61,6 +82,8 @@ export default async function PaymentDetailPage({
 
   return (
     <AppShell
+      active="payments"
+      currentUser={current.user}
       action={
         <Button asChild variant="secondary">
           <Link href="/payments">결제 내역</Link>
@@ -245,11 +268,13 @@ function formatDate(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
   if (Number.isNaN(date.getTime())) return "날짜 확인 필요";
   return new Intl.DateTimeFormat("ko-KR", {
-    year: "numeric",
-    month: "short",
     day: "numeric",
+    hourCycle: "h23",
     hour: "2-digit",
-    minute: "2-digit"
+    minute: "2-digit",
+    month: "short",
+    timeZone: "Asia/Seoul",
+    year: "numeric"
   }).format(date);
 }
 

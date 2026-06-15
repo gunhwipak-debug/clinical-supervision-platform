@@ -1,5 +1,7 @@
 # Stitch Functional Mapping
 
+> Historical Stitch implementation note. This document is retained for traceability only and is superseded by the Origin-14 design system and route alignment manifest.
+
 ## Purpose
 
 The Stitch transposition pass created pages that look close to the supplied

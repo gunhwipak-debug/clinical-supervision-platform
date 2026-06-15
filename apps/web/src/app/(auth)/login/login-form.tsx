@@ -35,14 +35,18 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(values)
+        body: JSON.stringify({ ...values, returnTo })
       });
       const body = (await readApiBody(response)) as {
-        data?: { user?: { role?: string } };
+        data?: { adminHandoffUrl?: string; user?: { role?: string } };
         error?: { code: string };
       };
       if (response.ok) {
         toast.success("로그인되었습니다.");
+        if (body.data?.adminHandoffUrl) {
+          window.location.href = body.data.adminHandoffUrl;
+          return;
+        }
         const role = body.data?.user?.role;
         window.location.href = safeReturnTo(returnTo) ?? roleHome(role);
         return;

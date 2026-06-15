@@ -266,6 +266,9 @@ function assertDocs() {
   const requiredDocs = [
     "AGENTS.md",
     "docs/ui-ux/clinicflow-current-design-contract.md",
+    "docs/ui-ux/clinicflow-origin14-design-system.md",
+    "docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md",
+    "docs/ui-ux/clinicflow-release-hygiene-blockers.md",
     "docs/ui-ux/clinicflow-route-alignment-manifest.md",
     "docs/ui-ux/clinicflow-origin14-regression-analysis.md"
   ];
@@ -298,6 +301,65 @@ function assertDocs() {
       contract.includes("Minimalist Modern") &&
         contract.includes("origin-14를 대체하지 않고 보강"),
       contractPath
+    );
+  }
+
+  const designSystemPath = "docs/ui-ux/clinicflow-origin14-design-system.md";
+  if (existsSync(projectPath(designSystemPath))) {
+    const designSystem = readText(designSystemPath);
+    const requiredSections = [
+      "Product Design Principle",
+      "Visual Identity",
+      "Origin-14 Layout Archetypes",
+      "Route Mapping",
+      "Navigation Architecture",
+      "Multi-step Flow Rules",
+      "Component Rules",
+      "UX Writing Rules",
+      "Anti-Patterns",
+      "Implementation Checklist"
+    ];
+    const missing = requiredSections.filter(
+      (section) => !designSystem.includes(section)
+    );
+    addCheck(
+      "Origin-14 design system contains required implementation sections",
+      missing.length === 0,
+      missing.join(", ")
+    );
+  }
+
+  const iaPlanPath = "docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md";
+  if (existsSync(projectPath(iaPlanPath))) {
+    const iaPlan = readText(iaPlanPath);
+    const normalizedIaPlan = iaPlan.toLowerCase();
+    const requiredTopics = [
+      "public header",
+      "authenticated",
+      "supervisee",
+      "supervisor",
+      "admin",
+      "role guard",
+      "release hygiene blocker"
+    ];
+    const missing = requiredTopics.filter((topic) => !normalizedIaPlan.includes(topic));
+    addCheck(
+      "IA/navigation plan covers role navigation and release hygiene",
+      missing.length === 0,
+      missing.join(", ")
+    );
+  }
+
+  const hygienePath = "docs/ui-ux/clinicflow-release-hygiene-blockers.md";
+  if (existsSync(projectPath(hygienePath))) {
+    const hygiene = readText(hygienePath);
+    addCheck(
+      "release hygiene blockers document runtime and lint blockers",
+      hygiene.includes("RH-001") &&
+        hygiene.includes("RH-002") &&
+        hygiene.includes("pnpm lint") &&
+        hygiene.includes("pnpm dev:web"),
+      hygienePath
     );
   }
 }
@@ -367,6 +429,95 @@ function assertRequestCreationStepDiscipline() {
   );
 }
 
+function assertAuthenticatedNavigation() {
+  const shellPath = "apps/web/src/components/app-shell.tsx";
+  const menuPath = "apps/web/src/components/account-menu.tsx";
+  const navPath = "apps/web/src/components/app-navigation.tsx";
+
+  if (!existsSync(projectPath(shellPath)) || !existsSync(projectPath(menuPath))) {
+    addCheck(
+      "authenticated shell and account menu exist",
+      false,
+      `${shellPath}; ${menuPath}`
+    );
+    return;
+  }
+
+  const shell = readText(shellPath);
+  const menu = readText(menuPath);
+  const navigation = existsSync(projectPath(navPath)) ? readText(navPath) : "";
+
+  addCheck(
+    "authenticated shell shows persistent role navigation",
+    shell.includes("AccountMenu") &&
+      shell.includes("navigationForRole") &&
+      shell.includes("currentUser") &&
+      shell.includes("RoleNavigation") &&
+      shell.includes("MobileRoleNavigation"),
+    shellPath
+  );
+
+  addCheck(
+    "account menu provides settings and logout",
+    menu.includes("aria-current") &&
+      menu.includes("계정 설정") &&
+      menu.includes("로그아웃"),
+    menuPath
+  );
+
+  addCheck(
+    "role navigation defines supervisee supervisor and admin groups",
+    navigation.includes("superviseeNavigation") &&
+      navigation.includes("supervisorNavigation") &&
+      navigation.includes("adminNavigation"),
+    navPath
+  );
+}
+
+function assertRoleGuardStates() {
+  const routeFiles = walkFiles(
+    "apps/web/src/app",
+    (file) => /\.(tsx)$/.test(file) && !file.includes("/api/")
+  );
+  const weakRoleStates = [];
+
+  for (const file of routeFiles) {
+    const text = readFileSync(projectPath(file), "utf8");
+    const calls = text.match(/<RoleRequiredState[\s\S]*?\/>/g) ?? [];
+    for (const call of calls) {
+      if (!call.includes("currentUser=")) {
+        weakRoleStates.push(file);
+        break;
+      }
+    }
+  }
+
+  addCheck(
+    "role-required route states preserve current account context",
+    weakRoleStates.length === 0,
+    weakRoleStates.join(", ")
+  );
+
+  const supervisorSetupPages = [
+    "apps/web/src/app/(supervisor)/supervisor/profile/page.tsx",
+    "apps/web/src/app/(supervisor)/supervisor/availability/page.tsx",
+    "apps/web/src/app/(supervisor)/supervisor/products/page.tsx"
+  ];
+  const missingErrorHandling = supervisorSetupPages.filter((file) => {
+    if (!existsSync(projectPath(file))) return true;
+    const text = readText(file);
+    return (
+      !text.includes("SupervisorPageLoadError") || !text.includes("PrimaryActionPanel")
+    );
+  });
+
+  addCheck(
+    "supervisor setup pages have load-error and primary-action structure",
+    missingErrorHandling.length === 0,
+    missingErrorHandling.join(", ")
+  );
+}
+
 function assertVisualHygiene() {
   const sourceFiles = [
     ...walkFiles("apps/web/src/app", (file) => /\.(ts|tsx|css)$/.test(file)),
@@ -421,7 +572,9 @@ assertRouteManifestCoverage();
 assertRouteArchetypeCoverage();
 assertDocs();
 assertGlobalHeader();
+assertAuthenticatedNavigation();
 assertRequestCreationStepDiscipline();
+assertRoleGuardStates();
 assertVisualHygiene();
 
 const failed = checks.filter((check) => check.status === "fail");

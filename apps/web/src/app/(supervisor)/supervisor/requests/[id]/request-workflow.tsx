@@ -532,6 +532,7 @@ function formatBookingRange(
     year: "numeric"
   }).format(start);
   const time = new Intl.DateTimeFormat("ko-KR", {
+    hourCycle: "h23",
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Asia/Seoul"

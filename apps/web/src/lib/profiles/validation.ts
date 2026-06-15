@@ -56,6 +56,7 @@ export const specialtiesSchema = z.object({
 });
 
 export const productSchema = z.object({
+  active: z.boolean().optional(),
   kind: z.enum(serviceProductKinds),
   title: z.string().trim().min(1).max(160),
   description: z.string().trim().max(1000).nullable().optional(),

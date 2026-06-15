@@ -9,6 +9,8 @@ import {
 } from "../../../../components/locked-state";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
+import { listDemoSupervisorRequests } from "../../../../lib/demo/supervision";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -21,17 +23,29 @@ export default async function SupervisorMemoryPage() {
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="기록 폴더"
         description="기록 폴더는 슈퍼바이저 계정에서만 확인합니다."
       />
     );
   }
 
-  const requests = await withUserContext(
-    createRuntimeDatabase(),
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => supervision.listSupervisionRequests(tx)
-  );
+  let requests: Awaited<ReturnType<typeof supervision.listSupervisionRequests>>;
+  let memoryUnavailable = false;
+  try {
+    requests = await withUserContext(
+      createRuntimeDatabase(),
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => supervision.listSupervisionRequests(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    requests = listDemoSupervisorRequests(current.session.userId);
+    memoryUnavailable = requests.length === 0;
+  }
   const assigned = requests.filter(
     (request) => request.supervisorId === current.session.userId
   );
@@ -41,7 +55,8 @@ export default async function SupervisorMemoryPage() {
 
   return (
     <AppShell
-      active="supervisor"
+      active="supervisor-memory"
+      currentUser={current.user}
       title="기록 폴더"
       subtitle="완료된 피드백과 진행 중인 사례 맥락을 접어 보고, 다음 검토로 돌아갑니다."
       action={
@@ -52,13 +67,15 @@ export default async function SupervisorMemoryPage() {
     >
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <SectionBlock
-          subtitle="슈퍼바이저별 폴더를 열고, 그 아래 사례별 피드백과 완료 기록을 한 줄씩 확인합니다."
-          title="상태별 폴더"
+          subtitle="진행 중이거나 완료된 사례를 폴더처럼 열고, 필요한 기록만 한 줄씩 확인합니다."
+          title="기록 폴더"
         >
           <div className="grid gap-3">
             {folders.length === 0 ? (
               <div className="rounded-xl border border-dashed border-line bg-surface-elevated px-5 py-6 text-sm text-ink-500">
-                아직 표시할 슈퍼비전 기록이 없습니다.
+                {memoryUnavailable
+                  ? "현재 기록 폴더를 불러오지 못했습니다. 연결이 복구되면 진행 중이거나 완료된 사례가 이곳에 표시됩니다."
+                  : "아직 열 수 있는 기록 폴더가 없습니다. 진행 중이거나 완료된 사례는 이곳에 표시됩니다."}
               </div>
             ) : (
               folders.map((folder, folderIndex) => (
@@ -127,26 +144,40 @@ export default async function SupervisorMemoryPage() {
           <div className="mt-5 grid divide-y divide-line text-sm">
             <SummaryLine
               label="현재 폴더"
-              value={selectedFolder?.label ?? "표시할 폴더 없음"}
+              value={
+                memoryUnavailable
+                  ? "확인 필요"
+                  : (selectedFolder?.label ?? "표시할 폴더 없음")
+              }
             />
             <SummaryLine
               label="상태"
               value={
-                selectedRecord ? memoryStatusLabel(selectedRecord.status) : "기록 없음"
+                memoryUnavailable
+                  ? "확인 필요"
+                  : selectedRecord
+                    ? memoryStatusLabel(selectedRecord.status)
+                    : "기록 없음"
               }
             />
             <SummaryLine
               label="최근 변경"
               value={
-                selectedRecord ? formatDate(selectedRecord.updatedAt) : "기록 없음"
+                memoryUnavailable
+                  ? "확인 필요"
+                  : selectedRecord
+                    ? formatDate(selectedRecord.updatedAt)
+                    : "기록 없음"
               }
             />
             <SummaryLine
               label="보관 기간"
               value={
-                selectedRecord
-                  ? `${String(selectedRecord.retentionDays)}일`
-                  : "기록 없음"
+                memoryUnavailable
+                  ? "확인 필요"
+                  : selectedRecord
+                    ? `${String(selectedRecord.retentionDays)}일`
+                    : "기록 없음"
               }
             />
           </div>
@@ -227,7 +258,7 @@ function memoryStatusLabel(status: string): string {
     refunded: "환불",
     expired: "만료"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function memoryDescription(status: string): string {

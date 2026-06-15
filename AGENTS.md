@@ -4,6 +4,18 @@
 
 This repository's current ClinicFlow frontend must be completed from the approved 14 origin screens, not from older Apple drafts, generic SaaS templates, or later route screenshots that drifted from the origin set.
 
+Active source-of-truth hierarchy:
+
+- UI/UX source of truth: `docs/ui-ux/clinicflow-origin14-design-system.md`
+- Current design contract: `docs/ui-ux/clinicflow-current-design-contract.md`
+- Route alignment ledger: `docs/ui-ux/clinicflow-route-alignment-manifest.md`
+- IA/navigation plan: `docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md`
+- Historical archive: `docs/_archive/**` is non-authoritative.
+
+Old Stitch prompts, old MVP prompts, old design handoff docs, and legacy Netlify docs are historical reference only. Do not use them as current visual, architecture, or deployment instructions.
+
+`apps/web` and `apps/admin` are separate Next.js apps. Do not create parallel AppShell/navigation systems; extend the existing shells and account/navigation components unless the user explicitly approves a replacement.
+
 Highest-priority UI source of truth:
 
 - `demo-evidence/rebuild-tech-ui/all-pages-20260614-0400/01-home-home.png`
@@ -48,3 +60,5 @@ Before changing UI:
 3. State which archetype is being extended.
 4. Implement with the same typography, background, spacing, line-list structure, panel restraint, and CTA hierarchy.
 5. Capture browser evidence or record the exact runtime blocker.
+
+Before finalizing source-of-truth, route, navigation, or release-prep changes, run the relevant available checks such as `pnpm origin14:check`, `pnpm release:web:fast-check`, `pnpm release:admin:check`, typecheck, lint, or a narrower documented substitute when local Next/Node tooling is blocked.

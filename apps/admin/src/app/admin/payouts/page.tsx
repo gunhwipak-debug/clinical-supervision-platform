@@ -9,6 +9,7 @@ import {
   createRuntimeDatabase,
   getCurrentAdmin
 } from "../../../lib/auth/current-admin";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 import { PayoutComputeForm } from "../../../components/payout-compute-form";
 
 export const dynamic = "force-dynamic";
@@ -33,21 +34,37 @@ export default async function PayoutsPage() {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const payouts = await withUserContext(
-    db,
-    {
-      userId: current.session.userId,
-      role: "admin",
-      adminReason: "운영 정산 요약 조회를 위한 처리 사유입니다."
-    },
-    (tx) => payments.listPayouts(tx)
-  );
+  let payouts: payments.PayoutRecord[];
+  let payoutsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    payouts = await withUserContext(
+      db,
+      {
+        userId: current.session.userId,
+        role: "admin",
+        adminReason: "운영 정산 요약 조회를 위한 처리 사유입니다."
+      },
+      (tx) => payments.listPayouts(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[admin.payouts.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    payouts = [];
+    payoutsUnavailable = true;
+  }
 
   const totalNet = payouts.reduce((sum, payout) => sum + payout.netKrw, 0);
 
   return (
     <AdminShell
+      currentAdmin={{ email: current.user.email }}
       currentPath="/admin/payouts"
       title="지급 관리"
       subtitle="완료된 슈퍼비전의 지급 예정액과 보류 사유를 같은 흐름에서 확인합니다."
@@ -69,13 +86,17 @@ export default async function PayoutsPage() {
             <div>
               <dt className="font-bold text-ink-500">총 지급 예정 금액</dt>
               <dd className="mt-1 text-2xl font-bold text-ink-900">
-                ₩{totalNet.toLocaleString("ko-KR")}
+                {payoutsUnavailable
+                  ? "확인 필요"
+                  : `₩${totalNet.toLocaleString("ko-KR")}`}
               </dd>
             </div>
             <div>
               <dt className="font-bold text-ink-500">총 건수</dt>
               <dd className="mt-1 text-2xl font-bold text-ink-900">
-                {payouts.length.toLocaleString("ko-KR")}건
+                {payoutsUnavailable
+                  ? "확인 필요"
+                  : `${payouts.length.toLocaleString("ko-KR")}건`}
               </dd>
             </div>
           </dl>
@@ -107,13 +128,17 @@ export default async function PayoutsPage() {
             </p>
           </div>
           <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
-            {payouts.length.toLocaleString("ko-KR")}건
+            {payoutsUnavailable
+              ? "확인 필요"
+              : `${payouts.length.toLocaleString("ko-KR")}건`}
           </span>
         </div>
 
         {payouts.length === 0 ? (
           <p className="p-6 text-sm font-semibold text-ink-500">
-            기간을 지정해 정산 계산을 실행하면 슈퍼바이저별 정산이 표시됩니다.
+            {payoutsUnavailable
+              ? "현재 정산 항목을 불러오지 못했습니다. 지급 예정액, 기간, 수수료는 연결되면 이 목록에 표시됩니다."
+              : "기간을 지정해 정산 계산을 실행하면 슈퍼바이저별 정산이 표시됩니다."}
           </p>
         ) : (
           <div className="grid divide-y divide-line" aria-label="정산 항목">
@@ -178,7 +203,7 @@ function payoutStatusLabel(status: string): string {
     paid: "지급 완료",
     scheduled: "지급 예정"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function payoutPeriodLabel(

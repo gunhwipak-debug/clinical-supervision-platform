@@ -1,4 +1,4 @@
-import { createDatabase } from "@csp/db";
+import { createDatabase } from "@csp/db/client";
 import { sql } from "drizzle-orm";
 import type { NextRequest } from "next/server";
 

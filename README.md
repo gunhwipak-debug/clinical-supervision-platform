@@ -1,6 +1,6 @@
 # ClinicFlow
 
-한국 심리평가 슈퍼비전 마켓플레이스 MVP입니다. `codex-piped-quiche.md`의 EPIC 0을 기준으로 Next.js 15 monorepo, Drizzle schema, RLS migration, PHI 암호화 헬퍼를 먼저 부트스트랩했습니다.
+한국 심리평가 슈퍼비전 워크플로우 제품입니다. 초기 MVP 계획은 `docs/_archive/2026-06-15/old-prompts/codex-piped-quiche.md`에 historical reference로 보관되어 있으며, 현재 구현 지시는 아닙니다. 현재 UI/UX 기준은 `AGENTS.md`와 `docs/ui-ux/clinicflow-origin14-design-system.md`입니다.
 
 ## Quickstart (no Docker required)
 
@@ -51,8 +51,19 @@ Figma 변수까지 초기화하려면 빈 Figma 파일을 만든 뒤 `.env.local
 
 현재 공개 웹 앱 배포 기준은 Vercel입니다. 프로젝트명은 `clinicflow-web`이고,
 빌드 대상은 `apps/web`입니다. Node/install/build/output 설정과 환경변수 취급
-절차는 `docs/VERCEL_DEPLOYMENT.md`를 확인합니다. 기존 Netlify 문서는 이전/대안
-배포 기록으로 보존합니다.
+절차는 `docs/VERCEL_DEPLOYMENT.md`와 `docs/release/clinicflow-deployment-contract.md`를 확인합니다. 기존 Netlify 문서는 `docs/_archive/2026-06-15/legacy-deployment/NETLIFY_DEPLOYMENT.md`에 legacy 기록으로 보존합니다.
+
+## Source of truth
+
+- Agent rule: `AGENTS.md`
+- UI/UX design system: `docs/ui-ux/clinicflow-origin14-design-system.md`
+- Current design contract: `docs/ui-ux/clinicflow-current-design-contract.md`
+- Route alignment: `docs/ui-ux/clinicflow-route-alignment-manifest.md`
+- IA/navigation plan: `docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md`
+- Route/auth/status contract: `docs/architecture/clinicflow-route-auth-status-contract.md`
+- Deployment contract: `docs/release/clinicflow-deployment-contract.md`
+
+Documents under `docs/_archive/**`, old Stitch prompt packs, and old design handoff files are historical reference only. Do not treat them as current implementation instructions.
 
 ## 구글 캘린더 예약 연동
 

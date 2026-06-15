@@ -9,6 +9,7 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 import { QualificationForm } from "./qualification-form";
 
 export const dynamic = "force-dynamic";
@@ -24,21 +25,31 @@ export default async function Page() {
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="자격 심사"
         description="자격 심사는 슈퍼바이저 계정에서만 진행합니다."
       />
     );
   }
 
-  const qualifications = await withUserContext(
-    createRuntimeDatabase(),
-    {
-      userId: current.session.userId,
-      role: current.session.role,
-      phiAccess: true
-    },
-    (tx) => profiles.listQualifications(tx, current.session.userId)
-  );
+  let qualifications: Awaited<ReturnType<typeof profiles.listQualifications>>;
+  try {
+    qualifications = await withUserContext(
+      createRuntimeDatabase(),
+      {
+        userId: current.session.userId,
+        role: current.session.role,
+        phiAccess: true
+      },
+      (tx) => profiles.listQualifications(tx, current.session.userId)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    qualifications = [];
+  }
   const pendingCount = qualifications.filter(
     (qualification) => qualification.status === "pending"
   ).length;
@@ -51,6 +62,8 @@ export default async function Page() {
 
   return (
     <AppShell
+      active="supervisor-qualifications"
+      currentUser={current.user}
       action={
         <Button asChild>
           <a href="#qualification-form">첫 심사 열기</a>

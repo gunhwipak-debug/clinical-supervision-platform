@@ -1,5 +1,6 @@
 import { profiles, withUserContext } from "@csp/db";
 import type { NextRequest } from "next/server";
+import { serverUnavailable } from "@/lib/api/errors";
 import { apiError, envelope } from "@/lib/api/envelope";
 import { parseJson } from "@/lib/api/request";
 import { getCurrentUser } from "@/lib/auth/current-user";
@@ -16,14 +17,22 @@ export async function GET() {
   if (!isSupervisor(current))
     return envelope(null, apiError("forbidden", "권한이 없습니다."), 403);
 
-  const db = createRuntimeDatabase();
-  const availability = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => profiles.listAvailability(tx, current.session.userId)
-  );
+  try {
+    const db = createRuntimeDatabase();
+    const availability = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => profiles.listAvailability(tx, current.session.userId)
+    );
 
-  return envelope({ availability }, null, 200);
+    return envelope({ availability }, null, 200);
+  } catch (error) {
+    return serverUnavailable(
+      "[me.availability.get]",
+      error,
+      "가능 시간을 불러오지 못했습니다. 잠시 후 다시 시도해주세요."
+    );
+  }
 }
 
 export async function PUT(request: NextRequest) {
@@ -42,16 +51,24 @@ export async function PUT(request: NextRequest) {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const availability = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) =>
-      profiles.replaceAvailability(tx, {
-        userId: current.session.userId,
-        slots: parsed.data.slots
-      })
-  );
+  try {
+    const db = createRuntimeDatabase();
+    const availability = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) =>
+        profiles.replaceAvailability(tx, {
+          userId: current.session.userId,
+          slots: parsed.data.slots
+        })
+    );
 
-  return envelope({ availability }, null, 200);
+    return envelope({ availability }, null, 200);
+  } catch (error) {
+    return serverUnavailable(
+      "[me.availability.put]",
+      error,
+      "가능 시간을 저장하지 못했습니다. 잠시 후 다시 시도해주세요."
+    );
+  }
 }

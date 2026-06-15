@@ -9,6 +9,8 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import { listDemoSupervisorRequests } from "../../../../lib/demo/supervision";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -21,17 +23,29 @@ export default async function Page() {
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="검토할 의뢰"
         description="검토할 의뢰는 슈퍼바이저 계정에서만 확인합니다."
       />
     );
   }
 
-  const requests = await withUserContext(
-    createRuntimeDatabase(),
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => supervision.listSupervisionRequests(tx)
-  );
+  let requests: RequestItem[];
+  let requestsUnavailable = false;
+  try {
+    requests = await withUserContext(
+      createRuntimeDatabase(),
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => supervision.listSupervisionRequests(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    requests = listDemoSupervisorRequests(current.session.userId);
+    requestsUnavailable = requests.length === 0;
+  }
   const assigned = requests.filter(
     (request) => request.supervisorId === current.session.userId
   );
@@ -45,6 +59,8 @@ export default async function Page() {
 
   return (
     <AppShell
+      active="supervisor-requests"
+      currentUser={current.user}
       action={
         <Button asChild>
           <Link
@@ -63,8 +79,16 @@ export default async function Page() {
     >
       {assigned.length === 0 ? (
         <EmptyState
-          title="대기 중인 의뢰가 없습니다"
-          description="신청자가 결제를 완료하면 검토 대기 의뢰가 이곳에 표시됩니다."
+          title={
+            requestsUnavailable
+              ? "현재 검토할 의뢰를 불러오지 못했습니다"
+              : "대기 중인 의뢰가 없습니다"
+          }
+          description={
+            requestsUnavailable
+              ? "연결이 복구되면 수락 대기, 추가 자료 도착, 피드백 작성 중인 의뢰가 이곳에 표시됩니다."
+              : "신청자가 결제를 완료하면 검토 대기 의뢰가 이곳에 표시됩니다."
+          }
         />
       ) : (
         <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
@@ -263,7 +287,7 @@ function statusLabel(status: string): string {
     refunded: "환불",
     expired: "만료"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function requestLineTitle(status: string): string {
@@ -320,6 +344,7 @@ function formatBookingSlot(request: RequestItem): string {
     year: "numeric"
   }).format(start);
   const time = new Intl.DateTimeFormat("ko-KR", {
+    hourCycle: "h23",
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Asia/Seoul"

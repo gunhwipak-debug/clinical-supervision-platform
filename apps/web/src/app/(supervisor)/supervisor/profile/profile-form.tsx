@@ -114,21 +114,33 @@ export function SupervisorProfileEditor({
     startTransition(async () => {
       setMessage("프로필을 저장하는 중입니다...");
 
-      const profileResponse = await fetch("/api/me/supervisor-profile", {
-        method: "PUT",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          displayName: displayName.trim(),
-          photoUrl: photoUrl.trim() || null,
-          headline: headline.trim() || null,
-          bio: bio.trim() || null,
-          yearsOfExperience: yearsOfExperience === "" ? null : yearsOfExperience
-        })
-      });
+      let profileResponse: Response;
+
+      try {
+        profileResponse = await fetch("/api/me/supervisor-profile", {
+          method: "PUT",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            displayName: displayName.trim(),
+            photoUrl: photoUrl.trim() || null,
+            headline: headline.trim() || null,
+            bio: bio.trim() || null,
+            yearsOfExperience: yearsOfExperience === "" ? null : yearsOfExperience
+          })
+        });
+      } catch {
+        const errMsg = supervisorSettingsErrorMessage("server_unavailable");
+        setMessage(errMsg);
+        toast.error(errMsg);
+        return;
+      }
 
       if (!profileResponse.ok) {
-        const errBody = (await profileResponse.json()) as { error?: { code: string } };
-        const errMsg = errBody.error?.code ?? "프로필 저장 실패";
+        const errBody = await safeJson(profileResponse);
+        const errMsg = supervisorSettingsErrorMessage(
+          errBody.error?.code,
+          "프로필을 저장하지 못했습니다."
+        );
         setMessage(errMsg);
         toast.error(errMsg);
         return;
@@ -153,7 +165,29 @@ export function SupervisorProfileEditor({
         });
       });
 
-      await Promise.all(promises);
+      let responses: Response[];
+      try {
+        responses = await Promise.all(promises);
+      } catch {
+        const errMsg = supervisorSettingsErrorMessage("server_unavailable");
+        setMessage(errMsg);
+        toast.error(errMsg);
+        return;
+      }
+
+      const failed = responses.find((response) => !response.ok);
+
+      if (failed) {
+        const errBody = await safeJson(failed);
+        const errMsg = supervisorSettingsErrorMessage(
+          errBody.error?.code,
+          "슈퍼비전 방식을 저장하지 못했습니다."
+        );
+        setMessage(errMsg);
+        toast.error(errMsg);
+        return;
+      }
+
       setMessage("프로필과 슈퍼비전 방식을 저장했습니다.");
       toast.success("프로필과 슈퍼비전 방식을 저장했습니다.");
     });
@@ -529,4 +563,27 @@ function visibilityError(code: string | undefined, fallback?: string): string {
     verification_required: "승인된 자격 정보가 있어야 검색 공개로 전환할 수 있습니다."
   };
   return labels[code ?? ""] ?? fallback ?? "공개 상태 변경에 실패했습니다.";
+}
+
+async function safeJson(response: Response): Promise<{ error?: { code?: string } }> {
+  try {
+    return (await response.json()) as { error?: { code?: string } };
+  } catch {
+    return {};
+  }
+}
+
+function supervisorSettingsErrorMessage(
+  code: string | undefined,
+  fallback = "요청을 처리하지 못했습니다. 잠시 후 다시 시도해주세요."
+): string {
+  const labels: Record<string, string> = {
+    forbidden: "슈퍼바이저 계정에서만 관리할 수 있습니다.",
+    invalid_request: "입력한 내용을 다시 확인해주세요.",
+    profile_required: "먼저 공개 프로필을 저장해주세요.",
+    server_unavailable:
+      "일시적인 문제로 저장하지 못했습니다. 잠시 후 다시 시도해주세요.",
+    unauthorized: "로그인이 필요합니다."
+  };
+  return labels[code ?? ""] ?? fallback;
 }

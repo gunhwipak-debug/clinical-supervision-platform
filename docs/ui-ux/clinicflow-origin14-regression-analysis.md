@@ -1,5 +1,7 @@
 # ClinicFlow Origin-14 Regression Analysis
 
+> Historical evidence. This report explains the drift that led to the current Origin-14 guardrails; use the active design system and design contract for current implementation decisions.
+
 ## What Happened
 
 The user's intended workflow was:

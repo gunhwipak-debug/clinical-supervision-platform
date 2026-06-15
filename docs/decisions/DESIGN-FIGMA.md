@@ -1,5 +1,7 @@
 # DESIGN-FIGMA
 
+> Historical design tooling note. Current ClinicFlow UI/UX work must follow the Origin-14 design system and current design contract, not the old Stitch/Figma handoff packet.
+
 ## Figma 변수 연결
 
 현재 활성 디자인 파일:

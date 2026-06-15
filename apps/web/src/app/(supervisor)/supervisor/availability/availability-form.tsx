@@ -84,15 +84,25 @@ export function AvailabilityForm({
       .filter((slot): slot is SlotDraft => slot !== null)
       .sort((a, b) => a.weekday - b.weekday || a.startTime.localeCompare(b.startTime));
 
-    const response = await fetch("/api/me/availability", {
-      method: "PUT",
-      headers: { "content-type": "application/json" },
-      body: JSON.stringify({ slots })
-    });
-    const body = (await response.json()) as { error?: { code: string } };
+    let response: Response;
+    try {
+      response = await fetch("/api/me/availability", {
+        method: "PUT",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({ slots })
+      });
+    } catch {
+      const next = availabilityErrorMessage("server_unavailable");
+      setMessage(next);
+      setBusy(false);
+      toast.error(next);
+      return;
+    }
+
+    const body = await safeJson(response);
     const next = response.ok
       ? "가능 시간을 저장했습니다."
-      : (body.error?.code ?? "저장 실패");
+      : availabilityErrorMessage(body.error?.code);
     setMessage(next);
     setBusy(false);
     if (response.ok) {
@@ -344,6 +354,27 @@ function calendarCheckError(code: string | undefined): string {
     unauthorized: "로그인이 필요합니다."
   };
   return labels[code ?? ""] ?? "일정 연동 점검에 실패했습니다.";
+}
+
+function availabilityErrorMessage(code: string | undefined): string {
+  const labels: Record<string, string> = {
+    forbidden: "슈퍼바이저 계정에서만 일정을 관리할 수 있습니다.",
+    invalid_request: "선택한 가능 시간을 다시 확인해주세요.",
+    server_unavailable:
+      "일시적인 문제로 가능 시간을 저장하지 못했습니다. 잠시 후 다시 시도해주세요.",
+    unauthorized: "로그인이 필요합니다."
+  };
+  return (
+    labels[code ?? ""] ?? "가능 시간을 저장하지 못했습니다. 잠시 후 다시 시도해주세요."
+  );
+}
+
+async function safeJson(response: Response): Promise<{ error?: { code?: string } }> {
+  try {
+    return (await response.json()) as { error?: { code?: string } };
+  } catch {
+    return {};
+  }
 }
 
 function addHour(startTime: string): string {

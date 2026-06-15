@@ -1,5 +1,7 @@
 # ClinicFlow Full Route Frontend Implementation
 
+> Implementation evidence. This document records a route-alignment pass; it is not a new visual source of truth beyond the Origin-14 design system and route alignment manifest.
+
 ## Summary
 
 This pass moved the Tech-style ClinicFlow direction from a static preview toward the real Next.js route architecture. Runtime routes must now extend the approved origin-14 React/Tailwind language directly; the old static preview reader has been removed from app source so old template surfaces cannot re-enter production by accident.

@@ -62,11 +62,12 @@ export function NewRequestForm({
   });
   const retentionDaysField = form.register("retentionDays", { valueAsNumber: true });
   const selectedRetentionDays = form.watch("retentionDays");
-  const currentActionLabel = canSubmit
-    ? "신청 초안 저장"
-    : !hasSelectedProduct
-      ? "세션을 먼저 선택하세요"
-      : "일정을 먼저 선택하세요";
+  const currentActionLabel = "신청 초안 저장";
+  const blockingMessage = !hasSelectedProduct
+    ? "슈퍼바이저 프로필에서 세션을 먼저 선택해야 초안을 저장할 수 있습니다."
+    : requiresSelectedSlot && !hasSelectedSlot
+      ? "화상 세션은 가능한 일정을 먼저 선택해야 초안을 저장할 수 있습니다."
+      : "";
   const timingValue = requiresSelectedSlot
     ? selectedSlot || "시간 선택 필요"
     : "일정 예약 없음";
@@ -116,21 +117,21 @@ export function NewRequestForm({
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="grid gap-6">
-          <section className="rounded-2xl bg-ink-900 px-6 py-7 text-white">
-            <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
-              <div className="grid gap-3">
-                <span className="inline-flex w-fit rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-700">
-                  이번 단계
-                </span>
-                <div className="grid gap-2">
-                  <h2 className="text-3xl font-bold tracking-tight">
-                    슈퍼바이저와 세션을 먼저 확정합니다
-                  </h2>
-                  <p className="max-w-2xl text-sm leading-7 text-white/80">
-                    지금은 신청 초안을 만드는 단계입니다. 저장이 끝나면 별도의 의뢰 상세
-                    화면에서 사례 자료와 질문을 한 줄씩 정리합니다.
+          <section className="grid gap-5">
+            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+              <div className="grid gap-2">
+                <p className="text-sm font-bold text-brand-700">세션·일정</p>
+                <h2 className="text-3xl font-bold tracking-tight text-ink-900">
+                  초안에 필요한 선택만 확인합니다
+                </h2>
+                <p className="max-w-2xl text-sm leading-7 text-ink-500">
+                  저장이 끝나면 의뢰 상세 화면에서 사례 자료와 질문을 정리합니다.
+                </p>
+                {blockingMessage ? (
+                  <p aria-live="polite" className="text-sm font-semibold text-ink-700">
+                    {blockingMessage}
                   </p>
-                </div>
+                ) : null}
               </div>
               {hasSelectedProduct ? (
                 <Button
@@ -145,106 +146,109 @@ export function NewRequestForm({
                 </Button>
               )}
             </div>
-          </section>
 
-          <section className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5">
-            <RequestRow
-              description={
-                selection.supervisorName
-                  ? "선택한 슈퍼바이저가 맞는지 확인합니다."
-                  : "슈퍼바이저 프로필에서 먼저 선택합니다."
-              }
-              label="1. 슈퍼바이저"
-              status={selection.supervisorName ? "완료" : "선택 필요"}
-              value={selection.supervisorName ?? "아직 선택되지 않았습니다"}
-            />
-            <RequestRow
-              description={
-                selection.productDescription ??
-                "세션 종류와 금액은 슈퍼바이저 프로필에서 고른 내용을 그대로 가져옵니다."
-              }
-              label="2. 세션"
-              status={hasSelectedProduct ? "완료" : "선택 필요"}
-              value={selection.productTitle ?? "선택된 세션이 없습니다"}
-            />
-            <RequestRow
-              description={
-                requiresSelectedSlot
-                  ? "가능 일정에서 고른 시간이 맞는지 확인합니다."
-                  : "이 세션은 자료를 올리면 일정 예약 없이 검토가 시작됩니다."
-              }
-              label="3. 일정"
-              status={!requiresSelectedSlot || hasSelectedSlot ? "완료" : "선택 필요"}
-              value={timingValue}
-            />
-            <RequestRow
-              description="신청 초안 저장 후 의뢰 상세 화면에서 사례 요약, 검사 결과, 질문을 정리합니다."
-              label="4. 사례자료 정리"
-              status={canSubmit ? "다음" : "준비 중"}
-              value={currentActionLabel}
-            />
+            <div className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
+              <RequestRow
+                description={
+                  selection.supervisorName
+                    ? "선택한 슈퍼바이저가 맞는지 확인합니다."
+                    : "슈퍼바이저 프로필에서 먼저 선택합니다."
+                }
+                label="1. 슈퍼바이저"
+                status={selection.supervisorName ? "완료" : "선택 필요"}
+                value={selection.supervisorName ?? "아직 선택되지 않았습니다"}
+              />
+              <RequestRow
+                description={
+                  selection.productDescription ??
+                  "세션 종류와 금액은 슈퍼바이저 프로필에서 고른 내용을 그대로 가져옵니다."
+                }
+                label="2. 세션"
+                status={hasSelectedProduct ? "완료" : "선택 필요"}
+                value={selection.productTitle ?? "선택된 세션이 없습니다"}
+              />
+              <RequestRow
+                description={
+                  requiresSelectedSlot
+                    ? "가능 일정에서 고른 시간이 맞는지 확인합니다."
+                    : "이 세션은 자료를 올리면 일정 예약 없이 검토가 시작됩니다."
+                }
+                label="3. 일정"
+                status={!requiresSelectedSlot || hasSelectedSlot ? "완료" : "선택 필요"}
+                value={timingValue}
+              />
+              <RequestRow
+                description="신청 초안 저장 후 의뢰 상세 화면에서 사례 요약, 검사 결과, 질문을 정리합니다."
+                label="4. 사례자료 정리"
+                status={canSubmit ? "다음" : "준비 중"}
+                value={currentActionLabel}
+              />
 
-            <input type="hidden" {...form.register("serviceProductId")} />
-            <input type="hidden" {...form.register("selectedSlotStart")} />
-            <input type="hidden" {...form.register("selectedSlotEnd")} />
+              <input type="hidden" {...form.register("serviceProductId")} />
+              <input type="hidden" {...form.register("selectedSlotStart")} />
+              <input type="hidden" {...form.register("selectedSlotEnd")} />
 
-            <details className="rounded-xl border border-line bg-surface-base px-4 py-3">
-              <summary className="cursor-pointer text-sm font-bold text-ink-900">
-                기본 설정 조정
-              </summary>
-              <div className="mt-4 grid gap-4">
-                <div className="grid divide-y divide-line rounded-xl border border-line">
-                  {[7, 30, 90].map((days) => (
-                    <label
-                      className="flex cursor-pointer items-center justify-between gap-4 px-4 py-3"
-                      key={days}
+              <details className="border-t border-line px-5 py-4">
+                <summary className="cursor-pointer text-sm font-bold text-ink-900">
+                  기본 설정 조정
+                </summary>
+                <div className="mt-4 grid gap-4">
+                  <div className="grid divide-y divide-line rounded-xl border border-line">
+                    {[7, 30, 90].map((days) => (
+                      <label
+                        className="flex cursor-pointer items-center justify-between gap-4 px-4 py-3"
+                        key={days}
+                      >
+                        <span>
+                          <span className="text-base font-bold text-ink-900">
+                            {days}일
+                          </span>
+                          <span className="ml-3 text-sm text-ink-500">
+                            완료 후 선택한 기간에 맞춰 원자료를 관리합니다.
+                          </span>
+                        </span>
+                        <input
+                          checked={Number(selectedRetentionDays) === days}
+                          name={retentionDaysField.name}
+                          onBlur={retentionDaysField.onBlur}
+                          onChange={retentionDaysField.onChange}
+                          ref={retentionDaysField.ref}
+                          type="radio"
+                          value={days}
+                        />
+                      </label>
+                    ))}
+                  </div>
+                  <label className="grid gap-2">
+                    <span className="text-sm font-bold text-ink-900">검토 속도</span>
+                    <select
+                      className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm text-ink-900"
+                      {...form.register("urgency")}
                     >
-                      <span>
-                        <span className="text-base font-bold text-ink-900">
-                          {days}일
-                        </span>
-                        <span className="ml-3 text-sm text-ink-500">
-                          완료 후 선택한 기간에 맞춰 원자료를 관리합니다.
-                        </span>
-                      </span>
-                      <input
-                        checked={Number(selectedRetentionDays) === days}
-                        name={retentionDaysField.name}
-                        onBlur={retentionDaysField.onBlur}
-                        onChange={retentionDaysField.onChange}
-                        ref={retentionDaysField.ref}
-                        type="radio"
-                        value={days}
-                      />
-                    </label>
-                  ))}
+                      <option value="normal">일반</option>
+                      <option value="urgent_24h">24시간 긴급</option>
+                    </select>
+                  </label>
+                  <label className="grid gap-2">
+                    <span className="text-sm font-bold text-ink-900">희망 마감일</span>
+                    <input
+                      className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm text-ink-900"
+                      type="date"
+                      {...form.register("desiredDeadline")}
+                    />
+                  </label>
                 </div>
-                <label className="grid gap-2">
-                  <span className="text-sm font-bold text-ink-900">검토 속도</span>
-                  <select
-                    className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm text-ink-900"
-                    {...form.register("urgency")}
-                  >
-                    <option value="normal">일반</option>
-                    <option value="urgent_24h">24시간 긴급</option>
-                  </select>
-                </label>
-                <label className="grid gap-2">
-                  <span className="text-sm font-bold text-ink-900">희망 마감일</span>
-                  <input
-                    className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm text-ink-900"
-                    type="date"
-                    {...form.register("desiredDeadline")}
-                  />
-                </label>
-              </div>
-            </details>
+              </details>
 
-            {message ? (
-              <p aria-live="polite" className="text-sm text-ink-500">
-                {message}
-              </p>
-            ) : null}
+              {message ? (
+                <p
+                  aria-live="polite"
+                  className="border-t border-line px-5 py-4 text-sm text-ink-500"
+                >
+                  {message}
+                </p>
+              ) : null}
+            </div>
           </section>
         </div>
 
@@ -281,7 +285,7 @@ function RequestRow({
   value: string;
 }) {
   return (
-    <div className="grid gap-3 rounded-2xl border border-line px-5 py-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+    <div className="grid gap-3 border-b border-line px-5 py-5 last:border-b-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
       <div className="min-w-0">
         <p className="text-2xl font-bold tracking-tight text-ink-900">{label}</p>
         <p className="mt-2 break-keep text-base font-semibold text-ink-700">{value}</p>

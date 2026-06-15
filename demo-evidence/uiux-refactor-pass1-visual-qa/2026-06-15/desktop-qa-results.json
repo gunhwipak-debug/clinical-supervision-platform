@@ -1,0 +1,984 @@
+[
+  {
+    "route": "/",
+    "role": "public",
+    "url": "http://localhost:3000/",
+    "finalUrl": "http://localhost:3000/",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/public-home.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 3070,
+    "activeNav": [],
+    "buttons": [
+      "ClinicFlow",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "로그인",
+      "슈퍼비전 신청하기",
+      "슈퍼바이저 찾기",
+      "진행 과정 보기",
+      "슈퍼비전 신청하기",
+      "슈퍼바이저 먼저 보기"
+    ],
+    "cardLikeCount": 5,
+    "errorLike": false,
+    "gridLikeCount": 16,
+    "h1": [
+      "슈퍼비전 의뢰와피드백을 한곳에서관리합니다"
+    ],
+    "navs": [
+      "슈퍼바이저 찾기이용 가이드"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisors",
+    "role": "public",
+    "url": "http://localhost:3000/supervisors",
+    "finalUrl": "http://localhost:3000/supervisors",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/public-supervisors.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 2133,
+    "activeNav": [
+      "슈퍼바이저 찾기"
+    ],
+    "buttons": [
+      "ClinicFlow",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "로그인",
+      "슈퍼비전 신청하기",
+      "슈퍼바이저 찾기",
+      "프로필 보기",
+      "프로필 보기",
+      "프로필 보기"
+    ],
+    "cardLikeCount": 3,
+    "errorLike": false,
+    "gridLikeCount": 28,
+    "h1": [
+      "슈퍼바이저를 비교하고 선택하세요"
+    ],
+    "navs": [
+      "슈퍼바이저 찾기이용 가이드"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/guide",
+    "role": "public",
+    "url": "http://localhost:3000/guide",
+    "finalUrl": "http://localhost:3000/guide",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/public-guide.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1356,
+    "activeNav": [
+      "이용 가이드"
+    ],
+    "buttons": [
+      "ClinicFlow",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "로그인",
+      "슈퍼비전 신청하기",
+      "바로 보기",
+      "바로 보기",
+      "바로 보기"
+    ],
+    "cardLikeCount": 12,
+    "errorLike": false,
+    "gridLikeCount": 31,
+    "h1": [
+      "슈퍼비전 신청부터 기록까지 한 흐름으로"
+    ],
+    "navs": [
+      "슈퍼바이저 찾기이용 가이드"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/requests",
+    "role": "supervisee",
+    "url": "http://localhost:3000/requests",
+    "finalUrl": "http://localhost:3000/requests",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisee-requests.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 854,
+    "activeNav": [
+      "내 의뢰",
+      "내 의뢰",
+      "내 의뢰"
+    ],
+    "buttons": [
+      "ClinicFlow신청자",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "로그아웃",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "첫 의뢰 열기",
+      "의뢰-10000000학습 기록 발급아동 평가 보고서 슈퍼비전사례 자료, 결제 상태, 피드백과 학습 기록을 이어서 확인합니다.예약 일정 · 2026년 6월 18일 목 19:00-19:50최근 변경 · 2026. 6. 15. 18:00피드백 확인chevron_right",
+      "의뢰-10000000완료사례 개념화 50분사례 자료, 결제 상태, 피드백과 학습 기록을 이어서 확인합니다.예약 일정 · 2026년 6월 10일 수 15:00-15:50최근 변경 · 2026. 6. 15. 18:00진행 상황 확인chevron_right"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 25,
+    "h1": [
+      "내 슈퍼비전 의뢰"
+    ],
+    "navs": [
+      "내 슈퍼비전내 의뢰새 의뢰결제 내역학습 기록알림안내슈퍼바이저 찾기이용 가이드계정계정 설정",
+      "내 의뢰새 의뢰결제 내역학습 기록알림슈퍼바이저 찾기이용 가이드계정 설정"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/requests/new",
+    "role": "supervisee",
+    "url": "http://localhost:3000/requests/new",
+    "finalUrl": "http://localhost:3000/requests/new",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisee-requests-new.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1263,
+    "activeNav": [
+      "새 의뢰",
+      "새 의뢰",
+      "새 의뢰"
+    ],
+    "buttons": [
+      "ClinicFlow신청자",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "로그아웃",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "슈퍼바이저 찾기"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 41,
+    "h1": [
+      "새 슈퍼비전 의뢰"
+    ],
+    "navs": [
+      "내 슈퍼비전내 의뢰새 의뢰결제 내역학습 기록알림안내슈퍼바이저 찾기이용 가이드계정계정 설정",
+      "내 의뢰새 의뢰결제 내역학습 기록알림슈퍼바이저 찾기이용 가이드계정 설정",
+      "진행 위치 2 / 5 · 세션·일정슈퍼바이저 선택세션·일정사례자료 정리확인·결제학습 기록"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/payments",
+    "role": "supervisee",
+    "url": "http://localhost:3000/payments",
+    "finalUrl": "http://localhost:3000/payments",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisee-payments.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1607,
+    "activeNav": [
+      "결제 내역",
+      "결제 내역",
+      "결제 내역"
+    ],
+    "buttons": [
+      "ClinicFlow신청자",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "로그아웃",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 23,
+    "h1": [
+      "결제 내역"
+    ],
+    "navs": [
+      "내 슈퍼비전내 의뢰새 의뢰결제 내역학습 기록알림안내슈퍼바이저 찾기이용 가이드계정계정 설정",
+      "내 의뢰새 의뢰결제 내역학습 기록알림슈퍼바이저 찾기이용 가이드계정 설정",
+      "진행 위치 4 / 5 · 확인·결제슈퍼바이저 선택세션·일정사례자료 정리확인·결제학습 기록"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/case-archive",
+    "role": "supervisee",
+    "url": "http://localhost:3000/case-archive",
+    "finalUrl": "http://localhost:3000/case-archive",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisee-case-archive.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 3256,
+    "activeNav": [
+      "학습 기록",
+      "학습 기록",
+      "학습 기록"
+    ],
+    "buttons": [
+      "ClinicFlow신청자",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "로그아웃",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "새 슈퍼비전 시작",
+      "아동 평가 보고서 슈퍼비전이수 기록 발급됨이수 기록 발급됨 · 2026. 6. 15.",
+      "사례 개념화 50분완료됨완료됨 · 2026. 6. 15.",
+      "기록 열기"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 31,
+    "h1": [
+      "학습 기록"
+    ],
+    "navs": [
+      "내 슈퍼비전내 의뢰새 의뢰결제 내역학습 기록알림안내슈퍼바이저 찾기이용 가이드계정계정 설정",
+      "내 의뢰새 의뢰결제 내역학습 기록알림슈퍼바이저 찾기이용 가이드계정 설정",
+      "진행 위치 5 / 5 · 학습 기록슈퍼바이저 선택세션·일정사례자료 정리확인·결제학습 기록"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/settings",
+    "role": "supervisee",
+    "url": "http://localhost:3000/settings",
+    "finalUrl": "http://localhost:3000/settings",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisee-settings.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 2215,
+    "activeNav": [
+      "계정 설정",
+      "계정 설정"
+    ],
+    "buttons": [
+      "ClinicFlow신청자",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "로그아웃",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "내 의뢰",
+      "새 의뢰",
+      "결제 내역",
+      "학습 기록",
+      "알림",
+      "슈퍼바이저 찾기",
+      "이용 가이드",
+      "계정 설정",
+      "프로필 저장",
+      "슈퍼바이저 신청 시작"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": true,
+    "gridLikeCount": 36,
+    "h1": [
+      "계정 설정"
+    ],
+    "navs": [
+      "내 슈퍼비전내 의뢰새 의뢰결제 내역학습 기록알림안내슈퍼바이저 찾기이용 가이드계정계정 설정",
+      "내 의뢰새 의뢰결제 내역학습 기록알림슈퍼바이저 찾기이용 가이드계정 설정"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisor",
+    "role": "supervisor",
+    "url": "http://localhost:3000/supervisor",
+    "finalUrl": "http://localhost:3000/supervisor",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisor-supervisor.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 836,
+    "activeNav": [
+      "업무 홈",
+      "업무 홈",
+      "업무 홈"
+    ],
+    "buttons": [
+      "ClinicFlow슈퍼바이저",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "계정 설정",
+      "로그아웃",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "첫 요청 열기",
+      "수락 확인",
+      "프로필소개와 공개 프로필"
+    ],
+    "cardLikeCount": 1,
+    "errorLike": false,
+    "gridLikeCount": 31,
+    "h1": [
+      "슈퍼바이저 업무"
+    ],
+    "navs": [
+      "슈퍼바이저 업무업무 홈검토할 의뢰기록 폴더운영 설정프로필슈퍼비전 방식일정 관리정산 내역자격 심사",
+      "업무 홈검토할 의뢰기록 폴더프로필슈퍼비전 방식일정 관리정산 내역자격 심사"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisor/requests",
+    "role": "supervisor",
+    "url": "http://localhost:3000/supervisor/requests",
+    "finalUrl": "http://localhost:3000/supervisor/requests",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisor-supervisor-requests.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1647,
+    "activeNav": [
+      "검토할 의뢰",
+      "검토할 의뢰",
+      "검토할 의뢰"
+    ],
+    "buttons": [
+      "ClinicFlow슈퍼바이저",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "계정 설정",
+      "로그아웃",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "첫 요청 열기",
+      "상세 검토",
+      "기록 확인"
+    ],
+    "cardLikeCount": 6,
+    "errorLike": false,
+    "gridLikeCount": 36,
+    "h1": [
+      "검토할 의뢰"
+    ],
+    "navs": [
+      "슈퍼바이저 업무업무 홈검토할 의뢰기록 폴더운영 설정프로필슈퍼비전 방식일정 관리정산 내역자격 심사",
+      "업무 홈검토할 의뢰기록 폴더프로필슈퍼비전 방식일정 관리정산 내역자격 심사"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisor/profile",
+    "role": "supervisor",
+    "url": "http://localhost:3000/supervisor/profile",
+    "finalUrl": "http://localhost:3000/supervisor/profile",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisor-supervisor-profile.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 2220,
+    "activeNav": [
+      "프로필",
+      "프로필",
+      "프로필"
+    ],
+    "buttons": [
+      "ClinicFlow슈퍼바이저",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "계정 설정",
+      "로그아웃",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "프로필과 슈퍼비전 방식 저장",
+      "비공개"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 34,
+    "h1": [
+      "슈퍼바이저 프로필"
+    ],
+    "navs": [
+      "슈퍼바이저 업무업무 홈검토할 의뢰기록 폴더운영 설정프로필슈퍼비전 방식일정 관리정산 내역자격 심사",
+      "업무 홈검토할 의뢰기록 폴더프로필슈퍼비전 방식일정 관리정산 내역자격 심사"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisor/products",
+    "role": "supervisor",
+    "url": "http://localhost:3000/supervisor/products",
+    "finalUrl": "http://localhost:3000/supervisor/products",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisor-supervisor-products.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1833,
+    "activeNav": [
+      "슈퍼비전 방식",
+      "슈퍼비전 방식",
+      "슈퍼비전 방식"
+    ],
+    "buttons": [
+      "ClinicFlow슈퍼바이저",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "계정 설정",
+      "로그아웃",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "새 방식 추가",
+      "슈퍼비전 방식 추가"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 31,
+    "h1": [
+      "슈퍼비전 방식"
+    ],
+    "navs": [
+      "슈퍼바이저 업무업무 홈검토할 의뢰기록 폴더운영 설정프로필슈퍼비전 방식일정 관리정산 내역자격 심사",
+      "업무 홈검토할 의뢰기록 폴더프로필슈퍼비전 방식일정 관리정산 내역자격 심사"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisor/availability",
+    "role": "supervisor",
+    "url": "http://localhost:3000/supervisor/availability",
+    "finalUrl": "http://localhost:3000/supervisor/availability",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisor-supervisor-availability.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 2821,
+    "activeNav": [
+      "일정 관리",
+      "일정 관리",
+      "일정 관리"
+    ],
+    "buttons": [
+      "ClinicFlow슈퍼바이저",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "계정 설정",
+      "로그아웃",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "+ 추가",
+      "+ 추가"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 31,
+    "h1": [
+      "일정 관리"
+    ],
+    "navs": [
+      "슈퍼바이저 업무업무 홈검토할 의뢰기록 폴더운영 설정프로필슈퍼비전 방식일정 관리정산 내역자격 심사",
+      "업무 홈검토할 의뢰기록 폴더프로필슈퍼비전 방식일정 관리정산 내역자격 심사"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/supervisor/payouts",
+    "role": "supervisor",
+    "url": "http://localhost:3000/supervisor/payouts",
+    "finalUrl": "http://localhost:3000/supervisor/payouts",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/supervisor-supervisor-payouts.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 2076,
+    "activeNav": [
+      "정산 내역",
+      "정산 내역",
+      "정산 내역"
+    ],
+    "buttons": [
+      "ClinicFlow슈퍼바이저",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "계정 설정",
+      "로그아웃",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "업무 홈",
+      "검토할 의뢰",
+      "기록 폴더",
+      "프로필",
+      "슈퍼비전 방식",
+      "일정 관리",
+      "정산 내역",
+      "자격 심사",
+      "슈퍼바이저 업무로 돌아가기"
+    ],
+    "cardLikeCount": 0,
+    "errorLike": false,
+    "gridLikeCount": 30,
+    "h1": [
+      "정산 내역"
+    ],
+    "navs": [
+      "슈퍼바이저 업무업무 홈검토할 의뢰기록 폴더운영 설정프로필슈퍼비전 방식일정 관리정산 내역자격 심사",
+      "업무 홈검토할 의뢰기록 폴더프로필슈퍼비전 방식일정 관리정산 내역자격 심사"
+    ],
+    "title": "ClinicFlow"
+  },
+  {
+    "route": "/admin",
+    "role": "admin",
+    "url": "http://localhost:3001/admin",
+    "finalUrl": "http://localhost:3001/admin",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/admin-admin.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1221,
+    "activeNav": [
+      "운영 처리 목록",
+      "운영 처리 목록"
+    ],
+    "buttons": [
+      "ClinicFlow 운영",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "로그아웃",
+      "긴급 건 처리",
+      "자격 심사자격 심사 항목 확인 필요연결되면 임상심리전문가 증빙과 공개 프로필 확인 항목이 표시됩니다.운영자확인 필요",
+      "환불환불 요청 확인 필요연결되면 환불 요청 사유와 결제 상태가 표시됩니다.결제확인 필요",
+      "정산지급 확인 항목 확인 필요연결되면 지급 예정 금액과 보류 사유가 표시됩니다.정산확인 필요"
+    ],
+    "cardLikeCount": 1,
+    "errorLike": false,
+    "gridLikeCount": 15,
+    "h1": [
+      "운영 처리 목록"
+    ],
+    "navs": [
+      "운영 처리 목록운영 대기열자격 심사환불 검토정산 확인처리 기록"
+    ],
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "route": "/admin/queue",
+    "role": "admin",
+    "url": "http://localhost:3001/admin/queue",
+    "finalUrl": "http://localhost:3001/admin/queue",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/admin-admin-queue.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1246,
+    "activeNav": [
+      "운영 대기열",
+      "운영 대기열"
+    ],
+    "buttons": [
+      "ClinicFlow 운영",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "로그아웃",
+      "운영자자격 승인새 슈퍼바이저가 공개 목록에 올라가기 전 확인합니다.확인 필요",
+      "결제환불 검토요청 사유, 결제 상태, 진행 단계를 함께 확인합니다.확인 필요",
+      "정산정산 확인지급 예정 금액과 보류 사유를 검토합니다.확인 필요",
+      "기록처리 기록검토 대기 중인 의뢰와 운영 기록을 함께 추적합니다.확인 필요"
+    ],
+    "cardLikeCount": 2,
+    "errorLike": false,
+    "gridLikeCount": 13,
+    "h1": [
+      "운영 대기열"
+    ],
+    "navs": [
+      "운영 처리 목록운영 대기열자격 심사환불 검토정산 확인처리 기록"
+    ],
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "route": "/admin/qualifications",
+    "role": "admin",
+    "url": "http://localhost:3001/admin/qualifications",
+    "finalUrl": "http://localhost:3001/admin/qualifications",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/admin-admin-qualifications.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1207,
+    "activeNav": [
+      "자격 심사",
+      "자격 심사"
+    ],
+    "buttons": [
+      "ClinicFlow 운영",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "로그아웃",
+      "심사 목록 보기",
+      "검색",
+      "전체보기",
+      "대기 중",
+      "승인됨",
+      "반려됨"
+    ],
+    "cardLikeCount": 1,
+    "errorLike": false,
+    "gridLikeCount": 12,
+    "h1": [
+      "자격 심사"
+    ],
+    "navs": [
+      "운영 처리 목록운영 대기열자격 심사환불 검토정산 확인처리 기록"
+    ],
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "route": "/admin/refunds",
+    "role": "admin",
+    "url": "http://localhost:3001/admin/refunds",
+    "finalUrl": "http://localhost:3001/admin/refunds",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/admin-admin-refunds.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1122,
+    "activeNav": [
+      "환불 검토",
+      "환불 검토"
+    ],
+    "buttons": [
+      "ClinicFlow 운영",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "로그아웃"
+    ],
+    "cardLikeCount": 3,
+    "errorLike": false,
+    "gridLikeCount": 13,
+    "h1": [
+      "환불 검토"
+    ],
+    "navs": [
+      "운영 처리 목록운영 대기열자격 심사환불 검토정산 확인처리 기록"
+    ],
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "route": "/admin/payouts",
+    "role": "admin",
+    "url": "http://localhost:3001/admin/payouts",
+    "finalUrl": "http://localhost:3001/admin/payouts",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/admin-admin-payouts.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 1000,
+    "activeNav": [
+      "정산 확인",
+      "정산 확인"
+    ],
+    "buttons": [
+      "ClinicFlow 운영",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "로그아웃",
+      "이번 기간 지급액 계산"
+    ],
+    "cardLikeCount": 3,
+    "errorLike": false,
+    "gridLikeCount": 18,
+    "h1": [
+      "지급 관리"
+    ],
+    "navs": [
+      "운영 처리 목록운영 대기열자격 심사환불 검토정산 확인처리 기록"
+    ],
+    "title": "ClinicFlow 운영"
+  },
+  {
+    "route": "/admin/audit",
+    "role": "admin",
+    "url": "http://localhost:3001/admin/audit",
+    "finalUrl": "http://localhost:3001/admin/audit",
+    "screenshotPath": "/Users/gunhwiair/Desktop/Agent/Projects/ClinicalSupervisionPlatform/demo-evidence/uiux-refactor-pass1-visual-qa/2026-06-15/admin-admin-audit.png",
+    "status": "captured",
+    "error": "",
+    "elapsedMs": 991,
+    "activeNav": [
+      "처리 기록",
+      "처리 기록"
+    ],
+    "buttons": [
+      "ClinicFlow 운영",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "운영 처리 목록",
+      "운영 대기열",
+      "자격 심사",
+      "환불 검토",
+      "정산 확인",
+      "처리 기록",
+      "로그아웃"
+    ],
+    "cardLikeCount": 4,
+    "errorLike": false,
+    "gridLikeCount": 15,
+    "h1": [
+      "처리 기록"
+    ],
+    "navs": [
+      "운영 처리 목록운영 대기열자격 심사환불 검토정산 확인처리 기록"
+    ],
+    "title": "ClinicFlow 운영"
+  }
+]

@@ -12,6 +12,8 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
+import { SupervisorPageLoadError } from "../_components/supervisor-page-load-error";
 import { AvailabilityForm } from "./availability-form";
 
 export const dynamic = "force-dynamic";
@@ -30,23 +32,44 @@ export default async function Page({
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="일정 관리"
         description="일정 관리는 슈퍼바이저 계정에서만 사용할 수 있습니다."
       />
     );
   }
 
-  const db = createRuntimeDatabase();
-  const availability = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => profiles.listAvailability(tx, current.session.userId)
-  );
-  const calendarConnection = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) => calendar.getConnectionSummaryForUser(tx, current.session.userId)
-  );
+  let availability: profiles.AvailabilitySlot[];
+  let calendarConnection: calendar.ExternalCalendarConnectionSummary | null;
+
+  try {
+    const db = createRuntimeDatabase();
+    availability = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => profiles.listAvailability(tx, current.session.userId)
+    );
+    calendarConnection = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => calendar.getConnectionSummaryForUser(tx, current.session.userId)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      console.error("[supervisor.availability.page]", error);
+      return (
+        <SupervisorPageLoadError
+          active="supervisor-availability"
+          currentUser={current.user}
+          title="일정 관리"
+          subtitle="가능 시간 정보를 불러오는 동안 문제가 생겼습니다."
+        />
+      );
+    }
+
+    availability = [];
+    calendarConnection = null;
+  }
   const calendarConfigReady = Boolean(
     process.env["GOOGLE_CALENDAR_CLIENT_ID"] &&
     process.env["GOOGLE_CALENDAR_CLIENT_SECRET"]
@@ -54,6 +77,8 @@ export default async function Page({
 
   return (
     <AppShell
+      active="supervisor-availability"
+      currentUser={current.user}
       action={
         <Button asChild variant="secondary">
           <Link href="/supervisor">업무 홈</Link>

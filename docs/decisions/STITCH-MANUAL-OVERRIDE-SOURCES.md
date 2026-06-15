@@ -1,5 +1,7 @@
 # Stitch Manual Override Sources
 
+> Historical Stitch source note. These samples are no longer the current ClinicFlow visual source of truth.
+
 This file preserves the user-supplied Stitch HTML samples in Markdown form so a goal runner can reference one durable source document.
 
 The canonical executable/static source files are also preserved byte-for-byte under `designs/stitch/manual-overrides/`. If this Markdown and an `.html` file ever disagree, treat the `.html` file as canonical and regenerate this document.

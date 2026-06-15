@@ -104,19 +104,24 @@ export function FlowStepNav({
   steps: readonly string[];
 }) {
   const currentIndex = Math.max(steps.indexOf(current), 0);
+  const stepNumber = currentIndex + 1;
 
   return (
-    <nav aria-label="슈퍼비전 진행 단계">
-      <ol className="grid gap-1 rounded-xl border border-line bg-surface-elevated p-1 text-sm font-bold text-ink-500 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
+    <nav aria-label="슈퍼비전 진행 단계" className="grid gap-3">
+      <p className="text-sm font-bold text-ink-500">
+        진행 위치 {String(stepNumber)} / {String(steps.length)} ·{" "}
+        <span className="text-ink-900">{current}</span>
+      </p>
+      <ol className="grid overflow-hidden rounded-xl border border-line bg-surface-elevated text-sm font-bold text-ink-500 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
         {steps.map((step, index) => (
           <li
             aria-current={index === currentIndex ? "step" : undefined}
             className={cn(
-              "rounded-lg px-3 py-2 text-center",
+              "border-b border-line px-3 py-3 text-center last:border-b-0 sm:border-b-0 sm:border-r sm:last:border-r-0",
               index === currentIndex
                 ? "bg-brand-600 text-white"
                 : index < currentIndex
-                  ? "text-ink-900"
+                  ? "bg-surface-base text-ink-900"
                   : "text-ink-400"
             )}
             key={step}

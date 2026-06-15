@@ -16,6 +16,7 @@ import {
 import { getCurrentUser } from "../../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { isSupervisor } from "../../../../lib/auth/guards";
+import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -28,25 +29,40 @@ export default async function SupervisorPayoutsPage() {
   if (!current) {
     return <LoginRequiredState title="정산 내역" returnTo="/supervisor/payouts" />;
   }
+  const currentShellUser = current.user;
   if (!isSupervisor(current)) {
     return (
       <RoleRequiredState
+        currentUser={currentShellUser}
         title="정산 내역"
         description="정산 내역은 슈퍼바이저 계정에서만 확인합니다."
       />
     );
   }
 
-  const db = createRuntimeDatabase();
-  const [payouts, allPayments] = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    (tx) =>
-      Promise.all([
-        payments.listPayouts(tx, current.session.userId),
-        payments.listPayments(tx)
-      ])
-  );
+  let payouts: Payout[];
+  let allPayments: Payment[];
+  let payoutsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    [payouts, allPayments] = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) =>
+        Promise.all([
+          payments.listPayouts(tx, current.session.userId),
+          payments.listPayments(tx)
+        ])
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    payouts = [];
+    allPayments = [];
+    payoutsUnavailable = true;
+  }
   const supervisorPayments = allPayments.filter(
     (payment) => payment.supervisorId === current.session.userId
   );
@@ -63,6 +79,8 @@ export default async function SupervisorPayoutsPage() {
 
   return (
     <AppShell
+      active="supervisor-payouts"
+      currentUser={current.user}
       action={
         <Button asChild variant="secondary">
           <Link href="/supervisor">슈퍼바이저 업무로 돌아가기</Link>
@@ -81,8 +99,9 @@ export default async function SupervisorPayoutsPage() {
           </CardHeader>
           {payouts.length === 0 ? (
             <p className="rounded-md border border-line bg-surface-sunken p-4 text-sm text-ink-600">
-              아직 산정된 정산 기록이 없습니다. 결제 완료 후 운영자가 정산 기간을
-              산정하면 이곳에 표시됩니다.
+              {payoutsUnavailable
+                ? "현재 정산 내역을 불러오지 못했습니다. 지급 예정과 완료 내역은 연결되면 이 표에 표시됩니다."
+                : "아직 산정된 정산 기록이 없습니다. 결제 완료 후 운영자가 정산 기간을 산정하면 이곳에 표시됩니다."}
             </p>
           ) : (
             <div className="overflow-x-auto">
@@ -122,16 +141,30 @@ export default async function SupervisorPayoutsPage() {
             <div className="grid gap-3 border-y border-line py-4 text-sm">
               <SummaryLine
                 label="이번 달 예정"
-                value={`${payouts
-                  .filter((payout) => payout.status === "scheduled")
-                  .length.toLocaleString("ko-KR")}건`}
+                value={
+                  payoutsUnavailable
+                    ? "확인 필요"
+                    : `${payouts
+                        .filter((payout) => payout.status === "scheduled")
+                        .length.toLocaleString("ko-KR")}건`
+                }
               />
               <SummaryLine
                 label="완료 결제"
-                value={`${paidPayments.length.toLocaleString("ko-KR")}건`}
+                value={
+                  payoutsUnavailable
+                    ? "확인 필요"
+                    : `${paidPayments.length.toLocaleString("ko-KR")}건`
+                }
               />
-              <SummaryLine label="예정 금액" value={formatKrw(scheduledNet)} />
-              <SummaryLine label="누적 순정산" value={formatKrw(totalNet)} />
+              <SummaryLine
+                label="예정 금액"
+                value={payoutsUnavailable ? "확인 필요" : formatKrw(scheduledNet)}
+              />
+              <SummaryLine
+                label="누적 순정산"
+                value={payoutsUnavailable ? "확인 필요" : formatKrw(totalNet)}
+              />
             </div>
 
             <div className="grid gap-2">

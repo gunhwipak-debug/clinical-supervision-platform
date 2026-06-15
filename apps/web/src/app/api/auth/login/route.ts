@@ -1,10 +1,10 @@
-import { auth } from "@csp/db";
+import * as auth from "@csp/db/auth";
 import { verifyPassword } from "@csp/shared/auth/password";
 import type { NextRequest } from "next/server";
 import { z } from "zod";
 import { apiError, envelope } from "@/lib/api/envelope";
 import { createAuthDatabase } from "@/lib/auth/database";
-import { ensureSeededDemoUser, isSeededDemoLogin } from "@/lib/auth/demo-auth";
+import { getSeededDemoLoginUser, isSeededDemoLogin } from "@/lib/auth/demo-auth";
 import { dummyHash } from "@/lib/auth/dummy-hash";
 import { verifyLoginPassword } from "@/lib/auth/login-verification";
 import {
@@ -23,7 +23,8 @@ const loginSchema = z.object({
       .max(320)
       .transform((value) => value.toLowerCase())
   ),
-  password: z.string().min(1).max(1024)
+  password: z.string().min(1).max(1024),
+  returnTo: z.string().max(2048).optional()
 });
 
 type LoginUser = Pick<auth.AuthUser, "id" | "email" | "role">;
@@ -41,24 +42,15 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const db = createAuthDatabase();
-    let user = await auth.findUserByEmail(db, parsed.data.email);
-
     if (isSeededDemoLogin(parsed.data.email, parsed.data.password)) {
-      try {
-        user = await ensureSeededDemoUser(db, parsed.data.email);
-      } catch (error) {
-        console.warn("[auth.login.demo]", describeError(error));
-        return envelope(
-          null,
-          apiError(
-            "server_unavailable",
-            "데모 계정을 준비하지 못했습니다. 잠시 후 다시 시도해주세요."
-          ),
-          503
-        );
+      const demoUser = getSeededDemoLoginUser(parsed.data.email);
+      if (demoUser) {
+        return await createLoginResponse(demoUser, parsed.data.returnTo);
       }
     }
+
+    const db = createAuthDatabase();
+    let user = await auth.findUserByEmail(db, parsed.data.email);
 
     if (
       user &&
@@ -100,7 +92,7 @@ export async function POST(request: NextRequest) {
     await auth.clearLoginFailures(db, user.id);
     await auth.touchLastLogin(db, user.id);
 
-    return await createLoginResponse(user);
+    return await createLoginResponse(user, parsed.data.returnTo);
   } catch (error) {
     console.error("[auth.login]", describeError(error));
     return envelope(
@@ -119,13 +111,16 @@ async function parseJson(request: NextRequest): Promise<unknown> {
   }
 }
 
-async function createLoginResponse(user: LoginUser) {
+async function createLoginResponse(user: LoginUser, returnTo?: string) {
   const { token, payload } = await signSession({
     userId: user.id,
     role: user.role
   });
+  const adminHandoffUrl =
+    user.role === "admin" ? await createAdminHandoffUrl(user, returnTo) : undefined;
   const response = envelope(
     {
+      ...(adminHandoffUrl ? { adminHandoffUrl } : {}),
       user: {
         id: user.id,
         email: user.email,
@@ -142,6 +137,60 @@ async function createLoginResponse(user: LoginUser) {
   response.cookies.set(SESSION_COOKIE_NAME, token, sessionCookieOptions());
 
   return response;
+}
+
+async function createAdminHandoffUrl(
+  user: LoginUser,
+  returnTo: string | undefined
+): Promise<string> {
+  const { token } = await signSession(
+    {
+      userId: user.id,
+      role: "admin"
+    },
+    { ttlMs: 60 * 1000 }
+  );
+  const handoffUrl = new URL("/auth/handoff", adminAppOrigin());
+  handoffUrl.searchParams.set("token", token);
+  handoffUrl.searchParams.set("returnTo", adminReturnPath(returnTo));
+  return handoffUrl.toString();
+}
+
+function adminReturnPath(returnTo: string | undefined): string {
+  if (!returnTo) return "/admin";
+
+  try {
+    if (returnTo.startsWith("/") && !returnTo.startsWith("//")) {
+      return returnTo.startsWith("/admin") ? returnTo : "/admin";
+    }
+
+    const url = new URL(returnTo);
+    if (url.origin === adminAppOrigin() && url.pathname.startsWith("/admin")) {
+      return `${url.pathname}${url.search}${url.hash}`;
+    }
+  } catch {
+    return "/admin";
+  }
+
+  return "/admin";
+}
+
+function adminAppOrigin(): string {
+  const configured =
+    process.env["NEXT_PUBLIC_ADMIN_APP_URL"] ??
+    process.env["NEXT_PUBLIC_ADMIN_URL"] ??
+    "https://clinicflow-admin-six.vercel.app";
+
+  try {
+    const url = new URL(configured);
+    if (url.protocol === "https:" || url.protocol === "http:") {
+      return url.origin;
+    }
+  } catch {
+    return "https://clinicflow-admin-six.vercel.app";
+  }
+
+  return "https://clinicflow-admin-six.vercel.app";
 }
 
 function describeError(error: unknown): string {

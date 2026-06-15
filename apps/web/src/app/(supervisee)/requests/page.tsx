@@ -2,10 +2,16 @@ import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
 import { AppShell } from "../../../components/app-shell";
 import { PrimaryActionPanel, SectionBlock } from "../../../components/clinicflow-shell";
-import { LoginRequiredState } from "../../../components/locked-state";
+import {
+  LoginRequiredState,
+  RoleRequiredState
+} from "../../../components/locked-state";
 import { Button } from "../../../components/ui/button";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
+import { listDemoSuperviseeRequests } from "../../../lib/demo/supervision";
+import { isSupervisee } from "../../../lib/auth/guards";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 import { contextFor } from "../../../lib/supervision/authz";
 
 export const dynamic = "force-dynamic";
@@ -18,30 +24,55 @@ export default async function Page() {
   if (!current) {
     return <LoginRequiredState title="내 슈퍼비전 의뢰" returnTo="/requests" />;
   }
+  const currentShellUser = current.user;
+  if (!isSupervisee(current)) {
+    return (
+      <RoleRequiredState
+        currentUser={currentShellUser}
+        title="내 슈퍼비전 의뢰"
+        description="개인 의뢰는 신청자 작업영역에서 확인합니다. 관리자 계정은 운영 콘솔에서 의뢰 상태를 확인해주세요."
+        actionHref="/admin"
+        actionLabel="운영 콘솔로 이동"
+      />
+    );
+  }
 
-  const db = createRuntimeDatabase();
-  const requests = await withUserContext(db, contextFor(current), (tx) =>
-    supervision.listSupervisionRequests(tx)
-  );
+  let requests: RequestSummary[];
+  let requestsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    requests = await withUserContext(db, contextFor(current), (tx) =>
+      supervision.listSupervisionRequests(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.requests.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    requests = listDemoSuperviseeRequests(current.session.userId);
+    requestsUnavailable = requests.length === 0;
+  }
   const sent = requests.filter(
     (request) => request.superviseeId === current.session.userId
-  );
-  const received = requests.filter(
-    (request) => request.supervisorId === current.session.userId
   );
   const firstSentRequest = sent[0];
 
   return (
     <AppShell
       active="requests"
+      currentUser={currentShellUser}
       title="내 슈퍼비전 의뢰"
       subtitle="진행 중인 의뢰와 다음 행동을 한 줄씩 확인합니다."
     >
       <PrimaryActionPanel
         action={
-          firstSentRequest ? (
+          requestsUnavailable ? undefined : firstSentRequest ? (
             <Button asChild variant="secondary">
-              <Link href={targetHref(firstSentRequest, "sent") as never}>
+              <Link href={`/requests/${firstSentRequest.id}` as never}>
                 첫 의뢰 열기
               </Link>
             </Button>
@@ -52,35 +83,31 @@ export default async function Page() {
           )
         }
         title={
-          sent.length > 0
-            ? "지금 이어볼 의뢰를 먼저 확인합니다"
-            : "첫 의뢰를 시작합니다"
+          requestsUnavailable
+            ? "현재 의뢰 목록을 불러오지 못했습니다"
+            : sent.length > 0
+              ? "지금 이어볼 의뢰를 먼저 확인합니다"
+              : "첫 의뢰를 시작합니다"
         }
       >
-        {sent.length > 0
-          ? "추가 자료 요청, 결제, 피드백 도착처럼 지금 해야 할 일이 있는 의뢰를 위에서부터 확인하세요."
-          : "슈퍼바이저를 선택하면 세션, 일정, 사례 자료 정리 흐름으로 이어집니다."}
+        {requestsUnavailable
+          ? "연결이 복구되면 진행 중인 의뢰, 추가 자료 요청, 결제 상태가 이 목록에 다시 표시됩니다."
+          : sent.length > 0
+            ? "추가 자료 요청, 결제, 피드백 도착처럼 지금 해야 할 일이 있는 의뢰를 위에서부터 확인하세요."
+            : "슈퍼바이저를 선택하면 세션, 일정, 사례 자료 정리 흐름으로 이어집니다."}
       </PrimaryActionPanel>
 
-      <div className="grid gap-8">
-        <RequestSection
-          description="내가 신청한 슈퍼비전의 진행 상태입니다."
-          empty="아직 신청한 슈퍼비전이 없습니다."
-          items={sent}
-          mode="sent"
-          title="신청한 의뢰"
-        />
-
-        {current.user.role === "supervisor" ? (
-          <RequestSection
-            description="슈퍼바이저로 배정되어 확인해야 하는 의뢰입니다."
-            empty="아직 배정받은 의뢰가 없습니다."
-            items={received}
-            mode="received"
-            title="검토할 의뢰"
-          />
-        ) : null}
-      </div>
+      <RequestSection
+        description="내가 신청한 슈퍼비전의 진행 상태입니다."
+        empty={
+          requestsUnavailable
+            ? "현재 의뢰 목록을 불러오지 못했습니다. 신청이 연결되면 진행 상태와 다음 행동이 이곳에 표시됩니다."
+            : "아직 신청한 슈퍼비전이 없습니다."
+        }
+        unavailable={requestsUnavailable}
+        items={sent}
+        title="신청한 의뢰"
+      />
     </AppShell>
   );
 }
@@ -89,18 +116,22 @@ function RequestSection({
   description,
   empty,
   items,
-  mode,
-  title
+  title,
+  unavailable = false
 }: {
   description: string;
   empty: string;
   items: RequestSummary[];
-  mode: "received" | "sent";
   title: string;
+  unavailable?: boolean;
 }) {
   return (
     <SectionBlock
-      subtitle={`${description} ${items.length.toLocaleString("ko-KR")}건`}
+      subtitle={
+        unavailable
+          ? `${description} 현재 목록 확인 필요`
+          : `${description} ${items.length.toLocaleString("ko-KR")}건`
+      }
       title={title}
     >
       {items.length === 0 ? (
@@ -110,10 +141,10 @@ function RequestSection({
       ) : (
         <ul className="grid gap-3">
           {items.map((item) => (
-            <li key={`${mode}-${item.id}`}>
+            <li key={item.id}>
               <Link
                 className="grid gap-4 rounded-xl border border-line bg-surface-elevated p-5 transition-colors hover:border-brand-600 md:grid-cols-[1fr_auto] md:items-center"
-                href={targetHref(item, mode) as never}
+                href={`/requests/${item.id}` as never}
               >
                 <div className="min-w-0">
                   <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-bold">
@@ -128,9 +159,7 @@ function RequestSection({
                     {item.productTitle ?? "슈퍼비전 의뢰"}
                   </h3>
                   <p className="mt-2 text-sm leading-relaxed text-ink-500">
-                    {mode === "received"
-                      ? "사례 자료를 확인하고 수락, 추가 자료 요청, 피드백 정리로 이어갑니다."
-                      : "사례 자료, 결제 상태, 피드백과 학습 기록을 이어서 확인합니다."}
+                    사례 자료, 결제 상태, 피드백과 학습 기록을 이어서 확인합니다.
                   </p>
                   <p className="mt-2 text-xs font-semibold text-ink-500">
                     예약 일정 · {formatBookingSlot(item)}
@@ -141,7 +170,7 @@ function RequestSection({
                 </div>
                 <div className="flex items-center justify-between gap-3 md:justify-end">
                   <span className="text-sm font-bold text-brand-700">
-                    {actionLabel(item.status, mode)}
+                    {actionLabel(item.status)}
                   </span>
                   <span className="material-symbols-outlined text-ink-400">
                     chevron_right
@@ -156,19 +185,7 @@ function RequestSection({
   );
 }
 
-function targetHref(item: RequestSummary, mode: "received" | "sent"): string {
-  return mode === "received"
-    ? `/supervisor/requests/${item.id}`
-    : `/requests/${item.id}`;
-}
-
-function actionLabel(status: string, mode: "received" | "sent"): string {
-  if (mode === "received") {
-    if (status === "awaiting_supervisor_review") return "수락 여부 검토";
-    if (status === "feedback_submitted") return "서명 및 반환";
-    return "의뢰 확인";
-  }
-
+function actionLabel(status: string): string {
   if (status === "feedback_submitted" || status === "completion_record_issued") {
     return "피드백 확인";
   }
@@ -183,6 +200,8 @@ function shortRequestId(id: string): string {
 function formatDate(value: Date | string): string {
   return new Intl.DateTimeFormat("ko-KR", {
     dateStyle: "medium",
+    hourCycle: "h23",
+    timeZone: "Asia/Seoul",
     timeStyle: "short"
   }).format(new Date(value));
 }
@@ -199,6 +218,7 @@ function formatBookingSlot(item: RequestSummary): string {
     year: "numeric"
   }).format(start);
   const time = new Intl.DateTimeFormat("ko-KR", {
+    hourCycle: "h23",
     hour: "2-digit",
     minute: "2-digit",
     timeZone: "Asia/Seoul"
@@ -226,5 +246,5 @@ function statusLabel(status: string): string {
     rejected: "수락되지 않음",
     submitted: "제출됨"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }

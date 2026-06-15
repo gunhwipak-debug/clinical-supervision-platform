@@ -10,6 +10,7 @@ import {
   createRuntimeDatabase,
   getCurrentAdmin
 } from "../../../lib/auth/current-admin";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -33,19 +34,35 @@ export default async function RefundsPage() {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const refunds = await withUserContext(
-    db,
-    {
-      userId: current.session.userId,
-      role: "admin",
-      adminReason: "운영 환불 검토 조회를 위한 처리 사유입니다."
-    },
-    (tx) => payments.listRefundRequests(tx, "requested")
-  );
+  let refunds: payments.RefundRecord[];
+  let refundsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    refunds = await withUserContext(
+      db,
+      {
+        userId: current.session.userId,
+        role: "admin",
+        adminReason: "운영 환불 검토 조회를 위한 처리 사유입니다."
+      },
+      (tx) => payments.listRefundRequests(tx, "requested")
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[admin.refunds.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    refunds = [];
+    refundsUnavailable = true;
+  }
 
   return (
     <AdminShell
+      currentAdmin={{ email: current.user.email }}
       currentPath="/admin/refunds"
       title="환불 검토"
       subtitle="요청 사유, 결제 상태, 진행 단계를 함께 보고 승인 여부를 결정합니다."
@@ -67,7 +84,9 @@ export default async function RefundsPage() {
             <div>
               <dt className="font-bold text-ink-500">검토 대기</dt>
               <dd className="mt-1 text-ink-900">
-                {refunds.length.toLocaleString("ko-KR")}건
+                {refundsUnavailable
+                  ? "확인 필요"
+                  : `${refunds.length.toLocaleString("ko-KR")}건`}
               </dd>
             </div>
             <div>
@@ -103,13 +122,17 @@ export default async function RefundsPage() {
             </p>
           </div>
           <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
-            {refunds.length.toLocaleString("ko-KR")}건
+            {refundsUnavailable
+              ? "확인 필요"
+              : `${refunds.length.toLocaleString("ko-KR")}건`}
           </span>
         </div>
 
         {refunds.length === 0 ? (
           <p className="p-6 text-sm font-semibold text-ink-500">
-            환불 요청이 접수되면 이곳에 표시됩니다.
+            {refundsUnavailable
+              ? "현재 환불 요청을 불러오지 못했습니다. 요청 사유와 연결된 결제 상태는 연결되면 이 목록에 표시됩니다."
+              : "환불 요청이 접수되면 이곳에 표시됩니다."}
           </p>
         ) : (
           <div className="grid divide-y divide-line" aria-label="환불 요청">
@@ -197,7 +220,7 @@ function refundStatusLabel(status: string): string {
     rejected: "반려됨",
     requested: "요청됨"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function paymentStatusLabel(status: string): string {
@@ -209,7 +232,7 @@ function paymentStatusLabel(status: string): string {
     pending: "결제 대기",
     refunded: "환불 완료"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }
 
 function requestStatusLabel(status: string): string {
@@ -232,5 +255,5 @@ function requestStatusLabel(status: string): string {
     rejected: "반려됨",
     submitted: "제출됨"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }

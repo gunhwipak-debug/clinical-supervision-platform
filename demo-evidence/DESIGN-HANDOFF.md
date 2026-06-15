@@ -1,5 +1,7 @@
 # Design Handoff
 
+> Historical reference only. This generated handoff predates the Origin-14 contract and is not the current ClinicFlow design source of truth. Use `docs/ui-ux/clinicflow-origin14-design-system.md` and `docs/ui-ux/clinicflow-current-design-contract.md` for current UI/UX work.
+
 Generated at: 2026-05-21T12:06:15.596Z
 
 This packet is the bridge from the local demo UI to Stitch/Figma redesign work. It keeps code tokens, screenshot evidence, and route priorities in one place so a designer or another agent can start without re-scanning the repo.

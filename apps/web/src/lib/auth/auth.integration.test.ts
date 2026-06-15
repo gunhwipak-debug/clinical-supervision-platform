@@ -1,7 +1,8 @@
 // Docker pgcrypto run: docker run --rm -d -e POSTGRES_PASSWORD=postgres -p 54322:5432 postgres:16 && DOCKER_PG=1 pnpm test
 import { readFileSync } from "node:fs";
 import { PGlite } from "@electric-sql/pglite";
-import { auth, createDatabase, withUserContext } from "@csp/db";
+import { auth, withUserContext } from "@csp/db";
+import { createDatabase } from "@csp/db/client";
 import { issueRandomToken, sha256Hex } from "@csp/shared/auth/tokens";
 import { drizzle } from "drizzle-orm/pglite";
 import { sql, type SQL } from "drizzle-orm";

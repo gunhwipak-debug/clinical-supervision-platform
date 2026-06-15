@@ -7,6 +7,7 @@ import { profiles } from "@csp/db";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
+import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { NewRequestForm } from "./new-request-form";
 
 export default async function Page({
@@ -27,10 +28,12 @@ export default async function Page({
   if (!current) {
     return <LoginRequiredState title="새 슈퍼비전 의뢰" returnTo="/requests/new" />;
   }
+  const currentShellUser = current.user;
 
   if (!isSupervisee(current)) {
     return (
       <RoleRequiredState
+        currentUser={currentShellUser}
         title="새 슈퍼비전 의뢰"
         description="새 의뢰는 신청자 계정에서 진행합니다. 슈퍼바이저 계정은 업무 화면에서 배정된 의뢰를 검토합니다."
         actionHref="/supervisor"
@@ -47,6 +50,8 @@ export default async function Page({
 
   return (
     <AppShell
+      active="request-new"
+      currentUser={current.user}
       title="새 슈퍼비전 의뢰"
       subtitle="슈퍼바이저, 세션, 일정을 확인한 뒤 사례 자료를 정리하고 최종 확인으로 이어갑니다."
     >
@@ -90,7 +95,20 @@ async function loadSelectionSummary(
   }
 
   const db = createRuntimeDatabase();
-  const supervisor = await profiles.getPublicSupervisorDetails(db, supervisorId);
+  let supervisor: Awaited<ReturnType<typeof profiles.getPublicSupervisorDetails>>;
+  try {
+    supervisor = await profiles.getPublicSupervisorDetails(db, supervisorId);
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.requests-new.selection.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    supervisor = null;
+  }
   const products = Array.isArray(supervisor?.serviceProducts)
     ? (supervisor.serviceProducts as ProductSummary[])
     : [];

@@ -1,20 +1,53 @@
 import { notifications, withUserContext } from "@csp/db";
 import { AppShell } from "@/components/app-shell";
-import { LoginRequiredState } from "@/components/locked-state";
+import { LoginRequiredState, RoleRequiredState } from "@/components/locked-state";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
+import { isSupervisee } from "@/lib/auth/guards";
+import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
+
+type NotificationItem = Awaited<
+  ReturnType<typeof notifications.listNotifications>
+>[number];
 
 export default async function NotificationsPage() {
   const current = await getCurrentUser();
   if (!current) {
     return <LoginRequiredState title="알림" returnTo="/notifications" />;
   }
+  const currentShellUser = current.user;
+  if (!isSupervisee(current)) {
+    return (
+      <RoleRequiredState
+        currentUser={currentShellUser}
+        title="알림"
+        description="개인 알림은 신청자 또는 슈퍼바이저 작업영역에서 확인합니다. 관리자 계정은 운영 콘솔을 사용해주세요."
+        actionHref="/admin"
+        actionLabel="운영 콘솔로 이동"
+      />
+    );
+  }
 
-  const db = createRuntimeDatabase();
-  const items = await withUserContext(db, contextFor(current), (tx) =>
-    notifications.listNotifications(tx, current.session.userId)
-  );
+  let items: NotificationItem[];
+  let notificationsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    items = await withUserContext(db, contextFor(current), (tx) =>
+      notifications.listNotifications(tx, current.session.userId)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.notifications.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    items = [];
+    notificationsUnavailable = true;
+  }
   const actionableItems = items.filter((item) => item.payload.href);
   const passiveItems = items.filter((item) => !item.payload.href);
   const primaryItem = actionableItems[0];
@@ -22,14 +55,36 @@ export default async function NotificationsPage() {
 
   return (
     <AppShell
+      active="notifications"
+      currentUser={currentShellUser}
       title="알림"
       subtitle="먼저 확인할 알림만 위에 두고, 나머지는 기록으로 남깁니다."
     >
       <section className="grid gap-5">
         {items.length === 0 ? (
-          <div className="rounded-xl border border-line bg-surface-elevated p-6 text-sm text-ink-500">
-            아직 표시할 알림이 없습니다.
-          </div>
+          <>
+            <section className="rounded-xl border border-line bg-surface-elevated p-5">
+              <p className="text-sm font-bold text-brand-700">지금 확인할 알림</p>
+              <p className="mt-3 text-base font-bold text-ink-900">
+                {notificationsUnavailable
+                  ? "현재 알림을 불러오지 못했습니다"
+                  : "지금 확인할 알림은 없습니다"}
+              </p>
+              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+                {notificationsUnavailable
+                  ? "연결이 복구되면 추가 자료 요청, 결제, 피드백 도착 알림이 이곳에 표시됩니다."
+                  : "의뢰 상태가 바뀌거나 추가 자료 요청이 오면 이 목록에 한 줄씩 표시됩니다."}
+              </p>
+            </section>
+            <section className="rounded-xl border border-line bg-surface-elevated">
+              <div className="border-b border-line px-5 py-4">
+                <h2 className="text-lg font-bold text-ink-900">알림 기록</h2>
+              </div>
+              <p className="px-5 py-4 text-sm leading-relaxed text-ink-500">
+                아직 기록으로 남길 알림이 없습니다.
+              </p>
+            </section>
+          </>
         ) : (
           <>
             {primaryItem ? (

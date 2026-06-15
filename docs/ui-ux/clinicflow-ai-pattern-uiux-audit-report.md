@@ -1,5 +1,7 @@
 # ClinicFlow AI-Pattern UI/UX Audit Report
 
+> Historical evidence. This audit informed the current Origin-14 contract, but it is not the active design source of truth.
+
 작성일: 2026-06-14
 
 대상:

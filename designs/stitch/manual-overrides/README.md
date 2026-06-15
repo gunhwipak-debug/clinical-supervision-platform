@@ -1,11 +1,11 @@
 # Stitch Manual Overrides
 
-This folder preserves the user-selected Stitch HTML samples that must be treated
-as the visual source of truth for the next functional wiring pass.
+This folder preserves historical user-selected Stitch HTML samples. They were
+used for an older functional wiring pass and must not be treated as the current
+visual source of truth.
 
-Do not edit these files while implementing route JSX. If a route needs code
-changes, copy structure and classes from these HTML files into the relevant
-React component and document any unavoidable backend-driven deviation in:
+Do not use these files for current ClinicFlow UI work. If a future historical
+comparison requires them, document any finding in:
 
 `docs/decisions/STITCH-FUNCTIONAL-MAPPING.md`
 
@@ -18,4 +18,3 @@ React component and document any unavoidable backend-driven deviation in:
 | `new-request.html` | `/requests/new` |
 | `availability-calendar.html` | `/supervisor/availability`, public supervisor booking slots |
 | `work-surface.html` | `/supervisor/requests/[id]` |
-

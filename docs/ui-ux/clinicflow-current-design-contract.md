@@ -1,5 +1,35 @@
 # ClinicFlow Current Design Contract
 
+## Authority
+
+이 문서는 현재 ClinicFlow 디자인 계약입니다. 14개 Origin PNG가 현재 시각 기준이며, 44/46 route evidence는 구현 증거이지 새로운 디자인 source가 아닙니다.
+
+Active source-of-truth hierarchy:
+
+1. `AGENTS.md`
+2. `docs/ui-ux/clinicflow-origin14-design-system.md`
+3. `docs/ui-ux/clinicflow-current-design-contract.md`
+4. `docs/ui-ux/clinicflow-route-alignment-manifest.md`
+5. `docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md`
+6. `scripts/clinicflow-origin14-guard.mjs`
+7. `demo-evidence/rebuild-tech-ui/SCREENSHOT_MANIFEST.md`
+8. `demo-evidence/rebuild-tech-ui/README.md`
+
+과거 audit/report는 판단 참고자료이지 현재 지시가 아닙니다. 특히 아래 문서는 superseded 또는 historical reference입니다.
+
+- `docs/_archive/2026-06-15/old-prompts/codex-piped-quiche.md`
+- `demo-evidence/DESIGN-HANDOFF.md`
+- `demo-evidence/DESIGN-HANDOFF.json`
+- `demo-evidence/STITCH-PROMPTS.md`
+- `demo-evidence/STITCH-PROMPTS.json`
+- `designs/stitch/**`
+- `docs/_archive/2026-06-15/legacy-deployment/NETLIFY_DEPLOYMENT.md`
+- `demo-evidence/user-journey-audit/**`
+- `demo-evidence/role-matrix-audit/**`
+- `demo-evidence/interaction-audit/**`
+
+archived 또는 historical 문서가 active source와 충돌하면 active source가 우선합니다.
+
 ## 기준면
 
 최상위 기준 디자인은 `demo-evidence/rebuild-tech-ui/all-pages-20260614-0400`에 있는 14개 승인 PNG입니다.

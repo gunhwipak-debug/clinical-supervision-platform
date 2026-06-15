@@ -75,6 +75,7 @@ export type Specialty = {
 };
 
 export type ProductInput = {
+  active?: boolean;
   kind: ServiceProductKind;
   title: string;
   description: string | null;
@@ -596,14 +597,16 @@ export async function createProduct(
       title,
       description,
       price_krw,
-      turnaround_hours
+      turnaround_hours,
+      active
     ) values (
       ${input.supervisorProfileId},
       ${input.kind},
       ${input.title},
       ${input.description},
       ${input.priceKrw},
-      ${input.turnaroundHours}
+      ${input.turnaroundHours},
+      ${input.active ?? true}
     )
     returning
       id,
@@ -625,10 +628,67 @@ export async function createProduct(
   return product;
 }
 
+export async function upsertProductByKind(
+  db: ProfileDatabase,
+  input: ProductInput & { supervisorProfileId: string }
+): Promise<Product> {
+  const active = input.active ?? true;
+  const existingResult = await db.execute(sql`
+    select id
+    from service_products
+    where supervisor_profile_id = ${input.supervisorProfileId}
+      and kind = ${input.kind}
+    order by created_at desc
+    limit 1
+  `);
+  const existing = rowsOf<{ id: string }>(existingResult)[0];
+
+  if (!existing) {
+    return createProduct(db, input);
+  }
+
+  await db.execute(sql`
+    update service_products
+    set active = false
+    where supervisor_profile_id = ${input.supervisorProfileId}
+      and kind = ${input.kind}
+      and id <> ${existing.id}
+  `);
+
+  const result = await db.execute(sql`
+    update service_products
+    set
+      title = ${input.title},
+      description = ${input.description},
+      price_krw = ${input.priceKrw},
+      turnaround_hours = ${input.turnaroundHours},
+      active = ${active}
+    where id = ${existing.id}
+    returning
+      id,
+      supervisor_profile_id as "supervisorProfileId",
+      kind,
+      title,
+      description,
+      price_krw as "priceKrw",
+      turnaround_hours as "turnaroundHours",
+      active,
+      created_at as "createdAt"
+  `);
+  const product = rowsOf<Product>(result)[0];
+
+  if (!product) {
+    throw new Error("Failed to update product by kind");
+  }
+
+  return product;
+}
+
 export async function updateProduct(
   db: ProfileDatabase,
   input: ProductInput & { userId: string; productId: string }
 ): Promise<Product | null> {
+  const active = input.active ?? null;
   const result = await db.execute(sql`
     update service_products p
     set
@@ -636,7 +696,8 @@ export async function updateProduct(
       title = ${input.title},
       description = ${input.description},
       price_krw = ${input.priceKrw},
-      turnaround_hours = ${input.turnaroundHours}
+      turnaround_hours = ${input.turnaroundHours},
+      active = coalesce(${active}, p.active)
     from supervisor_profiles sp
     where sp.id = p.supervisor_profile_id
       and sp.user_id = ${input.userId}

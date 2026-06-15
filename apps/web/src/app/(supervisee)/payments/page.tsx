@@ -5,7 +5,6 @@ import { AppShell } from "../../../components/app-shell";
 import { FlowStepNav } from "../../../components/clinicflow-shell";
 import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
-import { EmptyState } from "../../../components/ui/state";
 import {
   LoginRequiredState,
   RoleRequiredState
@@ -13,6 +12,7 @@ import {
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
+import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
 
 export const dynamic = "force-dynamic";
@@ -24,9 +24,11 @@ export default async function PaymentsPage() {
   if (!current) {
     return <LoginRequiredState title="결제 내역" returnTo="/payments" />;
   }
+  const currentShellUser = current.user;
   if (!isSupervisee(current)) {
     return (
       <RoleRequiredState
+        currentUser={currentShellUser}
         title="결제 내역"
         description="결제 내역은 신청자 계정에서 확인합니다."
         actionHref="/supervisor"
@@ -35,10 +37,25 @@ export default async function PaymentsPage() {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const allPayments = await withUserContext(db, contextFor(current), (tx) =>
-    payments.listPayments(tx)
-  );
+  let allPayments: PaymentRecord[];
+  let paymentsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    allPayments = await withUserContext(db, contextFor(current), (tx) =>
+      payments.listPayments(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[supervisee.payments.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    allPayments = [];
+    paymentsUnavailable = true;
+  }
   const ownPayments = allPayments.filter(
     (payment) => payment.superviseeId === current.session.userId
   );
@@ -49,6 +66,8 @@ export default async function PaymentsPage() {
 
   return (
     <AppShell
+      active="payments"
+      currentUser={current.user}
       title="결제 내역"
       subtitle="내가 신청한 슈퍼비전 결제, 환불, 영수증 상태를 확인합니다."
     >
@@ -63,15 +82,27 @@ export default async function PaymentsPage() {
         ]}
       />
       {ownPayments.length === 0 ? (
-        <EmptyState
-          title="아직 결제 내역이 없습니다"
-          description="슈퍼바이저 프로필에서 일정과 슈퍼비전 방식을 선택해 의뢰를 만들면 결제 내역이 이곳에 표시됩니다."
-          action={
-            <Button asChild>
-              <Link href="/supervisors">슈퍼바이저 찾기</Link>
-            </Button>
-          }
-        />
+        <section className="overflow-hidden rounded-2xl border border-line bg-surface-elevated">
+          <div className="grid gap-2 px-5 py-6">
+            <p className="text-lg font-bold text-ink-900">
+              {paymentsUnavailable
+                ? "현재 결제 내역을 불러오지 못했습니다"
+                : "아직 결제 내역이 없습니다"}
+            </p>
+            <p className="break-keep text-sm leading-relaxed text-ink-500">
+              {paymentsUnavailable
+                ? "신청이 연결되면 결제 상태와 영수증 내역이 이 목록에 한 줄씩 표시됩니다."
+                : "슈퍼바이저 프로필에서 일정과 슈퍼비전 방식을 선택해 의뢰를 만들면 결제 내역이 이곳에 표시됩니다."}
+            </p>
+            {!paymentsUnavailable ? (
+              <div className="pt-2">
+                <Button asChild>
+                  <Link href="/supervisors">슈퍼바이저 찾기</Link>
+                </Button>
+              </div>
+            ) : null}
+          </div>
+        </section>
       ) : (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid gap-5">
@@ -241,9 +272,11 @@ function formatDate(value: Date | string): string {
   if (Number.isNaN(date.getTime())) return "날짜 확인 필요";
   return new Intl.DateTimeFormat("ko-KR", {
     day: "numeric",
+    hourCycle: "h23",
     hour: "2-digit",
     minute: "2-digit",
     month: "short",
+    timeZone: "Asia/Seoul",
     year: "numeric"
   }).format(date);
 }

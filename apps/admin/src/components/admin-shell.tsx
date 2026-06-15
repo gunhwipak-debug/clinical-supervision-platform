@@ -1,15 +1,17 @@
 import { ArrowRight } from "lucide-react";
+import { AdminAccountMenu } from "./admin-account-menu";
 
-const navItems = [
-  { href: "/admin", label: "운영 홈" },
+const adminShellLinks = [
+  { href: "/admin", label: "운영 처리 목록" },
   { href: "/admin/queue", label: "운영 대기열" },
   { href: "/admin/qualifications", label: "자격 심사" },
-  { href: "/admin/refunds", label: "환불 심사" },
+  { href: "/admin/refunds", label: "환불 검토" },
   { href: "/admin/payouts", label: "정산 확인" },
   { href: "/admin/audit", label: "처리 기록" }
 ] as const;
 
 export function AdminShell({
+  currentAdmin,
   currentPath,
   eyebrow,
   primaryAction,
@@ -17,6 +19,9 @@ export function AdminShell({
   subtitle,
   children
 }: {
+  currentAdmin?: {
+    email: string;
+  };
   currentPath?: string;
   eyebrow?: string;
   primaryAction?: {
@@ -30,32 +35,41 @@ export function AdminShell({
   return (
     <main className="min-h-screen bg-surface-base">
       <div className="bg-surface-base px-4 py-3">
-        <div className="mx-auto flex max-w-6xl flex-col gap-4 rounded-[18px] border border-line bg-surface-elevated px-5 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:flex-row lg:items-center lg:justify-between">
+        <div className="mx-auto grid max-w-6xl gap-4 rounded-[18px] border border-line bg-surface-elevated px-5 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center">
           <a className="flex items-center gap-3 font-bold text-ink-900" href="/">
             <span className="size-4 rounded-full bg-ink-900" aria-hidden="true" />
             <span>
               <span className="block text-base">ClinicFlow 운영</span>
             </span>
           </a>
-          <nav
-            className="flex flex-wrap gap-2 text-sm font-semibold text-ink-700"
-            aria-label="운영 메뉴"
-          >
-            {navItems.map((item) => (
-              <a
-                aria-current={currentPath === item.href ? "page" : undefined}
-                className={`rounded-md px-3 py-2 transition ${
-                  currentPath === item.href
-                    ? "bg-brand-50 text-brand-700"
-                    : "text-ink-600 hover:bg-surface-sunken hover:text-ink-900"
-                }`}
-                href={item.href}
-                key={item.href}
-              >
-                {item.label}
-              </a>
-            ))}
-          </nav>
+          {currentAdmin ? (
+            <nav
+              aria-label="관리자 메뉴"
+              className="hide-scrollbar -mx-1 flex gap-1 overflow-x-auto px-1 text-sm font-bold"
+            >
+              {adminShellLinks.map((item) => (
+                <a
+                  aria-current={currentPath === item.href ? "page" : undefined}
+                  className={`whitespace-nowrap rounded-md px-3 py-2 transition ${
+                    currentPath === item.href
+                      ? "bg-brand-50 text-brand-700"
+                      : "text-ink-600 hover:bg-surface-sunken hover:text-ink-900"
+                  }`}
+                  href={item.href}
+                  key={item.href}
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+          ) : null}
+          {currentAdmin ? (
+            <AdminAccountMenu currentPath={currentPath} email={currentAdmin.email} />
+          ) : (
+            <span className="rounded-md bg-surface-sunken px-3 py-2 text-sm font-bold text-ink-500">
+              관리자 화면
+            </span>
+          )}
         </div>
       </div>
 
@@ -147,9 +161,12 @@ export function AdminLockedState({
   title: string;
 }) {
   const webOrigin =
-    process.env["NEXT_PUBLIC_WEB_APP_URL"] ?? "https://clinicflow-web-beta.vercel.app";
+    process.env["NEXT_PUBLIC_WEB_APP_URL"] ??
+    process.env["NEXT_PUBLIC_WEB_URL"] ??
+    "https://clinicflow-web-beta.vercel.app";
   const adminOrigin =
     process.env["NEXT_PUBLIC_ADMIN_APP_URL"] ??
+    process.env["NEXT_PUBLIC_ADMIN_URL"] ??
     "https://clinicflow-admin-six.vercel.app";
   const loginHref = `${webOrigin}/login?returnTo=${encodeURIComponent(
     `${adminOrigin}${returnPath}`

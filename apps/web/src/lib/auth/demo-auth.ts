@@ -1,4 +1,5 @@
-import { auth, withUserContext } from "@csp/db";
+import * as auth from "@csp/db/auth";
+import { withUserContext } from "@csp/db/context";
 import {
   DEMO_AUTH_ACCOUNTS,
   DEMO_PASSWORD,
@@ -23,8 +24,43 @@ const DEMO_AUTH_BY_EMAIL: ReadonlyMap<string, DemoAuthAccount> = new Map(
   ])
 );
 
+const DEMO_AUTH_BY_ID: ReadonlyMap<string, DemoAuthAccount> = new Map(
+  DEMO_AUTH_ACCOUNTS.map((account): [string, DemoAuthAccount] => [account.id, account])
+);
+
 export function isSeededDemoLogin(email: string, password: string): boolean {
   return DEMO_AUTH_BY_EMAIL.has(email) && password === DEMO_PASSWORD;
+}
+
+export function getSeededDemoLoginUser(
+  email: string
+): Pick<auth.AuthUser, "id" | "email" | "role"> | null {
+  const account = DEMO_AUTH_BY_EMAIL.get(email);
+  if (!account) return null;
+
+  return {
+    email: account.email,
+    id: account.id,
+    role: account.role
+  };
+}
+
+export function getSeededDemoSessionUser(
+  userId: string,
+  role: auth.AuthUser["role"]
+): auth.TotpUser | null {
+  const account = DEMO_AUTH_BY_ID.get(userId);
+  if (!account || account.role !== role) return null;
+
+  return {
+    email: account.email,
+    id: account.id,
+    passwordChangedAt: null,
+    role: account.role,
+    status: "active",
+    totpEnabled: account.totpEnabled,
+    totpSecretEnc: null
+  };
 }
 
 export async function ensureSeededDemoUser(

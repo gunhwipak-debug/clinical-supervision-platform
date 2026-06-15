@@ -36,6 +36,7 @@ export type VerifySessionOptions = {
 export type SignSessionOptions = {
   now?: Date;
   secret?: string;
+  ttlMs?: number;
 };
 
 export type RotateSessionResult = {
@@ -53,7 +54,7 @@ export async function signSession(
     userId: input.userId,
     role: input.role,
     issuedAt: now,
-    expiresAt: now + SESSION_TTL_MS,
+    expiresAt: now + (options.ttlMs ?? SESSION_TTL_MS),
     sessionId: input.sessionId ?? crypto.randomUUID()
   };
 

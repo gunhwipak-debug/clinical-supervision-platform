@@ -1,7 +1,6 @@
 export * as auth from "./auth";
 export * as audit from "./audit";
 export * as calendar from "./calendar";
-export { closeDevDatabase, createDatabase, type Database } from "./client";
 export * as files from "./files";
 export * as notifications from "./notifications";
 export * as ops from "./ops";

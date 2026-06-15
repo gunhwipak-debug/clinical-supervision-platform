@@ -1,9 +1,11 @@
 # Stitch Pixel Transposition
 
+> Historical pixel transposition note. The statement below is superseded: current UI work follows Origin-14, not Stitch HTML exports.
+
 ## Scope
 
-This pass treats `designs/stitch/stitch_clinical_trust_auth_redesign/*/code.html`
-as the visual source of truth. Backend routes, API handlers, database queries,
+This historical pass treated `designs/stitch/stitch_clinical_trust_auth_redesign/*/code.html`
+as source material for pixel transposition. Current work follows Origin-14. Backend routes, API handlers, database queries,
 RLS policies, `withUserContext`, `phiAccess`, zod schemas, and status-machine
 logic were not changed.
 

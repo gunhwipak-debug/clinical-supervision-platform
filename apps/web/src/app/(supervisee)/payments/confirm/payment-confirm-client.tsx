@@ -5,6 +5,7 @@ import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "../../../../components/app-shell";
+import type { AppShellUser } from "../../../../components/app-navigation";
 import {
   FlowStepNav,
   PrimaryActionPanel,
@@ -16,10 +17,12 @@ type ConfirmState = "checking" | "success" | "failed";
 
 export function PaymentConfirmClient({
   amount,
+  currentUser,
   paymentId,
   paymentKey
 }: {
   amount: string;
+  currentUser: AppShellUser | null;
   paymentId: string;
   paymentKey: string;
 }) {
@@ -78,7 +81,12 @@ export function PaymentConfirmClient({
     ) : undefined;
 
   return (
-    <AppShell title="결제 결과 확인" subtitle="결제가 의뢰와 연결되는지 확인합니다.">
+    <AppShell
+      active="payments"
+      {...(currentUser ? { currentUser } : {})}
+      title="결제 결과 확인"
+      subtitle="결제가 의뢰와 연결되는지 확인합니다."
+    >
       <FlowStepNav
         current="확인·결제"
         steps={[

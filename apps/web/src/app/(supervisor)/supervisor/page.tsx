@@ -9,6 +9,8 @@ import {
 } from "../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
 import { getCurrentUser } from "../../../lib/auth/current-user";
+import { listDemoSupervisorRequests } from "../../../lib/demo/supervision";
+import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +27,7 @@ export default async function Page() {
   if (current.user.role !== "supervisor") {
     return (
       <RoleRequiredState
+        currentUser={current.user}
         title="슈퍼바이저 업무"
         description="이 화면은 슈퍼바이저 계정에서만 사용할 수 있습니다."
         actionHref="/requests"
@@ -33,17 +36,31 @@ export default async function Page() {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const [requests, profile, availability] = await withUserContext(
-    db,
-    { userId: current.session.userId, role: current.session.role },
-    async (tx) =>
-      Promise.all([
-        supervision.listSupervisionRequests(tx),
-        profiles.getSupervisorProfileByUserId(tx, current.session.userId),
-        profiles.listAvailability(tx, current.session.userId)
-      ])
-  );
+  let requests: SupervisorRequestItem[];
+  let profile: profiles.SupervisorProfile | null;
+  let availability: profiles.AvailabilitySlot[];
+
+  try {
+    const db = createRuntimeDatabase();
+    [requests, profile, availability] = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      async (tx) =>
+        Promise.all([
+          supervision.listSupervisionRequests(tx),
+          profiles.getSupervisorProfileByUserId(tx, current.session.userId),
+          profiles.listAvailability(tx, current.session.userId)
+        ])
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    requests = listDemoSupervisorRequests(current.session.userId);
+    profile = null;
+    availability = [];
+  }
 
   const assigned = requests.filter(
     (request) => request.supervisorId === current.session.userId
@@ -55,6 +72,7 @@ export default async function Page() {
 
   return (
     <AppShell
+      currentUser={current.user}
       action={
         <Button asChild>
           <Link
@@ -297,5 +315,5 @@ function statusLabel(status: string): string {
     rejected: "수락되지 않음",
     cancelled: "취소"
   };
-  return labels[status] ?? status;
+  return labels[status] ?? "상태 확인 필요";
 }

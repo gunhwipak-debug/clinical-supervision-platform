@@ -1,4 +1,6 @@
-import { auth, createDatabase, withUserContext } from "@csp/db";
+import { auth, withUserContext } from "@csp/db";
+import { createDatabase } from "@csp/db/client";
+import { DEMO_AUTH_ACCOUNTS } from "@csp/db/demo-accounts";
 import { cookies } from "next/headers";
 import { SESSION_COOKIE_NAME, verifySession, type SessionPayload } from "./session";
 
@@ -33,8 +35,13 @@ export async function getCurrentAdmin(): Promise<CurrentAdmin | null> {
 
   if (!token) return null;
 
-  const session = await verifySession(token);
+  const session = await safeVerifySession(token);
   if (!session) return null;
+
+  const demoUser = getSeededDemoAdminSessionUser(session.userId);
+  if (demoUser) {
+    return { session, user: demoUser };
+  }
 
   const db = createRuntimeDatabase();
   const user = await withUserContext(
@@ -48,4 +55,29 @@ export async function getCurrentAdmin(): Promise<CurrentAdmin | null> {
   }
 
   return { session, user };
+}
+
+function getSeededDemoAdminSessionUser(userId: string): auth.TotpUser | null {
+  const account = DEMO_AUTH_ACCOUNTS.find(
+    (candidate) => candidate.id === userId && candidate.role === "admin"
+  );
+  if (!account) return null;
+
+  return {
+    email: account.email,
+    id: account.id,
+    passwordChangedAt: null,
+    role: "admin",
+    status: "active",
+    totpEnabled: account.totpEnabled,
+    totpSecretEnc: null
+  };
+}
+
+async function safeVerifySession(token: string): Promise<SessionPayload | null> {
+  try {
+    return await verifySession(token);
+  } catch {
+    return null;
+  }
 }

@@ -2,6 +2,7 @@ import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
 import { AdminCard, AdminDarkPanel, AdminLockedState, AdminShell } from "./admin-shell";
 import { createRuntimeDatabase, getCurrentAdmin } from "../lib/auth/current-admin";
+import { isMissingDatabaseRelation } from "../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
 
@@ -29,20 +30,44 @@ export async function AdminHomePage() {
     );
   }
 
-  const db = createRuntimeDatabase();
-  const stats = await withUserContext(
-    db,
-    {
-      userId: current.session.userId,
-      role: "admin",
-      adminReason: "운영 홈 조회를 위한 처리 사유입니다."
-    },
-    (tx) => operationalCounts(tx)
-  );
-  const items = buildHomeItems(stats);
+  let stats: {
+    pendingQualifications: number;
+    requestedRefunds: number;
+    scheduledPayouts: number;
+  };
+  let statsUnavailable = false;
+  try {
+    const db = createRuntimeDatabase();
+    stats = await withUserContext(
+      db,
+      {
+        userId: current.session.userId,
+        role: "admin",
+        adminReason: "운영 홈 조회를 위한 처리 사유입니다."
+      },
+      (tx) => operationalCounts(tx)
+    );
+  } catch (error) {
+    if (!isMissingDatabaseRelation(error)) {
+      throw error;
+    }
+
+    console.warn(
+      "[admin.home.page.demo-fallback]",
+      "rendering fallback because the local database schema is unavailable."
+    );
+    stats = {
+      pendingQualifications: 0,
+      requestedRefunds: 0,
+      scheduledPayouts: 0
+    };
+    statsUnavailable = true;
+  }
+  const items = buildHomeItems(stats, statsUnavailable);
 
   return (
     <AdminShell
+      currentAdmin={{ email: current.user.email }}
       currentPath="/admin"
       eyebrow="운영 대기"
       primaryAction={{
@@ -127,56 +152,77 @@ function prioritizedAction(items: [HomeQueueItem, ...HomeQueueItem[]]): HomeQueu
   return items.find((item) => item.active) ?? items[0];
 }
 
-function buildHomeItems(stats: {
-  pendingQualifications: number;
-  requestedRefunds: number;
-  scheduledPayouts: number;
-}): [HomeQueueItem, HomeQueueItem, HomeQueueItem] {
+function buildHomeItems(
+  stats: {
+    pendingQualifications: number;
+    requestedRefunds: number;
+    scheduledPayouts: number;
+  },
+  unavailable = false
+): [HomeQueueItem, HomeQueueItem, HomeQueueItem] {
   return [
     {
       href: "/admin/qualifications",
       label: "자격 심사",
-      title:
-        stats.pendingQualifications > 0
+      title: unavailable
+        ? "자격 심사 항목 확인 필요"
+        : stats.pendingQualifications > 0
           ? `${stats.pendingQualifications.toLocaleString("ko-KR")}건 자격 심사 대기`
           : "새 자격 심사 없음",
-      description:
-        stats.pendingQualifications > 0
+      description: unavailable
+        ? "연결되면 임상심리전문가 증빙과 공개 프로필 확인 항목이 표시됩니다."
+        : stats.pendingQualifications > 0
           ? "임상심리전문가 증빙과 공개 프로필 확인 필요"
           : "지금은 새 슈퍼바이저 자격 요청이 없습니다.",
       owner: "운영자",
-      statusLabel: stats.pendingQualifications > 0 ? "심사 필요" : "대기 없음",
-      active: stats.pendingQualifications > 0
+      statusLabel: unavailable
+        ? "확인 필요"
+        : stats.pendingQualifications > 0
+          ? "심사 필요"
+          : "대기 없음",
+      active: unavailable || stats.pendingQualifications > 0
     },
     {
       href: "/admin/refunds",
       label: "환불",
-      title:
-        stats.requestedRefunds > 0
+      title: unavailable
+        ? "환불 요청 확인 필요"
+        : stats.requestedRefunds > 0
           ? `${stats.requestedRefunds.toLocaleString("ko-KR")}건 환불 요청 검토`
           : "새 환불 요청 없음",
-      description:
-        stats.requestedRefunds > 0
+      description: unavailable
+        ? "연결되면 환불 요청 사유와 결제 상태가 표시됩니다."
+        : stats.requestedRefunds > 0
           ? "세션 취소 사유와 결제 시간을 함께 확인"
           : "검토 중인 환불 요청이 없어 다음 대기열로 넘어갈 수 있습니다.",
       owner: "결제",
-      statusLabel: stats.requestedRefunds > 0 ? "검토 필요" : "대기 없음",
-      active: stats.requestedRefunds > 0
+      statusLabel: unavailable
+        ? "확인 필요"
+        : stats.requestedRefunds > 0
+          ? "검토 필요"
+          : "대기 없음",
+      active: unavailable || stats.requestedRefunds > 0
     },
     {
       href: "/admin/payouts",
       label: "정산",
-      title:
-        stats.scheduledPayouts > 0
+      title: unavailable
+        ? "지급 확인 항목 확인 필요"
+        : stats.scheduledPayouts > 0
           ? `${stats.scheduledPayouts.toLocaleString("ko-KR")}건 지급 확인 대기`
           : "새 지급 확인 없음",
-      description:
-        stats.scheduledPayouts > 0
+      description: unavailable
+        ? "연결되면 지급 예정 금액과 보류 사유가 표시됩니다."
+        : stats.scheduledPayouts > 0
           ? "지급 예정 금액과 보류 사유 산출 완료"
           : "이번 배치에서 추가 지급 확인이 필요한 항목이 없습니다.",
       owner: "정산",
-      statusLabel: stats.scheduledPayouts > 0 ? "확인 필요" : "대기 없음",
-      active: stats.scheduledPayouts > 0
+      statusLabel: unavailable
+        ? "확인 필요"
+        : stats.scheduledPayouts > 0
+          ? "확인 필요"
+          : "대기 없음",
+      active: unavailable || stats.scheduledPayouts > 0
     }
   ];
 }
@@ -186,7 +232,7 @@ async function operationalCounts(db: StatsDatabase) {
     select
       (select count(*)::int from qualifications where status = 'pending') as "pendingQualifications",
       (select count(*)::int from refunds where status = 'requested') as "requestedRefunds",
-      (select count(*)::int from payouts where status = 'scheduled') as "scheduledPayouts",
+      (select count(*)::int from payouts where status = 'scheduled') as "scheduledPayouts"
   `);
   return (
     rowsOf<{

@@ -1,5 +1,7 @@
 # ClinicFlow Origin-14 Completion Audit
 
+> Historical evidence. This completion audit is retained for traceability, not as a replacement for the active Origin-14 design system or route alignment manifest.
+
 Date: 2026-06-15
 
 ## Scope

@@ -1,6 +1,8 @@
-import { auth, withUserContext } from "@csp/db";
+import * as auth from "@csp/db/auth";
+import { withUserContext } from "@csp/db/context";
 import { cookies } from "next/headers";
 import { createRuntimeDatabase } from "./database";
+import { getSeededDemoSessionUser } from "./demo-auth";
 import { SESSION_COOKIE_NAME, verifySession, type SessionPayload } from "./session";
 
 export type CurrentUser = {
@@ -16,9 +18,14 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
     return null;
   }
 
-  const payload = await verifySession(token);
+  const payload = await safeVerifySession(token);
   if (!payload) {
     return null;
+  }
+
+  const demoUser = getSeededDemoSessionUser(payload.userId, payload.role);
+  if (demoUser) {
+    return { session: payload, user: demoUser };
   }
 
   const db = createRuntimeDatabase();
@@ -44,4 +51,12 @@ export async function getCurrentUser(): Promise<CurrentUser | null> {
   }
 
   return { session: payload, user };
+}
+
+async function safeVerifySession(token: string): Promise<SessionPayload | null> {
+  try {
+    return await verifySession(token);
+  } catch {
+    return null;
+  }
 }

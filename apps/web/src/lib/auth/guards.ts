@@ -9,7 +9,7 @@ export function isSupervisor(user: CurrentUser | null): user is CurrentUser {
 }
 
 export function isSupervisee(user: CurrentUser | null): user is CurrentUser {
-  return user?.user.role === "supervisee" || user?.user.role === "supervisor";
+  return user?.user.role === "supervisee";
 }
 
 export function isAdminWithTotp(user: CurrentUser | null): user is CurrentUser {
