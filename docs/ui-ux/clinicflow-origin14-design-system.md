@@ -1,12 +1,14 @@
 # ClinicFlow Origin-14 Design System
 
-Status: Binding UI/UX standard  
-Source: `demo-evidence/rebuild-tech-ui/all-pages-20260614-0400` and `demo-evidence/rebuild-tech-ui/clinicflow-tech-preview.html`  
+Status: Binding UI/UX baseline
+Source: `demo-evidence/rebuild-tech-ui/all-pages-20260614-0400` and `demo-evidence/rebuild-tech-ui/clinicflow-tech-preview.html`
 Last updated: 2026-06-15
 
 ## Authority
 
-This document is the current UI/UX source of truth for ClinicFlow.
+This document is the current UI/UX baseline source of truth for ClinicFlow.
+
+Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts.
 
 The approved Origin-14 PNG/screenshots are the highest-priority visual baseline. The static preview HTML is supporting evidence, not a replacement for the 14 approved screenshots.
 
@@ -28,7 +30,7 @@ This document must stay synchronized with:
 - `apps/admin/src/components/admin-shell.tsx`
 - `apps/admin/src/components/admin-account-menu.tsx`
 
-This document is the highest-priority design system for ClinicFlow frontend work. The Origin-14 screenshots define the product's approved visual language and interaction rhythm. The screenshots are no longer a loose visual reference. They are QA and visual-regression evidence for this document.
+This document is the highest-priority baseline design system for ClinicFlow frontend work. The Origin-14 screenshots define the product's approved visual language and interaction rhythm, but not every old surface pattern must be preserved. They are QA and visual-regression evidence for avoiding drift into older Apple drafts, generic SaaS templates, and card-heavy AI UI.
 
 ## 1. Product Design Principle
 
@@ -74,8 +76,9 @@ The interface must stay workflow-first. A screen is successful only when it answ
 - Secondary/system fallback: `Inter`, `system-ui`, `sans-serif`.
 - Origin tone: bold, clear, quiet, structured.
 - Page title:
-  - Desktop: large, heavy, tight line-height.
-  - Typical range: 48-78px for public/hero pages, 44-64px for workflow pages.
+  - Desktop public/hero pages may stay large, heavy, and tight.
+  - Desktop workbench pages should use smaller, more proportional headers when density improves clarity.
+  - Typical range: 48-72px for public/hero pages, 32-44px for authenticated workbench pages.
   - Use deep slate/ink.
 - Section title:
   - 24-32px, bold.
@@ -106,7 +109,7 @@ Core tokens from the Origin preview:
 Color rules:
 
 - Blue is for real action or active workflow state. Do not use it as decoration.
-- Navy panels are reserved for the primary next-action explanation or public flow band.
+- Navy panels are reserved for blocking next-action guidance or public flow bands. They are not the default state container.
 - Orange/warning accent is reserved for pending/review states.
 - Public and workflow pages use white/near-white backgrounds with thin borders.
 - Do not introduce large gradients, decorative blobs, or unrelated accent palettes.
@@ -126,8 +129,8 @@ The Origin system uses generous but disciplined spacing:
   - 64px fixed/floating public header.
 - Page top padding:
   - Public hero: about 96px from header region.
-  - Workflow screens: 96-110px top breathing space in static preview.
-  - App route implementation may use smaller top spacing after authenticated header, but the page title must remain dominant.
+- Workflow screens in old static preview had 96-110px top breathing space, but desktop workbench routes may use tighter spacing.
+- App route implementation should prefer stable app chrome, compact page headers, and table/list density over preserving large empty surfaces.
 - Section rhythm:
   - Page intro to next component: 32-48px.
   - Step indicator to content: 28-32px.
@@ -144,13 +147,13 @@ Spacing rules:
 
 Origin radius is restrained and professional:
 
-- Header: 18px.
-- Main panels and lists: 16-18px.
+- Public header: 18px.
+- Main panels and lists: 12-16px.
 - Step indicators: 14-16px.
 - Buttons: 12-14px.
 - Small badges: 8-10px.
 - Avatars/dots only: round/full.
-- Special large visual cards may reach 20-24px, but only when they are the main visual object.
+- Special public visual cards may reach 20-24px, but operational workbench surfaces should stay flatter and tighter.
 
 Avoid:
 
@@ -218,6 +221,17 @@ What not to copy:
 - broad gradient text as the default style
 - decorative hero objects unrelated to supervision
 - pricing/testimonial/SaaS template sections
+
+## 3.1 ClinicFlow Desktop Workbench v2
+
+ClinicFlow Desktop Workbench v2 is the current target for authenticated and operational pages.
+
+- Fixed desktop app chrome is allowed when it improves orientation.
+- Role sidebars may become stable rails instead of floating rounded cards.
+- Workbench headers may be smaller than old Origin-14 screenshots.
+- Tables, rows, and compact empty states may override oversized card spacing.
+- Public pages may keep a strong visual opening, but authenticated work pages should feel like precise desktop software.
+- Origin-14 still blocks generic SaaS filler, naked metrics, nested cards, and older Apple/Stitch visual drift.
 - animated statistics or vanity metrics
 
 ## 4. Origin-14 Layout Archetypes
@@ -703,12 +717,12 @@ Rules:
 
 ### Primary Action Panel
 
-Use when the page has a current state or next action.
+Use only when the user may be blocked without explicit next-action guidance.
 
 Rules:
 
 - Dark navy background.
-- Small badge such as `다음 행동`, `현재 상태`, `업로드 준비`.
+- Small badge only when it adds meaning. Prefer a specific state/action label such as `현재 상태`, `업로드 준비`, or `결제 필요`; avoid generic `다음 행동`.
 - Strong title.
 - One short explanatory paragraph.
 - Optional one action button.
@@ -718,6 +732,7 @@ Do not:
 - put long instructions in the dark panel
 - place several primary actions inside it
 - use it as decorative filler
+- add it only because a route needs an Origin-14 guard marker
 
 ### Line-List Row
 
@@ -733,7 +748,7 @@ Rules:
 
 ### Fixed Side Summary Panel
 
-Use for workflow pages and review workspaces.
+Use only when it compresses repeated facts or supports a concrete decision.
 
 Rules:
 
@@ -742,6 +757,7 @@ Rules:
 - Contains selected supervisor/session/schedule/material/payment/status.
 - Uses short label-value rows.
 - No repeated copy from the main content.
+- Do not add a side panel to balance whitespace.
 
 ### Folder / Tree List
 
@@ -779,9 +795,9 @@ Rules:
 
 Rules:
 
-- Empty state must say what is missing and how it will appear.
+- Empty state must be compact by default and say what is missing.
 - Error state must say what the user can do now.
-- Loading state must preserve layout shape if possible.
+- Loading state should be inline or row-sized unless a blocking page-level load requires a prominent state.
 - Do not expose `500`, `API`, `DB`, `payload`, `token`, `route`, or stack details to ordinary users.
 
 ## 9. UX Writing Rules
@@ -847,14 +863,14 @@ Before creating or modifying any ClinicFlow UI route:
 5. Use `Noto Sans KR`, deep ink text, electric blue CTA, thin border, white surface.
 6. Use a page intro with title, short subtitle, and at most one primary action.
 7. If the page is sequential, use the step indicator.
-8. If the page is stateful, use a dark navy primary action panel.
-9. If the page has supporting details, use one fixed side summary panel.
+8. Use a dark navy primary action panel only when the user would otherwise be blocked.
+9. Use one fixed side summary panel only when it reduces repetition or supports a decision.
 10. If the page lists work, use line-list rows, not dashboard cards.
 11. If the page stores learning records, use folder/tree hierarchy.
 12. Remove nested cards unless a card is the atomic comparison item.
 13. Remove meaningless metrics and decorative counters.
 14. Remove internal/technical terms from user-facing copy.
-15. Check mobile layout: one column, readable title, no horizontal overflow.
+15. Check the desktop 1440x1000 workflow first; mobile polish is out of scope unless explicitly requested.
 16. Check accessibility: headings, labels, focus states, contrast, no color-only status.
 17. Compare against this document first.
 18. Use Origin-14 screenshots only for QA/visual regression after the document check passes.

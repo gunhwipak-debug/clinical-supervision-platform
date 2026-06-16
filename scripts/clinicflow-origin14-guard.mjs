@@ -19,6 +19,7 @@ const evidencePath =
     : null;
 
 const checks = [];
+const warnings = [];
 
 function projectPath(path) {
   return join(root, path);
@@ -32,6 +33,13 @@ function addCheck(name, passed, details = "") {
   checks.push({
     name,
     status: passed ? "pass" : "fail",
+    details
+  });
+}
+
+function addWarning(name, details = "") {
+  warnings.push({
+    name,
     details
   });
 }
@@ -240,11 +248,8 @@ function assertRouteArchetypeCoverage() {
     "redirect(",
     "AdminHomePage",
     "FlowStepNav",
-    "PrimaryActionPanel",
-    "SectionBlock",
     "SummaryLine",
-    "AdminDarkPanel",
-    "AdminCard"
+    "AdminDarkPanel"
   ];
   const weakRoutes = [];
 
@@ -287,7 +292,8 @@ function assertDocs() {
     "ClinicFlow Origin-14 Design Rule",
     "demo-evidence/rebuild-tech-ui/all-pages-20260614-0400",
     "Global headers may contain only public navigation",
-    "Minimalist Modern"
+    "Minimalist Modern",
+    "Origin-14 is the baseline, not the ceiling"
   ];
   for (const needle of agentsNeedles) {
     addCheck(`AGENTS.md contains guardrail: ${needle}`, agents.includes(needle));
@@ -326,6 +332,12 @@ function assertDocs() {
       "Origin-14 design system contains required implementation sections",
       missing.length === 0,
       missing.join(", ")
+    );
+    addCheck(
+      "Origin-14 design system treats Origin-14 as baseline not ceiling",
+      designSystem.includes("Origin-14 is the baseline, not the ceiling") &&
+        designSystem.includes("ClinicFlow Desktop Workbench v2"),
+      designSystemPath
     );
   }
 
@@ -507,12 +519,15 @@ function assertRoleGuardStates() {
     if (!existsSync(projectPath(file))) return true;
     const text = readText(file);
     return (
-      !text.includes("SupervisorPageLoadError") || !text.includes("PrimaryActionPanel")
+      !text.includes("SupervisorPageLoadError") ||
+      (!text.includes("ProductForm") &&
+        !text.includes("AvailabilityForm") &&
+        !text.includes("SupervisorProfileEditor"))
     );
   });
 
   addCheck(
-    "supervisor setup pages have load-error and primary-action structure",
+    "supervisor setup pages have load-error and focused form/list structure",
     missingErrorHandling.length === 0,
     missingErrorHandling.join(", ")
   );
@@ -565,6 +580,74 @@ function assertVisualHygiene() {
   }
 }
 
+function assertAntiNoiseWarnings() {
+  const sourceFiles = [
+    ...walkFiles("apps/web/src/app", (file) => /\.(ts|tsx)$/.test(file)),
+    ...walkFiles("apps/web/src/components", (file) => /\.(ts|tsx)$/.test(file)),
+    ...walkFiles("apps/admin/src/app", (file) => /\.(ts|tsx)$/.test(file)),
+    ...walkFiles("apps/admin/src/components", (file) => /\.(ts|tsx)$/.test(file))
+  ].filter((file) => !file.includes("/api/") && !file.includes(".test."));
+
+  const nextActionMatches = [];
+  const primaryActionPanelMatches = [];
+  for (const file of sourceFiles) {
+    const text = readFileSync(projectPath(file), "utf8");
+    const nextActionCount = (text.match(/다음 행동/g) ?? []).length;
+    if (nextActionCount > 0) {
+      nextActionMatches.push(`${file} x${nextActionCount}`);
+    }
+    if (text.includes("PrimaryActionPanel")) {
+      primaryActionPanelMatches.push(file);
+    }
+  }
+
+  if (nextActionMatches.length > 0) {
+    addWarning(
+      "generic next-action copy remains in active app source",
+      nextActionMatches.join("; ")
+    );
+  }
+
+  if (primaryActionPanelMatches.length > 0) {
+    addWarning(
+      "PrimaryActionPanel usage requires blocking-action justification",
+      primaryActionPanelMatches.join(", ")
+    );
+  }
+
+  for (const file of [
+    "apps/admin/src/app/admin/refunds/page.tsx",
+    "apps/admin/src/app/admin/payouts/page.tsx",
+    "apps/admin/src/app/admin/audit/page.tsx"
+  ]) {
+    if (!existsSync(projectPath(file))) continue;
+    const count = (readText(file).match(/AdminCard/g) ?? []).length;
+    if (count > 2) {
+      addWarning(
+        "admin operational page still leans on AdminCard",
+        `${file} x${count}`
+      );
+    }
+  }
+
+  for (const file of [
+    "apps/web/src/app/(supervisor)/supervisor/requests/page.tsx",
+    "apps/web/src/app/(supervisor)/supervisor/products/page.tsx",
+    "apps/web/src/app/(supervisor)/supervisor/payouts/page.tsx",
+    "apps/admin/src/app/admin/refunds/page.tsx",
+    "apps/admin/src/app/admin/payouts/page.tsx",
+    "apps/admin/src/app/admin/audit/page.tsx"
+  ]) {
+    if (!existsSync(projectPath(file))) continue;
+    const text = readText(file);
+    if (/<(?:EmptyState|LoadingState)[^>]*variant=["']prominent["']/.test(text)) {
+      addWarning("prominent state used on operational page", file);
+    }
+  }
+
+  addWarning("anti-noise reminder", "Origin-14 is a baseline, not the ceiling.");
+}
+
 assertOriginScreens();
 assertNoStaticPreviewRuntime();
 assertRouteCoverage();
@@ -576,6 +659,7 @@ assertAuthenticatedNavigation();
 assertRequestCreationStepDiscipline();
 assertRoleGuardStates();
 assertVisualHygiene();
+assertAntiNoiseWarnings();
 
 const failed = checks.filter((check) => check.status === "fail");
 const report = {
@@ -583,7 +667,9 @@ const report = {
   total: checks.length,
   pass: checks.length - failed.length,
   fail: failed.length,
-  checks
+  warning: warnings.length,
+  checks,
+  warnings
 };
 
 if (evidencePath) {
@@ -595,6 +681,11 @@ for (const check of checks) {
   const marker = check.status === "pass" ? "PASS" : "FAIL";
   const details = check.details ? ` - ${check.details}` : "";
   console.log(`${marker}: ${check.name}${details}`);
+}
+
+for (const warning of warnings) {
+  const details = warning.details ? ` - ${warning.details}` : "";
+  console.warn(`WARN: ${warning.name}${details}`);
 }
 
 if (failed.length > 0) {

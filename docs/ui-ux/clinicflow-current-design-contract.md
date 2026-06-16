@@ -2,7 +2,9 @@
 
 ## Authority
 
-이 문서는 현재 ClinicFlow 디자인 계약입니다. 14개 Origin PNG가 현재 시각 기준이며, 44/46 route evidence는 구현 증거이지 새로운 디자인 source가 아닙니다.
+이 문서는 현재 ClinicFlow 디자인 계약입니다. 14개 Origin PNG는 현재 시각 baseline이며, 44/46 route evidence는 구현 증거이지 새로운 디자인 source가 아닙니다.
+
+Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts.
 
 Active source-of-truth hierarchy:
 
@@ -32,9 +34,9 @@ archived 또는 historical 문서가 active source와 충돌하면 active source
 
 ## 기준면
 
-최상위 기준 디자인은 `demo-evidence/rebuild-tech-ui/all-pages-20260614-0400`에 있는 14개 승인 PNG입니다.
+최상위 baseline 디자인은 `demo-evidence/rebuild-tech-ui/all-pages-20260614-0400`에 있는 14개 승인 PNG입니다.
 
-이 14개 PNG는 "비교 대상"이 아니라 실제 route를 확장할 때 따라야 하는 디자인 시스템입니다. 이후 생성된 44개 route screenshot, 과거 Apple 시안, Stitch/Material 계열 화면, generic SaaS dashboard 화면이 이 14개와 충돌하면 14개 원본이 우선합니다.
+이 14개 PNG는 "비교 대상"이 아니라 실제 route를 확장할 때 따라야 하는 baseline 디자인 시스템입니다. 이후 생성된 44개 route screenshot, 과거 Apple 시안, Stitch/Material 계열 화면, generic SaaS dashboard 화면이 이 14개와 충돌하면 14개 원본이 우선합니다. 다만 더 명확한 desktop workbench를 위해 작은 제목, 촘촘한 표, 안정적인 app chrome, 덜 둥근 sidebar가 필요한 경우에는 Origin-14 표면 패턴을 그대로 보존하지 않아도 됩니다.
 
 정적 HTML은 `demo-evidence/rebuild-tech-ui/clinicflow-tech-preview.html`에 보관된 리뷰용 증거입니다. 실제 앱 source는 이 HTML을 런타임에서 읽거나 Tailwind scan 대상으로 삼지 않습니다. HTML이 14개 PNG와 달라졌다면 14개 PNG를 먼저 맞춘 뒤 증거 HTML을 다시 동기화합니다.
 
@@ -60,7 +62,7 @@ archived 또는 historical 문서가 active source와 충돌하면 active source
 - 전역 헤더는 공개 안내에 필요한 `슈퍼바이저 찾기`, `이용 가이드`, `로그인`, 보조 CTA만 보여줍니다.
 - `사례 자료`, `수락 대기`, `학습 기록`, 관리자/슈퍼바이저 업무 같은 역할별 작업은 전역 헤더에 올리지 않습니다.
 - 중간 상태는 해당 route 내부의 진행 바와 primary action에서만 보여줍니다.
-- 공개 페이지는 서비스 이해와 시작을 돕고, 업무 페이지는 현재 할 일과 다음 행동만 강조합니다.
+- 공개 페이지는 서비스 이해와 시작을 돕고, 업무 페이지는 필요한 현재 상태와 실제 행동만 강조합니다.
 - route가 없거나 데이터가 없을 때도 과거 템플릿을 재사용하지 않고, 같은 디자인 언어의 route-specific fallback을 보여줍니다.
 
 ## Origin-14 Non-Regression Rule
@@ -80,14 +82,41 @@ archived 또는 historical 문서가 active source와 충돌하면 active source
 - 한국어 제품 기준: `Noto Sans KR` 우선, `#081225` ink, `#2563ff` action, `#e7ebf1` line, 흰 배경, line-list와 단일 side panel.
 - 토큰 기준: `packages/design-tokens/src/tokens.ts`와 `tokens.css`는 Origin-14 팔레트를 기준으로 동기화합니다. 과거 Stitch 계열의 `#F9F9FF`, `#0058BE`, `#2170E4` 같은 색상은 새 route 확장 기준으로 사용하지 않습니다.
 
+## Posteady Structural Reference
+
+Posteady는 desktop workbench IA를 참고하기 위한 구조 레퍼런스일 뿐이며, ClinicFlow의 색상, 폰트, 브랜드 톤, 카드 스타일, 문구 기준을 대체하지 않습니다. 공개 홈의 실제 제품 preview, 로그인 후 고정 좌측 역할 탐색, compact grouped navigation, row/list/table 중심 업무 영역만 Origin-14 문법 안에서 차용합니다.
+
+## ClinicFlow Desktop Workbench v2
+
+ClinicFlow Desktop Workbench v2는 로그인 후 업무 화면의 현재 목표입니다.
+
+- Fixed desktop app chrome: 좌측 역할 탐색은 floating content card가 아니라 안정적인 앱 작업대처럼 보여야 합니다.
+- Compact role sidebar: 220-260px 범위에서 그룹, 현재 위치, 계정 맥락을 간결하게 보여줍니다.
+- Utility top bar: 전역 workflow 링크를 넣지 않고 계정, 역할, 현재 작업 맥락만 보조합니다.
+- Workbench content area: page header는 짧고, 본문은 row/list/table 중심으로 판단과 작업을 빠르게 합니다.
+- Compact empty states: 빈 화면은 표/행 frame 안에서 짧게 설명하고, 별도 설명 카드로 공간을 채우지 않습니다.
+- Public landing preview: 공개 홈은 큰 문장만 보여주지 않고 실제 ClinicFlow 흐름을 첫 화면에서 보여줍니다.
+- No generic explanatory panels: 설명 패널, 다음 행동 배너, 요약 카드가 기본 구조가 되지 않습니다.
+
 ## 화면 구조
 
 - 한 화면에는 하나의 primary action만 둡니다.
-- 본문은 가능하면 `현재 할 일 -> 한 줄 목록 -> 요약 패널` 순서로 읽히게 합니다.
-- 보조 정보는 고정 사이드 패널 하나만 사용합니다.
+- 기본 구조는 `PageHeader -> primary content`입니다.
+- next-action panel은 사용자가 즉시 결정하거나 막힌 행동이 있을 때만 사용합니다.
+- summary panel은 반복 정보를 줄이거나 결정을 도울 때만 사용합니다.
+- work page는 큰 상단 action panel과 right summary panel을 동시에 갖지 않는 것을 기본으로 합니다.
+- 보조 정보는 필요할 때만 고정 사이드 패널 하나로 압축합니다.
 - 카드 그리드, 중복 패널, 메타데이터 박스 나열은 피합니다.
 - 줄 단위 정보에는 `제목`, `한 문장 설명`, 필요 시 작은 상태값만 둡니다.
 - 한국어 UI는 `Noto Sans KR`를 우선하고, 버튼/상태/라벨은 14px 이상을 기본으로 합니다.
+
+Copy budget:
+
+- one H1
+- one short page description
+- one primary CTA
+- compact status text only where needed
+- no repeated helper paragraph that restates a heading, row, or button
 
 ## 금지 패턴
 
@@ -142,20 +171,24 @@ route별 정렬 기준은 `docs/ui-ux/clinicflow-route-alignment-manifest.md`를
 - `/requests`: active request list를 다음 행동 중심의 line-by-line 구조로 정렬했습니다.
 - `/requests/new`: 슈퍼바이저 확인, 세션 확인, 일정 확인, 초안 저장 순서의 compact step flow로 정렬했습니다. 사례 자료는 의뢰 ID 생성 뒤 `/requests/[id]#case-files`에서 이어서 정리합니다.
 - `/requests/new`는 초기 14개 원형의 시각 문법을 따르되, 최신 사용자 피드백에 따라 `자료 업로드`를 진행 위치로 표시하지 않습니다. 이 화면의 진행 위치는 `세션·일정`, primary action은 `신청 초안 저장`이며, 실제 자료 정리는 의뢰 ID가 생긴 뒤 `/requests/[id]#case-files`의 `사례자료 정리` 단계에서 이어집니다.
-- `/requests/[id]`: 상태/다음 행동, 사례 정보, 첨부 자료, 진행 요약의 1 main + 1 side panel 구조로 정렬했습니다. 상단 상태 영역은 체크리스트형 dark panel을 제거하고 현재 상태와 한 개 primary action만 보이게 낮췄습니다.
+- `/requests/[id]`: 상태, 사례 정보, 첨부 자료, 필요한 진행 사실만 1 main + optional compact side panel 구조로 정렬했습니다. 상단 상태 영역은 체크리스트형 dark panel을 제거하고 현재 상태와 한 개 primary action만 보이게 낮췄습니다.
 - `CaseFilesPanel`: 산만한 카드 묶음 대신 `자료 업로드 -> 파일 한 줄 목록 -> 선택한 자료 확인`으로 정리했습니다. 파일 목록에는 `열기`만 남기고, 선택한 파일의 작업 버튼은 미리보기 아래 한 줄 묶음으로 낮췄습니다. 페이지 메모와 삭제 같은 보조 작업은 접힌 영역으로 낮췄습니다.
 - `/admin`: admin app root `/`는 `/admin`으로 redirect하고, canonical 운영 홈은 `AdminShell` 기반으로 통일했습니다.
 - `/requests`, `/payments`, `/supervisor`: page header CTA와 primary action panel CTA가 동시에 경쟁하지 않도록 header action을 제거했습니다.
 - static design source: 한국어 폰트 우선순위, 라벨/상태 글자 크기, CJK 줄바꿈, 업로드 CTA 문구를 50-60대 초심자 기준으로 조정했습니다.
-- `/payments/[id]`: 결제 상세를 `다음 행동 -> 결제 정보 -> 금액 세부 내역 -> 환불 요청`의 1 main + 1 side panel 구조로 정렬했습니다.
+- `/payments/[id]`: 결제 상세를 `결제 상태 -> 결제 정보 -> 금액 세부 내역 -> 필요한 환불 요청`의 1 main + optional compact side panel 구조로 정렬했습니다.
 - `/case-archive`: 슈퍼바이저별 folder-like learning record 구조로 정렬했습니다.
 - `/supervisor`: 숫자 카드 중심 dashboard 대신 오늘 처리할 의뢰 중심으로 정렬했습니다.
 - `/supervisor/availability`: AppShell과 1 main + 1 side panel 구조로 옮기고, 화면 문구를 `일정 연동`, `가능 시간`, `외부 일정` 중심으로 정리했습니다.
-- `/supervisor/requests/[id]`: 검토 workspace를 `다음 행동 -> 사례 요약 -> 첨부 자료 -> 처리 작업/기록`의 1 main + 1 side panel 구조로 정렬했습니다.
+- `/supervisor/requests/[id]`: 검토 workspace를 `검토 상태 -> 사례 요약 -> 첨부 자료 -> 처리 작업/기록` 중심으로 정렬했습니다. next-action panel은 막힌 처리 단계에서만 사용합니다.
 - `/supervisor/profile`, `/supervisor/products`: 별도 bottom nav를 제거하고 AppShell 안의 one-action layout으로 정렬했습니다. `제공 항목`은 `슈퍼비전 방식`, `세션명`으로 정리했습니다.
 - `/admin/*`: 관리자 shell에 운영 처리 기록(`처리 기록`)까지 포함했습니다.
 - `/admin/queue`, `/admin/qualifications`, `/admin/refunds`, `/admin/payouts`, `/admin/audit`: 로그인 후에도 같은 `AdminShell` 좌측 내비와 line-list 구조를 사용하도록 정리했습니다. 별도 sticky top bar와 독립 카드 stack은 제거했습니다.
 - `/admin/payouts`: 큰 숫자 카드 두 장 대신 정산 기간, 요약, 계산 패널, 정산 항목 line-list로 정리했습니다.
+- 3차 pass: `/requests/[id]`는 page-level action banner를 제거하고, 본문은 의뢰 정보/사례 자료/첨부 자료, 우측은 반복을 줄이는 진행 사실과 primary action만 담당합니다. 학습 기록은 `completion_record_issued` 또는 `completed` 상태에서만 노출합니다.
+- 3차 pass: `/supervisor/requests`는 상태, 의뢰명, 일정/보관, 한 개 작업 버튼이 한 행에 보이는 table-like list로 낮췄습니다. 보조 진입 버튼은 우측 요약 패널에서 제거해 요청 목록과 경쟁하지 않게 했습니다.
+- 3차 pass: `/admin/refunds`, `/admin/payouts`, `/admin/audit`는 상단 설명 카드 묶음을 제거하고, row/table-first 목록을 기본으로 둡니다. 우측 패널은 필터, 계산, 선택 항목처럼 실제 작업을 줄일 때만 남깁니다. 환불 결정 버튼은 행의 단일 `환불 처리` 컨트롤 안에서만 드러납니다.
+- 3차 pass IA labels: `케이스 아카이브`, `결제 내역`, `가능 시간`, `자격 정보`, `감사 로그`, `환불`, `정산`, `대기열`을 현재 최종 라벨로 유지합니다.
 - `/supervisor/payouts`: 상단 KPI 카드와 분리된 정산 카드들을 하나의 정산 기록 표와 하나의 요약 레일로 압축했습니다.
 - `/supervisor/profile`: 구형 token/form surface를 현재 shell/card 언어로 맞추고, 공개 상태는 하나의 side panel로 정리했습니다. 내부 sticky 미리보기 패널은 제거하고 본문 하단 접힘 섹션으로 낮췄습니다.
 - `/supervisor/availability`: 보조 CTA와 분산된 일정 연동/저장 패널을 줄이고, 가능한 시간과 일정 요약 중심으로 정리했습니다. 내부 일정 연동은 접힌 보조 섹션으로 낮춰 바깥 요약 패널과 경쟁하지 않게 했습니다.
@@ -163,6 +196,8 @@ route별 정렬 기준은 `docs/ui-ux/clinicflow-route-alignment-manifest.md`를
 - `/notifications`: 지금 확인할 알림 하나를 먼저 보여주고, 나머지는 `알림 기록` line-list로 낮췄습니다.
 - `/settings`: 카드형 계정 dashboard를 제거하고, 본문은 기본 계정과 신청자 프로필만 남겼습니다. 슈퍼바이저 업무 진입은 하나의 계정 확인 side panel 안으로 낮췄습니다.
 - `/supervisor/requests`: 지금 처리할 의뢰만 전면에 두고 예약·결제 대기, 완료·보관, 닫힌 의뢰는 접힌 보조 묶음으로 낮췄습니다.
+- Posteady structural pass: `/`는 장식 카드 대신 실제 workflow preview와 `슈퍼바이저 찾기`, `의뢰 작성`, `자료 제출`, `피드백 확인`, `케이스 아카이브` segmented preview를 제공합니다.
+- Posteady structural pass: `/requests`는 카드형 목록 대신 상태별 workbench strip과 row/table 목록으로 정리했습니다. 각 행은 의뢰 ID, 제목, 슈퍼바이저, 상태, 일정/결제 신호, 한 개의 주요 작업 버튼만 가집니다.
 - `/supervisor/memory`: 전용 노트 CRUD가 없는 현재 상태를 과장하지 않도록 화면명을 `기록 폴더`로 낮췄습니다.
 - `/supervisor/qualifications`: 구형 카드형 자격 관리 화면을 `제출한 자격` line-list와 하나의 `자격 증빙 제출` side panel로 정리했습니다.
 - `/me`: 모든 사용자를 슈퍼바이저 홈으로 보내던 alias를 역할별 시작점으로 분기했습니다. 신청자는 `/requests`, 슈퍼바이저는 `/supervisor`, 관리자는 web 앱 내부 계정 화면인 `/settings`로 이동합니다.

@@ -21,6 +21,8 @@ Current implementation primitives include:
 - `apps/web/src/components/ui/card.tsx`
 - `apps/admin/src/components/admin-shell.tsx`
 
+Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts.
+
 ## Card
 
 Use a card only when it has one clear purpose and one primary decision.
@@ -73,6 +75,8 @@ Good uses:
 
 Do not use decorative card grids for admin work queues.
 
+Table and list density may override oversized Origin-14 card spacing when the user is doing operational work. Use smaller page headers, tighter row padding, and clearer column hierarchy instead of adding explanatory cards.
+
 ## Task List
 
 Use task lists when the page must show ordered next work.
@@ -85,6 +89,46 @@ Good uses:
 - admin operation home
 
 Task lists should make the next action visible without relying on naked metric cards.
+
+## PrimaryActionPanel
+
+Use only for a blocking next action that would otherwise be unclear.
+
+- exceptional, not default
+- no generic default eyebrow such as `다음 행동`
+- one title, one short sentence, one action
+- not a route-alignment marker filler
+
+## SectionBlock
+
+Use to group real sections, not as a generic rounded card wrapper.
+
+- subtitle is optional
+- omit subtitles that restate the heading
+- prefer dividers and rows inside a single surface for workflow details
+
+## Side Summary Panel
+
+Use only when it removes repetition or supports a user decision.
+
+Good uses:
+
+- selected item details
+- payment totals
+- current status facts
+- decision support for review/approval
+
+Avoid:
+
+- repeating the page description
+- balancing empty whitespace
+- explaining what the main list already shows
+
+## FlowStepNav
+
+Use for transaction routes only.
+
+Do not use it on archive/list pages when it becomes decorative.
 
 ## Settings Section
 
@@ -114,11 +158,31 @@ Operational pages should be calmer and denser:
 - one primary action per page state
 - one side summary panel at most
 
+## Desktop App Chrome
+
+Authenticated pages may use stable desktop app chrome instead of floating rounded sidebar cards.
+
+- Sidebar width should stay around 220-260px.
+- Sidebar can use a full-height rail, subtle right border, and flat background.
+- Floating sidebar cards are not required.
+- PageHeader should be proportional to workbench pages, not marketing hero.
+- Public landing hero may be visually strong, but authenticated work pages should be compact.
+
 ## Empty, Error, and Locked States
 
 Empty/error/locked states must follow the same Origin-14 language:
 
 - concise Korean copy
 - one recovery action
+- compact variant by default
+- prominent variant only for onboarding, public guidance, or important blocking states
 - no technical jargon unless the page is admin-only and the detail is necessary
 - no legacy fallback visual language
+
+## AdminCard / Operational Lists
+
+Use `AdminCard` for compact summaries or single-purpose support areas only.
+
+- not for operational rows
+- not for audit/refund/payout main lists when a table/list frame is enough
+- not for repeated dashboard-like cards
