@@ -42,7 +42,7 @@ async function main() {
   console.log("✅ Neon Production Database Demo Data OFF Completed Successfully!");
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error("✖ Failed to clear Neon production:", err);
   process.exit(1);
 });

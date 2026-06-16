@@ -23,5 +23,11 @@ function collectErrorMessages(error: unknown): string[] {
     return [message, ...collectErrorMessages(record["cause"])].filter(Boolean);
   }
 
-  return [String(error)];
+  return [safeStringifyError(error)];
+}
+
+function safeStringifyError(error: unknown): string {
+  if (typeof error === "string") return error;
+  if (typeof error === "number" || typeof error === "boolean") return String(error);
+  return "";
 }

@@ -612,10 +612,7 @@ async function runProbe(page: Page, probe: Probe): Promise<ProbeResult> {
     });
   }
 
-  if (
-    probe.id === "supervisee-new-prefilled" &&
-    !/슈퍼바이저\s*:/u.test(audit.text)
-  ) {
+  if (probe.id === "supervisee-new-prefilled" && !/슈퍼바이저\s*:/u.test(audit.text)) {
     findings.push({
       severity: "major",
       code: "selected_supervisor_name_missing",
@@ -710,7 +707,7 @@ function formatKstDate(date: Date): string {
     year: "numeric"
   }).formatToParts(date);
   const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return `${value["year"]}-${value["month"]}-${value["day"]}`;
+  return `${value["year"] ?? "0000"}-${value["month"] ?? "01"}-${value["day"] ?? "01"}`;
 }
 
 function reportMarkdown(results: ProbeResult[]): string {

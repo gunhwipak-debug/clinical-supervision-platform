@@ -16,11 +16,11 @@ async function main() {
   const db = createDatabase();
   await seedDemoData(db, console.log);
   await closeDevDatabase();
-  
+
   console.log("✅ Neon Production Database Seeding Completed Successfully!");
 }
 
-main().catch((err) => {
+main().catch((err: unknown) => {
   console.error("✖ Failed to seed Neon production:", err);
   process.exit(1);
 });

@@ -1,4 +1,4 @@
-import { files, supervision } from "@csp/db";
+import type { files, supervision } from "@csp/db";
 import { DEMO_IDS } from "@csp/db/demo-accounts";
 
 const now = "2026-06-15T09:00:00.000Z";

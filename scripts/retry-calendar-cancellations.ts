@@ -1,17 +1,17 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { calendar, withUserContext } from "../packages/db/src";
 import {
-  calendar,
   closeDevDatabase,
   createDatabase,
-  withUserContext
-} from "../packages/db/src";
+  type Database
+} from "../packages/db/src/client";
 import {
   cancelGoogleCalendarEvent,
   getGoogleCalendarConfig
 } from "../apps/web/src/lib/google-calendar";
 
-type RetryDatabase = ReturnType<typeof createDatabase>;
+type RetryDatabase = Database;
 
 const root = resolve(new URL("..", import.meta.url).pathname);
 const evidenceDir = join(root, "demo-evidence");

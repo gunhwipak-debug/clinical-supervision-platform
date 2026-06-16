@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
     }
 
     const db = createAuthDatabase();
-    let user = await auth.findUserByEmail(db, parsed.data.email);
+    const user = await auth.findUserByEmail(db, parsed.data.email);
 
     if (
       user &&

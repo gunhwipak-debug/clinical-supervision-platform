@@ -9,9 +9,11 @@ export default tseslint.config(
     ignores: [
       "**/.next/**",
       "**/coverage/**",
+      "**/.omo/tmp/**",
       "**/dist/**",
       "**/node_modules/**",
       "**/next-env.d.ts",
+      "demo-evidence/**",
       "**/next.config.ts",
       "**/*.test.ts",
       "**/*.test.tsx",
@@ -21,6 +23,8 @@ export default tseslint.config(
       "eslint.config.mjs",
       "postcss.config.mjs",
       "prettier.config.mjs",
+      "scripts/*.mjs",
+      "scripts/prod-bootstrap/*.mjs",
       "vitest.config.ts",
       "pnpm-lock.yaml",
       "designs/stitch/stitch_clinical_trust_auth_redesign/**"

@@ -670,7 +670,7 @@ function formatKstDate(date: Date): string {
     year: "numeric"
   }).formatToParts(date);
   const value = Object.fromEntries(parts.map((part) => [part.type, part.value]));
-  return `${value["year"]}-${value["month"]}-${value["day"]}`;
+  return `${value["year"] ?? "0000"}-${value["month"] ?? "01"}-${value["day"] ?? "01"}`;
 }
 
 async function readSessionCookie(page: Page): Promise<{ role?: string } | null> {
@@ -730,32 +730,6 @@ async function clickFirstVisible(page: Page, text: RegExp, label: string) {
     .locator("button:visible, a:visible")
     .filter({ hasText: text })
     .first();
-  const visible = await locator
-    .waitFor({ state: "visible", timeout: 5_000 })
-    .then(() => true)
-    .catch(() => false);
-  if (!visible) {
-    addIssue({
-      code: `CTA-${label.replace(/[^A-Z0-9가-힣]+/giu, "-").toUpperCase()}`,
-      severity: "launch_blocker",
-      actor: "system",
-      route: new URL(page.url()).pathname,
-      expected: `${label}이 화면에 보여야 함.`,
-      actual: `${label}을 찾지 못함.`,
-      evidence: [],
-      patchDraft: "해당 화면의 CTA 노출 조건과 버튼 텍스트를 점검한다."
-    });
-    return false;
-  }
-  await locator.click();
-  return true;
-}
-
-async function clickLastVisible(page: Page, text: RegExp, label: string) {
-  const locator = page
-    .locator("button:visible, a:visible")
-    .filter({ hasText: text })
-    .last();
   const visible = await locator
     .waitFor({ state: "visible", timeout: 5_000 })
     .then(() => true)

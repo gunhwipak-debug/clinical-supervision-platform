@@ -1,9 +1,9 @@
-import { NextResponse, type NextRequest } from "next/server";
+import { NextResponse } from "next/server";
 import { expiredSessionCookieOptions, SESSION_COOKIE_NAME } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
 
-export async function POST(_request: NextRequest) {
+export function POST() {
   const response = envelope({ ok: true }, null, 200);
   response.cookies.set(SESSION_COOKIE_NAME, "", expiredSessionCookieOptions());
 

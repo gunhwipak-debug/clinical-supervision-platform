@@ -14,11 +14,15 @@ let pgliteClient: PGlite | null = null;
 
 // Global cache for postgres clients to prevent leaks in hot reloading / serverless envs
 declare global {
-  // eslint-disable-next-line no-var
-  var __db_clients: Record<string, {
-    client: postgres.Sql;
-    drizzle: AppDatabase;
-  }> | undefined;
+  var __db_clients:
+    | Record<
+        string,
+        {
+          client: postgres.Sql;
+          drizzle: AppDatabase;
+        }
+      >
+    | undefined;
 }
 
 globalThis.__db_clients = globalThis.__db_clients || {};

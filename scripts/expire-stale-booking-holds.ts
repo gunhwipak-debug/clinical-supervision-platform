@@ -1,12 +1,12 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { findUserById } from "../packages/db/src/auth";
+import { calendar, supervision } from "../packages/db/src";
 import {
-  calendar,
   closeDevDatabase,
   createDatabase,
-  supervision
-} from "../packages/db/src";
+  type Database
+} from "../packages/db/src/client";
 import { withUserContext, type UserRole } from "../packages/db/src/context";
 import { createNotification } from "../packages/db/src/notifications";
 import { getMailer } from "../packages/shared/src/email/mailer";
@@ -15,7 +15,7 @@ import {
   getGoogleCalendarConfig
 } from "../apps/web/src/lib/google-calendar";
 
-type ExpireDatabase = ReturnType<typeof createDatabase>;
+type ExpireDatabase = Database;
 
 type NotificationTarget = {
   userId: string;
