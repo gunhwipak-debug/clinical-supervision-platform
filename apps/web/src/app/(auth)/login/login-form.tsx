@@ -173,7 +173,7 @@ function loginErrorMessage(code: string | undefined): string {
   const labels: Record<string, string> = {
     account_locked:
       "로그인 시도가 여러 번 실패해 계정이 잠시 잠겼습니다. 잠시 후 다시 시도해주세요.",
-    email_unverified: "이메일 인증을 먼저 완료해주세요.",
+    email_unverified: "이메일 인증을 완료해주세요.",
     invalid_credentials: "이메일 또는 비밀번호가 올바르지 않습니다.",
     invalid_request: "입력값을 다시 확인해주세요.",
     locked:

@@ -11,7 +11,7 @@ export default async function LoginPage({
   return (
     <AuthScaffold
       eyebrow="로그인"
-      subtitle="의뢰 현황, 피드백, 학습기록을 확인하려면 로그인하세요."
+      subtitle="의뢰, 결제, 피드백, 기록을 안전하게 확인합니다."
       title="내 슈퍼비전 현황을 확인합니다"
     >
       <LoginForm returnTo={params.returnTo ?? ""} />

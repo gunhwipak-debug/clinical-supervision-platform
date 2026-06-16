@@ -5,8 +5,8 @@ export default function Page() {
   return (
     <AuthScaffold
       eyebrow="회원가입"
-      subtitle="모든 사용자는 먼저 신청자 계정으로 시작합니다."
-      title="처음이라면 계정부터 만듭니다"
+      subtitle="슈퍼비전 의뢰와 피드백 기록을 확인할 계정을 만듭니다."
+      title="ClinicFlow 계정 만들기"
     >
       <SignupForm />
     </AuthScaffold>

@@ -22,32 +22,33 @@ export function AuthScaffold({
       style={{ fontFamily: "'Noto Sans KR', sans-serif" }}
     >
       <SiteHeader showAction={false} showLogin={false} />
-      <div className="mx-auto grid min-h-[calc(100vh-5.5rem)] w-full max-w-7xl gap-12 px-6 pb-14 pt-8 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-center lg:px-8 lg:pb-20 lg:pt-10">
-        <section className="grid gap-8">
+      <div className="mx-auto grid min-h-[calc(100vh-5.5rem)] w-full max-w-6xl gap-10 px-6 pb-14 pt-8 lg:grid-cols-[minmax(0,0.92fr)_420px] lg:items-center lg:px-8 lg:pb-20 lg:pt-10">
+        <section className="grid gap-7">
           <span className="w-fit rounded-full border border-[#bfd1ff] bg-[#f5f8ff] px-4 py-2 text-sm font-semibold text-[#2563ff]">
             {eyebrow}
           </span>
           <div className="grid gap-5">
-            <h1 className="max-w-4xl break-keep text-[3.2rem] font-bold leading-[0.98] tracking-normal text-[#081225] md:text-[5.2rem]">
+            <h1 className="max-w-3xl break-keep text-[3rem] font-bold leading-[1] tracking-normal text-[#081225] md:text-[4.35rem]">
               {title}
             </h1>
-            <p className="max-w-2xl break-keep text-lg leading-9 text-[#5f6c8f]">
+            <p className="max-w-xl break-keep text-lg leading-8 text-[#5f6c8f]">
               {subtitle}
             </p>
           </div>
-          <div className="grid gap-5 md:grid-cols-2">
+          <ul className="grid max-w-xl gap-3 border-t border-[#e7ebf1] pt-5">
             {supportLines.map((line) => (
-              <div
-                className="rounded-[18px] border border-[#e7ebf1] bg-white px-5 py-5"
-                key={line.label}
+              <li
+                className="flex items-center gap-3 text-base font-semibold text-[#43506f]"
+                key={line}
               >
-                <p className="text-sm font-semibold text-[#8b94ad]">{line.label}</p>
-                <p className="mt-2 break-keep text-base leading-8 text-[#43506f]">
-                  {line.body}
-                </p>
-              </div>
+                <span
+                  aria-hidden="true"
+                  className="h-1.5 w-1.5 rounded-full bg-[#2563ff]"
+                />
+                <span>{line}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </section>
 
         <section className="grid gap-4">
@@ -96,7 +97,7 @@ export function AuthPanel({
   size?: "compact" | "wide";
   title: string;
 }) {
-  const maxWidth = size === "wide" ? "max-w-[520px]" : "max-w-[360px]";
+  const maxWidth = size === "wide" ? "max-w-[520px]" : "max-w-[420px]";
 
   return (
     <section className={`mx-auto grid w-full ${maxWidth} gap-4`}>
@@ -117,20 +118,20 @@ export function AuthPanel({
           </div>
         </div>
         <div className="mt-6">{children}</div>
+        {notes && notes.length > 0 ? (
+          <ul className="mt-5 grid gap-2 border-t border-[#e7ebf1] pt-4">
+            {notes.map((note) => (
+              <li className="flex gap-2 text-sm leading-7 text-[#5f6c8f]" key={note}>
+                <span
+                  aria-hidden="true"
+                  className="mt-3 h-1 w-1 rounded-full bg-[#8b94ad]"
+                />
+                <span>{note}</span>
+              </li>
+            ))}
+          </ul>
+        ) : null}
       </div>
-
-      {notes && notes.length > 0 ? (
-        <ul className="grid gap-3">
-          {notes.map((note) => (
-            <li
-              className="rounded-[18px] border border-[#e7ebf1] bg-white px-4 py-4 text-sm leading-7 text-[#5f6c8f]"
-              key={note}
-            >
-              {note}
-            </li>
-          ))}
-        </ul>
-      ) : null}
     </section>
   );
 }
@@ -156,21 +157,4 @@ export function InlineMessage({
   );
 }
 
-const supportLines = [
-  {
-    label: "의뢰 현황",
-    body: "신청한 슈퍼비전의 진행 상태와 다음 행동을 한눈에 확인합니다."
-  },
-  {
-    label: "피드백",
-    body: "보완 요청과 최종 피드백을 구분해 읽고 다시 확인할 수 있습니다."
-  },
-  {
-    label: "학습 기록",
-    body: "완료된 슈퍼비전 기록을 이후 수련과 기관 교육 기록으로 남깁니다."
-  },
-  {
-    label: "처음이라면",
-    body: "계정 없이도 먼저 슈퍼바이저를 비교하고 진행 과정을 확인할 수 있습니다."
-  }
-] as const;
+const supportLines = ["의뢰 진행 상태", "피드백 확인", "완료 기록 보관"] as const;

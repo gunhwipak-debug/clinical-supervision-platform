@@ -91,7 +91,7 @@ export function SignupForm() {
     <AuthPanel
       description="가입 후 필요한 경우 슈퍼바이저 신청을 진행할 수 있습니다."
       notes={[
-        "모든 사용자는 먼저 신청자 계정으로 시작합니다.",
+        "가입 직후에는 신청자 계정으로 시작합니다.",
         "이메일 인증을 마쳐야 의뢰와 기록 화면을 사용할 수 있습니다."
       ]}
       size="wide"
