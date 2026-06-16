@@ -1,12 +1,7 @@
-import Link from "next/link";
 import { files, supervision, withUserContext } from "@csp/db";
 import { AppShell } from "../../../../components/app-shell";
 import { CaseFilesPanel } from "../../../../components/case-files-panel";
-import {
-  FlowStepNav,
-  PrimaryActionPanel,
-  SectionBlock
-} from "../../../../components/clinicflow-shell";
+import { FlowStepNav, SectionBlock } from "../../../../components/clinicflow-shell";
 import { Button } from "../../../../components/ui/button";
 import { EmptyState } from "../../../../components/ui/state";
 import {
@@ -31,8 +26,7 @@ import {
   readCompletionRecord,
   readPhiDetail,
   requestFlowSteps,
-  statusLabel,
-  summaryHeading
+  statusLabel
 } from "./request-detail-view-model";
 
 export const dynamic = "force-dynamic";
@@ -105,6 +99,9 @@ export default async function RequestDetailPage({
   }
   const completionRecord = await readCompletionRecord(db, current, id);
   const nextAction = nextActionForStatus(basic.status, id);
+  const currentStep = flowStepForStatus(basic.status);
+  const showCompletionRecord =
+    basic.status === "completion_record_issued" || basic.status === "completed";
 
   return (
     <AppShell
@@ -113,49 +110,31 @@ export default async function RequestDetailPage({
       subtitle={pageSubtitle(basic)}
       title={pageTitle(basic.status)}
     >
-      <FlowStepNav current={flowStepForStatus(basic.status)} steps={requestFlowSteps} />
+      <FlowStepNav current={currentStep} steps={requestFlowSteps} />
 
-      <PrimaryActionPanel
-        action={
-          <Button asChild className="w-full md:w-auto" variant="secondary">
-            <a href={nextAction.href}>{nextAction.actionLabel}</a>
-          </Button>
-        }
-        eyebrow={nextAction.eyebrow}
-        title={nextAction.title}
-      >
-        {nextAction.description}
-      </PrimaryActionPanel>
-
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="grid gap-6">
-          <SectionBlock
-            subtitle="주호소, 의뢰 사유, 검사명처럼 슈퍼바이저가 먼저 볼 내용을 한 줄씩 정리합니다."
-            title="사례 자료"
-          >
-            <div
-              className="rounded-xl border border-line bg-surface-elevated p-5"
-              id="case-info"
-            >
+          <SectionBlock title="사례 자료">
+            <div className="border-t border-line pt-5" id="case-info">
               <RequestDetailClient
-                initialChiefComplaint={detail?.chiefComplaint ?? ""}
-                initialClientAgeBand={detail?.clientAgeBand ?? null}
-                initialClientGender={detail?.clientGender ?? null}
-                initialNeedsCompletionRecord={detail?.needsCompletionRecord ?? null}
-                initialPreferredMethod={detail?.preferredMethod ?? null}
-                initialPurpose={detail?.purpose ?? null}
-                initialReferralReason={detail?.referralReason ?? ""}
-                initialRequestItems={detail?.requestItems ?? null}
-                initialSetting={detail?.setting ?? null}
-                initialTestsUsed={detail?.testsUsed ?? null}
-                initialTitle={detail?.title ?? ""}
-                completionRecord={completionRecord}
-                feedbackRecommendations={detail?.feedbackRecommendations ?? null}
-                feedbackSubmittedAt={detail?.feedbackSubmittedAt ?? null}
-                feedbackSummary={detail?.feedbackSummary ?? null}
+                initialChiefComplaint={detail.chiefComplaint ?? ""}
+                initialClientAgeBand={detail.clientAgeBand ?? null}
+                initialClientGender={detail.clientGender ?? null}
+                initialNeedsCompletionRecord={detail.needsCompletionRecord ?? null}
+                initialPreferredMethod={detail.preferredMethod ?? null}
+                initialPurpose={detail.purpose ?? null}
+                initialReferralReason={detail.referralReason ?? ""}
+                initialRequestItems={detail.requestItems ?? null}
+                initialSetting={detail.setting ?? null}
+                initialTestsUsed={detail.testsUsed ?? null}
+                initialTitle={detail.title ?? ""}
+                completionRecord={showCompletionRecord ? completionRecord : null}
+                feedbackRecommendations={detail.feedbackRecommendations ?? null}
+                feedbackSubmittedAt={detail.feedbackSubmittedAt ?? null}
+                feedbackSummary={detail.feedbackSummary ?? null}
                 bookingStatus={basic.bookingStatus}
                 deidentificationComplete={basic.deidentificationComplete}
-                initialMeetingUrl={detail?.meetingUrl ?? basic.meetingUrl}
+                initialMeetingUrl={detail.meetingUrl ?? basic.meetingUrl}
                 initialScheduledEnd={basic.scheduledEnd}
                 initialScheduledStart={basic.scheduledStart}
                 packetComplete={basic.packetComplete}
@@ -167,14 +146,8 @@ export default async function RequestDetailPage({
             </div>
           </SectionBlock>
 
-          <SectionBlock
-            subtitle="보고서, 검사 결과, 면담 요약처럼 슈퍼비전에 필요한 파일만 보관합니다."
-            title={`첨부 자료 ${String(caseFiles.length)}개`}
-          >
-            <div
-              className="rounded-xl border border-line bg-surface-elevated p-5"
-              id="case-files"
-            >
+          <SectionBlock title={`첨부 자료 ${String(caseFiles.length)}개`}>
+            <div className="border-t border-line pt-5" id="case-files">
               <CaseFilesPanel
                 canDelete={basic.status === "draft" || basic.status === "in_review"}
                 canUpload={
@@ -200,22 +173,26 @@ export default async function RequestDetailPage({
         </div>
 
         <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
-          <h2 className="text-xl font-bold text-ink-900">
-            {summaryHeading(basic.status)}
+          <p className="text-sm font-bold text-brand-700">현재 상태</p>
+          <h2 className="mt-2 text-xl font-bold text-ink-900">
+            {statusLabel(basic.status)}
           </h2>
           <div className="mt-5 grid divide-y divide-line text-sm">
-            <SummaryLine label="현재 상태" value={statusLabel(basic.status)} />
             <SummaryLine
               label="슈퍼바이저"
               value={basic.supervisorDisplayName ?? "확인 중"}
             />
+            <SummaryLine label="상품" value={basic.productTitle ?? "슈퍼비전 의뢰"} />
             <SummaryLine label="일정" value={formatBookingSlot(basic)} />
             <SummaryLine
               label="사례 자료"
-              value={basic.packetComplete ? "정리 완료" : "정리 필요"}
+              value={`${basic.packetComplete ? "정리 완료" : "정리 필요"} · ${String(caseFiles.length)}개`}
             />
             <SummaryLine label="자료 보관" value={`${String(basic.retentionDays)}일`} />
           </div>
+          <Button asChild className="mt-5 w-full" variant="secondary">
+            <a href={nextAction.href}>{nextAction.actionLabel}</a>
+          </Button>
         </aside>
       </section>
     </AppShell>

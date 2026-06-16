@@ -53,7 +53,7 @@ export default async function Page({
       active="request-new"
       currentUser={current.user}
       title="새 슈퍼비전 의뢰"
-      subtitle="슈퍼바이저, 세션, 일정을 확인한 뒤 사례 자료를 정리하고 최종 확인으로 이어갑니다."
+      subtitle="슈퍼바이저, 세션, 일정을 확인하고 초안을 저장합니다."
     >
       <NewRequestForm
         serviceProductId={serviceProductId}

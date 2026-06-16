@@ -75,7 +75,7 @@ export default async function Page() {
         </Button>
       }
       title="검토할 의뢰"
-      subtitle="새 의뢰를 열어 자료를 확인하고 수락, 피드백, 학습 기록 발급까지 이어갑니다."
+      subtitle="자료 확인, 수락, 피드백 작성이 필요한 의뢰를 확인합니다."
     >
       {assigned.length === 0 ? (
         <EmptyState
@@ -91,72 +91,39 @@ export default async function Page() {
           }
         />
       ) : (
-        <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <div className="grid gap-8">
+        <section className="grid gap-8">
+          <RequestSection
+            description={`${String(actionable.length)}건`}
+            empty="현재 바로 처리할 의뢰가 없습니다."
+            items={actionable}
+            title="지금 이어갈 요청"
+          />
+          {waiting.length > 0 ? (
             <RequestSection
-              description="수락, 피드백, 추가 자료 요청, 학습 기록 발급처럼 지금 바로 이어갈 요청입니다."
-              empty="현재 바로 처리할 의뢰가 없습니다."
-              items={actionable}
-              title="지금 이어갈 요청"
+              description={`${String(waiting.length)}건`}
+              empty=""
+              items={waiting}
+              title="예약·결제 대기"
             />
-            {waiting.length > 0 ? (
-              <RequestSection
-                description="결제 전이거나 시스템 전환을 기다리는 요청입니다. 검토 작업 화면으로 바로 보내지 않습니다."
-                empty=""
-                items={waiting}
-                lockedLabel="작업 전 상태"
-                title="예약·결제 대기"
-              />
-            ) : null}
-            {archived.length > 0 ? (
-              <RequestSection
-                ctaLabel="기록 확인"
-                description="완료 기록, 학습 기록, 보관 일정을 다시 확인할 때 여는 요청입니다."
-                empty=""
-                items={archived}
-                title="완료·보관"
-              />
-            ) : null}
-            {closed.length > 0 ? (
-              <RequestSection
-                ctaLabel="상태 확인"
-                description="반려, 취소, 환불, 만료로 닫힌 요청입니다."
-                empty=""
-                items={closed}
-                title="닫힌 요청"
-              />
-            ) : null}
-          </div>
-
-          <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
-            <p className="text-sm font-bold text-brand-700">검토 요약</p>
-            <h2 className="mt-2 text-xl font-bold text-ink-900">
-              한 번에 한 요청씩 처리합니다
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-500">
-              먼저 이어갈 요청을 열고, 나머지는 상태별로만 분리해 보관합니다.
-            </p>
-            <div className="mt-5 grid divide-y divide-line text-sm">
-              <SummaryLine
-                label="지금 이어갈 요청"
-                value={`${String(actionable.length)}건`}
-              />
-              <SummaryLine
-                label="예약·결제 대기"
-                value={`${String(waiting.length)}건`}
-              />
-              <SummaryLine label="완료·보관" value={`${String(archived.length)}건`} />
-              <SummaryLine label="닫힌 요청" value={`${String(closed.length)}건`} />
-            </div>
-            <div className="mt-5 grid gap-3">
-              <Button asChild variant="secondary">
-                <Link href="/supervisor/memory">학습 기록 보기</Link>
-              </Button>
-              <Button asChild variant="secondary">
-                <Link href="/supervisor">업무 홈으로 돌아가기</Link>
-              </Button>
-            </div>
-          </aside>
+          ) : null}
+          {archived.length > 0 ? (
+            <RequestSection
+              ctaLabel="기록 확인"
+              description={`${String(archived.length)}건`}
+              empty=""
+              items={archived}
+              title="완료·보관"
+            />
+          ) : null}
+          {closed.length > 0 ? (
+            <RequestSection
+              ctaLabel="상태 확인"
+              description={`${String(closed.length)}건`}
+              empty=""
+              items={closed}
+              title="닫힌 요청"
+            />
+          ) : null}
         </section>
       )}
     </AppShell>
@@ -172,14 +139,12 @@ function RequestSection({
   description,
   empty,
   items,
-  lockedLabel = null,
   title
 }: {
   ctaLabel?: string;
   description: string;
   empty: string;
   items: RequestItem[];
-  lockedLabel?: string | null;
   title: string;
 }) {
   return (
@@ -196,55 +161,51 @@ function RequestSection({
         <div className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
           {items.map((request) => (
             <article
-              className="grid gap-4 border-b border-line px-5 py-5 last:border-b-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center"
+              className="grid gap-4 border-b border-line px-5 py-5 last:border-b-0 lg:grid-cols-[140px_minmax(0,1fr)_112px] lg:items-center"
               key={request.id}
             >
-              <div className="min-w-0">
+              <div>
                 <p className="text-xs font-bold text-brand-700">
                   {requestLineTitle(request.status)}
                 </p>
-                <h3 className="mt-2 text-xl font-bold text-ink-900">
+                <p className="mt-2 text-sm font-semibold text-ink-700">
+                  {statusLabel(request.status)}
+                </p>
+              </div>
+              <div className="min-w-0">
+                <h3 className="break-keep text-lg font-bold text-ink-900">
                   {shortRequestId(request.id)} ·{" "}
                   {request.productTitle ?? "슈퍼비전 의뢰"}
                 </h3>
                 <p className="mt-2 text-sm leading-relaxed text-ink-500">
                   {requestLineDescription(request.status)}
                 </p>
-                <div className="mt-3 flex flex-wrap gap-2 text-xs font-semibold text-ink-500">
-                  <span className="rounded-full bg-surface-sunken px-3 py-2">
-                    {statusLabel(request.status)}
-                  </span>
-                  <span className="rounded-full bg-surface-sunken px-3 py-2">
-                    보관 {String(request.retentionDays)}일
-                  </span>
-                  <span className="rounded-full bg-surface-sunken px-3 py-2">
-                    {formatBookingSlot(request)}
-                  </span>
-                </div>
+                <dl className="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-sm text-ink-700">
+                  <div className="flex gap-2">
+                    <dt className="font-semibold text-ink-400">일정</dt>
+                    <dd className="font-semibold">{formatBookingSlot(request)}</dd>
+                  </div>
+                  <div className="flex gap-2">
+                    <dt className="font-semibold text-ink-400">보관</dt>
+                    <dd className="font-semibold">{String(request.retentionDays)}일</dd>
+                  </div>
+                </dl>
               </div>
-              {lockedLabel ? (
-                <span className="rounded-full border border-line px-4 py-2 text-sm font-semibold text-ink-500">
-                  {lockedLabel}
-                </span>
-              ) : (
-                <Button asChild size="sm" variant="secondary">
-                  <Link href={`/supervisor/requests/${request.id}`}>{ctaLabel}</Link>
-                </Button>
-              )}
+              <Button
+                asChild
+                className="lg:justify-self-end"
+                size="sm"
+                variant="secondary"
+              >
+                <Link href={`/supervisor/requests/${request.id}`}>
+                  {requestActionLabel(request.status, ctaLabel)}
+                </Link>
+              </Button>
             </article>
           ))}
         </div>
       )}
     </section>
-  );
-}
-
-function SummaryLine({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="grid gap-1 py-3">
-      <span className="font-bold text-ink-400">{label}</span>
-      <span className="font-semibold leading-relaxed text-ink-900">{value}</span>
-    </div>
   );
 }
 
@@ -287,7 +248,7 @@ function statusLabel(status: string): string {
     refunded: "환불",
     expired: "만료"
   };
-  return labels[status] ?? "상태 확인 필요";
+  return labels[status] ?? "상태 미분류";
 }
 
 function requestLineTitle(status: string): string {
@@ -298,7 +259,7 @@ function requestLineTitle(status: string): string {
   if (status === "completion_record_issued" || status === "completed") {
     return "기록 보관";
   }
-  if (status === "draft" || status === "submitted") return "작업 전 상태";
+  if (status === "draft" || status === "submitted") return "작성 대기";
   if (status === "awaiting_payment" || status === "paid") return "결제 상태 확인";
   return "상태 확인";
 }
@@ -320,12 +281,24 @@ function requestLineDescription(status: string): string {
     return "완료 기록과 보관 기간을 다시 확인할 수 있습니다.";
   }
   if (status === "draft" || status === "submitted") {
-    return "아직 검토 작업을 시작하지 않는 상태입니다.";
+    return "신청자가 세션과 자료를 정리하는 중입니다.";
   }
   if (status === "awaiting_payment" || status === "paid") {
-    return "결제와 시스템 전환 상태를 기다리는 중입니다.";
+    return "결제 완료와 수락 대기 전환을 확인합니다.";
   }
   return "요청 상태를 확인하세요.";
+}
+
+function requestActionLabel(status: string, fallback: string): string {
+  if (status === "awaiting_supervisor_review") return "수락 판단";
+  if (status === "accepted" || status === "in_review") return "피드백 작성";
+  if (status === "feedback_submitted") return "기록 확인";
+  if (status === "completion_record_issued" || status === "completed") {
+    return "기록 확인";
+  }
+  if (status === "draft" || status === "submitted") return "상세 검토";
+  if (status === "awaiting_payment" || status === "paid") return "상태 확인";
+  return fallback;
 }
 
 function shortRequestId(id: string): string {

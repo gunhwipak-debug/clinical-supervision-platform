@@ -5,7 +5,6 @@ import { PauseCircle, PlusCircle, Save } from "lucide-react";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";
-import { Card } from "../../../../components/ui/card";
 import { Field, Input, Label, Textarea } from "../../../../components/ui/form";
 
 export type ManagedProduct = Pick<
@@ -48,7 +47,7 @@ export function ProductForm() {
   }
 
   return (
-    <Card className="rounded-xl">
+    <section className="rounded-xl border border-line bg-surface-elevated p-5">
       <form className="grid gap-4" onSubmit={submit}>
         <div>
           <h2 className="text-xl font-bold">슈퍼비전 방식 추가</h2>
@@ -108,7 +107,7 @@ export function ProductForm() {
           ) : null}
         </div>
       </form>
-    </Card>
+    </section>
   );
 }
 

@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { profiles, withUserContext } from "@csp/db";
 import { AppShell } from "../../../../components/app-shell";
-import {
-  PrimaryActionPanel,
-  SectionBlock
-} from "../../../../components/clinicflow-shell";
+import { SectionBlock } from "../../../../components/clinicflow-shell";
 import { Button } from "../../../../components/ui/button";
 import {
   LoginRequiredState,
@@ -103,13 +100,6 @@ export default async function SupervisorProfilePage() {
         </Button>
       }
     >
-      <PrimaryActionPanel
-        title={canPublish ? "검색 공개 상태를 확인하세요" : "공개 전 확인이 필요합니다"}
-      >
-        {publishBlockedReason ??
-          "프로필을 검색 공개로 전환할 수 있습니다. 공개 전 이름, 사진, 자격, 전문분야, 소개 문구를 한 번 더 확인하세요."}
-      </PrimaryActionPanel>
-
       <section className="grid gap-8 lg:grid-cols-[1fr_340px]">
         <SupervisorProfileEditor
           profile={profile}

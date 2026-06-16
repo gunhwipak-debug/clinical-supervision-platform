@@ -4,7 +4,6 @@ import { PlusCircle } from "lucide-react";
 import { type SyntheticEvent, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";
-import { Card } from "../../../../components/ui/card";
 import { Field, Input, Label } from "../../../../components/ui/form";
 
 export function QualificationForm() {
@@ -61,10 +60,10 @@ export function QualificationForm() {
   }
 
   return (
-    <Card className="rounded-xl">
+    <section className="rounded-xl border border-line bg-surface-elevated p-5">
       <form className="grid gap-4" onSubmit={submit}>
         <div>
-          <p className="text-sm font-bold text-brand-700">다음 행동</p>
+          <p className="text-sm font-bold text-brand-700">자격 정보 제출</p>
           <h2 className="mt-1 text-xl font-bold text-ink-900">자격 증빙 제출</h2>
           <p className="mt-1 text-sm leading-relaxed text-ink-500">
             운영자 승인 전까지는 공개 목록에 노출되지 않습니다.
@@ -115,7 +114,7 @@ export function QualificationForm() {
           ) : null}
         </div>
       </form>
-    </Card>
+    </section>
   );
 }
 

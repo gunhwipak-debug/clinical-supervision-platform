@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
 import { AppShell } from "../../../components/app-shell";
-import { PrimaryActionPanel, SectionBlock } from "../../../components/clinicflow-shell";
 import {
   LoginRequiredState,
   RoleRequiredState
@@ -17,6 +16,7 @@ import { contextFor } from "../../../lib/supervision/authz";
 export const dynamic = "force-dynamic";
 
 type RequestSummary = supervision.SupervisionRequestSummary;
+type RequestStatus = RequestSummary["status"];
 
 export default async function Page() {
   const current = await getCurrentUser();
@@ -59,142 +59,199 @@ export default async function Page() {
   const sent = requests.filter(
     (request) => request.superviseeId === current.session.userId
   );
-  const firstSentRequest = sent[0];
 
   return (
     <AppShell
+      action={
+        <Button asChild>
+          <Link href="/requests/new">새 의뢰 시작</Link>
+        </Button>
+      }
       active="requests"
       currentUser={currentShellUser}
       title="내 슈퍼비전 의뢰"
-      subtitle="진행 중인 의뢰와 다음 행동을 한 줄씩 확인합니다."
+      subtitle="진행 중인 의뢰와 이어서 할 일을 한 줄씩 확인합니다."
     >
-      <PrimaryActionPanel
-        action={
-          requestsUnavailable ? undefined : firstSentRequest ? (
-            <Button asChild variant="secondary">
-              <Link href={`/requests/${firstSentRequest.id}` as never}>
-                첫 의뢰 열기
-              </Link>
-            </Button>
-          ) : (
-            <Button asChild variant="secondary">
-              <Link href="/supervisors">슈퍼바이저 찾기</Link>
-            </Button>
-          )
-        }
-        title={
-          requestsUnavailable
-            ? "현재 의뢰 목록을 불러오지 못했습니다"
-            : sent.length > 0
-              ? "지금 이어볼 의뢰를 먼저 확인합니다"
-              : "첫 의뢰를 시작합니다"
-        }
-      >
-        {requestsUnavailable
-          ? "연결이 복구되면 진행 중인 의뢰, 추가 자료 요청, 결제 상태가 이 목록에 다시 표시됩니다."
-          : sent.length > 0
-            ? "추가 자료 요청, 결제, 피드백 도착처럼 지금 해야 할 일이 있는 의뢰를 위에서부터 확인하세요."
-            : "슈퍼바이저를 선택하면 세션, 일정, 사례 자료 정리 흐름으로 이어집니다."}
-      </PrimaryActionPanel>
-
-      <RequestSection
-        description="내가 신청한 슈퍼비전의 진행 상태입니다."
-        empty={
-          requestsUnavailable
-            ? "현재 의뢰 목록을 불러오지 못했습니다. 신청이 연결되면 진행 상태와 다음 행동이 이곳에 표시됩니다."
-            : "아직 신청한 슈퍼비전이 없습니다."
-        }
-        unavailable={requestsUnavailable}
-        items={sent}
-        title="신청한 의뢰"
-      />
+      <RequestWorkbench items={sent} unavailable={requestsUnavailable} />
     </AppShell>
   );
 }
 
-function RequestSection({
-  description,
-  empty,
+function RequestWorkbench({
   items,
-  title,
-  unavailable = false
+  unavailable
 }: {
-  description: string;
-  empty: string;
   items: RequestSummary[];
-  title: string;
-  unavailable?: boolean;
+  unavailable: boolean;
 }) {
+  const groups = requestStatusGroups.map((group) => ({
+    ...group,
+    count: items.filter((item) => includesStatus(group.statuses, item.status)).length
+  }));
+
   return (
-    <SectionBlock
-      subtitle={
-        unavailable
-          ? `${description} 현재 목록 확인 필요`
-          : `${description} ${items.length.toLocaleString("ko-KR")}건`
-      }
-      title={title}
-    >
-      {items.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-line bg-surface-elevated p-5 text-sm leading-relaxed text-ink-500">
-          {empty}
-        </p>
-      ) : (
-        <ul className="grid gap-3">
-          {items.map((item) => (
-            <li key={item.id}>
-              <Link
-                className="grid gap-4 rounded-xl border border-line bg-surface-elevated p-5 transition-colors hover:border-brand-600 md:grid-cols-[1fr_auto] md:items-center"
-                href={`/requests/${item.id}` as never}
-              >
-                <div className="min-w-0">
-                  <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-bold">
-                    <span className="rounded-md bg-brand-50 px-2 py-1 text-brand-700">
+    <section className="grid gap-4">
+      <div
+        aria-label="의뢰 상태별 현황"
+        className="flex flex-wrap items-center gap-2 rounded-xl border border-line bg-surface-elevated p-2"
+      >
+        {groups.map((group) => (
+          <div
+            className="inline-flex items-center gap-2 rounded-md bg-surface-sunken px-3 py-2"
+            key={group.label}
+          >
+            <p className="text-xs font-bold text-ink-500">{group.label}</p>
+            <p className="text-sm font-bold text-ink-900">
+              {group.count.toLocaleString("ko-KR")}건
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
+        <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+          <h2 className="text-2xl font-bold text-ink-900">의뢰 목록</h2>
+          <span className="rounded-md bg-surface-sunken px-3 py-1 text-sm font-bold text-ink-500">
+            {unavailable
+              ? "데이터 연결 대기"
+              : `${items.length.toLocaleString("ko-KR")}건`}
+          </span>
+        </div>
+
+        <div className="overflow-x-auto">
+          <table className="min-w-full text-left text-sm">
+            <thead className="border-b border-line bg-surface-sunken text-xs font-bold text-ink-500">
+              <tr>
+                <th className="px-5 py-3">의뢰</th>
+                <th className="px-5 py-3">제목</th>
+                <th className="px-5 py-3">슈퍼바이저</th>
+                <th className="px-5 py-3">상태</th>
+                <th className="px-5 py-3">일정/결제</th>
+                <th className="px-5 py-3 text-right">이어 할 일</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-line">
+              {items.length === 0 ? (
+                <tr>
+                  <td className="px-5 py-5 font-semibold text-ink-500" colSpan={6}>
+                    {unavailable
+                      ? "의뢰 데이터를 표시할 수 없습니다."
+                      : "아직 신청한 슈퍼비전이 없습니다."}
+                  </td>
+                </tr>
+              ) : (
+                items.map((item) => (
+                  <tr className="align-middle" key={item.id}>
+                    <td className="px-5 py-4 font-bold text-brand-700">
                       {shortRequestId(item.id)}
-                    </span>
-                    <span className="rounded-md border border-line px-2 py-1 text-ink-500">
-                      {statusLabel(item.status)}
-                    </span>
-                  </div>
-                  <h3 className="truncate text-base font-bold text-ink-900">
-                    {item.productTitle ?? "슈퍼비전 의뢰"}
-                  </h3>
-                  <p className="mt-2 text-sm leading-relaxed text-ink-500">
-                    사례 자료, 결제 상태, 피드백과 학습 기록을 이어서 확인합니다.
-                  </p>
-                  <p className="mt-2 text-xs font-semibold text-ink-500">
-                    예약 일정 · {formatBookingSlot(item)}
-                  </p>
-                  <p className="mt-1 text-xs font-semibold text-ink-500">
-                    최근 변경 · {formatDate(item.updatedAt)}
-                  </p>
-                </div>
-                <div className="flex items-center justify-between gap-3 md:justify-end">
-                  <span className="text-sm font-bold text-brand-700">
-                    {actionLabel(item.status)}
-                  </span>
-                  <span className="material-symbols-outlined text-ink-400">
-                    chevron_right
-                  </span>
-                </div>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </SectionBlock>
+                    </td>
+                    <td className="min-w-64 px-5 py-4">
+                      <p className="font-bold text-ink-900">
+                        {item.productTitle ?? "슈퍼비전 의뢰"}
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-ink-500">
+                        최근 변경 · {formatDate(item.updatedAt)}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-ink-700">
+                      {item.supervisorDisplayName ?? "슈퍼바이저 미선택"}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="whitespace-nowrap rounded-md bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700">
+                        {statusLabel(item.status)}
+                      </span>
+                      <p className="mt-2 text-xs font-semibold text-ink-500">
+                        {statusGroupLabel(item.status)}
+                      </p>
+                    </td>
+                    <td className="px-5 py-4 font-semibold text-ink-600">
+                      {scheduleOrPaymentSignal(item)}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <Button
+                        asChild
+                        className="whitespace-nowrap"
+                        size="sm"
+                        variant="secondary"
+                      >
+                        <Link href={`/requests/${item.id}` as never}>
+                          {actionLabel(item.status)}
+                        </Link>
+                      </Button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
   );
 }
 
-function actionLabel(status: string): string {
+const requestStatusGroups = [
+  {
+    label: "진행 중",
+    statuses: ["draft", "submitted", "paid", "accepted", "meeting_scheduled"]
+  },
+  {
+    label: "결제 필요",
+    statuses: ["awaiting_payment"]
+  },
+  {
+    label: "검토 중",
+    statuses: ["awaiting_supervisor_review", "in_review", "meeting_completed"]
+  },
+  {
+    label: "보완 요청",
+    statuses: ["additional_info_requested"]
+  },
+  {
+    label: "완료",
+    statuses: [
+      "feedback_submitted",
+      "completion_record_issued",
+      "completed",
+      "rejected",
+      "cancelled",
+      "refunded",
+      "expired",
+      "deleted"
+    ]
+  }
+] as const satisfies readonly {
+  label: string;
+  statuses: readonly RequestStatus[];
+}[];
+
+function actionLabel(status: RequestStatus): string {
+  if (status === "awaiting_payment") return "결제하기";
+  if (status === "additional_info_requested") return "자료 보완";
   if (status === "feedback_submitted" || status === "completion_record_issued") {
     return "피드백 확인";
   }
-  if (status === "draft") return "작성 계속";
+  if (status === "completed") return "기록 열기";
+  if (status === "draft" || status === "submitted") return "자료 작성";
   return "진행 상황 확인";
 }
 
+function statusGroupLabel(status: RequestStatus): string {
+  const group = requestStatusGroups.find((item) =>
+    includesStatus(item.statuses, status)
+  );
+  return group?.label ?? "기타";
+}
+
+function includesStatus(
+  statuses: readonly RequestStatus[],
+  status: RequestStatus
+): boolean {
+  return statuses.includes(status);
+}
+
 function shortRequestId(id: string): string {
-  return `의뢰-${id.slice(0, 8)}`;
+  return `REQ-${id.slice(-4).toUpperCase()}`;
 }
 
 function formatDate(value: Date | string): string {
@@ -206,16 +263,25 @@ function formatDate(value: Date | string): string {
   }).format(new Date(value));
 }
 
+function scheduleOrPaymentSignal(item: RequestSummary): string {
+  if (item.status === "awaiting_payment") return "결제 필요";
+  if (item.status === "paid") return "결제 완료";
+  if (item.scheduledStart && item.scheduledEnd) {
+    return formatBookingSlot(item);
+  }
+  if (item.status === "draft" || item.status === "submitted") return "일정 미선택";
+  return "일정 없음";
+}
+
 function formatBookingSlot(item: RequestSummary): string {
-  if (!item.scheduledStart || !item.scheduledEnd) return "선택된 일정 없음";
+  if (!item.scheduledStart || !item.scheduledEnd) return "일정 미선택";
   const start = new Date(item.scheduledStart);
   const end = new Date(item.scheduledEnd);
   const date = new Intl.DateTimeFormat("ko-KR", {
     day: "numeric",
     month: "long",
     timeZone: "Asia/Seoul",
-    weekday: "short",
-    year: "numeric"
+    weekday: "short"
   }).format(start);
   const time = new Intl.DateTimeFormat("ko-KR", {
     hourCycle: "h23",
@@ -226,8 +292,8 @@ function formatBookingSlot(item: RequestSummary): string {
   return `${date} ${time.format(start)}-${time.format(end)}`;
 }
 
-function statusLabel(status: string): string {
-  const labels: Record<string, string> = {
+function statusLabel(status: RequestStatus): string {
+  const labels: Record<RequestStatus, string> = {
     accepted: "수락됨",
     additional_info_requested: "추가 자료 요청",
     awaiting_payment: "결제 필요",
@@ -237,6 +303,7 @@ function statusLabel(status: string): string {
     completion_record_issued: "학습 기록 발급",
     draft: "작성 중",
     expired: "만료",
+    deleted: "삭제됨",
     feedback_submitted: "피드백 도착",
     in_review: "검토 중",
     meeting_completed: "상담 완료",
@@ -246,5 +313,5 @@ function statusLabel(status: string): string {
     rejected: "수락되지 않음",
     submitted: "제출됨"
   };
-  return labels[status] ?? "상태 확인 필요";
+  return labels[status];
 }

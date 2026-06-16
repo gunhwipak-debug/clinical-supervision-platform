@@ -29,7 +29,7 @@ export function RoleNavigation({
   readonly role: AppRole;
 }) {
   return (
-    <nav aria-label={`${roleDisplayLabel(role)} 메뉴`} className="grid gap-5">
+    <nav aria-label={`${roleDisplayLabel(role)} 메뉴`} className="grid gap-4">
       {groups.map((group) => (
         <div className="grid gap-1" key={group.label}>
           <p className="px-3 text-xs font-bold text-ink-400">{group.label}</p>
@@ -37,10 +37,10 @@ export function RoleNavigation({
             <a
               aria-current={active === item.key ? "page" : undefined}
               className={cn(
-                "grid rounded-lg px-3 py-2 text-sm transition",
+                "grid rounded-md border-l-2 px-3 py-2 text-sm transition",
                 active === item.key
-                  ? "bg-brand-50 text-brand-700"
-                  : "text-ink-700 hover:bg-surface-sunken hover:text-ink-900"
+                  ? "border-brand-600 bg-brand-50 text-brand-700"
+                  : "border-transparent text-ink-700 hover:bg-surface-sunken hover:text-ink-900"
               )}
               href={item.href}
               key={item.key}
@@ -117,7 +117,7 @@ const superviseeNavigation = [
       { href: "/requests", key: "requests", label: "내 의뢰" },
       { href: "/requests/new", key: "request-new", label: "새 의뢰" },
       { href: "/payments", key: "payments", label: "결제 내역" },
-      { href: "/case-archive", key: "case-archive", label: "학습 기록" },
+      { href: "/case-archive", key: "case-archive", label: "케이스 아카이브" },
       { href: "/notifications", key: "notifications", label: "알림" }
     ]
   },
@@ -130,7 +130,7 @@ const superviseeNavigation = [
   },
   {
     label: "계정",
-    items: [{ href: "/settings", key: "settings", label: "계정 설정" }]
+    items: [{ href: "/settings", key: "settings", label: "설정" }]
   }
 ] as const satisfies readonly NavGroup[];
 
@@ -163,13 +163,13 @@ const supervisorNavigation = [
       {
         href: "/supervisor/availability",
         key: "supervisor-availability",
-        label: "일정 관리"
+        label: "가능 시간"
       },
       { href: "/supervisor/payouts", key: "supervisor-payouts", label: "정산 내역" },
       {
         href: "/supervisor/qualifications",
         key: "supervisor-qualifications",
-        label: "자격 심사"
+        label: "자격 정보"
       }
     ]
   }
@@ -185,7 +185,7 @@ const adminNavigation = [
   }
 ] as const satisfies readonly NavGroup[];
 
-const allNavKeys = [
+export const allNavKeys = [
   "admin",
   "case-archive",
   "guide",

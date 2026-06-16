@@ -105,7 +105,7 @@ export default async function Page() {
                 </p>
                 <p className="mt-1 text-sm leading-relaxed text-ink-500">
                   {nextRequest
-                    ? `${nextRequest.productTitle ?? "슈퍼비전 의뢰"}에서 다음 행동을 이어갑니다.`
+                    ? `${nextRequest.productTitle ?? "슈퍼비전 의뢰"}의 필요한 검토를 이어갑니다.`
                     : "새 요청이 들어오면 이 화면에서 먼저 확인합니다."}
                 </p>
               </div>

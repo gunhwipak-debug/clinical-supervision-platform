@@ -3,12 +3,12 @@
 import { useState } from "react";
 
 const adminLinks = [
-  { href: "/admin", label: "운영 처리 목록" },
-  { href: "/admin/queue", label: "운영 대기열" },
+  { href: "/admin", label: "관리자 홈" },
+  { href: "/admin/queue", label: "대기열" },
   { href: "/admin/qualifications", label: "자격 심사" },
-  { href: "/admin/refunds", label: "환불 검토" },
-  { href: "/admin/payouts", label: "정산 확인" },
-  { href: "/admin/audit", label: "처리 기록" }
+  { href: "/admin/refunds", label: "환불" },
+  { href: "/admin/payouts", label: "정산" },
+  { href: "/admin/audit", label: "감사 로그" }
 ] as const;
 
 export function AdminAccountMenu({

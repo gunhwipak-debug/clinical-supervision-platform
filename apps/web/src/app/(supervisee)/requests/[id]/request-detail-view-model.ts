@@ -1,6 +1,6 @@
 import { supervision, withUserContext } from "@csp/db";
 import type { CurrentUser } from "@/lib/auth/current-user";
-import { createRuntimeDatabase } from "@/lib/auth/database";
+import type { createRuntimeDatabase } from "@/lib/auth/database";
 import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
 
@@ -9,17 +9,19 @@ type RuntimeDatabase = ReturnType<typeof createRuntimeDatabase>;
 export type RequestNextAction = {
   readonly actionLabel: string;
   readonly description: string;
-  readonly eyebrow: string;
+  readonly eyebrow?: string;
   readonly href: string;
   readonly title: string;
 };
 
 export const requestFlowSteps = [
   "슈퍼바이저 선택",
-  "세션·일정",
+  "상품 선택",
+  "일정 선택",
   "사례자료 정리",
-  "확인·결제",
-  "학습 기록"
+  "답변 확인",
+  "결제",
+  "수락 대기"
 ] as const;
 
 export async function readPhiDetail(
@@ -72,12 +74,18 @@ export function flowStepForStatus(status: string): (typeof requestFlowSteps)[num
   ) {
     return "사례자료 정리";
   }
-  if (status === "awaiting_payment" || status === "paid") return "확인·결제";
-  if (status === "completion_record_issued" || status === "completed") {
-    return "학습 기록";
+  if (status === "awaiting_payment") return "결제";
+  if (
+    status === "paid" ||
+    status === "awaiting_supervisor_review" ||
+    status === "accepted" ||
+    status === "feedback_submitted" ||
+    status === "completion_record_issued" ||
+    status === "completed"
+  ) {
+    return "수락 대기";
   }
-  if (status === "feedback_submitted") return "학습 기록";
-  return "확인·결제";
+  return "답변 확인";
 }
 
 export function formatBookingSlot(
@@ -120,7 +128,7 @@ export function statusLabel(status: string): string {
     refunded: "환불",
     expired: "만료"
   };
-  return labels[status] ?? "상태 확인 필요";
+  return labels[status] ?? "상태 미분류";
 }
 
 export function pageTitle(status: string): string {
@@ -129,13 +137,6 @@ export function pageTitle(status: string): string {
   }
   if (status === "awaiting_payment" || status === "paid") {
     return "선택 내용을 확인하고 결제합니다";
-  }
-  if (
-    status === "feedback_submitted" ||
-    status === "completion_record_issued" ||
-    status === "completed"
-  ) {
-    return "학습 기록";
   }
   return "의뢰 상세";
 }
@@ -148,17 +149,17 @@ export function pageSubtitle(request: supervision.SupervisionRequestDetails): st
     return "결제와 사례자료 정리가 끝났습니다. 슈퍼바이저가 일정과 자료를 확인하면 슈퍼비전이 시작됩니다.";
   }
   if (request.status === "additional_info_requested") {
-    return `${request.id.slice(0, 8).toUpperCase()} · 필요한 자료를 먼저 보완하세요.`;
+    return `${request.id.slice(0, 8).toUpperCase()} · 추가 자료가 필요합니다.`;
   }
   if (request.status === "awaiting_payment" || request.status === "paid") {
-    return "슈퍼바이저, 세션, 일정, 자료를 한 번 더 확인한 뒤 신청을 확정합니다.";
+    return "선택 내용과 결제 상태를 확인합니다.";
   }
   if (
     request.status === "feedback_submitted" ||
     request.status === "completion_record_issued" ||
     request.status === "completed"
   ) {
-    return "피드백과 완료 기록을 한 화면에서 다시 확인합니다.";
+    return "피드백과 이수 기록을 확인합니다.";
   }
   return `${statusLabel(request.status)} · ${formatBookingSlot(request)}`;
 }
@@ -184,9 +185,7 @@ export function nextActionForStatus(
   if (status === "draft" || status === "submitted") {
     return {
       actionLabel: "사례 자료 정리",
-      description:
-        "보고서 초안, 검사 결과, 면담 요약을 올리고 슈퍼바이저에게 확인받고 싶은 질문을 한 문장으로 남깁니다.",
-      eyebrow: "다음 행동",
+      description: "보고서 초안, 검사 결과, 면담 요약을 정리합니다.",
       href: `/requests/${requestId}#case-files`,
       title: "자료를 정리한 뒤 제출 상태를 확인하세요"
     };
@@ -194,8 +193,7 @@ export function nextActionForStatus(
   if (status === "additional_info_requested") {
     return {
       actionLabel: "추가 자료 올리기",
-      description:
-        "슈퍼바이저가 요청한 보완 자료를 먼저 올립니다. 자료를 추가한 뒤 같은 화면에서 제출 상태를 확인할 수 있습니다.",
+      description: "슈퍼바이저가 요청한 보완 자료를 올립니다.",
       eyebrow: "추가 자료 요청",
       href: `/requests/${requestId}#case-files`,
       title: "필요한 자료를 보완하세요"
@@ -204,8 +202,7 @@ export function nextActionForStatus(
   if (status === "awaiting_payment" || status === "paid") {
     return {
       actionLabel: "결제 확인",
-      description:
-        "슈퍼바이저, 세션, 일정, 제출 자료를 한 번 더 확인한 뒤 결제를 이어가거나 결제 상태를 확인합니다.",
+      description: "신청 내용과 결제 상태를 확인합니다.",
       eyebrow: "확인·결제",
       href: "/payments",
       title: "신청 내용을 확인하고 결제를 마무리하세요"
@@ -214,8 +211,7 @@ export function nextActionForStatus(
   if (status === "awaiting_supervisor_review" || status === "accepted") {
     return {
       actionLabel: "진행 상태 보기",
-      description:
-        "결제와 자료 제출은 끝났습니다. 슈퍼바이저가 자료와 일정을 확인하면 검토가 시작됩니다.",
+      description: "슈퍼바이저 확인을 기다립니다.",
       eyebrow: "수락 대기",
       href: `/requests/${requestId}#case-info`,
       title: "슈퍼바이저 확인을 기다립니다"
@@ -224,8 +220,7 @@ export function nextActionForStatus(
   if (status === "in_review") {
     return {
       actionLabel: "자료 상태 확인",
-      description:
-        "검토가 진행 중입니다. 추가 요청이 오면 이 화면에서 보완 자료를 이어서 올립니다.",
+      description: "검토 상태와 자료 요청 여부를 확인합니다.",
       eyebrow: "검토 진행 중",
       href: `/requests/${requestId}#case-files`,
       title: "검토 진행 상태를 확인하세요"
@@ -238,8 +233,7 @@ export function nextActionForStatus(
   ) {
     return {
       actionLabel: "학습 기록 보기",
-      description:
-        "받은 피드백과 이수 기록은 이후 다시 찾을 수 있도록 학습 기록에 보관됩니다.",
+      description: "피드백과 이수 기록을 확인합니다.",
       eyebrow: "피드백 도착",
       href: "/case-archive",
       title: "피드백을 확인하고 학습 기록에 남기세요"
@@ -247,8 +241,7 @@ export function nextActionForStatus(
   }
   return {
     actionLabel: "의뢰 목록",
-    description:
-      "현재 상태를 확인하기 어렵습니다. 의뢰 목록에서 진행 중인 항목을 다시 선택해주세요.",
+    description: "의뢰 목록에서 진행 항목을 다시 선택해주세요.",
     eyebrow: "상태 확인",
     href: "/requests",
     title: "의뢰 진행 상태를 다시 확인하세요"

@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { calendar, profiles, withUserContext } from "@csp/db";
 import { AppShell } from "../../../../components/app-shell";
-import {
-  PrimaryActionPanel,
-  SectionBlock
-} from "../../../../components/clinicflow-shell";
+import { SectionBlock } from "../../../../components/clinicflow-shell";
 import { Button } from "../../../../components/ui/button";
 import {
   LoginRequiredState,
@@ -89,13 +86,8 @@ export default async function Page({
     >
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="grid gap-6">
-          <PrimaryActionPanel title="예약 가능한 시간을 먼저 정하세요">
-            신청자는 이 시간표를 기준으로 세션을 선택합니다. 가능한 시간만 남기면 일정
-            조율이 줄어듭니다.
-          </PrimaryActionPanel>
-
           <SectionBlock
-            subtitle="요일별 가능 시간과 일정 연동 상태를 한 화면에서 관리합니다."
+            subtitle="신청자가 선택할 수 있는 요일과 시간을 정리합니다."
             title="가능 시간"
           >
             <div

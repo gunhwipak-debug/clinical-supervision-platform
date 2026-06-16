@@ -5,7 +5,6 @@ import type { calendar } from "@csp/db";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";
-import { Card } from "../../../../components/ui/card";
 
 const days = [
   { value: 1, label: "월" },
@@ -149,7 +148,7 @@ export function AvailabilityForm({
 
   return (
     <div className="grid gap-6">
-      <Card className="overflow-hidden rounded-xl p-0">
+      <section className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
         <div className="flex items-center justify-between border-b border-line bg-surface-base px-5 py-4">
           <div>
             <h3 className="text-lg font-bold text-ink-900">주간 예약 시간대</h3>
@@ -216,7 +215,7 @@ export function AvailabilityForm({
             ))}
           </div>
         </div>
-      </Card>
+      </section>
 
       <details className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
         <summary className="cursor-pointer list-none p-4 text-sm font-bold text-ink-900">

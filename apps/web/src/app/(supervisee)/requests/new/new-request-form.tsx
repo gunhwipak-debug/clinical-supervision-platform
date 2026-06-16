@@ -23,6 +23,27 @@ const requestSchema = z.object({
 
 type RequestInput = z.input<typeof requestSchema>;
 type RequestValues = z.output<typeof requestSchema>;
+type StepState = "completed" | "current" | "locked";
+type RequestStepRow = {
+  action?: {
+    href: string;
+    label: string;
+  };
+  description: string;
+  label: (typeof requestFlowSteps)[number];
+  state: StepState;
+  value: string;
+};
+
+const requestFlowSteps = [
+  "슈퍼바이저 선택",
+  "상품 선택",
+  "일정 선택",
+  "사례자료 정리",
+  "답변 확인",
+  "결제",
+  "수락 대기"
+] as const;
 
 export function NewRequestForm({
   selectedSlot,
@@ -69,8 +90,24 @@ export function NewRequestForm({
       ? "화상 세션은 가능한 일정을 먼저 선택해야 초안을 저장할 수 있습니다."
       : "";
   const timingValue = requiresSelectedSlot
-    ? selectedSlot || "시간 선택 필요"
+    ? selectedSlot || "일정 미선택"
     : "일정 예약 없음";
+  const currentStep = !selection.supervisorName
+    ? "슈퍼바이저 선택"
+    : !hasSelectedProduct
+      ? "상품 선택"
+      : requiresSelectedSlot && !hasSelectedSlot
+        ? "일정 선택"
+        : "사례자료 정리";
+  const stepRows = buildRequestSteps({
+    canSubmit,
+    currentStep,
+    hasSelectedProduct,
+    hasSelectedSlot,
+    requiresSelectedSlot,
+    selectedSlotLabel: timingValue,
+    selection
+  });
 
   useEffect(() => {
     setIsHydrated(true);
@@ -104,16 +141,7 @@ export function NewRequestForm({
 
   return (
     <form className="grid gap-6" onSubmit={form.handleSubmit(submit)}>
-      <FlowStepNav
-        current="세션·일정"
-        steps={[
-          "슈퍼바이저 선택",
-          "세션·일정",
-          "사례자료 정리",
-          "확인·결제",
-          "학습 기록"
-        ]}
-      />
+      <FlowStepNav current={currentStep} steps={requestFlowSteps} />
 
       <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="grid gap-6">
@@ -122,10 +150,10 @@ export function NewRequestForm({
               <div className="grid gap-2">
                 <p className="text-sm font-bold text-brand-700">세션·일정</p>
                 <h2 className="text-3xl font-bold tracking-tight text-ink-900">
-                  초안에 필요한 선택만 확인합니다
+                  현재 선택을 확인하고 초안을 저장합니다
                 </h2>
                 <p className="max-w-2xl text-sm leading-7 text-ink-500">
-                  저장이 끝나면 의뢰 상세 화면에서 사례 자료와 질문을 정리합니다.
+                  초안 저장 뒤 사례자료 정리, 답변 확인, 결제, 수락 대기가 순서대로 이어집니다.
                 </p>
                 {blockingMessage ? (
                   <p aria-live="polite" className="text-sm font-semibold text-ink-700">
@@ -148,41 +176,16 @@ export function NewRequestForm({
             </div>
 
             <div className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
-              <RequestRow
-                description={
-                  selection.supervisorName
-                    ? "선택한 슈퍼바이저가 맞는지 확인합니다."
-                    : "슈퍼바이저 프로필에서 먼저 선택합니다."
-                }
-                label="1. 슈퍼바이저"
-                status={selection.supervisorName ? "완료" : "선택 필요"}
-                value={selection.supervisorName ?? "아직 선택되지 않았습니다"}
-              />
-              <RequestRow
-                description={
-                  selection.productDescription ??
-                  "세션 종류와 금액은 슈퍼바이저 프로필에서 고른 내용을 그대로 가져옵니다."
-                }
-                label="2. 세션"
-                status={hasSelectedProduct ? "완료" : "선택 필요"}
-                value={selection.productTitle ?? "선택된 세션이 없습니다"}
-              />
-              <RequestRow
-                description={
-                  requiresSelectedSlot
-                    ? "가능 일정에서 고른 시간이 맞는지 확인합니다."
-                    : "이 세션은 자료를 올리면 일정 예약 없이 검토가 시작됩니다."
-                }
-                label="3. 일정"
-                status={!requiresSelectedSlot || hasSelectedSlot ? "완료" : "선택 필요"}
-                value={timingValue}
-              />
-              <RequestRow
-                description="신청 초안 저장 후 의뢰 상세 화면에서 사례 요약, 검사 결과, 질문을 정리합니다."
-                label="4. 사례자료 정리"
-                status={canSubmit ? "다음" : "준비 중"}
-                value={currentActionLabel}
-              />
+              {stepRows.map((step, index) => (
+                <RequestRow
+                  description={step.description}
+                  key={step.label}
+                  label={`${String(index + 1)}. ${step.label}`}
+                  state={step.state}
+                  value={step.value}
+                  {...(step.action ? { action: step.action } : {})}
+                />
+              ))}
 
               <input type="hidden" {...form.register("serviceProductId")} />
               <input type="hidden" {...form.register("selectedSlotStart")} />
@@ -253,7 +256,7 @@ export function NewRequestForm({
         </div>
 
         <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
-          <h2 className="text-lg font-bold text-ink-900">선택 요약</h2>
+          <h2 className="text-lg font-bold text-ink-900">선택값</h2>
           <div className="mt-4 grid divide-y divide-line">
             <SummaryLine
               label="슈퍼바이저"
@@ -265,7 +268,6 @@ export function NewRequestForm({
               label="금액"
               value={formatCurrency(selection.productPriceKrw)}
             />
-            <SummaryLine label="다음" value="사례 자료 정리" />
           </div>
         </aside>
       </div>
@@ -274,24 +276,61 @@ export function NewRequestForm({
 }
 
 function RequestRow({
+  action,
   description,
   label,
-  status,
+  state,
   value
 }: {
+  action?: {
+    href: string;
+    label: string;
+  };
   description: string;
   label: string;
-  status: string;
+  state: StepState;
   value: string;
 }) {
+  const rowTone =
+    state === "current"
+      ? "bg-brand-50/60"
+      : state === "locked"
+        ? "bg-surface-base text-ink-500"
+        : "bg-surface-elevated";
+  const titleTone = state === "locked" ? "text-ink-500" : "text-ink-900";
+  const valueTone = state === "locked" ? "text-ink-500" : "text-ink-700";
+  const stateTone =
+    state === "current"
+      ? "bg-brand-600 text-white"
+      : state === "completed"
+        ? "bg-brand-50 text-brand-700"
+        : "bg-surface-sunken text-ink-500";
+
   return (
-    <div className="grid gap-3 border-b border-line px-5 py-5 last:border-b-0 md:grid-cols-[minmax(0,1fr)_auto] md:items-center">
+    <div
+      aria-disabled={state === "locked" ? true : undefined}
+      className={`grid gap-3 border-b border-line px-5 py-4 last:border-b-0 md:grid-cols-[minmax(0,1fr)_80px_auto] md:items-center ${rowTone}`}
+    >
       <div className="min-w-0">
-        <p className="text-2xl font-bold tracking-tight text-ink-900">{label}</p>
-        <p className="mt-2 break-keep text-base font-semibold text-ink-700">{value}</p>
-        <p className="mt-2 text-sm leading-relaxed text-ink-500">{description}</p>
+        <p className={`text-lg font-bold tracking-tight ${titleTone}`}>{label}</p>
+        <p className={`mt-1 break-keep text-sm font-semibold ${valueTone}`}>
+          {value}
+        </p>
+        <p className="mt-1 text-sm leading-relaxed text-ink-500">{description}</p>
       </div>
-      <p className="text-base font-bold text-ink-900">{status}</p>
+      <span className={`w-fit rounded-md px-3 py-1 text-sm font-bold md:justify-self-end ${stateTone}`}>
+        {stepStateLabel(state)}
+      </span>
+      {action ? (
+        <a
+          className="w-fit rounded-md border border-line px-3 py-2 text-sm font-bold text-ink-800 transition hover:border-brand-200 hover:text-brand-700 md:justify-self-end"
+          href={action.href}
+        >
+          {action.label}
+        </a>
+      ) : (
+        <span aria-hidden className="hidden md:block" />
+      )}
     </div>
   );
 }
@@ -324,12 +363,112 @@ function requestErrorMessage(code: string | undefined): string {
   return labels[code ?? ""] ?? "요청서를 저장하지 못했습니다.";
 }
 
+function buildRequestSteps({
+  canSubmit,
+  currentStep,
+  hasSelectedProduct,
+  hasSelectedSlot,
+  requiresSelectedSlot,
+  selectedSlotLabel,
+  selection
+}: {
+  canSubmit: boolean;
+  currentStep: (typeof requestFlowSteps)[number];
+  hasSelectedProduct: boolean;
+  hasSelectedSlot: boolean;
+  requiresSelectedSlot: boolean;
+  selectedSlotLabel: string;
+  selection: {
+    productDescription: string | null;
+    productKind: string | null;
+    productPriceKrw: number | null;
+    productTitle: string | null;
+    supervisorName: string | null;
+  };
+}): RequestStepRow[] {
+  return [
+    {
+      label: "슈퍼바이저 선택",
+      value: selection.supervisorName ?? "슈퍼바이저 미선택",
+      description: selection.supervisorName
+        ? "선택 완료"
+        : "슈퍼바이저 프로필에서 선택합니다.",
+      ...(selection.supervisorName
+        ? {}
+        : { action: { href: "/supervisors", label: "슈퍼바이저 찾기" } }),
+      state: selection.supervisorName
+        ? "completed"
+        : currentStep === "슈퍼바이저 선택"
+          ? "current"
+          : "locked"
+    },
+    {
+      label: "상품 선택",
+      value: selection.productTitle ?? "상품 미선택",
+      description: selection.productDescription ?? "세션 유형과 금액을 선택합니다.",
+      ...(hasSelectedProduct
+        ? {}
+        : { action: { href: "/supervisors", label: "세션 선택" } }),
+      state: hasSelectedProduct
+        ? "completed"
+        : currentStep === "상품 선택"
+          ? "current"
+          : "locked"
+    },
+    {
+      label: "일정 선택",
+      value: selectedSlotLabel,
+      description: requiresSelectedSlot
+        ? "선택한 시간이 맞는지 확인합니다."
+        : "이 상품은 일정 예약 없이 자료 제출 후 검토가 시작됩니다.",
+      ...(hasSelectedProduct && requiresSelectedSlot && !hasSelectedSlot
+        ? { action: { href: "/supervisors", label: "일정 선택" } }
+        : {}),
+      state: !hasSelectedProduct
+        ? "locked"
+        : !requiresSelectedSlot || hasSelectedSlot
+          ? "completed"
+          : currentStep === "일정 선택"
+            ? "current"
+            : "locked"
+    },
+    {
+      label: "사례자료 정리",
+      value: canSubmit ? "초안 저장 후 작성 화면으로 이동" : "앞 단계 선택 필요",
+      description: "사례 요약과 질문은 의뢰 상세에서 작성합니다.",
+      state: canSubmit ? "current" : "locked"
+    },
+    {
+      label: "답변 확인",
+      value: "자료 작성 후 확인",
+      description: "제출 전 입력한 답변과 첨부 자료를 다시 확인합니다.",
+      state: "locked"
+    },
+    {
+      label: "결제",
+      value: "최종 확인 후 진행",
+      description: "의뢰 내용을 확정한 뒤 결제를 시작합니다.",
+      state: "locked"
+    },
+    {
+      label: "수락 대기",
+      value: "결제 후 표시",
+      description: "슈퍼바이저가 자료와 일정을 확인하고 수락 여부를 결정합니다.",
+      state: "locked"
+    }
+  ];
+}
+
+function stepStateLabel(state: StepState): string {
+  if (state === "completed") return "완료";
+  if (state === "current") return "현재";
+  return "대기";
+}
+
 function isTimedBookingProduct(kind: string | null | undefined): boolean {
   return kind === "zoom_60" || kind === "zoom_90";
 }
 
 function formatCurrency(value: number | null): string {
-  return value !== null
-    ? `₩ ${value.toLocaleString("ko-KR")}`
-    : "세션 선택 후 표시됩니다";
+  return value !== null ? `₩ ${value.toLocaleString("ko-KR")}` : "상품 선택 후 표시";
 }

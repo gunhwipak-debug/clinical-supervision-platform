@@ -388,6 +388,10 @@ export function RequestDetailClient({
     (status === "feedback_submitted" &&
       (serviceProductSupervisionType === "counseling" ||
         initialNeedsCompletionRecord === false));
+  const showCompletionRecord =
+    (status === "completion_record_issued" || status === "completed") &&
+    Boolean(completionRecord);
+  const visibleCompletionRecord = showCompletionRecord ? completionRecord : null;
   const showPaymentSection =
     [
       "submitted",
@@ -398,12 +402,12 @@ export function RequestDetailClient({
       "completion_record_issued",
       "completed"
     ].includes(status) ||
-    Boolean(completionRecord) ||
+    showCompletionRecord ||
     canWriteFinalReview;
   const copy = statusCopy[status] ?? {
     label: status,
     title: "진행 상태를 확인하고 있습니다",
-    description: "현재 상태에 맞는 다음 행동만 사용할 수 있습니다.",
+    description: "현재 상태에서 가능한 작업만 표시합니다.",
     tone: "neutral" as const
   };
   const packetForm = useForm<PacketFormValues>({
@@ -622,17 +626,15 @@ export function RequestDetailClient({
 
   return (
     <div className="grid gap-6">
-      <section className="rounded-2xl bg-ink-900 px-6 py-7 text-white">
-        <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+      <section className="rounded-xl border border-line bg-surface-base px-5 py-4">
+        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           <div className="grid gap-3">
-            <Badge className="w-fit bg-white text-brand-700" tone={copy.tone}>
+            <Badge className="w-fit" tone={copy.tone}>
               {copy.label}
             </Badge>
             <div>
-              <h2 className="text-3xl font-bold tracking-tight text-white">
-                {copy.title}
-              </h2>
-              <p className="mt-2 max-w-3xl text-sm leading-7 text-white/80">
+              <h2 className="text-xl font-bold text-ink-900">{copy.title}</h2>
+              <p className="mt-1 max-w-3xl text-sm leading-relaxed text-ink-500">
                 {copy.description}
               </p>
             </div>
@@ -641,15 +643,11 @@ export function RequestDetailClient({
         </div>
       </section>
 
-      <section className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5">
+      <section className="grid gap-4 border-t border-line pt-5">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-ink-900">일정 확인</h2>
-          <p className="mt-2 text-sm leading-relaxed text-ink-500">
-            예약 일정과 화상 세션 링크를 먼저 확인합니다. 일정 변경은 세션 24시간
-            전까지만 가능합니다.
-          </p>
         </div>
-        <div className="grid divide-y divide-line rounded-2xl border border-line">
+        <div className="grid divide-y divide-line rounded-xl border border-line bg-surface-elevated">
           <DetailLine
             label="현재 일정"
             value={formatBookingRange(initialScheduledStart, initialScheduledEnd)}
@@ -675,7 +673,7 @@ export function RequestDetailClient({
           />
         </div>
         {canReschedule ? (
-          <div className="grid gap-3 rounded-2xl border border-line bg-surface-base p-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
+          <div className="grid gap-3 rounded-xl border border-line bg-surface-elevated p-4 md:grid-cols-[1fr_1fr_auto] md:items-end">
             <Field>
               <Label htmlFor="reschedule-start">새 시작 시간</Label>
               <Input
@@ -701,18 +699,14 @@ export function RequestDetailClient({
         ) : null}
       </section>
 
-      <section className="grid gap-5 rounded-2xl border border-line bg-surface-elevated p-5">
+      <section className="grid gap-5 border-t border-line pt-5">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-ink-900">사례 정보</h2>
-          <p className="mt-2 text-sm leading-relaxed text-ink-500">
-            주호소, 의뢰 사유, 검사명처럼 슈퍼바이저가 먼저 확인할 내용을 한 줄씩
-            정리합니다.
-          </p>
         </div>
         {editablePacket ? (
           <form className="grid gap-4" onSubmit={packetForm.handleSubmit(savePacket)}>
             {phiDisabled ? (
-              <p className="rounded-2xl bg-warn/10 p-4 text-sm text-ink-700">
+              <p className="rounded-xl bg-warn/10 p-4 text-sm text-ink-700">
                 현재 사례 자료를 안전하게 저장할 수 없습니다. 잠시 후 다시 시도하거나
                 운영자에게 문의해주세요.
               </p>
@@ -826,7 +820,7 @@ export function RequestDetailClient({
             </Label>
             {phiMatches.length > 0 ? (
               <p
-                className="flex items-start gap-2 rounded-2xl bg-danger/10 p-4 text-sm text-danger"
+                className="flex items-start gap-2 rounded-xl bg-danger/10 p-4 text-sm text-danger"
                 role="alert"
               >
                 <AlertTriangle className="mt-0.5 shrink-0" aria-hidden size={16} />
@@ -848,7 +842,7 @@ export function RequestDetailClient({
                 {packetComplete ? "저장 완료" : "작성 필요"}
               </Badge>
             </div>
-            <div className="grid divide-y divide-line rounded-2xl border border-line">
+            <div className="grid divide-y divide-line rounded-xl border border-line bg-surface-elevated">
               <SummaryBlock label="제목" value={initialTitle} />
               <SummaryBlock
                 label="의뢰 목적"
@@ -890,10 +884,6 @@ export function RequestDetailClient({
                   .join("\n")}
               />
             </div>
-            <p className="rounded-2xl bg-surface-sunken p-4 text-sm text-ink-600">
-              제출 이후에는 의뢰 내용을 직접 수정할 수 없습니다. 추가 자료는 첨부 파일로
-              보완하고, 상태 변경은 아래 진행 카드에서 확인하세요.
-            </p>
           </div>
         )}
       </section>
@@ -901,17 +891,11 @@ export function RequestDetailClient({
       {status === "feedback_submitted" ||
       status === "completion_record_issued" ||
       status === "completed" ? (
-        <section
-          className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5"
-          id="feedback"
-        >
+        <section className="grid gap-4 border-t border-line pt-5" id="feedback">
           <div>
             <h2 className="text-2xl font-bold tracking-tight text-ink-900">
               슈퍼바이저 피드백
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-500">
-              도착한 피드백을 확인하고 필요한 경우 학습 기록으로 남깁니다.
-            </p>
           </div>
           {feedbackSummary || feedbackRecommendations ? (
             <div className="grid gap-3">
@@ -925,7 +909,7 @@ export function RequestDetailClient({
               />
             </div>
           ) : (
-            <p className="rounded-2xl bg-surface-sunken p-4 text-sm text-ink-600">
+            <p className="rounded-xl bg-surface-sunken p-4 text-sm text-ink-600">
               피드백 상태이지만 표시할 슈퍼비전 피드백 본문을 찾지 못했습니다. 새로고침
               후에도 계속 비어 있으면 운영자에게 문의해주세요.
             </p>
@@ -1037,26 +1021,20 @@ export function RequestDetailClient({
       ) : null}
 
       {showPaymentSection ? (
-        <section
-          className="grid gap-4 rounded-2xl border border-line bg-surface-elevated p-5"
-          id="payment"
-        >
+        <section className="grid gap-4 border-t border-line pt-5" id="payment">
           <div>
             <h2 className="flex items-center gap-2 text-2xl font-bold tracking-tight text-ink-900">
               <CreditCard aria-hidden size={20} />
               결제와 완료
             </h2>
-            <p className="mt-2 text-sm leading-relaxed text-ink-500">
-              제출 후 결제가 완료되면 슈퍼바이저 수락 대기로 이동합니다.
-            </p>
           </div>
           {status === "submitted" ? (
-            <p className="rounded-2xl bg-surface-sunken p-4 text-sm leading-relaxed text-ink-700">
+            <p className="rounded-xl bg-surface-sunken p-4 text-sm leading-relaxed text-ink-700">
               상단의 결제하기 버튼으로 다음 단계를 진행합니다.
             </p>
           ) : null}
           {status === "awaiting_payment" ? (
-            <div className="grid gap-3 rounded-2xl border border-line bg-surface-sunken p-4">
+            <div className="grid gap-3 rounded-xl border border-line bg-surface-sunken p-4">
               <p className="text-sm leading-relaxed text-ink-700">
                 결제 요청이 만들어졌습니다. 결제창이 닫혔거나 중단된 경우 같은 결제를
                 다시 이어서 진행할 수 있습니다.
@@ -1076,50 +1054,14 @@ export function RequestDetailClient({
               결제, 피드백, 학습 기록, 리뷰까지 모두 마무리된 의뢰입니다.
             </p>
           ) : null}
-          {completionRecord ? (
-            <section className="grid gap-3 rounded-2xl border border-line bg-surface-base p-4">
-              <div>
-                <h3 className="font-bold text-ink-900">학습 기록</h3>
-                <p className="mt-1 text-sm text-ink-600">
-                  기록번호 {completionRecord.recordNo} · 발급일{" "}
-                  {formatDateTime(completionRecord.issuedAt)}
-                </p>
-              </div>
-              <CompletionRecordList
-                label="검토한 자료"
-                values={completionRecord.reviewedMaterials}
-              />
-              <CompletionRecordList label="확인 범위" values={completionRecord.scope} />
-              {completionRecord.limitations ? (
-                <div>
-                  <p className="text-sm font-semibold text-ink-900">검토 한계</p>
-                  <p className="mt-1 whitespace-pre-wrap rounded-lg bg-surface-sunken p-3 text-sm leading-relaxed text-ink-700">
-                    {completionRecord.limitations}
-                  </p>
-                </div>
-              ) : null}
-              {completionRecord.responsibilityNotice ? (
-                <div>
-                  <p className="text-sm font-semibold text-ink-900">책임 고지</p>
-                  <p className="mt-1 whitespace-pre-wrap rounded-lg bg-surface-sunken p-3 text-sm leading-relaxed text-ink-700">
-                    {completionRecord.responsibilityNotice}
-                  </p>
-                </div>
-              ) : null}
-              <p className="text-xs leading-relaxed text-ink-500">
-                이 기록은 플랫폼 안에서 확인되는 슈퍼비전 학습 기록입니다. 공식 증명서나
-                법적 제출용 문서처럼 오해되지 않도록 검토 범위와 한계를 함께 확인하세요.
-              </p>
-            </section>
-          ) : null}
           {status === "feedback_submitted" && !canWriteFinalReview ? (
-            <p className="rounded-2xl bg-surface-sunken p-4 text-sm leading-relaxed text-ink-700">
+            <p className="rounded-xl bg-surface-sunken p-4 text-sm leading-relaxed text-ink-700">
               상단의 피드백 확인 완료 버튼으로 의뢰를 마무리합니다.
             </p>
           ) : null}
           {canWriteFinalReview ? (
             <form
-              className="grid gap-3 rounded-2xl border border-line bg-surface-base p-4"
+              className="grid gap-3 rounded-xl border border-line bg-surface-base p-4"
               onSubmit={reviewForm.handleSubmit(submitFinalReview)}
             >
               <div>
@@ -1175,6 +1117,45 @@ export function RequestDetailClient({
               </Button>
             </form>
           ) : null}
+        </section>
+      ) : null}
+
+      {visibleCompletionRecord ? (
+        <section
+          className="grid gap-4 border-t border-line pt-5"
+          id="completion-record"
+        >
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight text-ink-900">
+              학습 기록
+            </h2>
+            <p className="mt-1 text-sm font-semibold text-ink-600">
+              기록번호 {visibleCompletionRecord.recordNo} · 발급일{" "}
+              {formatDateTime(visibleCompletionRecord.issuedAt)}
+            </p>
+          </div>
+          <div className="grid divide-y divide-line rounded-xl border border-line bg-surface-elevated">
+            <CompletionRecordList
+              label="검토한 자료"
+              values={visibleCompletionRecord.reviewedMaterials}
+            />
+            <CompletionRecordList
+              label="확인 범위"
+              values={visibleCompletionRecord.scope}
+            />
+            {visibleCompletionRecord.limitations ? (
+              <SummaryBlock
+                label="검토 한계"
+                value={visibleCompletionRecord.limitations}
+              />
+            ) : null}
+            {visibleCompletionRecord.responsibilityNotice ? (
+              <SummaryBlock
+                label="책임 고지"
+                value={visibleCompletionRecord.responsibilityNotice}
+              />
+            ) : null}
+          </div>
         </section>
       ) : null}
     </div>
@@ -1374,7 +1355,7 @@ function formatBookingRange(
   const start = new Date(startValue);
   const end = new Date(endValue);
   if (Number.isNaN(start.getTime()) || Number.isNaN(end.getTime())) {
-    return "일정 확인 필요";
+    return "일정 미확인";
   }
   const date = new Intl.DateTimeFormat("ko-KR", {
     day: "numeric",
@@ -1395,7 +1376,7 @@ function formatBookingRange(
 function formatDateTime(value: Date | string | null): string {
   if (!value) return "기록 없음";
   const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return "기록 확인 필요";
+  if (Number.isNaN(date.getTime())) return "기록일 미확인";
   return new Intl.DateTimeFormat("ko-KR", {
     day: "numeric",
     hourCycle: "h23",
@@ -1416,7 +1397,7 @@ function bookingStatusLabel(status: string | null): string {
     rescheduled: "일정 변경됨",
     scheduled: "예약됨"
   };
-  return labels[status ?? ""] ?? "예약 상태 확인 필요";
+  return labels[status ?? ""] ?? "예약 상태 미분류";
 }
 
 function ScoreSelect({

@@ -1,8 +1,6 @@
-import type { ReactNode } from "react";
 import { audit, withUserContext } from "@csp/db";
-import { Eye, FileClock, ShieldCheck } from "lucide-react";
 import {
-  AdminCard,
+  AdminListFrame,
   AdminLockedState,
   AdminShell
 } from "../../../components/admin-shell";
@@ -19,9 +17,9 @@ export default async function AuditPage() {
 
   if (!current) {
     return (
-      <AdminShell title="처리 기록" subtitle="관리자 로그인이 필요합니다.">
+      <AdminShell title="감사 로그" subtitle="관리자 로그인이 필요합니다.">
         <AdminLockedState
-          title="처리 기록은 관리자 로그인 후 확인합니다"
+          title="감사 로그는 관리자 로그인 후 확인합니다"
           description="운영 조치와 자료 접근 기록을 필요한 범위 안에서 다시 확인하는 화면입니다."
           returnPath="/admin/audit"
           previewItems={[
@@ -68,178 +66,108 @@ export default async function AuditPage() {
     };
     logsUnavailable = true;
   }
+  const combinedLogs = [
+    ...logs.auditLogs.map((row) => ({
+      id: `audit-${row.id}`,
+      kind: "관리자 조치",
+      title: actionLabel(row.action),
+      createdAt: row.createdAt,
+      actor: row.actorUserId ? row.actorUserId.slice(0, 8) : "시스템",
+      target: targetLabel(row.targetType, row.targetId),
+      result: "기록됨",
+      context: contextSummary(row.context)
+    })),
+    ...logs.accessLogs.map((row) => ({
+      id: `access-${row.id}`,
+      kind: "자료 접근",
+      title: fileActionLabel(row.action),
+      createdAt: row.createdAt,
+      actor: row.userId.slice(0, 8),
+      target: `파일 · ${row.fileId.slice(0, 8)}`,
+      result: row.signedUrlId ? `링크 ${row.signedUrlId.slice(0, 8)}` : "기록됨",
+      context: row.signedUrlId ? `접근 링크 ${row.signedUrlId.slice(0, 8)}` : ""
+    }))
+  ].sort(
+    (left, right) =>
+      new Date(right.createdAt).getTime() - new Date(left.createdAt).getTime()
+  );
 
   return (
     <AdminShell
       currentAdmin={{ email: current.user.email }}
       currentPath="/admin/audit"
-      title="처리 기록"
-      subtitle="관리자 조치와 자료 접근 이력을 필요한 범위 안에서 다시 확인합니다."
+      title="감사 로그"
+      subtitle="관리자 조치와 자료 접근 이력을 확인합니다."
     >
-      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
-        <AdminCard>
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
-              <FileClock aria-hidden size={22} />
-            </span>
-            <div>
-              <h2 className="text-xl font-bold text-ink-900">운영 추적 상태</h2>
-              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                관리자 조치와 자료 접근 이력을 함께 확인합니다. 사례 자료 본문은 이
-                화면에 노출하지 않습니다.
-              </p>
-            </div>
-          </div>
-          <div className="mt-5 flex flex-wrap gap-2">
-            <Badge>
-              관리자 조치{" "}
+      <section className="grid gap-5">
+        <AdminListFrame>
+          <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
+            <h2 className="text-2xl font-bold text-ink-900">감사 로그 목록</h2>
+            <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
               {logsUnavailable
-                ? "확인 필요"
-                : `${logs.auditLogs.length.toLocaleString("ko-KR")}건`}
-            </Badge>
-            <Badge>
-              자료 접근{" "}
-              {logsUnavailable
-                ? "확인 필요"
-                : `${logs.accessLogs.length.toLocaleString("ko-KR")}건`}
-            </Badge>
-          </div>
-        </AdminCard>
-
-        <AdminCard className="h-fit">
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
-              <ShieldCheck aria-hidden size={22} />
+                ? "데이터 준비 필요"
+                : `${combinedLogs.length.toLocaleString("ko-KR")}건`}
             </span>
-            <div>
-              <h2 className="text-xl font-bold text-ink-900">조회 원칙</h2>
-              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                최근 기록만 확인하고, 필요한 경우에만 접근 링크와 처리 사유를 다시
-                대조합니다.
-              </p>
-            </div>
           </div>
-        </AdminCard>
-      </section>
-
-      <section className="grid gap-5 xl:grid-cols-2">
-        <AdminCard className="overflow-hidden p-0">
-          <div className="border-b border-line px-5 py-4">
-            <h2 className="text-2xl font-bold text-ink-900">관리자 조치 기록</h2>
-            <p className="mt-1 text-sm leading-relaxed text-ink-500">
-              승인, 반려, 접근 링크 발급, 운영 조회 같은 관리자 행위입니다.
-            </p>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm">
+              <thead className="border-b border-line bg-surface-sunken text-xs font-bold text-ink-500">
+                <tr>
+                  <th className="px-5 py-3">시간</th>
+                  <th className="px-5 py-3">행위자</th>
+                  <th className="px-5 py-3">작업</th>
+                  <th className="px-5 py-3">대상</th>
+                  <th className="px-5 py-3">결과</th>
+                  <th className="px-5 py-3 text-right">상세</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {combinedLogs.length === 0 ? (
+                  <tr>
+                    <td className="px-5 py-5 font-semibold text-ink-500" colSpan={6}>
+                      감사 기록이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  combinedLogs.map((row) => (
+                    <tr key={row.id} className="align-top">
+                      <td className="px-5 py-4 font-semibold text-ink-700">
+                        {formatDate(row.createdAt)}
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-ink-700">
+                        {row.actor}
+                      </td>
+                      <td className="px-5 py-4">
+                        <p className="font-bold text-ink-900">{row.title}</p>
+                        <p className="mt-1 text-xs font-semibold text-ink-500">
+                          {row.kind}
+                        </p>
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-ink-700">
+                        {row.target}
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-ink-700">
+                        {row.result}
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <details className="inline-block text-left">
+                          <summary className="cursor-pointer list-none rounded-md border border-line px-4 py-2 text-sm font-semibold text-ink-800">
+                            상세 보기
+                          </summary>
+                          <p className="mt-3 w-80 rounded-xl border border-line bg-surface-elevated p-4 text-sm leading-relaxed text-ink-600 shadow-[0_18px_40px_rgba(15,23,42,0.14)]">
+                            {row.context || `${row.title} · ${row.target}`}
+                          </p>
+                        </details>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-          <div className="grid divide-y divide-line">
-            {logs.auditLogs.length === 0 ? (
-              <EmptyLog
-                message={
-                  logsUnavailable
-                    ? "현재 관리자 조치 기록을 불러오지 못했습니다."
-                    : "표시할 관리자 조치 기록이 없습니다."
-                }
-              />
-            ) : (
-              logs.auditLogs.map((row) => (
-                <article className="grid gap-3 p-5" key={row.id}>
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <strong className="text-lg text-ink-900">
-                      {actionLabel(row.action)}
-                    </strong>
-                    <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
-                      {formatDate(row.createdAt)}
-                    </span>
-                  </div>
-                  <dl className="grid gap-2 text-sm text-ink-700">
-                    <LogItem
-                      label="대상"
-                      value={targetLabel(row.targetType, row.targetId)}
-                    />
-                    <LogItem
-                      label="관리자"
-                      value={row.actorUserId ? row.actorUserId.slice(0, 8) : "시스템"}
-                    />
-                    <LogItem label="사유" value={row.reason ?? "사유 없음"} />
-                  </dl>
-                  {contextSummary(row.context) ? (
-                    <p className="rounded-lg bg-surface-sunken px-4 py-3 text-xs leading-relaxed text-ink-500">
-                      {contextSummary(row.context)}
-                    </p>
-                  ) : null}
-                </article>
-              ))
-            )}
-          </div>
-        </AdminCard>
-
-        <AdminCard className="overflow-hidden p-0">
-          <div className="border-b border-line px-5 py-4">
-            <h2 className="text-2xl font-bold text-ink-900">자료 접근 기록</h2>
-            <p className="mt-1 text-sm leading-relaxed text-ink-500">
-              파일 미리보기, 다운로드, 업로드, 삭제 이력을 확인합니다.
-            </p>
-          </div>
-          <div className="grid divide-y divide-line">
-            {logs.accessLogs.length === 0 ? (
-              <EmptyLog
-                message={
-                  logsUnavailable
-                    ? "현재 자료 접근 기록을 불러오지 못했습니다."
-                    : "표시할 자료 접근 기록이 없습니다."
-                }
-              />
-            ) : (
-              logs.accessLogs.map((row) => (
-                <article className="grid gap-3 p-5" key={row.id}>
-                  <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="inline-flex items-center gap-2">
-                      <Eye aria-hidden className="text-brand-600" size={18} />
-                      <strong className="text-lg text-ink-900">
-                        {fileActionLabel(row.action)}
-                      </strong>
-                    </span>
-                    <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
-                      {formatDate(row.createdAt)}
-                    </span>
-                  </div>
-                  <dl className="grid gap-2 text-sm text-ink-700">
-                    <LogItem label="파일" value={row.fileId.slice(0, 8)} />
-                    <LogItem label="사용자" value={row.userId.slice(0, 8)} />
-                    <LogItem
-                      label="접근 링크"
-                      value={row.signedUrlId ? row.signedUrlId.slice(0, 8) : "없음"}
-                    />
-                  </dl>
-                </article>
-              ))
-            )}
-          </div>
-        </AdminCard>
+        </AdminListFrame>
       </section>
     </AdminShell>
-  );
-}
-
-function Badge({ children }: { children: ReactNode }) {
-  return (
-    <span className="rounded-lg bg-brand-50 px-4 py-2 text-sm font-semibold text-brand-600">
-      {children}
-    </span>
-  );
-}
-
-function EmptyLog({ message }: { message: string }) {
-  return <p className="p-6 text-sm font-semibold text-ink-500">{message}</p>;
-}
-
-function LogItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex justify-between gap-4 rounded-lg bg-brand-50 px-4 py-3">
-      <dt className="shrink-0 font-semibold text-ink-500">{label}</dt>
-      <dd className="min-w-0 break-all text-right font-semibold text-ink-900">
-        {value}
-      </dd>
-    </div>
   );
 }
 
@@ -276,7 +204,7 @@ function contextSummary(value: unknown): string {
 
 function formatDate(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return "날짜 확인 필요";
+  if (Number.isNaN(date.getTime())) return "날짜 미확인";
   return new Intl.DateTimeFormat("ko-KR", {
     month: "short",
     day: "numeric",

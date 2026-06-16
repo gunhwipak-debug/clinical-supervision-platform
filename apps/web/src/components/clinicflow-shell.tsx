@@ -84,7 +84,7 @@ export function PageIntro({
         {eyebrow ? (
           <p className="text-sm font-bold tracking-normal text-brand-700">{eyebrow}</p>
         ) : null}
-        <h1 className="max-w-4xl text-3xl font-bold leading-tight text-ink-900 md:text-5xl">
+        <h1 className="max-w-4xl text-3xl font-bold leading-tight text-ink-900 md:text-[42px]">
           {title}
         </h1>
         {subtitle ? (
@@ -137,20 +137,35 @@ export function FlowStepNav({
 export function PrimaryActionPanel({
   action,
   children,
-  eyebrow = "다음 행동",
-  title
+  eyebrow,
+  title,
+  variant = "compact"
 }: {
   action?: React.ReactNode;
   children: React.ReactNode;
   eyebrow?: string;
   title: string;
+  variant?: "compact" | "prominent";
 }) {
   return (
-    <section className="grid gap-4 rounded-xl border border-line bg-ink-900 p-6 text-white md:grid-cols-[1fr_auto] md:items-center">
+    <section
+      className={cn(
+        "grid gap-4 rounded-xl border border-line bg-ink-900 text-white md:grid-cols-[1fr_auto] md:items-center",
+        variant === "prominent" ? "p-6" : "p-5"
+      )}
+    >
       <div>
-        <p className="text-sm font-bold text-brand-100">{eyebrow}</p>
-        <h2 className="mt-2 text-2xl font-bold leading-tight">{title}</h2>
-        <div className="mt-3 max-w-2xl text-base leading-relaxed text-slate-200">
+        {eyebrow ? <p className="text-sm font-bold text-brand-100">{eyebrow}</p> : null}
+        <h2
+          className={cn(
+            "font-bold leading-tight",
+            eyebrow ? "mt-2" : "",
+            variant === "prominent" ? "text-2xl" : "text-xl"
+          )}
+        >
+          {title}
+        </h2>
+        <div className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-200">
           {children}
         </div>
       </div>

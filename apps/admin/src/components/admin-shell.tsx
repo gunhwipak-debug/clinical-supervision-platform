@@ -2,12 +2,12 @@ import { ArrowRight } from "lucide-react";
 import { AdminAccountMenu } from "./admin-account-menu";
 
 const adminShellLinks = [
-  { href: "/admin", label: "운영 처리 목록" },
-  { href: "/admin/queue", label: "운영 대기열" },
+  { href: "/admin", label: "관리자 홈" },
+  { href: "/admin/queue", label: "대기열" },
   { href: "/admin/qualifications", label: "자격 심사" },
-  { href: "/admin/refunds", label: "환불 검토" },
-  { href: "/admin/payouts", label: "정산 확인" },
-  { href: "/admin/audit", label: "처리 기록" }
+  { href: "/admin/refunds", label: "환불" },
+  { href: "/admin/payouts", label: "정산" },
+  { href: "/admin/audit", label: "감사 로그" }
 ] as const;
 
 export function AdminShell({
@@ -34,8 +34,8 @@ export function AdminShell({
 }) {
   return (
     <main className="min-h-screen bg-surface-base">
-      <div className="bg-surface-base px-4 py-3">
-        <div className="mx-auto grid max-w-6xl gap-4 rounded-[18px] border border-line bg-surface-elevated px-5 py-4 shadow-[0_12px_28px_rgba(15,23,42,0.06)] lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center">
+      <div className="border-b border-line bg-surface-elevated px-4 py-3">
+        <div className="mx-auto grid max-w-6xl gap-4 lg:grid-cols-[auto_minmax(0,1fr)_auto] lg:items-center">
           <a className="flex items-center gap-3 font-bold text-ink-900" href="/">
             <span className="size-4 rounded-full bg-ink-900" aria-hidden="true" />
             <span>
@@ -73,16 +73,16 @@ export function AdminShell({
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-8 px-5 py-10 md:gap-10 md:py-14">
-        <header className="grid gap-6 border-b border-line pb-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div className="grid gap-5">
+      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 md:gap-8 md:py-10">
+        <header className="grid gap-5 border-b border-line pb-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div className="grid gap-4">
             {eyebrow ? (
               <span className="inline-flex w-fit rounded-full border border-[#f3cf85] px-4 py-2 text-sm font-semibold text-[#cb6f12]">
                 {eyebrow}
               </span>
             ) : null}
             <div className="grid gap-3">
-              <h1 className="break-keep text-5xl font-bold leading-none tracking-normal text-ink-900 md:text-[64px]">
+              <h1 className="break-keep text-4xl font-bold leading-tight tracking-normal text-ink-900 md:text-[42px]">
                 {title}
               </h1>
               {subtitle ? (
@@ -124,6 +124,25 @@ export function AdminCard({
     >
       {children}
     </article>
+  );
+}
+
+export function AdminListFrame({
+  children,
+  id,
+  className = ""
+}: {
+  children: React.ReactNode;
+  id?: string;
+  className?: string;
+}) {
+  return (
+    <section
+      id={id}
+      className={`overflow-hidden rounded-xl border border-line bg-surface-elevated ${className}`}
+    >
+      {children}
+    </section>
   );
 }
 

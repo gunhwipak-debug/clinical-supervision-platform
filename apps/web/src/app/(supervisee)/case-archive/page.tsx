@@ -20,25 +20,27 @@ type RequestSummary = supervision.SupervisionRequestSummary;
 
 const flowSteps = [
   "슈퍼바이저 선택",
-  "세션·일정",
+  "상품 선택",
+  "일정 선택",
   "사례자료 정리",
-  "확인·결제",
-  "학습 기록"
+  "답변 확인",
+  "결제",
+  "수락 대기"
 ];
 
 export default async function CaseArchivePage() {
   const current = await getCurrentUser();
 
   if (!current) {
-    return <LoginRequiredState title="학습 기록" returnTo="/case-archive" />;
+    return <LoginRequiredState title="케이스 아카이브" returnTo="/case-archive" />;
   }
   const currentShellUser = current.user;
   if (!isSupervisee(current)) {
     return (
       <RoleRequiredState
         currentUser={currentShellUser}
-        title="학습 기록"
-        description="학습 기록은 신청자 계정에서 확인합니다. 슈퍼바이저는 업무 화면에서 검토 기록을 확인합니다."
+        title="케이스 아카이브"
+        description="완료된 슈퍼비전 기록은 신청자 계정에서 확인합니다. 슈퍼바이저는 업무 화면에서 검토 기록을 확인합니다."
         actionHref="/supervisor"
         actionLabel="슈퍼바이저 업무 보기"
       />
@@ -79,15 +81,15 @@ export default async function CaseArchivePage() {
     <AppShell
       active="case-archive"
       currentUser={current.user}
-      title="학습 기록"
-      subtitle="완료된 슈퍼비전은 파일 목록이 아니라 슈퍼바이저와 사례 단위의 노트처럼 정리됩니다."
+      title="케이스 아카이브"
+      subtitle="완료된 슈퍼비전 기록과 피드백을 슈퍼바이저와 사례 단위로 다시 확인합니다."
       action={
         <Button asChild>
           <Link href="/supervisors">새 슈퍼비전 시작</Link>
         </Button>
       }
     >
-      <FlowStepNav current="학습 기록" steps={flowSteps} />
+      <FlowStepNav current="수락 대기" steps={flowSteps} />
       {completed.length === 0 ? (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <SectionBlock

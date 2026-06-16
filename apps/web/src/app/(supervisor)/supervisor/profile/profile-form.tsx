@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Button } from "../../../../components/ui/button";
 import { Field, Input, Label, Textarea } from "../../../../components/ui/form";
 import { Badge } from "../../../../components/ui/badge";
-import { Card } from "../../../../components/ui/card";
 
 const productKinds = [
   {
@@ -196,7 +195,7 @@ export function SupervisorProfileEditor({
   return (
     <div className="grid gap-6">
       <div className="space-y-6">
-        <Card className="rounded-xl p-6">
+        <section className="rounded-xl border border-line bg-surface-elevated p-6">
           <div className="mb-6 border-b border-line pb-4">
             <div>
               <p className="text-sm font-semibold text-brand-700">공개 프로필</p>
@@ -285,9 +284,9 @@ export function SupervisorProfileEditor({
               />
             </Field>
           </div>
-        </Card>
+        </section>
 
-        <Card className="rounded-xl p-6">
+        <section className="rounded-xl border border-line bg-surface-elevated p-6">
           <div className="mb-5 border-b border-line pb-4">
             <p className="text-sm font-semibold text-brand-700">슈퍼비전 방식</p>
             <h3 className="mt-1 text-xl font-bold text-ink-900">
@@ -367,7 +366,7 @@ export function SupervisorProfileEditor({
               <p className="text-sm font-semibold text-brand-700">{message}</p>
             ) : null}
           </div>
-        </Card>
+        </section>
       </div>
 
       <details className="overflow-hidden rounded-xl border border-line bg-surface-elevated">

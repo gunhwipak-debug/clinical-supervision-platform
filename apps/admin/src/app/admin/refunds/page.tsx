@@ -1,8 +1,7 @@
 import { payments, withUserContext } from "@csp/db";
-import { Clock3, ReceiptText, RotateCcw, ShieldCheck } from "lucide-react";
 import { AdminActionPanel } from "../../../components/admin-action-panel";
 import {
-  AdminCard,
+  AdminListFrame,
   AdminLockedState,
   AdminShell
 } from "../../../components/admin-shell";
@@ -19,7 +18,7 @@ export default async function RefundsPage() {
 
   if (!current) {
     return (
-      <AdminShell title="환불 검토" subtitle="관리자 로그인이 필요합니다.">
+      <AdminShell title="환불" subtitle="관리자 로그인이 필요합니다.">
         <AdminLockedState
           title="환불 검토는 관리자 계정에서 진행합니다"
           description="요청 사유, 결제 상태, 슈퍼비전 진행 단계를 함께 보고 승인 여부를 결정합니다."
@@ -64,147 +63,110 @@ export default async function RefundsPage() {
     <AdminShell
       currentAdmin={{ email: current.user.email }}
       currentPath="/admin/refunds"
-      title="환불 검토"
-      subtitle="요청 사유, 결제 상태, 진행 단계를 함께 보고 승인 여부를 결정합니다."
+      title="환불"
+      subtitle="환불 요청의 금액, 상태, 사유를 확인합니다."
     >
-      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
-        <AdminCard>
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
-              <RotateCcw aria-hidden size={22} />
-            </span>
-            <div>
-              <h2 className="text-xl font-bold text-ink-900">환불 요청 상태</h2>
-              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                실제 승인과 반려는 처리 사유를 30자 이상 남겨야 진행됩니다.
-              </p>
-            </div>
-          </div>
-          <dl className="mt-5 grid gap-4 text-sm leading-relaxed sm:grid-cols-2">
-            <div>
-              <dt className="font-bold text-ink-500">검토 대기</dt>
-              <dd className="mt-1 text-ink-900">
-                {refundsUnavailable
-                  ? "확인 필요"
-                  : `${refunds.length.toLocaleString("ko-KR")}건`}
-              </dd>
-            </div>
-            <div>
-              <dt className="font-bold text-ink-500">처리 기준</dt>
-              <dd className="mt-1 break-keep text-ink-900">
-                결제 상태와 의뢰 진행 단계를 함께 확인한 뒤 처리합니다.
-              </dd>
-            </div>
-          </dl>
-        </AdminCard>
-
-        <AdminCard className="h-fit">
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
-              <ShieldCheck aria-hidden size={22} />
-            </span>
-            <div>
-              <h2 className="text-xl font-bold text-ink-900">운영 메모</h2>
-              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                환불 사유, 결제 완료 여부, 현재 의뢰 상태가 서로 맞는지 먼저 확인합니다.
-              </p>
-            </div>
-          </div>
-        </AdminCard>
-      </section>
-
-      <AdminCard className="overflow-hidden p-0">
-        <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
-          <div>
+      <section className="grid gap-5">
+        <AdminListFrame>
+          <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
             <h2 className="text-2xl font-bold text-ink-900">환불 요청 목록</h2>
-            <p className="mt-1 text-sm leading-relaxed text-ink-500">
-              요청 사유와 연결된 결제 상태를 같은 행에서 확인합니다.
-            </p>
+            <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
+              {refundsUnavailable
+                ? "데이터 준비 필요"
+                : `${refunds.length.toLocaleString("ko-KR")}건`}
+            </span>
           </div>
-          <span className="rounded-md bg-accent-100 px-3 py-1 text-sm font-bold text-ink-900">
-            {refundsUnavailable
-              ? "확인 필요"
-              : `${refunds.length.toLocaleString("ko-KR")}건`}
-          </span>
-        </div>
 
-        {refunds.length === 0 ? (
-          <p className="p-6 text-sm font-semibold text-ink-500">
-            {refundsUnavailable
-              ? "현재 환불 요청을 불러오지 못했습니다. 요청 사유와 연결된 결제 상태는 연결되면 이 목록에 표시됩니다."
-              : "환불 요청이 접수되면 이곳에 표시됩니다."}
-          </p>
-        ) : (
-          <div className="grid divide-y divide-line" aria-label="환불 요청">
-            {refunds.map((refund) => (
-              <article className="grid gap-5 p-5" key={refund.id}>
-                <div className="grid gap-4 md:grid-cols-[1fr_260px] md:items-start">
-                  <div className="flex items-start gap-3">
-                    <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-brand-50 text-brand-600">
-                      <ReceiptText aria-hidden size={22} />
-                    </span>
-                    <div>
-                      <div className="flex flex-wrap items-center gap-2">
-                        <strong className="text-2xl text-ink-900">
-                          ₩{refund.amountKrw.toLocaleString("ko-KR")}
-                        </strong>
-                        <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-semibold text-brand-600">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm">
+              <thead className="border-b border-line bg-surface-sunken text-xs font-bold text-ink-500">
+                <tr>
+                  <th className="px-5 py-3">접수일</th>
+                  <th className="px-5 py-3">의뢰/결제</th>
+                  <th className="px-5 py-3">신청자</th>
+                  <th className="px-5 py-3 text-right">금액</th>
+                  <th className="px-5 py-3">사유</th>
+                  <th className="px-5 py-3">상태</th>
+                  <th className="px-5 py-3 text-right">작업</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {refunds.length === 0 ? (
+                  <tr>
+                    <td className="px-5 py-5 font-semibold text-ink-500" colSpan={7}>
+                      환불 요청이 없습니다.
+                    </td>
+                  </tr>
+                ) : (
+                  refunds.map((refund) => (
+                    <tr key={refund.id} className="align-top">
+                      <td className="px-5 py-4 font-semibold text-ink-700">
+                        {formatDate(refund.createdAt)}
+                      </td>
+                      <td className="px-5 py-4">
+                        <p className="font-bold text-ink-900">
+                          REQ-{refund.supervisionRequestId.slice(0, 4).toUpperCase()}
+                        </p>
+                        <p className="mt-1 text-xs font-semibold text-ink-500">
+                          {paymentStatusLabel(refund.paymentStatus)}
+                        </p>
+                      </td>
+                      <td className="px-5 py-4 font-semibold text-ink-700">
+                        {refund.initiatedBy ?? "신청자 미기록"}
+                      </td>
+                      <td className="px-5 py-4 text-right font-bold text-ink-900">
+                        ₩{refund.amountKrw.toLocaleString("ko-KR")}
+                      </td>
+                      <td className="max-w-[240px] px-5 py-4 text-ink-600">
+                        {refund.reason ?? "사유 없음"}
+                      </td>
+                      <td className="px-5 py-4">
+                        <span className="rounded-md bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700">
                           {refundStatusLabel(refund.status)}
                         </span>
-                      </div>
-                      <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                        {refund.reason ?? "사유 없음"}
-                      </p>
-                      <p className="mt-2 inline-flex items-center gap-1 text-xs font-semibold text-ink-500">
-                        <Clock3 aria-hidden size={14} />
-                        요청 {formatDate(refund.createdAt)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="grid gap-2 rounded-xl bg-surface-sunken p-4 text-sm text-ink-700">
-                    <span className="flex justify-between gap-3">
-                      <span>결제 상태</span>
-                      <strong>{paymentStatusLabel(refund.paymentStatus)}</strong>
-                    </span>
-                    <span className="flex justify-between gap-3">
-                      <span>의뢰 상태</span>
-                      <strong>{requestStatusLabel(refund.requestStatus)}</strong>
-                    </span>
-                    <span className="flex justify-between gap-3">
-                      <span>환불 접수번호</span>
-                      <strong>{refund.id.slice(0, 8)}</strong>
-                    </span>
-                  </div>
-                </div>
-
-                <AdminActionPanel
-                  actions={[
-                    {
-                      label: "환불 승인",
-                      tone: "primary",
-                      url: `/api/admin/refunds/${refund.id}/approve`
-                    },
-                    {
-                      label: "환불 반려",
-                      tone: "secondary",
-                      url: `/api/admin/refunds/${refund.id}/reject`
-                    }
-                  ]}
-                  reasonPlaceholder="예: 환불 요청 사유, 결제 상태, 환불 가능 금액을 확인했고 정책상 승인/거절합니다."
-                />
-              </article>
-            ))}
+                        <p className="mt-2 text-xs font-semibold text-ink-500">
+                          {requestStatusLabel(refund.requestStatus)}
+                        </p>
+                      </td>
+                      <td className="px-5 py-4 text-right">
+                        <details className="inline-block text-left">
+                          <summary className="cursor-pointer list-none rounded-md bg-brand-600 px-4 py-2 text-sm font-semibold text-white shadow-blue-sm">
+                            검토
+                          </summary>
+                          <div className="mt-3 w-[min(560px,calc(100vw-3rem))] rounded-xl border border-line bg-surface-elevated p-4 text-left shadow-[0_18px_40px_rgba(15,23,42,0.14)]">
+                            <AdminActionPanel
+                              actions={[
+                                {
+                                  label: "승인",
+                                  tone: "primary",
+                                  url: `/api/admin/refunds/${refund.id}/approve`
+                                },
+                                {
+                                  label: "반려",
+                                  tone: "secondary",
+                                  url: `/api/admin/refunds/${refund.id}/reject`
+                                }
+                              ]}
+                              reasonPlaceholder="예: 환불 사유와 진행 상태를 확인했습니다."
+                            />
+                          </div>
+                        </details>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
           </div>
-        )}
-      </AdminCard>
+        </AdminListFrame>
+      </section>
     </AdminShell>
   );
 }
 
 function formatDate(value: Date | string): string {
   const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return "날짜 확인 필요";
+  if (Number.isNaN(date.getTime())) return "날짜 미확인";
   return new Intl.DateTimeFormat("ko-KR", {
     month: "short",
     day: "numeric",
@@ -220,7 +182,7 @@ function refundStatusLabel(status: string): string {
     rejected: "반려됨",
     requested: "요청됨"
   };
-  return labels[status] ?? "상태 확인 필요";
+  return labels[status] ?? "상태 미분류";
 }
 
 function paymentStatusLabel(status: string): string {
@@ -232,7 +194,7 @@ function paymentStatusLabel(status: string): string {
     pending: "결제 대기",
     refunded: "환불 완료"
   };
-  return labels[status] ?? "상태 확인 필요";
+  return labels[status] ?? "상태 미분류";
 }
 
 function requestStatusLabel(status: string): string {
@@ -255,5 +217,5 @@ function requestStatusLabel(status: string): string {
     rejected: "반려됨",
     submitted: "제출됨"
   };
-  return labels[status] ?? "상태 확인 필요";
+  return labels[status] ?? "상태 미분류";
 }
