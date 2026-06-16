@@ -8,7 +8,7 @@ Last updated: 2026-06-15
 
 This document is the current UI/UX baseline source of truth for ClinicFlow.
 
-Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts.
+Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts. Origin-14 screenshot structures may be improved when clarity, space density, or workbench usability improves. Public marketing/discovery pages may use preview surfaces, but authenticated work pages should be compact workbenches.
 
 The approved Origin-14 PNG/screenshots are the highest-priority visual baseline. The static preview HTML is supporting evidence, not a replacement for the 14 approved screenshots.
 
@@ -717,11 +717,11 @@ Rules:
 
 ### Primary Action Panel
 
-Use only when the user may be blocked without explicit next-action guidance.
+Use only when the user may be blocked without explicit next-action guidance. Using a dark navy primary action panel is optional and exceptional, not a standard required page structure. Stateful pages do not automatically need dark action panels.
 
 Rules:
 
-- Dark navy background.
+- Optional dark navy background (`theme="dark"`) or light border background (`theme="light"`).
 - Small badge only when it adds meaning. Prefer a specific state/action label such as `현재 상태`, `업로드 준비`, or `결제 필요`; avoid generic `다음 행동`.
 - Strong title.
 - One short explanatory paragraph.
@@ -836,10 +836,11 @@ Preferred wording:
 
 The following are explicitly prohibited unless the user approves a new design direction:
 
-- nested cards inside cards
+- nested cards inside cards unless explicitly justified (nested Card inside Card is prohibited)
+- 2x2 or 3x3 card grids for operational lists or work queues (must use flat rows or tables instead)
 - meaningless metrics or naked-number stat strips
 - dashboard filler
-- card-heavy admin pages
+- card-heavy admin pages (operational admin pages must stay table/list/row-first)
 - oversized rounded cards that feel toy-like
 - heavy shadows on workflow surfaces
 - workflow items in the global header
@@ -863,7 +864,7 @@ Before creating or modifying any ClinicFlow UI route:
 5. Use `Noto Sans KR`, deep ink text, electric blue CTA, thin border, white surface.
 6. Use a page intro with title, short subtitle, and at most one primary action.
 7. If the page is sequential, use the step indicator.
-8. Use a dark navy primary action panel only when the user would otherwise be blocked.
+8. Use a primary action panel only when the user would otherwise be blocked. Its usage is optional and not a required boilerplate marker.
 9. Use one fixed side summary panel only when it reduces repetition or supports a decision.
 10. If the page lists work, use line-list rows, not dashboard cards.
 11. If the page stores learning records, use folder/tree hierarchy.

@@ -50,8 +50,9 @@ Hard implementation rules:
 - Treat the 14 screenshots as the baseline design system, not as a separate comparison set or a ceiling that blocks clearer desktop workbench UI.
 - The user's broader design prompt is "Minimalist Modern": clarity through structure, bold electric-blue detail, generous whitespace, restrained surfaces, confident hierarchy, and premium motion. Apply that prompt only where it supports the 14 origin screens.
 - For Korean ClinicFlow screens, preserve the origin-14 typography character: Noto Sans KR first, deep slate text, electric blue action/highlight, thin borders, white or near-white surfaces. Do not replace the origin style with Calistoga/portfolio-like English typography unless the user explicitly approves a new design direction.
-- Every new or existing route must extend one of those 14 archetypes.
+- Every new or existing route must be aligned with the visual language (typography, colors, borders) of the 14 archetypes, but they may implement layouts optimized for dense desktop data-tables or multi-column workbench setups where appropriate. The 14 archetypes are visual identity and anti-regression baselines, not rigid layout jailers.
 - Do not revive older Apple-style drafts, Stitch/Material-like surfaces, generic SaaS dashboards, KPI strips, card-heavy admin pages, or legacy fallback screens.
+- Nested cards and card grids for operational lists are strictly prohibited.
 - Global headers may contain only public navigation: `ClinicFlow`, `슈퍼바이저 찾기`, `이용 가이드`, `로그인`, and the start CTA when appropriate.
 - Workflow-specific entries such as `자료 제출`, `자료 업로드`, `결제`, `수락 대기`, `학습 기록`, `검토`, and `운영` must stay inside the relevant page, not in the global header.
 - Prefer one line per item, one primary action per page state, and at most one fixed side summary panel.
@@ -64,11 +65,11 @@ Hard implementation rules:
 
 UI noise control:
 
-- Every visible UI copy, card, panel, badge, and step bar must earn its place.
-- Do not add generic `다음 행동` banners, summary cards, helper panels, or right-side panels by default.
-- `PrimaryActionPanel` is exceptional, not a standard page structure; Origin-14 guard markers are not a reason to add `PrimaryActionPanel`, `SectionBlock`, or `AdminCard`.
-- Side summary panels are allowed only when they reduce repeated information or support a user decision.
-- Empty/loading/error states should be compact by default.
+- Every visible UI element, copy, card, panel, badge, and step bar must earn its place.
+- Avoid generic `다음 행동` banners and repeated summary panels. Use flat rows and structured dividers instead.
+- `PrimaryActionPanel` and `AdminCard` must not be used as boilerplate layout fillers. Do not introduce high-contrast dark panels unless they serve as a critical blocking state. Do not add components only to satisfy guard markers.
+- Side summary panels are optional compression tools, not decoration, and are allowed only when they reduce repeated information or support a user decision.
+- Empty/loading/error states should be compact-first by default.
 - Operational pages default to list/table/row layouts, not cards.
 - Repeated helper text is UX debt.
 - Desktop clarity is the target; mobile polish is out of scope.

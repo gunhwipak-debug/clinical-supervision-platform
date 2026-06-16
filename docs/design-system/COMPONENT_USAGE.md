@@ -43,6 +43,11 @@ Avoid cards for:
 - nested panels
 - unrelated information grouped only to fill space
 
+### Strict Anti-Grid and Nesting Rule:
+- **Never place cards in a grid layout (e.g. 2x2, 3x3)** to represent operational lists or audit queues. Use flat Line Lists or dense Tables instead.
+- **Nested Card inside Card is strictly prohibited** unless explicitly justified and approved by the user.
+- **SectionBlock must not contain nested Cards** as page content layout wrappers.
+
 ## Line List / Entity List
 
 Use line-based rows when users need to scan, compare, or continue work.
@@ -92,12 +97,13 @@ Task lists should make the next action visible without relying on naked metric c
 
 ## PrimaryActionPanel
 
-Use only for a blocking next action that would otherwise be unclear.
+Use only for a blocking next action that would otherwise be unclear. It is optional and exceptional, not a required boilerplate marker to satisfy the guard.
 
 - exceptional, not default
 - no generic default eyebrow such as `다음 행동`
 - one title, one short sentence, one action
 - not a route-alignment marker filler
+- **Supports Light Theme**: Use the optional `theme` prop. Avoid high-contrast dark navy layouts (`theme="dark"`) by default unless a strict process block is in effect. Prefer `theme="light"` (border and light background) for cleaner integration with workspace screens.
 
 ## SectionBlock
 

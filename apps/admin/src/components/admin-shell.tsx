@@ -73,20 +73,20 @@ export function AdminShell({
         </div>
       </div>
 
-      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-8 md:gap-8 md:py-10">
-        <header className="grid gap-5 border-b border-line pb-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-          <div className="grid gap-4">
+      <div className="mx-auto grid max-w-6xl gap-6 px-5 py-5 md:gap-6 md:py-6">
+        <header className="grid gap-4 border-b border-line pb-4 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
+          <div className="grid gap-3">
             {eyebrow ? (
               <span className="inline-flex w-fit rounded-full border border-[#f3cf85] px-4 py-2 text-sm font-semibold text-[#cb6f12]">
                 {eyebrow}
               </span>
             ) : null}
-            <div className="grid gap-3">
-              <h1 className="break-keep text-4xl font-bold leading-tight tracking-normal text-ink-900 md:text-[42px]">
+            <div className="grid gap-2">
+              <h1 className="break-keep text-2xl font-bold leading-tight tracking-normal text-ink-900 md:text-3xl">
                 {title}
               </h1>
               {subtitle ? (
-                <p className="max-w-3xl break-keep text-lg leading-8 text-ink-500">
+                <p className="max-w-3xl break-keep text-sm leading-relaxed text-ink-500">
                   {subtitle}
                 </p>
               ) : null}
@@ -158,9 +158,9 @@ export function AdminDarkPanel({
   className?: string;
 }) {
   return (
-    <aside className={`rounded-xl bg-ink-900 p-8 text-white ${className}`}>
-      <h2 className="text-[32px] font-bold leading-tight">{title}</h2>
-      <p className="mt-6 break-keep text-base leading-8 text-slate-200">
+    <aside className={`rounded-xl bg-ink-900 p-5 text-white ${className}`}>
+      <h2 className="text-xl font-bold leading-tight">{title}</h2>
+      <p className="mt-3 break-keep text-sm leading-relaxed text-slate-200">
         {description}
       </p>
       {children ? <div className="mt-8">{children}</div> : null}

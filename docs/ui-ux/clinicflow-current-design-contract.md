@@ -4,7 +4,7 @@
 
 이 문서는 현재 ClinicFlow 디자인 계약입니다. 14개 Origin PNG는 현재 시각 baseline이며, 44/46 route evidence는 구현 증거이지 새로운 디자인 source가 아닙니다.
 
-Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts.
+Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts. Origin-14 screenshot structures may be improved when clarity, space density, or workbench usability improves. Public marketing/discovery pages may use preview surfaces, but authenticated work pages should be compact workbenches.
 
 Active source-of-truth hierarchy:
 
@@ -102,11 +102,13 @@ ClinicFlow Desktop Workbench v2는 로그인 후 업무 화면의 현재 목표�
 
 - 한 화면에는 하나의 primary action만 둡니다.
 - 기본 구조는 `PageHeader -> primary content`입니다.
+- `PrimaryActionPanel` 사용은 선택 및 예외적 사항이며, 특정 상태 페이지라고 해서 무조건 다크 패널을 사용할 필요는 없습니다.
 - next-action panel은 사용자가 즉시 결정하거나 막힌 행동이 있을 때만 사용합니다.
-- summary panel은 반복 정보를 줄이거나 결정을 도울 때만 사용합니다.
+- summary panel(사이드 요약 패널)은 필수가 아닌 보조적인 정보 압축 및 결정 지원용 옵션 도구이며, 여백 채우기용 장식으로 사용해서는 안 됩니다.
+- Empty, loading, error 상태는 기본적으로 compact-first(조밀함 우선)로 설계되어야 합니다.
 - work page는 큰 상단 action panel과 right summary panel을 동시에 갖지 않는 것을 기본으로 합니다.
 - 보조 정보는 필요할 때만 고정 사이드 패널 하나로 압축합니다.
-- 카드 그리드, 중복 패널, 메타데이터 박스 나열은 피합니다.
+- 카드 그리드, 중복 패널, 메타데이터 박스 나열은 피합니다. 어드민 및 슈퍼바이저 업무용 화면은 반드시 테이블/리스트/행 중심(table/list/row-first)으로 구성해야 합니다.
 - 줄 단위 정보에는 `제목`, `한 문장 설명`, 필요 시 작은 상태값만 둡니다.
 - 한국어 UI는 `Noto Sans KR`를 우선하고, 버튼/상태/라벨은 14px 이상을 기본으로 합니다.
 
@@ -128,6 +130,8 @@ Copy budget:
 - `자료실`, `지도자`, `페이지 이동`, `보안 로그인`, `PHI`, `LOG` 같은 내부/부적절 표현
 - 과한 round, shadow, gradient, glass effect
 - `glass-card`, `bento-*`, 반복 body override, route별 샘플 CSS 같은 구버전 전역 스타일
+- 카드 내부에 다른 카드를 중첩해서 사용하는 패턴 (Nested Card 금지)
+- 업무 목록 또는 처리 대기열에 2x2, 3x3 등의 카드 그리드 레이아웃을 남발하는 패턴 (카드 그리드 금지)
 
 ## Route Coverage
 

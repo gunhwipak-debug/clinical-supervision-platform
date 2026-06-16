@@ -139,23 +139,37 @@ export function PrimaryActionPanel({
   children,
   eyebrow,
   title,
-  variant = "compact"
+  variant = "compact",
+  theme = "dark"
 }: {
   action?: React.ReactNode;
   children: React.ReactNode;
   eyebrow?: string;
   title: string;
   variant?: "compact" | "prominent";
+  theme?: "dark" | "light";
 }) {
   return (
     <section
       className={cn(
-        "grid gap-4 rounded-xl border border-line bg-ink-900 text-white md:grid-cols-[1fr_auto] md:items-center",
+        "grid gap-4 rounded-xl border md:grid-cols-[1fr_auto] md:items-center",
+        theme === "dark"
+          ? "border-line bg-ink-900 text-white"
+          : "border-line bg-surface-elevated text-ink-900",
         variant === "prominent" ? "p-6" : "p-5"
       )}
     >
       <div>
-        {eyebrow ? <p className="text-sm font-bold text-brand-100">{eyebrow}</p> : null}
+        {eyebrow ? (
+          <p
+            className={cn(
+              "text-sm font-bold",
+              theme === "dark" ? "text-brand-100" : "text-brand-700"
+            )}
+          >
+            {eyebrow}
+          </p>
+        ) : null}
         <h2
           className={cn(
             "font-bold leading-tight",
@@ -165,7 +179,12 @@ export function PrimaryActionPanel({
         >
           {title}
         </h2>
-        <div className="mt-3 max-w-2xl text-sm leading-relaxed text-slate-200">
+        <div
+          className={cn(
+            "mt-3 max-w-2xl text-sm leading-relaxed",
+            theme === "dark" ? "text-slate-200" : "text-ink-600"
+          )}
+        >
           {children}
         </div>
       </div>
