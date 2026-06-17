@@ -17,6 +17,7 @@ import {
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
+import { getDemoPaymentById, isDemoUserId } from "@/lib/demo/supervision";
 import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
 import { RefundRequestForm } from "./refund-request-form";
@@ -54,7 +55,7 @@ export default async function PaymentDetailPage({
       (tx) => payments.getPaymentById(tx, id)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
@@ -62,8 +63,9 @@ export default async function PaymentDetailPage({
       "[supervisee.payment-detail.page.demo-fallback]",
       "rendering fallback because the local database schema is unavailable."
     );
-    payment = null;
+    payment = getDemoPaymentById(id);
   }
+  payment ??= getDemoPaymentById(id);
   if (!payment || payment.superviseeId !== current.session.userId) {
     return (
       <AppShell
@@ -71,10 +73,15 @@ export default async function PaymentDetailPage({
         currentUser={current.user}
         title="영수증 상세"
         subtitle="접근 가능한 결제를 찾지 못했습니다."
+        action={
+          <Button asChild variant="secondary">
+            <Link href="/payments">결제 내역</Link>
+          </Button>
+        }
       >
         <EmptyState
-          title="결제가 없습니다"
-          description="결제 목록에서 다시 선택해주세요."
+          title="결제 내역을 찾지 못했습니다"
+          description="결제 내역에서 다시 선택하거나 관련 의뢰 화면에서 결제 상태를 확인해주세요."
         />
       </AppShell>
     );

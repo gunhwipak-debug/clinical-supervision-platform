@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { files, supervision, withUserContext } from "@csp/db";
 import { AppShell } from "../../../../components/app-shell";
 import { CaseFilesPanel } from "../../../../components/case-files-panel";
@@ -12,6 +13,7 @@ import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import {
   getDemoSupervisionRequestDetails,
+  isDemoUserId,
   listDemoCaseFilesForRequest
 } from "@/lib/demo/supervision";
 import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
@@ -62,12 +64,13 @@ export default async function RequestDetailPage({
       supervision.getSupervisionRequestDetails(tx, id, { includeMeetingUrl: false })
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
     basic = getDemoSupervisionRequestDetails(id);
   }
+  basic ??= getDemoSupervisionRequestDetails(id);
   if (!basic || !isRequestOwner(current, basic)) {
     return (
       <AppShell
@@ -75,10 +78,15 @@ export default async function RequestDetailPage({
         currentUser={current.user}
         title="의뢰 상세"
         subtitle="접근 가능한 의뢰를 찾지 못했습니다."
+        action={
+          <Button asChild variant="secondary">
+            <Link href="/requests">의뢰 목록</Link>
+          </Button>
+        }
       >
         <EmptyState
-          title="의뢰가 없습니다"
-          description="목록으로 돌아가 다시 선택해주세요."
+          title="의뢰를 찾지 못했습니다"
+          description="의뢰 목록에서 진행 중인 항목을 다시 선택하거나 새 슈퍼비전 의뢰를 시작해주세요."
         />
       </AppShell>
     );
@@ -95,6 +103,9 @@ export default async function RequestDetailPage({
       throw error;
     }
 
+    caseFiles = listDemoCaseFilesForRequest(id);
+  }
+  if (caseFiles.length === 0 && getDemoSupervisionRequestDetails(id)) {
     caseFiles = listDemoCaseFilesForRequest(id);
   }
   const completionRecord = await readCompletionRecord(db, current, id);

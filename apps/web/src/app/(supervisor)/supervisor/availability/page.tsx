@@ -9,6 +9,10 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import {
+  isDemoUserId,
+  listDemoSupervisorAvailability
+} from "../../../../lib/demo/supervision";
 import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 import { SupervisorPageLoadError } from "../_components/supervisor-page-load-error";
 import { AvailabilityForm } from "./availability-form";
@@ -52,7 +56,7 @@ export default async function Page({
       (tx) => calendar.getConnectionSummaryForUser(tx, current.session.userId)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       console.error("[supervisor.availability.page]", error);
       return (
         <SupervisorPageLoadError
@@ -66,6 +70,9 @@ export default async function Page({
 
     availability = [];
     calendarConnection = null;
+  }
+  if (availability.length === 0 && isDemoUserId(current.session.userId)) {
+    availability = listDemoSupervisorAvailability(current.session.userId);
   }
   const calendarConfigReady = Boolean(
     process.env["GOOGLE_CALENDAR_CLIENT_ID"] &&

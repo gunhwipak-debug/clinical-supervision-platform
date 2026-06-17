@@ -8,7 +8,10 @@ import {
 import { Button } from "../../../components/ui/button";
 import { getCurrentUser } from "../../../lib/auth/current-user";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
-import { listDemoSuperviseeRequests } from "../../../lib/demo/supervision";
+import {
+  isDemoUserId,
+  listDemoSuperviseeRequests
+} from "../../../lib/demo/supervision";
 import { isSupervisee } from "../../../lib/auth/guards";
 import { isMissingDatabaseRelation } from "../../../lib/db/missing-relation";
 import { contextFor } from "../../../lib/supervision/authz";
@@ -45,7 +48,7 @@ export default async function Page() {
       supervision.listSupervisionRequests(tx)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
@@ -59,6 +62,8 @@ export default async function Page() {
   const sent = requests.filter(
     (request) => request.superviseeId === current.session.userId
   );
+  const visibleRequests =
+    sent.length > 0 ? sent : listDemoSuperviseeRequests(current.session.userId);
 
   return (
     <AppShell
@@ -72,7 +77,10 @@ export default async function Page() {
       title="내 슈퍼비전 의뢰"
       subtitle="진행 중인 의뢰와 이어서 할 일을 한 줄씩 확인합니다."
     >
-      <RequestWorkbench items={sent} unavailable={requestsUnavailable} />
+      <RequestWorkbench
+        items={visibleRequests}
+        unavailable={requestsUnavailable && visibleRequests.length === 0}
+      />
     </AppShell>
   );
 }

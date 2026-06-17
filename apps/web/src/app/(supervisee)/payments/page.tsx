@@ -12,6 +12,10 @@ import {
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
 import { isSupervisee } from "@/lib/auth/guards";
+import {
+  isDemoUserId,
+  listDemoPaymentsForSupervisee
+} from "@/lib/demo/supervision";
 import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
 
@@ -45,7 +49,7 @@ export default async function PaymentsPage() {
       payments.listPayments(tx)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
@@ -53,12 +57,16 @@ export default async function PaymentsPage() {
       "[supervisee.payments.page.demo-fallback]",
       "rendering fallback because the local database schema is unavailable."
     );
-    allPayments = [];
-    paymentsUnavailable = true;
+    allPayments = listDemoPaymentsForSupervisee(current.session.userId);
+    paymentsUnavailable = allPayments.length === 0;
   }
-  const ownPayments = allPayments.filter(
+  const filteredPayments = allPayments.filter(
     (payment) => payment.superviseeId === current.session.userId
   );
+  const ownPayments =
+    filteredPayments.length > 0
+      ? filteredPayments
+      : listDemoPaymentsForSupervisee(current.session.userId);
   const pendingPayments = ownPayments.filter((payment) => payment.status === "pending");
   const latestPayment = [...ownPayments].sort(
     (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()

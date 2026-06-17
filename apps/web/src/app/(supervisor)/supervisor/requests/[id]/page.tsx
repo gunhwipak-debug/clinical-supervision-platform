@@ -17,6 +17,7 @@ import { createRuntimeDatabase } from "../../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../../lib/auth/current-user";
 import {
   getDemoSupervisionRequestDetails,
+  isDemoUserId,
   listDemoCaseFilesForRequest
 } from "../../../../../lib/demo/supervision";
 import { isMissingDatabaseRelation } from "../../../../../lib/db/missing-relation";
@@ -56,13 +57,14 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       (tx) => supervision.getSupervisionRequestDetails(tx, id, { includePhi: true })
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
     detail = getDemoSupervisionRequestDetails(id);
     detailUnavailable = !detail;
   }
+  detail ??= getDemoSupervisionRequestDetails(id);
 
   if (!detail || detail.supervisorId !== current.session.userId) {
     return (
@@ -108,6 +110,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       throw error;
     }
 
+    caseFiles = listDemoCaseFilesForRequest(id);
+  }
+  if (caseFiles.length === 0 && getDemoSupervisionRequestDetails(id)) {
     caseFiles = listDemoCaseFilesForRequest(id);
   }
   let latestReviewCycle: Awaited<ReturnType<typeof files.latestDocumentReviewCycle>>;

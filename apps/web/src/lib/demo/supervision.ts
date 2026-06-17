@@ -1,4 +1,4 @@
-import type { files, supervision } from "@csp/db";
+import type { files, payments, profiles, supervision } from "@csp/db";
 import { DEMO_IDS } from "@csp/db/demo-accounts";
 
 const now = "2026-06-15T09:00:00.000Z";
@@ -203,6 +203,12 @@ const detailById = new Map<string, supervision.SupervisionRequestDetails>(
   ])
 );
 
+const demoUserIds = new Set<string>(Object.values(DEMO_IDS));
+
+export function isDemoUserId(userId: string): boolean {
+  return demoUserIds.has(userId);
+}
+
 export function listDemoSuperviseeRequests(
   superviseeId: string
 ): supervision.SupervisionRequestSummary[] {
@@ -219,6 +225,171 @@ export function getDemoSupervisionRequestDetails(
   requestId: string
 ): supervision.SupervisionRequestDetails | null {
   return detailById.get(requestId) ?? null;
+}
+
+const demoPayments: payments.PaymentRecord[] = [
+  {
+    id: DEMO_IDS.paymentPaid,
+    supervisionRequestId: DEMO_IDS.requestCompleted,
+    superviseeId: DEMO_IDS.supervisee,
+    supervisorId: DEMO_IDS.approvedSupervisor,
+    amountKrw: 360000,
+    platformFeeKrw: 72000,
+    supervisorNetKrw: 288000,
+    pgProvider: "demo",
+    pgPaymentKey: "demo-completed-payment-key",
+    pgOrderId: "demo-completed-order",
+    status: "paid",
+    paidAt: "2026-06-10T09:00:00.000Z",
+    createdAt: "2026-06-10T08:50:00.000Z",
+    requestStatus: "completed",
+    productTitle: "90분 화상 슈퍼비전"
+  }
+];
+
+export function listDemoPaymentsForSupervisee(
+  superviseeId: string
+): payments.PaymentRecord[] {
+  return demoPayments.filter((payment) => payment.superviseeId === superviseeId);
+}
+
+export function getDemoPaymentById(paymentId: string): payments.PaymentRecord | null {
+  return demoPayments.find((payment) => payment.id === paymentId) ?? null;
+}
+
+export function getDemoSupervisorProfile(
+  supervisorId: string
+): profiles.SupervisorProfile | null {
+  if (supervisorId !== DEMO_IDS.approvedSupervisor) return null;
+
+  return {
+    id: DEMO_IDS.approvedSupervisorProfile,
+    userId: DEMO_IDS.approvedSupervisor,
+    displayName: "김도현 슈퍼바이저",
+    photoUrl: null,
+    headline: "성인 정신병리·MMPI·로르샤흐 슈퍼비전",
+    bio: "성인 정신병리 평가와 성격평가 보고서 피드백을 중심으로, 근거 기반 해석과 윤리적 문서화를 함께 점검합니다.",
+    yearsOfExperience: 12,
+    zoomMeetingUrl: null,
+    verificationStatus: "approved",
+    verifiedAt: "2026-06-10T09:00:00.000Z",
+    visibility: "public",
+    avgResponseMinutes: 240,
+    totalCompleted: 84,
+    averageRating: "4.70"
+  };
+}
+
+export function listDemoSupervisorQualifications(
+  supervisorId: string
+): profiles.Qualification[] {
+  if (supervisorId !== DEMO_IDS.approvedSupervisor) return [];
+
+  return [
+    {
+      id: DEMO_IDS.qualification,
+      supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
+      name: "임상심리전문가",
+      number: "KCP-2014-DEMO",
+      issuingBody: "한국임상심리학회",
+      issuedAt: "2014-03-01",
+      expiresAt: null,
+      evidenceFileId: null,
+      evidenceOriginalFilename: "임상심리전문가_자격확인.pdf",
+      evidenceMimeType: "application/pdf",
+      evidenceSizeBytes: 420000,
+      evidenceUploadedAt: "2026-06-10T09:00:00.000Z",
+      evidenceVirusScanStatus: "clean",
+      verificationNote: "Demo approved qualification",
+      status: "approved",
+      createdAt: "2026-06-10T09:00:00.000Z"
+    }
+  ];
+}
+
+export function listDemoSupervisorSpecialties(
+  supervisorId: string
+): profiles.Specialty[] {
+  if (supervisorId !== DEMO_IDS.approvedSupervisor) return [];
+
+  return [
+    {
+      id: "demo-specialty-adult",
+      code: "adult_psychopathology",
+      labelKo: "성인 정신병리",
+      displayOrder: 1,
+      active: true
+    },
+    {
+      id: "demo-specialty-personality",
+      code: "personality_assessment",
+      labelKo: "성격평가",
+      displayOrder: 2,
+      active: true
+    }
+  ];
+}
+
+export function listDemoSupervisorProducts(supervisorId: string): profiles.Product[] {
+  if (supervisorId !== DEMO_IDS.approvedSupervisor) return [];
+
+  return [
+    {
+      id: DEMO_IDS.productZoom,
+      supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
+      active: true,
+      kind: "zoom_90",
+      title: "90분 화상 슈퍼비전",
+      description: "평가자료 해석과 보고서 방향을 실시간으로 논의합니다.",
+      priceKrw: 360000,
+      turnaroundHours: 168,
+      createdAt: "2026-06-10T09:00:00.000Z"
+    },
+    {
+      id: DEMO_IDS.productAsync,
+      supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
+      active: true,
+      kind: "async_comment",
+      title: "보고서 코멘트",
+      description: "보고서 초안에 구조화 코멘트를 제공합니다.",
+      priceKrw: 120000,
+      turnaroundHours: 72,
+      createdAt: "2026-06-10T09:00:00.000Z"
+    }
+  ];
+}
+
+export function listDemoSupervisorAvailability(
+  supervisorId: string
+): profiles.AvailabilitySlot[] {
+  if (supervisorId !== DEMO_IDS.approvedSupervisor) return [];
+
+  return [
+    {
+      id: DEMO_IDS.slotMonday,
+      supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
+      weekday: 1,
+      startTime: "10:00",
+      endTime: "12:00",
+      timezone: "Asia/Seoul"
+    },
+    {
+      id: DEMO_IDS.slotWednesday,
+      supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
+      weekday: 3,
+      startTime: "14:00",
+      endTime: "17:00",
+      timezone: "Asia/Seoul"
+    },
+    {
+      id: DEMO_IDS.slotFriday,
+      supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
+      weekday: 5,
+      startTime: "09:00",
+      endTime: "11:00",
+      timezone: "Asia/Seoul"
+    }
+  ];
 }
 
 export function listDemoCaseFilesForRequest(requestId: string): files.CaseFileRecord[] {

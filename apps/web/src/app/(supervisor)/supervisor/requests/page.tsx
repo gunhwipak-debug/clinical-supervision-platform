@@ -9,7 +9,10 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
-import { listDemoSupervisorRequests } from "../../../../lib/demo/supervision";
+import {
+  isDemoUserId,
+  listDemoSupervisorRequests
+} from "../../../../lib/demo/supervision";
 import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 
 export const dynamic = "force-dynamic";
@@ -39,7 +42,7 @@ export default async function Page() {
       (tx) => supervision.listSupervisionRequests(tx)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
@@ -49,12 +52,18 @@ export default async function Page() {
   const assigned = requests.filter(
     (request) => request.supervisorId === current.session.userId
   );
-  const actionable = assigned.filter((request) =>
+  const visibleRequests =
+    assigned.length > 0 ? assigned : listDemoSupervisorRequests(current.session.userId);
+  const actionable = visibleRequests.filter((request) =>
     isSupervisorActionable(request.status)
   );
-  const waiting = assigned.filter((request) => isSupervisorWaiting(request.status));
-  const archived = assigned.filter((request) => isSupervisorArchive(request.status));
-  const closed = assigned.filter((request) => isSupervisorClosed(request.status));
+  const waiting = visibleRequests.filter((request) =>
+    isSupervisorWaiting(request.status)
+  );
+  const archived = visibleRequests.filter((request) =>
+    isSupervisorArchive(request.status)
+  );
+  const closed = visibleRequests.filter((request) => isSupervisorClosed(request.status));
   const nextRequest = actionable[0] ?? archived[0] ?? waiting[0] ?? null;
 
   return (
@@ -77,7 +86,7 @@ export default async function Page() {
       title="검토할 의뢰"
       subtitle="자료 확인, 수락, 피드백 작성이 필요한 의뢰를 확인합니다."
     >
-      {assigned.length === 0 ? (
+      {visibleRequests.length === 0 ? (
         <EmptyState
           title={
             requestsUnavailable

@@ -10,6 +10,10 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import {
+  isDemoUserId,
+  listDemoSupervisorProducts
+} from "../../../../lib/demo/supervision";
 import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 import { SupervisorPageLoadError } from "../_components/supervisor-page-load-error";
 import { ProductForm, ProductManageForm } from "./product-form";
@@ -42,7 +46,7 @@ export default async function SupervisorProductsPage() {
       (tx) => profiles.listProducts(tx, current.session.userId)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       console.error("[supervisor.products.page]", error);
       return (
         <SupervisorPageLoadError
@@ -55,6 +59,9 @@ export default async function SupervisorProductsPage() {
     }
 
     products = [];
+  }
+  if (products.length === 0 && isDemoUserId(current.session.userId)) {
+    products = listDemoSupervisorProducts(current.session.userId);
   }
 
   const activeProducts = products.filter((product) => product.active);

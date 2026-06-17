@@ -1,0 +1,98 @@
+{
+  "generatedAt": "2026-06-17T15:28:08+09:00",
+  "scope": "Preview E2E demo readiness hardening",
+  "browserCaptureStatus": "blocked_by_local_next_dev_startup_hang",
+  "routes": [
+    {
+      "route": "/requests",
+      "persona": "supervisee",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo supervisee requests now fall back when the authenticated demo user has no DB rows or preview DB read fails.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/requests/[id]",
+      "persona": "supervisee",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo request detail fallback and clearer not-found recovery CTA added.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/payments",
+      "persona": "supervisee",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo payment list fallback added for demo supervisee.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/payments/[id]",
+      "persona": "supervisee",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo payment detail fallback and clearer missing-payment recovery CTA added.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/payments/confirm",
+      "persona": "supervisee",
+      "status": "deferred",
+      "change": "No additional change in this pass.",
+      "primaryRisk": "Invalid/expired confirmation still needs runtime scenario validation."
+    },
+    {
+      "route": "/case-archive",
+      "persona": "supervisee",
+      "status": "unchanged",
+      "change": "Existing demo archive path was not modified in this pass.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/supervisor/requests",
+      "persona": "supervisor",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo supervisor queue now falls back when assigned DB rows are empty or preview DB read fails.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/supervisor/requests/[id]",
+      "persona": "supervisor",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo detail fallback and case-file fallback added so canonical demo rows can reach the review workspace.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/supervisor/profile",
+      "persona": "supervisor",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo profile, qualification, specialty, and product fallbacks added for the approved supervisor account.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/supervisor/qualifications",
+      "persona": "supervisor",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo qualification fallback added for the approved supervisor account.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/supervisor/products",
+      "persona": "supervisor",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo product fallback added for the approved supervisor account.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/supervisor/availability",
+      "persona": "supervisor",
+      "status": "code_hardened_not_browser_captured",
+      "change": "Demo availability fallback added for the approved supervisor account.",
+      "primaryRisk": "Needs deployed/runtime verification."
+    },
+    {
+      "route": "/admin",
+      "persona": "admin",
+      "status": "traced_unchanged",
+      "change": "Admin canonical host and handoff path were inspected; no code change applied in this pass.",
+      "primaryRisk": "Admin preview auth still requires deployed/runtime verification."
+    }
+  ]
+}

@@ -9,6 +9,13 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import {
+  getDemoSupervisorProfile,
+  isDemoUserId,
+  listDemoSupervisorProducts,
+  listDemoSupervisorQualifications,
+  listDemoSupervisorSpecialties
+} from "../../../../lib/demo/supervision";
 import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 import { SupervisorPageLoadError } from "../_components/supervisor-page-load-error";
 import { SupervisorProfileEditor, SupervisorVisibilityForm } from "./profile-form";
@@ -63,7 +70,7 @@ export default async function SupervisorProfilePage() {
       )
     ]);
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       console.error("[supervisor.profile.page]", error);
       return (
         <SupervisorPageLoadError
@@ -79,6 +86,18 @@ export default async function SupervisorProfilePage() {
     qualifications = [];
     specialties = [];
     products = [];
+  }
+  if (isDemoUserId(current.session.userId)) {
+    profile ??= getDemoSupervisorProfile(current.session.userId);
+    if (qualifications.length === 0) {
+      qualifications = listDemoSupervisorQualifications(current.session.userId);
+    }
+    if (specialties.length === 0) {
+      specialties = listDemoSupervisorSpecialties(current.session.userId);
+    }
+    if (products.length === 0) {
+      products = listDemoSupervisorProducts(current.session.userId);
+    }
   }
   const canPublish = Boolean(
     profile && current.user.totpEnabled && profile.verificationStatus === "approved"

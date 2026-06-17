@@ -9,6 +9,10 @@ import {
 } from "../../../../components/locked-state";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import { getCurrentUser } from "../../../../lib/auth/current-user";
+import {
+  isDemoUserId,
+  listDemoSupervisorQualifications
+} from "../../../../lib/demo/supervision";
 import { isMissingDatabaseRelation } from "../../../../lib/db/missing-relation";
 import { QualificationForm } from "./qualification-form";
 
@@ -44,11 +48,14 @@ export default async function Page() {
       (tx) => profiles.listQualifications(tx, current.session.userId)
     );
   } catch (error) {
-    if (!isMissingDatabaseRelation(error)) {
+    if (!isMissingDatabaseRelation(error) && !isDemoUserId(current.session.userId)) {
       throw error;
     }
 
     qualifications = [];
+  }
+  if (qualifications.length === 0 && isDemoUserId(current.session.userId)) {
+    qualifications = listDemoSupervisorQualifications(current.session.userId);
   }
   const pendingCount = qualifications.filter(
     (qualification) => qualification.status === "pending"
