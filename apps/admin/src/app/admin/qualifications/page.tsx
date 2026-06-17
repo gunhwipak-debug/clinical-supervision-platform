@@ -288,7 +288,7 @@ export default async function AdminQualificationsPage({
               <dt className="font-semibold text-white">표시 중</dt>
               <dd className="mt-1">
                 {qualificationsUnavailable
-                  ? "확인 필요"
+                  ? "연결 대기"
                   : `${queue.length.toLocaleString("ko-KR")}건`}
               </dd>
             </div>

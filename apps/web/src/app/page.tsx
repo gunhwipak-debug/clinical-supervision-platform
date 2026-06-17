@@ -17,9 +17,10 @@ export default function HomePage() {
           </span>
           <div className="grid gap-5">
             <h1 className="max-w-3xl break-keep text-[3rem] font-bold leading-[1.02] tracking-normal text-[#081225] md:text-[5rem]">
-              슈퍼비전 의뢰와
-              <br />
-              피드백을 <span className="text-[#2563ff]">한곳에서</span>
+              <span className="block">슈퍼비전 의뢰와 </span>
+              <span className="block">
+                피드백을 <span className="text-[#2563ff]">한곳에서</span>
+              </span>
             </h1>
             <p className="max-w-xl break-keep text-lg leading-9 text-[#5f6c8f]">
               슈퍼바이저 탐색, 의뢰 작성, 결제, 피드백, 기록 보관을 한 화면 흐름으로

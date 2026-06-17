@@ -87,7 +87,7 @@ export default async function SettingsPage() {
           <dl className="mt-5 grid divide-y divide-line text-sm">
             <SettingRow
               label="2단계 인증"
-              value={current.user.totpEnabled ? "사용 중" : "확인 필요"}
+              value={current.user.totpEnabled ? "사용 중" : "미설정"}
             />
             <SettingRow label="계정 상태" value={statusLabel(current.user.status)} />
             <div className="grid gap-1 py-3">

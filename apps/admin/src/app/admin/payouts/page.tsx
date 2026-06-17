@@ -1,6 +1,5 @@
 import { payments, withUserContext } from "@csp/db";
 import {
-  AdminCard,
   AdminListFrame,
   AdminLockedState,
   AdminShell
@@ -161,7 +160,7 @@ export default async function PayoutsPage() {
           </div>
         </AdminListFrame>
 
-        <AdminCard className="h-fit lg:sticky lg:top-24">
+        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
           <h2 className="text-xl font-bold text-ink-900">정산 계산</h2>
           <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
             {payoutsUnavailable
@@ -171,7 +170,7 @@ export default async function PayoutsPage() {
           <div className="mt-5 border-t border-line pt-5">
             <PayoutComputeForm />
           </div>
-        </AdminCard>
+        </aside>
       </section>
     </AdminShell>
   );

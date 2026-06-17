@@ -85,7 +85,7 @@ const DEMO_SUPERVISORS: SupervisorWithQualifications[] = [
     qualifications: [{ name: "상담심리사 1급" }],
     serviceProducts: [
       {
-        description: "긴급 사례의 핵심 판단과 다음 행동을 정리합니다.",
+        description: "긴급 사례의 핵심 판단과 진행 방향을 정리합니다.",
         id: "demo-product-crisis",
         kind: "urgent_24h",
         priceKrw: 180000,

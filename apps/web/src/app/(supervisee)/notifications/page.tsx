@@ -58,7 +58,7 @@ export default async function NotificationsPage() {
       active="notifications"
       currentUser={currentShellUser}
       title="알림"
-      subtitle="먼저 확인할 알림만 위에 두고, 나머지는 기록으로 남깁니다."
+      subtitle="응답이 필요한 알림과 지난 알림을 구분합니다."
     >
       <section className="grid gap-5">
         {items.length === 0 ? (
@@ -73,7 +73,7 @@ export default async function NotificationsPage() {
               <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
                 {notificationsUnavailable
                   ? "연결이 복구되면 추가 자료 요청, 결제, 피드백 도착 알림이 이곳에 표시됩니다."
-                  : "의뢰 상태가 바뀌거나 추가 자료 요청이 오면 이 목록에 한 줄씩 표시됩니다."}
+                  : "의뢰 상태가 바뀌거나 추가 자료 요청이 오면 이 목록에 표시됩니다."}
               </p>
             </section>
             <section className="rounded-xl border border-line bg-surface-elevated">

@@ -88,11 +88,11 @@ export default async function Page() {
       }
       active="supervisor"
       title={profile?.displayName ?? "슈퍼바이저 업무"}
-      subtitle="오늘 먼저 볼 의뢰와 프로필, 슈퍼비전 방식, 가능 시간을 정리합니다."
+      subtitle="검토할 의뢰와 프로필, 슈퍼비전 방식, 가능 시간을 정리합니다."
     >
       <section className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <SectionBlock
-          subtitle="새 자료 확인, 수락 여부 결정, 피드백 초안 마무리처럼 바로 처리할 일을 한 줄로 정리합니다."
+          subtitle="새 자료 확인, 수락 여부 결정, 피드백 초안 마무리 항목을 정리합니다."
           title="지금 이어갈 요청"
         >
           <div className="rounded-xl border border-line bg-surface-elevated">
@@ -106,7 +106,7 @@ export default async function Page() {
                 <p className="mt-1 text-sm leading-relaxed text-ink-500">
                   {nextRequest
                     ? `${nextRequest.productTitle ?? "슈퍼비전 의뢰"}의 필요한 검토를 이어갑니다.`
-                    : "새 요청이 들어오면 이 화면에서 먼저 확인합니다."}
+                    : "새 요청이 들어오면 이 화면에 표시됩니다."}
                 </p>
               </div>
               <div className="flex flex-wrap gap-2 text-sm font-semibold">

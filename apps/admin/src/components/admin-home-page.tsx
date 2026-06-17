@@ -21,7 +21,7 @@ export async function AdminHomePage() {
           description="자격 승인, 환불, 정산, 처리 기록은 관리자 권한이 확인된 뒤 열립니다."
           returnPath="/admin"
           previewItems={[
-            "오늘 먼저 확인할 운영 대기열",
+            "운영 대기열",
             "자격 승인, 환불, 정산 상태",
             "처리 기록과 운영 조치 내역"
           ]}
@@ -88,14 +88,14 @@ export async function AdminHomePage() {
 
         <AdminDarkPanel
           title="운영 확인"
-          description="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 먼저 확인하고 처리 사유를 남깁니다."
+          description="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 확인하고 처리 기록을 남깁니다."
           className="h-fit lg:sticky lg:top-8"
         >
           <dl className="grid gap-4 border-t border-white/10 pt-6 text-sm leading-7 text-slate-200">
             <div>
               <dt className="font-semibold text-white">우선순위</dt>
               <dd className="mt-1 break-keep">
-                자격 심사, 환불, 정산 순서로 운영자가 개입할 화면을 먼저 엽니다.
+                자격 심사, 환불, 정산 순서로 운영자가 개입할 화면을 엽니다.
               </dd>
             </div>
             <div>
@@ -165,18 +165,18 @@ function buildHomeItems(
       href: "/admin/qualifications",
       label: "자격 심사",
       title: unavailable
-        ? "자격 심사 항목 확인 필요"
+        ? "자격 심사 항목 연결 대기"
         : stats.pendingQualifications > 0
           ? `${stats.pendingQualifications.toLocaleString("ko-KR")}건 자격 심사 대기`
           : "새 자격 심사 없음",
       description: unavailable
         ? "연결되면 임상심리전문가 증빙과 공개 프로필 확인 항목이 표시됩니다."
         : stats.pendingQualifications > 0
-          ? "임상심리전문가 증빙과 공개 프로필 확인 필요"
+          ? "임상심리전문가 증빙과 공개 프로필을 확인합니다."
           : "지금은 새 슈퍼바이저 자격 요청이 없습니다.",
       owner: "운영자",
       statusLabel: unavailable
-        ? "확인 필요"
+        ? "연결 대기"
         : stats.pendingQualifications > 0
           ? "심사 필요"
           : "대기 없음",
@@ -186,7 +186,7 @@ function buildHomeItems(
       href: "/admin/refunds",
       label: "환불",
       title: unavailable
-        ? "환불 요청 확인 필요"
+        ? "환불 요청 연결 대기"
         : stats.requestedRefunds > 0
           ? `${stats.requestedRefunds.toLocaleString("ko-KR")}건 환불 요청 검토`
           : "새 환불 요청 없음",
@@ -197,7 +197,7 @@ function buildHomeItems(
           : "검토 중인 환불 요청이 없어 다음 대기열로 넘어갈 수 있습니다.",
       owner: "결제",
       statusLabel: unavailable
-        ? "확인 필요"
+        ? "연결 대기"
         : stats.requestedRefunds > 0
           ? "검토 필요"
           : "대기 없음",
@@ -207,7 +207,7 @@ function buildHomeItems(
       href: "/admin/payouts",
       label: "정산",
       title: unavailable
-        ? "지급 확인 항목 확인 필요"
+        ? "지급 확인 항목 연결 대기"
         : stats.scheduledPayouts > 0
           ? `${stats.scheduledPayouts.toLocaleString("ko-KR")}건 지급 확인 대기`
           : "새 지급 확인 없음",
@@ -218,9 +218,9 @@ function buildHomeItems(
           : "이번 배치에서 추가 지급 확인이 필요한 항목이 없습니다.",
       owner: "정산",
       statusLabel: unavailable
-        ? "확인 필요"
+        ? "연결 대기"
         : stats.scheduledPayouts > 0
-          ? "확인 필요"
+          ? "지급 확인"
           : "대기 없음",
       active: unavailable || stats.scheduledPayouts > 0
     }

@@ -5,7 +5,7 @@ import { Button } from "./ui/button";
 import { EmptyState, FocusState } from "./ui/state";
 
 export function LoginRequiredState({
-  description = "계정으로 들어오면 진행 중인 슈퍼비전과 다음 행동을 확인할 수 있습니다.",
+  description = "계정으로 들어오면 진행 중인 슈퍼비전과 이어갈 일을 확인할 수 있습니다.",
   returnTo,
   title
 }: {
@@ -36,7 +36,7 @@ export function LoginRequiredState({
           <dl className="mt-5 grid gap-4 text-sm leading-relaxed">
             <div>
               <dt className="font-bold text-ink-500">진행 중인 의뢰</dt>
-              <dd className="mt-1 text-ink-900">상태와 다음 행동</dd>
+              <dd className="mt-1 text-ink-900">진행 상태와 이어갈 일</dd>
             </div>
             <div>
               <dt className="font-bold text-ink-500">사례 자료</dt>
