@@ -44,6 +44,7 @@ Avoid cards for:
 - unrelated information grouped only to fill space
 
 ### Strict Anti-Grid and Nesting Rule:
+
 - **Never place cards in a grid layout (e.g. 2x2, 3x3)** to represent operational lists or audit queues. Use flat Line Lists or dense Tables instead.
 - **Nested Card inside Card is strictly prohibited** unless explicitly justified and approved by the user.
 - **SectionBlock must not contain nested Cards** as page content layout wrappers.
@@ -116,6 +117,10 @@ Use to group real sections, not as a generic rounded card wrapper.
 ## Side Summary Panel
 
 Use only when it removes repetition or supports a user decision.
+
+Right summary panels are exceptional. Static metadata belongs in compact top status bars unless the side panel directly supports a decision.
+
+Supervisor request detail pages are review workspaces, not summary dashboards. Static request metadata belongs in a compact top status bar. Do not use a right summary rail when it narrows the primary review area.
 
 Good uses:
 

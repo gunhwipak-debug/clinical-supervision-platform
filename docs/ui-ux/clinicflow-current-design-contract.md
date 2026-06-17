@@ -105,6 +105,7 @@ ClinicFlow Desktop Workbench v2는 로그인 후 업무 화면의 현재 목표�
 - `PrimaryActionPanel` 사용은 선택 및 예외적 사항이며, 특정 상태 페이지라고 해서 무조건 다크 패널을 사용할 필요는 없습니다.
 - next-action panel은 사용자가 즉시 결정하거나 막힌 행동이 있을 때만 사용합니다.
 - summary panel(사이드 요약 패널)은 필수가 아닌 보조적인 정보 압축 및 결정 지원용 옵션 도구이며, 여백 채우기용 장식으로 사용해서는 안 됩니다.
+- Right summary panels are exceptional. Static metadata belongs in compact top status bars unless the side panel directly supports a decision.
 - Empty, loading, error 상태는 기본적으로 compact-first(조밀함 우선)로 설계되어야 합니다.
 - work page는 큰 상단 action panel과 right summary panel을 동시에 갖지 않는 것을 기본으로 합니다.
 - 보조 정보는 필요할 때만 고정 사이드 패널 하나로 압축합니다.
@@ -184,7 +185,7 @@ route별 정렬 기준은 `docs/ui-ux/clinicflow-route-alignment-manifest.md`를
 - `/case-archive`: 슈퍼바이저별 folder-like learning record 구조로 정렬했습니다.
 - `/supervisor`: 숫자 카드 중심 dashboard 대신 오늘 처리할 의뢰 중심으로 정렬했습니다.
 - `/supervisor/availability`: AppShell과 1 main + 1 side panel 구조로 옮기고, 화면 문구를 `일정 연동`, `가능 시간`, `외부 일정` 중심으로 정리했습니다.
-- `/supervisor/requests/[id]`: 검토 workspace를 `검토 상태 -> 사례 요약 -> 첨부 자료 -> 처리 작업/기록` 중심으로 정렬했습니다. next-action panel은 막힌 처리 단계에서만 사용합니다.
+- `/supervisor/requests/[id]`: 슈퍼바이저 의뢰 상세는 요약 대시보드가 아니라 검토 작업 공간입니다. 정적 의뢰 메타정보는 compact top status bar에 두고, 우측 summary rail이 문서 검토 영역을 좁히지 않게 합니다. 본문은 첨부자료/문서 뷰어를 넓게, 검토 메모/피드백/결정을 좁은 보조 열로 배치합니다.
 - `/supervisor/profile`, `/supervisor/products`: 별도 bottom nav를 제거하고 AppShell 안의 one-action layout으로 정렬했습니다. `제공 항목`은 `슈퍼비전 방식`, `세션명`으로 정리했습니다.
 - `/admin/*`: 관리자 shell에 운영 처리 기록(`처리 기록`)까지 포함했습니다.
 - `/admin/queue`, `/admin/qualifications`, `/admin/refunds`, `/admin/payouts`, `/admin/audit`: 로그인 후에도 같은 `AdminShell` 좌측 내비와 line-list 구조를 사용하도록 정리했습니다. 별도 sticky top bar와 독립 카드 stack은 제거했습니다.

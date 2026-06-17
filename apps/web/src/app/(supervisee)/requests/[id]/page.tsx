@@ -2,7 +2,11 @@ import Link from "next/link";
 import { files, supervision, withUserContext } from "@csp/db";
 import { AppShell } from "../../../../components/app-shell";
 import { CaseFilesPanel } from "../../../../components/case-files-panel";
-import { FlowStepNav, SectionBlock } from "../../../../components/clinicflow-shell";
+import {
+  FlowStepNav,
+  SectionBlock,
+  WorkbenchStatusBar
+} from "../../../../components/clinicflow-shell";
 import { Button } from "../../../../components/ui/button";
 import { EmptyState } from "../../../../components/ui/state";
 import {
@@ -76,13 +80,13 @@ export default async function RequestDetailPage({
       <AppShell
         active="requests"
         currentUser={current.user}
-        title="의뢰 상세"
-        subtitle="접근 가능한 의뢰를 찾지 못했습니다."
         action={
           <Button asChild variant="secondary">
             <Link href="/requests">의뢰 목록</Link>
           </Button>
         }
+        title="의뢰 상세"
+        subtitle="접근 가능한 의뢰를 찾지 못했습니다."
       >
         <EmptyState
           title="의뢰를 찾지 못했습니다"
@@ -123,7 +127,32 @@ export default async function RequestDetailPage({
     >
       <FlowStepNav current={currentStep} steps={requestFlowSteps} />
 
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <WorkbenchStatusBar
+        action={
+          <Button asChild size="sm" variant="secondary">
+            <a href={nextAction.href}>{nextAction.actionLabel}</a>
+          </Button>
+        }
+        items={[
+          { label: "의뢰", value: shortRequestId(basic.id) },
+          { label: "상태", value: statusLabel(basic.status) },
+          {
+            label: "슈퍼바이저",
+            value: basic.supervisorDisplayName ?? "확인 중"
+          },
+          { label: "일정", value: formatBookingSlot(basic) },
+          {
+            label: "사례 자료",
+            value: `${basic.packetComplete ? "정리 완료" : "정리 필요"} · ${String(
+              caseFiles.length
+            )}개`
+          },
+          { label: "자료 보관", value: `${String(basic.retentionDays)}일` },
+          { label: "최근 변경", value: formatDate(basic.updatedAt) }
+        ]}
+      />
+
+      <section className="grid gap-6">
         <div className="grid gap-6">
           <SectionBlock title="사례 자료">
             <div className="border-t border-line pt-5" id="case-info">
@@ -182,39 +211,19 @@ export default async function RequestDetailPage({
             </div>
           </SectionBlock>
         </div>
-
-        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
-          <p className="text-sm font-bold text-brand-700">현재 상태</p>
-          <h2 className="mt-2 text-xl font-bold text-ink-900">
-            {statusLabel(basic.status)}
-          </h2>
-          <div className="mt-5 grid divide-y divide-line text-sm">
-            <SummaryLine
-              label="슈퍼바이저"
-              value={basic.supervisorDisplayName ?? "확인 중"}
-            />
-            <SummaryLine label="상품" value={basic.productTitle ?? "슈퍼비전 의뢰"} />
-            <SummaryLine label="일정" value={formatBookingSlot(basic)} />
-            <SummaryLine
-              label="사례 자료"
-              value={`${basic.packetComplete ? "정리 완료" : "정리 필요"} · ${String(caseFiles.length)}개`}
-            />
-            <SummaryLine label="자료 보관" value={`${String(basic.retentionDays)}일`} />
-          </div>
-          <Button asChild className="mt-5 w-full" variant="secondary">
-            <a href={nextAction.href}>{nextAction.actionLabel}</a>
-          </Button>
-        </aside>
       </section>
     </AppShell>
   );
 }
 
-function SummaryLine({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="grid gap-1 py-3">
-      <span className="font-bold text-ink-400">{label}</span>
-      <span className="font-semibold leading-relaxed text-ink-900">{value}</span>
-    </div>
-  );
+function shortRequestId(id: string): string {
+  return `의뢰-${id.slice(0, 8)}`;
+}
+
+function formatDate(value: Date | string | null): string {
+  if (!value) return "일시 없음";
+  return new Intl.DateTimeFormat("ko-KR", {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(new Date(value));
 }

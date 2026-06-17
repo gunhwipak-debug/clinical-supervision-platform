@@ -193,6 +193,41 @@ export function PrimaryActionPanel({
   );
 }
 
+export function WorkbenchStatusBar({
+  action,
+  items,
+  note
+}: {
+  action?: React.ReactNode;
+  items: Array<{ label: string; value: React.ReactNode }>;
+  note?: string;
+}) {
+  return (
+    <section className="rounded-xl border border-line bg-surface-elevated px-4 py-3">
+      <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+        <dl className="grid gap-x-5 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
+          {items.map((item) => (
+            <div className="min-w-0" key={item.label}>
+              <dt className="font-bold text-ink-400">{item.label}</dt>
+              <dd className="mt-1 break-words font-semibold leading-relaxed text-ink-900">
+                {item.value}
+              </dd>
+            </div>
+          ))}
+        </dl>
+        {action ? (
+          <div className="flex justify-start lg:justify-end">{action}</div>
+        ) : null}
+      </div>
+      {note ? (
+        <p className="mt-3 border-t border-line pt-3 text-sm leading-relaxed text-ink-500">
+          {note}
+        </p>
+      ) : null}
+    </section>
+  );
+}
+
 export function SectionBlock({
   children,
   subtitle,

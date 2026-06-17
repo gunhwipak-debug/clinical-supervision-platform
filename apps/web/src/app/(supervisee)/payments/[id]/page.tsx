@@ -5,7 +5,8 @@ import { AppShell } from "../../../../components/app-shell";
 import {
   FlowStepNav,
   PrimaryActionPanel,
-  SectionBlock
+  SectionBlock,
+  WorkbenchStatusBar
 } from "../../../../components/clinicflow-shell";
 import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
@@ -71,13 +72,13 @@ export default async function PaymentDetailPage({
       <AppShell
         active="payments"
         currentUser={current.user}
-        title="영수증 상세"
-        subtitle="접근 가능한 결제를 찾지 못했습니다."
         action={
           <Button asChild variant="secondary">
             <Link href="/payments">결제 내역</Link>
           </Button>
         }
+        title="영수증 상세"
+        subtitle="접근 가능한 결제를 찾지 못했습니다."
       >
         <EmptyState
           title="결제 내역을 찾지 못했습니다"
@@ -109,6 +110,42 @@ export default async function PaymentDetailPage({
           "학습 기록"
         ]}
       />
+      <WorkbenchStatusBar
+        action={
+          <Button asChild size="sm" variant="secondary">
+            <Link href={`/requests/${payment.supervisionRequestId}`}>
+              {payment.status === "pending" &&
+              payment.requestStatus === "awaiting_payment"
+                ? "결제 이어가기"
+                : "의뢰 상세"}
+            </Link>
+          </Button>
+        }
+        items={[
+          { label: "결제", value: shortPaymentId(payment.id) },
+          {
+            label: "상태",
+            value: (
+              <Badge tone={paymentTone(payment.status)}>
+                {paymentLabel(payment.status)}
+              </Badge>
+            )
+          },
+          {
+            label: "금액",
+            value: `₩${payment.amountKrw.toLocaleString("ko-KR")}`
+          },
+          {
+            label: "세션",
+            value: payment.productTitle ?? "슈퍼비전 결제"
+          },
+          {
+            label: "의뢰 상태",
+            value: requestStatusLabel(payment.requestStatus)
+          },
+          { label: "접수일", value: formatDate(payment.createdAt) }
+        ]}
+      />
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
         <div className="grid gap-6">
           <PrimaryActionPanel
@@ -128,38 +165,8 @@ export default async function PaymentDetailPage({
           </PrimaryActionPanel>
 
           <SectionBlock
-            subtitle="무엇을 결제했는지, 현재 상태가 무엇인지 먼저 확인합니다."
-            title="결제 정보"
-          >
-            <div className="grid divide-y divide-line rounded-2xl border border-line bg-surface-elevated text-sm">
-              <SummaryLine
-                label="상태"
-                value={
-                  <Badge tone={paymentTone(payment.status)}>
-                    {paymentLabel(payment.status)}
-                  </Badge>
-                }
-              />
-              <SummaryLine
-                label="금액"
-                value={`₩${payment.amountKrw.toLocaleString("ko-KR")}`}
-              />
-              <SummaryLine
-                label="세션"
-                value={payment.productTitle ?? "슈퍼비전 결제"}
-              />
-              <SummaryLine label="접수일" value={formatDate(payment.createdAt)} />
-              <SummaryLine
-                label="의뢰 상태"
-                value={requestStatusLabel(payment.requestStatus)}
-              />
-              <SummaryLine label="결제 접수번호" value={shortPaymentId(payment.id)} />
-            </div>
-          </SectionBlock>
-
-          <SectionBlock
-            subtitle="환불이나 정산 확인이 필요할 때만 펼쳐 보면 됩니다."
-            title="금액 세부 내역"
+            subtitle="환불이나 정산 확인이 필요할 때만 봅니다."
+            title="결제 처리 내역"
           >
             <div className="grid divide-y divide-line rounded-2xl border border-line bg-surface-elevated text-sm">
               <SummaryLine
