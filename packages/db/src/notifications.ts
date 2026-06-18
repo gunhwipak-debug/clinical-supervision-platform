@@ -83,6 +83,42 @@ export async function countUnreadNotifications(
   return rowsOf<{ count: number }>(result)[0]?.count ?? 0;
 }
 
+export async function markNotificationRead(
+  db: NotificationDatabase,
+  input: { notificationId: string; userId: string }
+): Promise<NotificationRecord | null> {
+  const result = await db.execute(sql`
+    update notifications
+    set read_at = coalesce(read_at, now())
+    where id = ${input.notificationId}
+      and user_id = ${input.userId}
+    returning
+      id,
+      user_id as "userId",
+      kind,
+      payload,
+      read_at as "readAt",
+      created_at as "createdAt"
+  `);
+
+  return rowsOf<NotificationRecord>(result)[0] ?? null;
+}
+
+export async function markAllNotificationsRead(
+  db: NotificationDatabase,
+  userId: string
+): Promise<number> {
+  const result = await db.execute(sql`
+    update notifications
+    set read_at = now()
+    where user_id = ${userId}
+      and read_at is null
+    returning id
+  `);
+
+  return rowsOf<{ id: string }>(result).length;
+}
+
 export async function hasNotificationWithMetadata(
   db: NotificationDatabase,
   input: {

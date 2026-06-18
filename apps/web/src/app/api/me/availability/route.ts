@@ -19,13 +19,23 @@ export async function GET() {
 
   try {
     const db = createRuntimeDatabase();
-    const availability = await withUserContext(
+    const result = await withUserContext(
       db,
       { userId: current.session.userId, role: current.session.role },
-      (tx) => profiles.listAvailability(tx, current.session.userId)
+      async (tx) => {
+        const availability = await profiles.listAvailability(
+          tx,
+          current.session.userId
+        );
+        const exceptions = await profiles.listAvailabilityExceptions(
+          tx,
+          current.session.userId
+        );
+        return { availability, exceptions };
+      }
     );
 
-    return envelope({ availability }, null, 200);
+    return envelope(result, null, 200);
   } catch (error) {
     return serverUnavailable(
       "[me.availability.get]",
@@ -56,14 +66,40 @@ export async function PUT(request: NextRequest) {
     const availability = await withUserContext(
       db,
       { userId: current.session.userId, role: current.session.role },
-      (tx) =>
-        profiles.replaceAvailability(tx, {
+      async (tx) => {
+        const supervisorProfileId = await profiles.getSupervisorProfileIdForUser(
+          tx,
+          current.session.userId
+        );
+
+        if (!supervisorProfileId) return null;
+
+        return profiles.replaceAvailability(tx, {
+          exceptions: parsed.data.exceptions.map((exception) => ({
+            ...exception,
+            note: exception.note ?? null
+          })),
           userId: current.session.userId,
           slots: parsed.data.slots
-        })
+        });
+      }
     );
 
-    return envelope({ availability }, null, 200);
+    if (!availability) {
+      return envelope(
+        null,
+        apiError("profile_required", "먼저 슈퍼바이저 프로필을 저장해주세요."),
+        422
+      );
+    }
+
+    const exceptions = await withUserContext(
+      db,
+      { userId: current.session.userId, role: current.session.role },
+      (tx) => profiles.listAvailabilityExceptions(tx, current.session.userId)
+    );
+
+    return envelope({ availability, exceptions }, null, 200);
   } catch (error) {
     return serverUnavailable(
       "[me.availability.put]",

@@ -218,50 +218,49 @@ export async function createBookingForRequest(
     scheduledEnd: Date;
   }
 ): Promise<Booking | null> {
+  const scheduledStartIso = input.scheduledStart.toISOString();
+  const scheduledEndIso = input.scheduledEnd.toISOString();
   const result = await db.execute(sql`
+    with booking_candidate as materialized (
+      select
+        sr.id,
+        sr.supervisor_id,
+        ${scheduledStartIso}::timestamptz as scheduled_start,
+        ${scheduledEndIso}::timestamptz as scheduled_end
+      from supervision_requests sr
+      join service_products p on p.id = sr.service_product_id
+      where sr.id = ${input.requestId}
+        and sr.supervisee_id = ${input.superviseeId}
+        and sr.supervisor_id is not null
+        and p.kind in ('zoom_60', 'zoom_90')
+        and ${scheduledStartIso}::timestamptz < ${scheduledEndIso}::timestamptz
+        and extract(epoch from (${scheduledEndIso}::timestamptz - ${scheduledStartIso}::timestamptz)) / 60 =
+          ${productSessionDurationSql()}
+        and ${availabilityContainsSessionSql(scheduledStartIso, scheduledEndIso)}
+    ),
+    locked_candidate as materialized (
+      select candidate.*
+      from booking_candidate candidate
+      where app.lock_supervisor_booking_window(candidate.supervisor_id)
+    )
     insert into bookings (
       supervision_request_id,
       scheduled_start,
       scheduled_end,
       status
     )
-	    select
-	      sr.id,
-	      ${input.scheduledStart.toISOString()},
-	      ${input.scheduledEnd.toISOString()},
-	      'scheduled'
-	    from supervision_requests sr
-	    join service_products p on p.id = sr.service_product_id
-	    where sr.id = ${input.requestId}
-	      and sr.supervisee_id = ${input.superviseeId}
-	      and sr.supervisor_id is not null
-        and p.kind in ('zoom_60', 'zoom_90')
-	      and ${input.scheduledStart.toISOString()}::timestamptz < ${input.scheduledEnd.toISOString()}::timestamptz
-	      and extract(epoch from (${input.scheduledEnd.toISOString()}::timestamptz - ${input.scheduledStart.toISOString()}::timestamptz)) / 60 =
-	        case p.kind
-	          when 'zoom_90' then 90
-	          else 60
-	        end
-	      and exists (
-	        select 1
-	        from availability_slots a
-	        join supervisor_profiles sp on sp.id = a.supervisor_profile_id
-	        where sp.user_id = sr.supervisor_id
-	          and sp.visibility = 'public'
-	          and sp.verification_status = 'approved'
-	          and extract(dow from ${input.scheduledStart.toISOString()}::timestamptz at time zone a.timezone)::int = a.weekday
-	          and (${input.scheduledStart.toISOString()}::timestamptz at time zone a.timezone)::time >= a.start_time
-	          and (${input.scheduledEnd.toISOString()}::timestamptz at time zone a.timezone)::time <= a.end_time
-	      )
-      and not exists (
-        select 1
-        from bookings b
-        join supervision_requests other_sr on other_sr.id = b.supervision_request_id
-        where other_sr.supervisor_id = sr.supervisor_id
-          and b.status in ('scheduled', 'rescheduled')
-          and b.scheduled_start < ${input.scheduledEnd.toISOString()}::timestamptz
-          and ${input.scheduledStart.toISOString()}::timestamptz < b.scheduled_end
-      )
+    select
+      candidate.id,
+      candidate.scheduled_start,
+      candidate.scheduled_end,
+      'scheduled'
+    from locked_candidate candidate
+    where not app.has_supervisor_booking_overlap(
+      candidate.supervisor_id,
+      candidate.scheduled_start,
+      candidate.scheduled_end,
+      null::uuid
+    )
     returning
       id,
       supervision_request_id as "supervisionRequestId",
@@ -307,52 +306,52 @@ export async function updateBookingScheduleForRequest(
     status: "scheduled" | "rescheduled";
   }
 ): Promise<Booking | null> {
+  const scheduledStartIso = input.scheduledStart.toISOString();
+  const scheduledEndIso = input.scheduledEnd.toISOString();
   const result = await db.execute(sql`
+    with booking_candidate as materialized (
+      select
+        b.id as booking_id,
+        sr.id as request_id,
+        sr.supervisor_id,
+        ${scheduledStartIso}::timestamptz as scheduled_start,
+        ${scheduledEndIso}::timestamptz as scheduled_end
+      from bookings b
+      join supervision_requests sr on b.supervision_request_id = sr.id
+      join service_products p on p.id = sr.service_product_id
+      where b.id = (
+          select latest.id
+          from bookings latest
+          where latest.supervision_request_id = sr.id
+          order by latest.created_at desc
+          limit 1
+        )
+        and sr.id = ${input.requestId}
+        and sr.supervisor_id is not null
+        and b.status in ('scheduled', 'rescheduled')
+        and p.kind in ('zoom_60', 'zoom_90')
+        and ${scheduledStartIso}::timestamptz < ${scheduledEndIso}::timestamptz
+        and extract(epoch from (${scheduledEndIso}::timestamptz - ${scheduledStartIso}::timestamptz)) / 60 =
+          ${productSessionDurationSql()}
+        and ${availabilityContainsSessionSql(scheduledStartIso, scheduledEndIso)}
+    ),
+    locked_candidate as materialized (
+      select candidate.*
+      from booking_candidate candidate
+      where app.lock_supervisor_booking_window(candidate.supervisor_id)
+    )
     update bookings b
     set
-      scheduled_start = ${input.scheduledStart.toISOString()},
-      scheduled_end = ${input.scheduledEnd.toISOString()},
+      scheduled_start = candidate.scheduled_start,
+      scheduled_end = candidate.scheduled_end,
       status = ${input.status}
-    from supervision_requests sr
-    join service_products p on p.id = sr.service_product_id
-    where b.id = (
-        select latest.id
-        from bookings latest
-        where latest.supervision_request_id = sr.id
-        order by latest.created_at desc
-        limit 1
-      )
-      and b.supervision_request_id = sr.id
-      and sr.id = ${input.requestId}
-      and sr.supervisor_id is not null
-      and b.status in ('scheduled', 'rescheduled')
-      and p.kind in ('zoom_60', 'zoom_90')
-      and ${input.scheduledStart.toISOString()}::timestamptz < ${input.scheduledEnd.toISOString()}::timestamptz
-      and extract(epoch from (${input.scheduledEnd.toISOString()}::timestamptz - ${input.scheduledStart.toISOString()}::timestamptz)) / 60 =
-        case p.kind
-          when 'zoom_90' then 90
-          else 60
-        end
-      and exists (
-        select 1
-        from availability_slots a
-        join supervisor_profiles sp on sp.id = a.supervisor_profile_id
-        where sp.user_id = sr.supervisor_id
-          and sp.visibility = 'public'
-          and sp.verification_status = 'approved'
-          and extract(dow from ${input.scheduledStart.toISOString()}::timestamptz at time zone a.timezone)::int = a.weekday
-          and (${input.scheduledStart.toISOString()}::timestamptz at time zone a.timezone)::time >= a.start_time
-          and (${input.scheduledEnd.toISOString()}::timestamptz at time zone a.timezone)::time <= a.end_time
-      )
-      and not exists (
-        select 1
-        from bookings other_b
-        join supervision_requests other_sr on other_sr.id = other_b.supervision_request_id
-        where other_sr.supervisor_id = sr.supervisor_id
-          and other_sr.id <> sr.id
-          and other_b.status in ('scheduled', 'rescheduled')
-          and other_b.scheduled_start < ${input.scheduledEnd.toISOString()}::timestamptz
-          and ${input.scheduledStart.toISOString()}::timestamptz < other_b.scheduled_end
+    from locked_candidate candidate
+    where b.id = candidate.booking_id
+      and not app.has_supervisor_booking_overlap(
+        candidate.supervisor_id,
+        candidate.scheduled_start,
+        candidate.scheduled_end,
+        candidate.request_id
       )
     returning
       b.id,
@@ -1095,6 +1094,62 @@ export async function createReview(
   `);
 
   return rowsOf<{ id: string }>(result).length === 1;
+}
+
+function productSessionDurationSql(): SQL<number> {
+  return sql<number>`case
+    when p.kind = 'zoom_90' and p.turnaround_hours in (50, 60, 90, 120)
+      then p.turnaround_hours
+    when p.kind = 'zoom_90'
+      then 90
+    else 60
+  end`;
+}
+
+function availabilityContainsSessionSql(
+  startIso: string,
+  endIso: string
+): SQL<boolean> {
+  return sql<boolean>`(
+    exists (
+      select 1
+      from availability_exceptions e
+      join supervisor_profiles sp on sp.id = e.supervisor_profile_id
+      where sp.user_id = sr.supervisor_id
+        and sp.visibility = 'public'
+        and sp.verification_status = 'approved'
+        and e.exception_date = (${startIso}::timestamptz at time zone e.timezone)::date
+        and e.mode = 'custom'
+        and exists (
+          select 1
+          from jsonb_to_recordset(e.ranges) as r("startTime" text, "endTime" text)
+          where (${startIso}::timestamptz at time zone e.timezone)::time >= r."startTime"::time
+            and (${endIso}::timestamptz at time zone e.timezone)::time <= r."endTime"::time
+        )
+    )
+    or (
+      not exists (
+        select 1
+        from availability_exceptions e
+        join supervisor_profiles sp on sp.id = e.supervisor_profile_id
+        where sp.user_id = sr.supervisor_id
+          and sp.visibility = 'public'
+          and sp.verification_status = 'approved'
+          and e.exception_date = (${startIso}::timestamptz at time zone e.timezone)::date
+      )
+      and exists (
+        select 1
+        from availability_slots a
+        join supervisor_profiles sp on sp.id = a.supervisor_profile_id
+        where sp.user_id = sr.supervisor_id
+          and sp.visibility = 'public'
+          and sp.verification_status = 'approved'
+          and extract(dow from ${startIso}::timestamptz at time zone a.timezone)::int = a.weekday
+          and (${startIso}::timestamptz at time zone a.timezone)::time >= a.start_time
+          and (${endIso}::timestamptz at time zone a.timezone)::time <= a.end_time
+      )
+    )
+  )`;
 }
 
 function nullableDecrypt(ciphertext: SQLWrapper): SQL<string | null> {

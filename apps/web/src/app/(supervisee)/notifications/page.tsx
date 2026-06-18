@@ -3,26 +3,35 @@ import { AppShell } from "@/components/app-shell";
 import { LoginRequiredState, RoleRequiredState } from "@/components/locked-state";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
-import { isSupervisee } from "@/lib/auth/guards";
 import { isMissingDatabaseRelation } from "@/lib/db/missing-relation";
 import { contextFor } from "@/lib/supervision/authz";
+import { MarkAllNotificationsRead, NotificationAction } from "./notification-actions";
 
 type NotificationItem = Awaited<
   ReturnType<typeof notifications.listNotifications>
 >[number];
 
-export default async function NotificationsPage() {
+type NotificationFilter = "all" | "unread";
+
+export default async function NotificationsPage({
+  searchParams
+}: {
+  searchParams: Promise<{ filter?: string }>;
+}) {
   const current = await getCurrentUser();
+  const params = await searchParams;
+  const filter: NotificationFilter = params.filter === "unread" ? "unread" : "all";
+
   if (!current) {
     return <LoginRequiredState title="알림" returnTo="/notifications" />;
   }
   const currentShellUser = current.user;
-  if (!isSupervisee(current)) {
+  if (current.user.role === "admin") {
     return (
       <RoleRequiredState
         currentUser={currentShellUser}
         title="알림"
-        description="개인 알림은 신청자 또는 슈퍼바이저 작업영역에서 확인합니다. 관리자 계정은 운영 콘솔을 사용해주세요."
+        description="관리자 계정은 운영 콘솔에서 심사, 환불, 정산 상태를 확인합니다."
         actionHref="/admin"
         actionLabel="운영 콘솔로 이동"
       />
@@ -42,117 +51,148 @@ export default async function NotificationsPage() {
     }
 
     console.warn(
-      "[supervisee.notifications.page.demo-fallback]",
+      "[notifications.page.demo-fallback]",
       "rendering fallback because the local database schema is unavailable."
     );
     items = [];
     notificationsUnavailable = true;
   }
-  const actionableItems = items.filter((item) => item.payload.href);
-  const passiveItems = items.filter((item) => !item.payload.href);
-  const primaryItem = actionableItems[0];
-  const historyItems = [...actionableItems.slice(1), ...passiveItems];
+
+  const normalizedItems = items.map(normalizeNotification).sort(notificationSort);
+  const unreadCount = normalizedItems.filter((item) => !item.read).length;
+  const visibleItems =
+    filter === "unread"
+      ? normalizedItems.filter((item) => !item.read)
+      : normalizedItems;
 
   return (
     <AppShell
       active="notifications"
       currentUser={currentShellUser}
       title="알림"
-      subtitle="응답이 필요한 알림과 지난 알림을 구분합니다."
+      subtitle="읽지 않은 알림을 먼저 확인하고, 관련 업무 화면으로 바로 이동합니다."
     >
       <section className="grid gap-5">
-        {items.length === 0 ? (
-          <>
-            <section className="rounded-xl border border-line bg-surface-elevated p-5">
-              <p className="text-sm font-bold text-brand-700">지금 확인할 알림</p>
-              <p className="mt-3 text-base font-bold text-ink-900">
-                {notificationsUnavailable
-                  ? "현재 알림을 불러오지 못했습니다"
-                  : "지금 확인할 알림은 없습니다"}
-              </p>
-              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                {notificationsUnavailable
-                  ? "연결이 복구되면 추가 자료 요청, 결제, 피드백 도착 알림이 이곳에 표시됩니다."
-                  : "의뢰 상태가 바뀌거나 추가 자료 요청이 오면 이 목록에 표시됩니다."}
-              </p>
-            </section>
-            <section className="rounded-xl border border-line bg-surface-elevated">
-              <div className="border-b border-line px-5 py-4">
-                <h2 className="text-lg font-bold text-ink-900">알림 기록</h2>
-              </div>
-              <p className="px-5 py-4 text-sm leading-relaxed text-ink-500">
-                아직 기록으로 남길 알림이 없습니다.
-              </p>
-            </section>
-          </>
-        ) : (
-          <>
-            {primaryItem ? (
-              <section className="rounded-xl border border-line bg-surface-elevated p-5">
-                <p className="text-sm font-bold text-brand-700">지금 확인할 알림</p>
-                <div className="mt-3 flex flex-col gap-3 md:flex-row md:items-start md:justify-between">
-                  <NotificationText item={primaryItem} />
-                  <a
-                    className="inline-flex shrink-0 items-center justify-center rounded-lg bg-brand-600 px-4 py-2 text-sm font-bold text-white transition hover:bg-brand-700"
-                    href={primaryItem.payload.href}
-                  >
-                    확인하기
-                  </a>
-                </div>
-              </section>
-            ) : null}
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-line bg-surface-elevated px-5 py-4">
+          <div>
+            <p className="text-sm font-bold text-brand-700">
+              읽지 않은 알림 {String(unreadCount)}개
+            </p>
+            <p className="mt-1 text-sm text-ink-500">
+              알림을 열면 읽음으로 처리됩니다.
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              className={`rounded-md px-3 py-2 text-sm font-bold ${
+                filter === "all"
+                  ? "bg-brand-600 text-white"
+                  : "border border-line text-ink-700"
+              }`}
+              href="/notifications"
+            >
+              전체
+            </a>
+            <a
+              className={`rounded-md px-3 py-2 text-sm font-bold ${
+                filter === "unread"
+                  ? "bg-brand-600 text-white"
+                  : "border border-line text-ink-700"
+              }`}
+              href="/notifications?filter=unread"
+            >
+              읽지 않음
+            </a>
+            <MarkAllNotificationsRead disabled={unreadCount === 0} />
+          </div>
+        </div>
 
-            <section className="rounded-xl border border-line bg-surface-elevated">
-              <div className="border-b border-line px-5 py-4">
-                <h2 className="text-lg font-bold text-ink-900">알림 기록</h2>
-              </div>
-              {historyItems.length === 0 ? (
-                <p className="px-5 py-4 text-sm text-ink-500">
-                  확인만 필요한 알림은 아직 없습니다.
-                </p>
-              ) : (
-                <div className="grid divide-y divide-line">
-                  {historyItems.map((item) => (
-                    <article
-                      className="flex flex-col gap-3 px-5 py-4 md:flex-row md:items-start md:justify-between"
-                      key={item.id}
-                    >
-                      <NotificationText item={item} />
-                      {item.payload.href ? (
-                        <a
-                          className="inline-flex shrink-0 items-center justify-center rounded-lg border border-line px-3 py-2 text-sm font-semibold text-brand-700 transition hover:bg-brand-50"
-                          href={item.payload.href}
-                        >
-                          열기
-                        </a>
+        {visibleItems.length === 0 ? (
+          <section className="rounded-lg border border-line bg-surface-elevated p-5">
+            <p className="text-base font-bold text-ink-900">
+              {notificationsUnavailable
+                ? "현재 알림을 불러오지 못했습니다"
+                : "새 알림이 없습니다."}
+            </p>
+            <p className="mt-2 break-keep text-sm leading-6 text-ink-500">
+              {notificationsUnavailable
+                ? "연결이 복구되면 의뢰, 결제, 피드백, 정산 관련 알림이 이곳에 표시됩니다."
+                : "상태가 바뀌면 이 화면과 왼쪽 메뉴의 알림 숫자에 표시됩니다."}
+            </p>
+          </section>
+        ) : (
+          <section className="overflow-hidden rounded-lg border border-line bg-surface-elevated">
+            <div className="grid divide-y divide-line">
+              {visibleItems.map((item) => (
+                <article
+                  className={`grid gap-3 px-5 py-4 md:grid-cols-[minmax(0,1fr)_auto] md:items-start ${
+                    item.read ? "bg-surface-elevated" : "bg-brand-50/40"
+                  }`}
+                  key={item.id}
+                >
+                  <div className="grid gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
+                      {!item.read ? (
+                        <span className="rounded-md bg-brand-600 px-2 py-0.5 text-xs font-bold text-white">
+                          읽지 않음
+                        </span>
                       ) : null}
-                    </article>
-                  ))}
-                </div>
-              )}
-            </section>
-          </>
+                      <p className="text-base font-bold text-ink-900">
+                        {item.title}
+                      </p>
+                    </div>
+                    <p className="break-keep text-sm leading-6 text-ink-600">
+                      {item.body}
+                    </p>
+                    <p className="text-xs text-ink-400">
+                      {formatDateTime(item.createdAt)}
+                    </p>
+                  </div>
+                  <NotificationAction
+                    href={item.href}
+                    id={item.id}
+                    read={item.read}
+                  />
+                </article>
+              ))}
+            </div>
+          </section>
         )}
       </section>
     </AppShell>
   );
 }
 
-function NotificationText({
-  item
-}: {
-  item: {
-    createdAt: Date | string;
-    payload: { body: string; href?: string; title: string };
+function normalizeNotification(item: NotificationItem) {
+  const payload: Partial<NotificationItem["payload"]> = item.payload;
+  return {
+    body: safeText(payload.body, "알림 내용을 확인해주세요."),
+    createdAt: item.createdAt,
+    href: internalHref(payload.href),
+    id: item.id,
+    read: Boolean(item.readAt),
+    title: safeText(payload.title, "알림")
   };
-}) {
-  return (
-    <div className="grid gap-2">
-      <p className="text-base font-bold text-ink-900">{item.payload.title}</p>
-      <p className="text-sm leading-6 text-ink-600">{item.payload.body}</p>
-      <p className="text-xs text-ink-400">{formatDateTime(item.createdAt)}</p>
-    </div>
-  );
+}
+
+function notificationSort(
+  a: ReturnType<typeof normalizeNotification>,
+  b: ReturnType<typeof normalizeNotification>
+): number {
+  if (a.read !== b.read) return a.read ? 1 : -1;
+  return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+}
+
+function safeText(value: unknown, fallback: string): string {
+  return typeof value === "string" && value.trim().length > 0
+    ? value.trim()
+    : fallback;
+}
+
+function internalHref(value: unknown): string | null {
+  if (typeof value !== "string") return null;
+  if (!value.startsWith("/") || value.startsWith("//")) return null;
+  return value;
 }
 
 function formatDateTime(value: Date | string): string {

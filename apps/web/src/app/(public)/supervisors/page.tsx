@@ -4,6 +4,7 @@ import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { SiteHeader } from "../../../components/clinicflow-shell";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
+import { displaySupervisionMethodName } from "../../../lib/supervision-method-catalog";
 
 type SearchParams = {
   keyword?: string;
@@ -14,6 +15,7 @@ type PublicSupervisor = Awaited<ReturnType<typeof profiles.searchSupervisors>>[n
 
 type SupervisorProduct = {
   id: string;
+  kind?: string | null;
   title: string;
   priceKrw: number;
   turnaroundHours: number | null;
@@ -305,12 +307,17 @@ function SupervisorCard({ supervisor }: { supervisor: SupervisorWithQualificatio
       </div>
       <div className="grid gap-3 md:justify-items-end">
         {primaryProduct ? (
-          <Badge className="rounded-md bg-[#eef3ff] px-3 py-2 text-sm font-semibold text-[#2563ff]">
-            {formatKrw(primaryProduct.priceKrw)}
-          </Badge>
+          <div className="grid gap-2 md:justify-items-end">
+            <span className="text-sm font-bold text-[#43506f]">
+              {displaySupervisionMethodName(primaryProduct)}
+            </span>
+            <Badge className="rounded-md bg-[#eef3ff] px-3 py-2 text-sm font-semibold text-[#2563ff]">
+              {formatKrw(primaryProduct.priceKrw)}
+            </Badge>
+          </div>
         ) : (
           <span className="text-sm font-semibold text-[#8b94ad]">
-            세션 정보는 상세에서 확인
+            방식 정보는 상세에서 확인
           </span>
         )}
         <Button
@@ -346,6 +353,9 @@ function isSupervisorProduct(value: unknown): value is SupervisorProduct {
   const product = value as Record<string, unknown>;
   return (
     typeof product["id"] === "string" &&
+    (typeof product["kind"] === "string" ||
+      product["kind"] === null ||
+      typeof product["kind"] === "undefined") &&
     typeof product["title"] === "string" &&
     typeof product["priceKrw"] === "number"
   );

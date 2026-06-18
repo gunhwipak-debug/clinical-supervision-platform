@@ -647,7 +647,17 @@ export async function latestDocumentReviewCycle(
       completed_at as "completedAt"
     from document_review_cycles
     where supervision_request_id = ${requestId}
-    order by created_at desc
+    order by
+      created_at desc,
+      completed_at desc nulls last,
+      case status
+        when 'stamped_returned' then 4
+        when 'feedback_approved' then 3
+        when 'revision_uploaded' then 2
+        when 'revision_requested' then 1
+        else 0
+      end desc,
+      id desc
     limit 1
   `);
 

@@ -1,8 +1,10 @@
 import { cn } from "../lib/ui/cn";
+import { NotificationUnreadBadge } from "./notification-unread-badge";
 
 export type AppRole = "admin" | "supervisee" | "supervisor";
 export type NavKey = (typeof allNavKeys)[number];
 export type AppShellUser = {
+  readonly id?: string;
   readonly email: string;
   readonly role: AppRole;
 };
@@ -22,10 +24,12 @@ type NavGroup = {
 export function RoleNavigation({
   active,
   groups,
+  notificationUnreadCount = 0,
   role
 }: {
   readonly active?: string | undefined;
   readonly groups: readonly NavGroup[];
+  readonly notificationUnreadCount?: number;
   readonly role: AppRole;
 }) {
   return (
@@ -45,7 +49,12 @@ export function RoleNavigation({
               href={item.href}
               key={item.key}
             >
-              <span className="font-bold">{item.label}</span>
+              <span className="flex min-w-0 items-center justify-between gap-3">
+                <span className="font-bold">{item.label}</span>
+                {item.key === "notifications" ? (
+                  <NotificationBadge count={notificationUnreadCount} />
+                ) : null}
+              </span>
               {item.note ? (
                 <span className="mt-0.5 text-xs font-semibold text-ink-400">
                   {item.note}
@@ -61,10 +70,12 @@ export function RoleNavigation({
 
 export function MobileRoleNavigation({
   active,
-  groups
+  groups,
+  notificationUnreadCount = 0
 }: {
   readonly active?: string | undefined;
   readonly groups: readonly NavGroup[];
+  readonly notificationUnreadCount?: number;
 }) {
   const items = groups.flatMap((group) => group.items);
 
@@ -85,7 +96,12 @@ export function MobileRoleNavigation({
           href={item.href}
           key={item.key}
         >
-          {item.label}
+          <span className="inline-flex items-center gap-2">
+            {item.label}
+            {item.key === "notifications" ? (
+              <NotificationBadge count={notificationUnreadCount} />
+            ) : null}
+          </span>
         </a>
       ))}
     </nav>
@@ -144,6 +160,7 @@ const supervisorNavigation = [
         key: "supervisor-requests",
         label: "검토할 의뢰"
       },
+      { href: "/notifications", key: "notifications", label: "알림" },
       {
         href: "/supervisor/memory",
         key: "supervisor-memory",
@@ -204,3 +221,17 @@ export const allNavKeys = [
   "supervisor-requests",
   "supervisors"
 ] as const;
+
+function NotificationBadge({ count }: { readonly count: number }) {
+  if (count <= 0) return <NotificationUnreadBadge />;
+  const label = count > 99 ? "99+" : String(count);
+
+  return (
+    <span
+      aria-label={`읽지 않은 알림 ${label}개`}
+      className="inline-flex min-w-6 justify-center rounded-full bg-brand-600 px-2 py-0.5 text-xs font-bold text-white"
+    >
+      {label}
+    </span>
+  );
+}

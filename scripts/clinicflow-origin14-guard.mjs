@@ -565,6 +565,7 @@ function assertRoleGuardStates() {
     return (
       !text.includes("SupervisorPageLoadError") ||
       (!text.includes("ProductForm") &&
+        !text.includes("ProductCatalogForm") &&
         !text.includes("AvailabilityForm") &&
         !text.includes("SupervisorProfileEditor"))
     );

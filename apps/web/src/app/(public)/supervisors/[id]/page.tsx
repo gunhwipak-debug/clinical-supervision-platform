@@ -5,6 +5,12 @@ import { Badge } from "../../../../components/ui/badge";
 import { Button } from "../../../../components/ui/button";
 import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
+import {
+  displaySupervisionMethodDescription,
+  displaySupervisionMethodName,
+  durationMinutesForProduct,
+  isTimedBookingKind
+} from "../../../../lib/supervision-method-catalog";
 
 type PublicSupervisorDetail = NonNullable<
   Awaited<ReturnType<typeof profiles.getPublicSupervisorDetails>>
@@ -12,6 +18,7 @@ type PublicSupervisorDetail = NonNullable<
 
 type SupervisorProduct = {
   id: string;
+  kind?: string | null;
   title: string;
   description: string | null;
   priceKrw: number;
@@ -133,11 +140,12 @@ function SupervisorDetail({ supervisor }: { supervisor: PublicSupervisorDetail }
           </section>
 
           <section className="grid gap-4">
-            <h2 className="text-2xl font-bold text-ink-900">세션 선택</h2>
+            <h2 className="text-2xl font-bold text-ink-900">슈퍼비전 방식 선택</h2>
             <div className="overflow-hidden rounded-xl border border-line bg-surface-elevated">
               {products.length === 0 ? (
                 <p className="p-5 text-sm leading-relaxed text-ink-500">
-                  아직 공개된 세션이 없습니다. 다른 슈퍼바이저를 확인해주세요.
+                  아직 신청 가능한 슈퍼비전 방식이 없습니다. 다른 슈퍼바이저를
+                  확인해주세요.
                 </p>
               ) : (
                 products.map((product) => (
@@ -147,20 +155,24 @@ function SupervisorDetail({ supervisor }: { supervisor: PublicSupervisorDetail }
                   >
                     <div>
                       <h3 className="text-lg font-bold text-ink-900">
-                        {product.title}
+                        {displaySupervisionMethodName(product)}
                       </h3>
                       <p className="mt-1 break-keep text-sm leading-relaxed text-ink-500">
-                        {product.description ??
-                          "세션 진행 방식은 신청 과정에서 확인합니다."}
+                        {displaySupervisionMethodDescription(product)}
                       </p>
                     </div>
                     <div className="flex flex-wrap items-center gap-2 md:justify-end">
                       <Badge tone="accent">{formatKrw(product.priceKrw)}</Badge>
+                      {isTimedBookingKind(product.kind) ? (
+                        <Badge tone="neutral">
+                          {String(durationMinutesForProduct(product) ?? 90)}분
+                        </Badge>
+                      ) : null}
                       <Button asChild>
                         <Link
                           href={`/requests/new?supervisorId=${supervisor.id}&serviceProductId=${product.id}`}
                         >
-                          이 세션으로 신청
+                          이 방식으로 신청
                         </Link>
                       </Button>
                     </div>
@@ -175,9 +187,11 @@ function SupervisorDetail({ supervisor }: { supervisor: PublicSupervisorDetail }
           <h2 className="text-xl font-bold text-ink-900">신청 전 확인</h2>
           <dl className="mt-5 grid gap-4 text-sm leading-relaxed">
             <div>
-              <dt className="font-bold text-ink-500">대표 세션</dt>
+              <dt className="font-bold text-ink-500">대표 방식</dt>
               <dd className="mt-1 text-ink-900">
-                {primaryProduct?.title ?? "상세 세션 준비 중"}
+                {primaryProduct
+                  ? displaySupervisionMethodName(primaryProduct)
+                  : "상세 방식 준비 중"}
               </dd>
             </div>
             <div>
@@ -186,7 +200,9 @@ function SupervisorDetail({ supervisor }: { supervisor: PublicSupervisorDetail }
             </div>
             <div>
               <dt className="font-bold text-ink-500">신청 절차</dt>
-              <dd className="mt-1 text-ink-900">세션과 일정을 선택합니다</dd>
+              <dd className="mt-1 text-ink-900">
+                방식에 따라 예약 시간 선택 여부가 달라집니다
+              </dd>
             </div>
           </dl>
           <Button asChild className="mt-6 w-full">
@@ -208,6 +224,9 @@ function isSupervisorProduct(value: unknown): value is SupervisorProduct {
   const product = value as Record<string, unknown>;
   return (
     typeof product["id"] === "string" &&
+    (typeof product["kind"] === "string" ||
+      product["kind"] === null ||
+      typeof product["kind"] === "undefined") &&
     typeof product["title"] === "string" &&
     typeof product["priceKrw"] === "number" &&
     (typeof product["description"] === "string" || product["description"] === null) &&

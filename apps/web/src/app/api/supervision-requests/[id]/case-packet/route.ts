@@ -6,7 +6,6 @@ import { apiError, envelope } from "@/lib/api/envelope";
 import { parseJson } from "@/lib/api/request";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
-import { isSupervisee } from "@/lib/auth/guards";
 import { contextFor, isRequestOwner } from "@/lib/supervision/authz";
 import { casePacketSchema, nullable } from "@/lib/supervision/validation";
 
@@ -21,7 +20,7 @@ export async function PUT(
   const current = await getCurrentUser();
   if (!current)
     return envelope(null, apiError("unauthorized", "로그인이 필요합니다."), 401);
-  if (!isSupervisee(current)) {
+  if (current.session.role !== "supervisee" && current.session.role !== "supervisor") {
     return envelope(null, apiError("forbidden", "권한이 없습니다."), 403);
   }
 

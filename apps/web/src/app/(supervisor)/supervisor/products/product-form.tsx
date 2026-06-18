@@ -1,9 +1,15 @@
 "use client";
 
 import type { profiles } from "@csp/db";
-import { PauseCircle, PlusCircle, Save } from "lucide-react";
-import { useState } from "react";
+import { PauseCircle, Save } from "lucide-react";
+import { useMemo, useState } from "react";
 import { toast } from "sonner";
+import {
+  feedbackDeadlineLabel,
+  liveSessionDurations,
+  standardSupervisionMethods,
+  type SupervisionMethodCatalogItem
+} from "@/lib/supervision-method-catalog";
 import { Button } from "../../../../components/ui/button";
 import { Field, Input, Label, Textarea } from "../../../../components/ui/form";
 
@@ -12,102 +18,223 @@ export type ManagedProduct = Pick<
   "active" | "description" | "id" | "kind" | "priceKrw" | "title" | "turnaroundHours"
 >;
 
-export function ProductForm() {
+type MethodDraft = {
+  active: boolean;
+  description: string;
+  priceKrw: number;
+  turnaroundHours: number | null;
+};
+
+export function ProductCatalogForm({ products }: { products: ManagedProduct[] }) {
+  const initialDrafts = useMemo(() => buildInitialDrafts(products), [products]);
+  const [drafts, setDrafts] = useState(initialDrafts);
   const [message, setMessage] = useState("");
+  const [busy, setBusy] = useState(false);
+
+  function updateDraft(code: profiles.ServiceProductKind, next: Partial<MethodDraft>) {
+    setDrafts((current) => ({
+      ...current,
+      [code]: {
+        ...current[code],
+        ...next
+      }
+    }));
+  }
 
   async function submit(event: React.SyntheticEvent<HTMLFormElement>) {
     event.preventDefault();
-    const form = new FormData(event.currentTarget);
-    let response: Response;
+    setBusy(true);
+    setMessage("저장 중입니다.");
+
     try {
-      response = await fetch("/api/me/products", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify(productPayload(form))
-      });
-    } catch {
-      const next = productErrorMessage("server_unavailable", "추가 실패");
+      for (const method of standardSupervisionMethods) {
+        const draft = drafts[method.code];
+        const response = await fetch("/api/me/products", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            active: draft.active,
+            description: draft.description.trim() || method.defaultDescription,
+            kind: method.code,
+            priceKrw: draft.priceKrw,
+            title: method.name,
+            turnaroundHours:
+              method.deliveryMode === "live_video"
+                ? (draft.turnaroundHours ?? method.defaultTurnaroundHours)
+                : draft.turnaroundHours
+          })
+        });
+        if (!response.ok) {
+          const body = await safeJson(response);
+          throw new Error(productErrorMessage(body.error?.code));
+        }
+      }
+    } catch (error) {
+      const next =
+        error instanceof Error ? error.message : "슈퍼비전 방식을 저장하지 못했습니다.";
       setMessage(next);
+      setBusy(false);
       toast.error(next);
       return;
     }
 
-    const body = await safeJson(response);
-    const next = response.ok
-      ? "슈퍼비전 방식을 추가했습니다."
-      : productErrorMessage(body.error?.code, "추가 실패");
+    const next = "슈퍼비전 방식을 저장했습니다.";
     setMessage(next);
-    if (response.ok) {
-      toast.success(next);
-      event.currentTarget.reset();
-      window.location.reload();
-    } else {
-      toast.error(next);
-    }
+    setBusy(false);
+    toast.success(next);
+    window.location.reload();
   }
 
   return (
-    <section className="rounded-xl border border-line bg-surface-elevated p-5">
-      <form className="grid gap-4" onSubmit={submit}>
-        <div>
-          <h2 className="text-xl font-bold">슈퍼비전 방식 추가</h2>
-          <p className="mt-1 text-sm leading-relaxed text-ink-500">
-            신청자가 슈퍼비전 전에 선택할 수 있는 세션 유형입니다.
+    <form className="grid gap-4" onSubmit={submit}>
+      <div className="overflow-hidden rounded-lg border border-line bg-surface-elevated">
+        <div className="grid grid-cols-[minmax(0,1fr)_132px_152px_116px] gap-4 border-b border-line bg-surface-sunken px-5 py-3 text-xs font-bold text-ink-500">
+          <span>슈퍼비전 방식</span>
+          <span className="text-right">가격</span>
+          <span className="text-right">제공 조건</span>
+          <span className="text-right">신청 가능</span>
+        </div>
+        <div className="divide-y divide-line">
+          {standardSupervisionMethods.map((method) => {
+            const draft = drafts[method.code];
+            const durationText =
+              method.deliveryMode === "live_video"
+                ? `${String(draft.turnaroundHours ?? method.defaultTurnaroundHours)}분`
+                : feedbackDeadlineLabel(draft.turnaroundHours);
+
+            return (
+              <section className="grid gap-4 px-5 py-5" key={method.code}>
+                <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_132px_152px_116px] md:items-start">
+                  <div className="min-w-0">
+                    <label className="flex items-start gap-3">
+                      <input
+                        checked={draft.active}
+                        className="mt-1 size-4"
+                        onChange={(event) =>
+                          updateDraft(method.code, {
+                            active: event.currentTarget.checked
+                          })
+                        }
+                        type="checkbox"
+                      />
+                      <span>
+                        <span className="block text-base font-bold text-ink-900">
+                          {method.name}
+                        </span>
+                        <span className="mt-1 block break-keep text-sm leading-6 text-ink-500">
+                          {method.defaultDescription}
+                        </span>
+                      </span>
+                    </label>
+                  </div>
+                  <label className="grid gap-1 md:text-right">
+                    <span className="text-xs font-bold text-ink-400">가격</span>
+                    <Input
+                      className="md:text-right"
+                      disabled={!draft.active}
+                      min={10_000}
+                      onChange={(event) =>
+                        updateDraft(method.code, {
+                          priceKrw: Number(event.currentTarget.value)
+                        })
+                      }
+                      type="number"
+                      value={draft.priceKrw}
+                    />
+                    <span className="text-xs font-semibold text-ink-400">
+                      {draft.priceKrw.toLocaleString("ko-KR")}원
+                    </span>
+                  </label>
+                  <label className="grid gap-1 md:text-right">
+                    <span className="text-xs font-bold text-ink-400">
+                      {method.settingLabel}
+                    </span>
+                    {method.deliveryMode === "live_video" ? (
+                      <select
+                        className="h-11 rounded-lg border border-line bg-surface-elevated px-3 text-sm font-semibold text-ink-900 disabled:opacity-60"
+                        disabled={!draft.active}
+                        onChange={(event) =>
+                          updateDraft(method.code, {
+                            turnaroundHours: Number(event.currentTarget.value)
+                          })
+                        }
+                        value={draft.turnaroundHours ?? 90}
+                      >
+                        {liveSessionDurations.map((minutes) => (
+                          <option key={minutes} value={minutes}>
+                            {minutes}분
+                          </option>
+                        ))}
+                      </select>
+                    ) : (
+                      <Input
+                        className="md:text-right"
+                        disabled={!draft.active}
+                        min={1}
+                        onChange={(event) =>
+                          updateDraft(method.code, {
+                            turnaroundHours: Number(event.currentTarget.value)
+                          })
+                        }
+                        type="number"
+                        value={draft.turnaroundHours ?? method.defaultTurnaroundHours}
+                      />
+                    )}
+                    <span className="text-xs font-semibold text-ink-400">
+                      {durationText}
+                    </span>
+                  </label>
+                  <div className="md:text-right">
+                    <span
+                      className={`inline-flex rounded-md px-3 py-1 text-sm font-bold ${
+                        draft.active
+                          ? "bg-brand-50 text-brand-700"
+                          : "bg-surface-sunken text-ink-500"
+                      }`}
+                    >
+                      {draft.active ? "신청 가능" : "숨김"}
+                    </span>
+                  </div>
+                </div>
+                {draft.active ? (
+                  <div className="grid gap-2 border-l-2 border-brand-100 pl-4">
+                    <label className="grid gap-2">
+                      <span className="text-sm font-bold text-ink-900">
+                        신청자 안내
+                      </span>
+                      <Textarea
+                        onChange={(event) =>
+                          updateDraft(method.code, {
+                            description: event.currentTarget.value
+                          })
+                        }
+                        rows={2}
+                        value={draft.description}
+                      />
+                    </label>
+                    <p className="break-keep text-sm leading-6 text-ink-500">
+                      {method.helpText}
+                    </p>
+                  </div>
+                ) : null}
+              </section>
+            );
+          })}
+        </div>
+      </div>
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Button disabled={busy} type="submit">
+          <Save aria-hidden size={16} />
+          {busy ? "저장 중..." : "슈퍼비전 방식 저장"}
+        </Button>
+        {message ? (
+          <p aria-live="polite" className="text-sm font-semibold text-brand-700">
+            {message}
           </p>
-        </div>
-        <Field>
-          <Label htmlFor="title">세션명</Label>
-          <Input id="title" name="title" required />
-        </Field>
-        <Field>
-          <Label htmlFor="kind">유형</Label>
-          <select
-            className="h-11 rounded-lg border border-line bg-surface-elevated px-3"
-            id="kind"
-            name="kind"
-          >
-            <ProductKindOptions />
-          </select>
-        </Field>
-        <Field>
-          <Label htmlFor="description">설명</Label>
-          <Textarea id="description" name="description" />
-        </Field>
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field>
-            <Label htmlFor="priceKrw">가격</Label>
-            <Input
-              defaultValue={120000}
-              id="priceKrw"
-              min={10000}
-              name="priceKrw"
-              required
-              type="number"
-            />
-          </Field>
-          <Field>
-            <Label htmlFor="turnaroundHours">응답 시간</Label>
-            <Input
-              defaultValue={72}
-              id="turnaroundHours"
-              min={1}
-              name="turnaroundHours"
-              required
-              type="number"
-            />
-          </Field>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Button type="submit">
-            <PlusCircle aria-hidden size={16} />
-            슈퍼비전 방식 추가
-          </Button>
-          {message ? (
-            <p className="text-sm font-semibold text-brand-700">{message}</p>
-          ) : null}
-        </div>
-      </form>
-    </section>
+        ) : null}
+      </div>
+    </form>
   );
 }
 
@@ -127,7 +254,7 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
         body: JSON.stringify(productPayload(form))
       });
     } catch {
-      const next = productErrorMessage("server_unavailable", "슈퍼비전 방식 저장 실패");
+      const next = productErrorMessage("server_unavailable");
       setMessage(next);
       setBusy(false);
       toast.error(next);
@@ -136,8 +263,8 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
 
     const body = await safeJson(response);
     const next = response.ok
-      ? "슈퍼비전 방식을 저장했습니다."
-      : productErrorMessage(body.error?.code, "슈퍼비전 방식 저장 실패");
+      ? "기존 슈퍼비전 방식을 저장했습니다."
+      : productErrorMessage(body.error?.code);
     setMessage(next);
     setBusy(false);
     if (response.ok) {
@@ -149,7 +276,7 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
   }
 
   async function deactivate() {
-    if (!window.confirm("이 슈퍼비전 방식을 공개 목록에서 중지할까요?")) return;
+    if (!window.confirm("이 기존 방식을 신청 목록에서 숨길까요?")) return;
     setBusy(true);
     let response: Response;
     try {
@@ -157,7 +284,7 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
         method: "DELETE"
       });
     } catch {
-      const next = productErrorMessage("server_unavailable", "슈퍼비전 방식 중지 실패");
+      const next = productErrorMessage("server_unavailable");
       setMessage(next);
       setBusy(false);
       toast.error(next);
@@ -166,8 +293,8 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
 
     const body = await safeJson(response);
     const next = response.ok
-      ? "슈퍼비전 방식 운영을 중지했습니다."
-      : productErrorMessage(body.error?.code, "슈퍼비전 방식 중지 실패");
+      ? "기존 방식을 숨겼습니다."
+      : productErrorMessage(body.error?.code);
     setMessage(next);
     setBusy(false);
     if (response.ok) {
@@ -181,7 +308,7 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
   return (
     <form className="grid gap-3 border-t border-line pt-4" onSubmit={update}>
       <Field>
-        <Label htmlFor={`title-${product.id}`}>세션명</Label>
+        <Label htmlFor={`title-${product.id}`}>표시 이름</Label>
         <Input
           defaultValue={product.title}
           id={`title-${product.id}`}
@@ -189,19 +316,9 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
           required
         />
       </Field>
+      <input name="kind" type="hidden" value={product.kind} />
       <Field>
-        <Label htmlFor={`kind-${product.id}`}>유형</Label>
-        <select
-          className="h-11 rounded-lg border border-line bg-surface-elevated px-3"
-          defaultValue={product.kind}
-          id={`kind-${product.id}`}
-          name="kind"
-        >
-          <ProductKindOptions />
-        </select>
-      </Field>
-      <Field>
-        <Label htmlFor={`description-${product.id}`}>설명</Label>
+        <Label htmlFor={`description-${product.id}`}>신청자 안내</Label>
         <Textarea
           defaultValue={product.description ?? ""}
           id={`description-${product.id}`}
@@ -215,14 +332,14 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
           <Input
             defaultValue={product.priceKrw}
             id={`priceKrw-${product.id}`}
-            min={10000}
+            min={10_000}
             name="priceKrw"
             required
             type="number"
           />
         </Field>
         <Field>
-          <Label htmlFor={`turnaroundHours-${product.id}`}>응답 시간</Label>
+          <Label htmlFor={`turnaroundHours-${product.id}`}>피드백 제공 기한</Label>
           <Input
             defaultValue={product.turnaroundHours ?? 72}
             id={`turnaroundHours-${product.id}`}
@@ -247,11 +364,11 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
             variant="secondary"
           >
             <PauseCircle aria-hidden size={16} />
-            운영 중지
+            숨기기
           </Button>
         ) : (
           <span className="rounded-md bg-surface-sunken px-3 py-2 text-sm font-semibold text-ink-500">
-            중지된 슈퍼비전 방식
+            신청 목록에서 숨김
           </span>
         )}
         {message ? (
@@ -262,16 +379,23 @@ export function ProductManageForm({ product }: { product: ManagedProduct }) {
   );
 }
 
-function ProductKindOptions() {
-  return (
-    <>
-      <option value="async_comment">비동기 코멘트</option>
-      <option value="async_direct_edit">비동기 직접 수정</option>
-      <option value="zoom_60">화상 회의 60분</option>
-      <option value="zoom_90">화상 회의 90분</option>
-      <option value="urgent_24h">24시간 긴급 검토</option>
-    </>
-  );
+function buildInitialDrafts(products: ManagedProduct[]) {
+  const byKind = new Map(products.map((product) => [product.kind, product]));
+
+  return Object.fromEntries(
+    standardSupervisionMethods.map((method) => {
+      const product = byKind.get(method.code);
+      return [
+        method.code,
+        {
+          active: product?.active ?? false,
+          description: product?.description ?? method.defaultDescription,
+          priceKrw: product?.priceKrw ?? method.defaultPriceKrw,
+          turnaroundHours: product?.turnaroundHours ?? method.defaultTurnaroundHours
+        }
+      ] satisfies [profiles.ServiceProductKind, MethodDraft];
+    })
+  ) as Record<SupervisionMethodCatalogItem["code"], MethodDraft>;
 }
 
 function productPayload(form: FormData) {
@@ -284,7 +408,7 @@ function productPayload(form: FormData) {
   };
 }
 
-function productErrorMessage(code: string | undefined, fallback: string): string {
+function productErrorMessage(code: string | undefined): string {
   const labels: Record<string, string> = {
     forbidden: "슈퍼바이저 계정에서만 슈퍼비전 방식을 관리할 수 있습니다.",
     invalid_request: "슈퍼비전 방식 정보를 다시 확인해주세요.",
@@ -294,7 +418,7 @@ function productErrorMessage(code: string | undefined, fallback: string): string
       "일시적인 문제로 저장하지 못했습니다. 잠시 후 다시 시도해주세요.",
     unauthorized: "로그인이 필요합니다."
   };
-  return labels[code ?? ""] ?? fallback;
+  return labels[code ?? ""] ?? "슈퍼비전 방식을 저장하지 못했습니다.";
 }
 
 async function safeJson(response: Response): Promise<{ error?: { code?: string } }> {

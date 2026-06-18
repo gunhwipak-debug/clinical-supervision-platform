@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   if (!parsed.success) {
     return envelope(
       null,
-      apiError("invalid_request", "상품 정보 형식이 올바르지 않습니다."),
+      apiError("invalid_request", "슈퍼비전 방식 정보 형식이 올바르지 않습니다."),
       422
     );
   }

@@ -4,7 +4,6 @@ import { apiError, envelope } from "@/lib/api/envelope";
 import { parseJson } from "@/lib/api/request";
 import { getCurrentUser } from "@/lib/auth/current-user";
 import { createRuntimeDatabase } from "@/lib/auth/database";
-import { isSupervisee } from "@/lib/auth/guards";
 import {
   cancelGoogleCalendarEvent,
   createGoogleCalendarEvent,
@@ -36,7 +35,7 @@ export async function POST(request: NextRequest) {
   const current = await getCurrentUser();
   if (!current)
     return envelope(null, apiError("unauthorized", "로그인이 필요합니다."), 401);
-  if (!isSupervisee(current))
+  if (current.session.role !== "supervisee" && current.session.role !== "supervisor")
     return envelope(null, apiError("forbidden", "권한이 없습니다."), 403);
 
   const parsed = createSupervisionRequestSchema.safeParse(await parseJson(request));
@@ -63,7 +62,7 @@ export async function POST(request: NextRequest) {
   if (!created) {
     return envelope(
       null,
-      apiError("product_unavailable", "선택한 상품을 이용할 수 없습니다."),
+      apiError("product_unavailable", "선택한 슈퍼비전 방식을 이용할 수 없습니다."),
       422
     );
   }
@@ -76,7 +75,7 @@ export async function POST(request: NextRequest) {
       null,
       apiError(
         "self_supervision_not_allowed",
-        "본인이 운영하는 슈퍼비전 상품은 직접 의뢰할 수 없습니다."
+        "본인이 운영하는 슈퍼비전 방식은 직접 의뢰할 수 없습니다."
       ),
       422
     );
@@ -118,6 +117,18 @@ export async function POST(request: NextRequest) {
     return envelope(
       null,
       apiError("past_slot", "지난 시간대는 선택할 수 없습니다."),
+      422
+    );
+  }
+  if (
+    requiresBooking &&
+    selectedSlotStart &&
+    selectedSlotStart.getUTCMinutes() % 30 !== 0
+  ) {
+    await deleteDraft();
+    return envelope(
+      null,
+      apiError("invalid_slot", "예약 시작 시각은 30분 단위여야 합니다."),
       422
     );
   }
@@ -346,7 +357,7 @@ export async function POST(request: NextRequest) {
     } else {
       await sendManyNotifications(db, [
         {
-          body: "비동기 슈퍼비전 의뢰가 임시 저장되었습니다. 사례 정보와 첨부자료를 이어서 작성해주세요.",
+          body: "서면 슈퍼비전 의뢰가 임시 저장되었습니다. 사례 정보와 첨부자료를 이어서 작성해주세요.",
           href: `/requests/${created.id}`,
           kind: "supervision_request_draft_created_supervisee",
           metadata: { requestId: created.id },
@@ -355,7 +366,7 @@ export async function POST(request: NextRequest) {
           title: "의뢰가 임시 저장되었습니다"
         },
         {
-          body: "새 비동기 슈퍼비전 의뢰가 임시 저장되었습니다. 결제 완료 후 검토 목록에 표시됩니다.",
+          body: "새 서면 슈퍼비전 의뢰가 임시 저장되었습니다. 결제 완료 후 검토 목록에 표시됩니다.",
           href: "/supervisor/requests",
           kind: "supervision_request_draft_created_supervisor",
           metadata: { requestId: created.id },

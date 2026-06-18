@@ -60,7 +60,7 @@ const demoSummaries: supervision.SupervisionRequestSummary[] = [
     supervisorId: DEMO_IDS.approvedSupervisor,
     serviceProductId: DEMO_IDS.productZoom,
     status: "completed",
-    productTitle: "사례 개념화 50분",
+    productTitle: "화상 슈퍼비전",
     productKind: "zoom_60",
     supervisorDisplayName: "김도현 슈퍼바이저",
     scheduledStart: "2026-06-10T06:00:00.000Z",
@@ -72,7 +72,7 @@ const demoSummaries: supervision.SupervisionRequestSummary[] = [
     supervisorId: DEMO_IDS.approvedSupervisor,
     serviceProductId: DEMO_IDS.productAsync,
     status: "draft",
-    productTitle: "사례 개념화 50분",
+    productTitle: "화상 슈퍼비전",
     supervisorDisplayName: "김도현 슈퍼바이저"
   }),
   summary({
@@ -90,7 +90,7 @@ const demoSummaries: supervision.SupervisionRequestSummary[] = [
     supervisorId: DEMO_IDS.approvedSupervisor,
     serviceProductId: DEMO_IDS.productAsync,
     status: "submitted",
-    productTitle: "사례 개념화 50분",
+    productTitle: "서면 피드백",
     supervisorDisplayName: "김도현 슈퍼바이저",
     scheduledStart: "2026-06-19T05:00:00.000Z",
     scheduledEnd: "2026-06-19T05:50:00.000Z"
@@ -101,7 +101,7 @@ const demoSummaries: supervision.SupervisionRequestSummary[] = [
     supervisorId: DEMO_IDS.approvedSupervisor,
     serviceProductId: DEMO_IDS.productAsync,
     status: "awaiting_payment",
-    productTitle: "사례 개념화 50분",
+    productTitle: "화상 슈퍼비전",
     supervisorDisplayName: "김도현 슈퍼바이저",
     scheduledStart: "2026-06-20T02:00:00.000Z",
     scheduledEnd: "2026-06-20T02:50:00.000Z"
@@ -123,7 +123,7 @@ const demoSummaries: supervision.SupervisionRequestSummary[] = [
     supervisorId: DEMO_IDS.approvedSupervisor,
     serviceProductId: DEMO_IDS.productAsync,
     status: "awaiting_supervisor_review",
-    productTitle: "사례 개념화 50분",
+    productTitle: "화상 슈퍼비전",
     supervisorDisplayName: "김도현 슈퍼바이저",
     scheduledStart: "2026-06-22T06:00:00.000Z",
     scheduledEnd: "2026-06-22T06:50:00.000Z"
@@ -243,7 +243,7 @@ const demoPayments: payments.PaymentRecord[] = [
     paidAt: "2026-06-10T09:00:00.000Z",
     createdAt: "2026-06-10T08:50:00.000Z",
     requestStatus: "completed",
-    productTitle: "90분 화상 슈퍼비전"
+    productTitle: "화상 슈퍼비전"
   }
 ];
 
@@ -339,10 +339,10 @@ export function listDemoSupervisorProducts(supervisorId: string): profiles.Produ
       supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
       active: true,
       kind: "zoom_90",
-      title: "90분 화상 슈퍼비전",
+      title: "화상 슈퍼비전",
       description: "평가자료 해석과 보고서 방향을 실시간으로 논의합니다.",
       priceKrw: 360000,
-      turnaroundHours: 168,
+      turnaroundHours: 90,
       createdAt: "2026-06-10T09:00:00.000Z"
     },
     {
@@ -350,7 +350,7 @@ export function listDemoSupervisorProducts(supervisorId: string): profiles.Produ
       supervisorProfileId: DEMO_IDS.approvedSupervisorProfile,
       active: true,
       kind: "async_comment",
-      title: "보고서 코멘트",
+      title: "서면 피드백",
       description: "보고서 초안에 구조화 코멘트를 제공합니다.",
       priceKrw: 120000,
       turnaroundHours: 72,

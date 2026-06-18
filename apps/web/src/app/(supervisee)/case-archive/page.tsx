@@ -20,8 +20,8 @@ type RequestSummary = supervision.SupervisionRequestSummary;
 
 const flowSteps = [
   "슈퍼바이저 선택",
-  "상품 선택",
-  "일정 선택",
+  "슈퍼비전 방식",
+  "예약 시간",
   "사례자료 정리",
   "답변 확인",
   "결제",

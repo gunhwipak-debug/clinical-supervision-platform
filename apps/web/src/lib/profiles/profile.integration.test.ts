@@ -22,7 +22,8 @@ const migrations = [
   "packages/db/drizzle/0010_payments_constraints.sql",
   "packages/db/drizzle/0014_google_calendar.sql",
   "packages/db/drizzle/0015_qualification_evidence.sql",
-  "packages/db/drizzle/0016_add_zoom_meeting_url.sql"
+  "packages/db/drizzle/0016_add_zoom_meeting_url.sql",
+  "packages/db/drizzle/0017_availability_exceptions.sql"
 ] as const;
 
 const supervisorId = "20000000-0000-0000-0000-000000000001";
@@ -512,6 +513,64 @@ describe("profile and search integration", () => {
         ) values (${profileId}, 8, '10:00', '11:00')
       `)
     ).rejects.toThrow();
+  });
+
+  it("persists date-specific availability exceptions", async () => {
+    const profileId = await seedSupervisor({
+      userId: supervisorId,
+      displayName: "예외 일정 전문가",
+      visibility: "public",
+      verificationStatus: "approved"
+    });
+
+    const saved = await withUserContext(
+      db,
+      { userId: supervisorId, role: "supervisor" },
+      async (tx) => {
+        const savedSlots = await profiles.replaceAvailability(tx, {
+          exceptions: [
+            {
+              date: "2026-07-03",
+              mode: "custom",
+              note: "학회 이후 오후만 운영",
+              ranges: [{ startTime: "14:00", endTime: "18:00" }],
+              timezone: "Asia/Seoul"
+            },
+            {
+              date: "2026-07-04",
+              mode: "unavailable",
+              note: "휴무",
+              ranges: [],
+              timezone: "Asia/Seoul"
+            }
+          ],
+          slots: [
+            {
+              endTime: "12:00",
+              startTime: "09:00",
+              timezone: "Asia/Seoul",
+              weekday: 1
+            }
+          ],
+          userId: supervisorId
+        });
+        const exceptions = await profiles.listAvailabilityExceptions(tx, supervisorId);
+        return { exceptions, savedSlots };
+      }
+    );
+    const publicExceptions = await profiles.listPublicAvailabilityExceptionsForProfile(
+      db,
+      profileId
+    );
+
+    expect(saved.savedSlots).toHaveLength(1);
+    expect(saved.exceptions.map((exception) => exception.date)).toEqual([
+      "2026-07-03",
+      "2026-07-04"
+    ]);
+    expect(publicExceptions[0]?.ranges).toEqual([
+      { startTime: "14:00", endTime: "18:00" }
+    ]);
   });
 });
 

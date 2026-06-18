@@ -104,6 +104,24 @@ export type AvailabilitySlot = AvailabilitySlotInput & {
 
 export type PublicAvailabilitySlot = AvailabilitySlot;
 
+export type AvailabilityExceptionRange = {
+  endTime: string;
+  startTime: string;
+};
+
+export type AvailabilityExceptionInput = {
+  date: string;
+  mode: "custom" | "unavailable";
+  note: string | null;
+  ranges: AvailabilityExceptionRange[];
+  timezone: string;
+};
+
+export type AvailabilityException = AvailabilityExceptionInput & {
+  id: string;
+  supervisorProfileId: string;
+};
+
 export type SuperviseeProfileInput = {
   displayName: string;
   headline: string | null;
@@ -778,9 +796,59 @@ export async function listPublicAvailabilityForProfile(
   return rowsOf<PublicAvailabilitySlot>(result);
 }
 
+export async function listAvailabilityExceptions(
+  db: ProfileDatabase,
+  userId: string
+): Promise<AvailabilityException[]> {
+  const result = await db.execute(sql`
+    select
+      e.id,
+      e.supervisor_profile_id as "supervisorProfileId",
+      e.exception_date::text as "date",
+      e.mode,
+      e.ranges,
+      e.timezone,
+      e.note
+    from availability_exceptions e
+    join supervisor_profiles sp on sp.id = e.supervisor_profile_id
+    where sp.user_id = ${userId}
+    order by e.exception_date
+  `);
+
+  return rowsOf<AvailabilityException>(result);
+}
+
+export async function listPublicAvailabilityExceptionsForProfile(
+  db: ProfileDatabase,
+  supervisorProfileId: string
+): Promise<AvailabilityException[]> {
+  const result = await db.execute(sql`
+    select
+      e.id,
+      e.supervisor_profile_id as "supervisorProfileId",
+      e.exception_date::text as "date",
+      e.mode,
+      e.ranges,
+      e.timezone,
+      e.note
+    from availability_exceptions e
+    join supervisor_profiles sp on sp.id = e.supervisor_profile_id
+    where e.supervisor_profile_id = ${supervisorProfileId}
+      and sp.visibility = 'public'
+      and sp.verification_status = 'approved'
+    order by e.exception_date
+  `);
+
+  return rowsOf<AvailabilityException>(result);
+}
+
 export async function replaceAvailability(
   db: ProfileDatabase,
-  input: { userId: string; slots: AvailabilitySlotInput[] }
+  input: {
+    exceptions?: AvailabilityExceptionInput[];
+    slots: AvailabilitySlotInput[];
+    userId: string;
+  }
 ): Promise<AvailabilitySlot[]> {
   const profileId = await getSupervisorProfileIdForUser(db, input.userId);
 
@@ -809,6 +877,33 @@ export async function replaceAvailability(
         ${slot.timezone}
       )
     `);
+  }
+
+  if (input.exceptions) {
+    await db.execute(sql`
+      delete from availability_exceptions
+      where supervisor_profile_id = ${profileId}
+    `);
+
+    for (const exception of input.exceptions) {
+      await db.execute(sql`
+        insert into availability_exceptions (
+          supervisor_profile_id,
+          exception_date,
+          mode,
+          ranges,
+          timezone,
+          note
+        ) values (
+          ${profileId},
+          ${exception.date},
+          ${exception.mode},
+          ${JSON.stringify(exception.ranges)}::jsonb,
+          ${exception.timezone},
+          ${exception.note}
+        )
+      `);
+    }
   }
 
   return listAvailability(db, input.userId);

@@ -30,7 +30,9 @@ const migrations = [
   "packages/db/drizzle/0010_payments_constraints.sql",
   "packages/db/drizzle/0013_document_workspace.sql",
   "packages/db/drizzle/0014_google_calendar.sql",
-  "packages/db/drizzle/0016_add_zoom_meeting_url.sql"
+  "packages/db/drizzle/0016_add_zoom_meeting_url.sql",
+  "packages/db/drizzle/0017_availability_exceptions.sql",
+  "packages/db/drizzle/0018_booking_conflict_guards.sql"
 ] as const;
 
 const superviseeId = "30000000-0000-0000-0000-000000000001";
@@ -49,6 +51,8 @@ let pg: PGlite;
 let db: ReturnType<typeof drizzle>;
 
 beforeEach(async () => {
+  vi.useFakeTimers({ toFake: ["Date"] });
+  vi.setSystemTime(new Date("2026-05-01T00:00:00.000Z"));
   pg = new PGlite();
   db = drizzle(pg);
   await applyMigrations((statement) => pg.query(statement), {
@@ -61,6 +65,7 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
+  vi.useRealTimers();
   vi.resetModules();
   vi.clearAllMocks();
   vi.unstubAllGlobals();
@@ -207,6 +212,69 @@ describe("supervision request integration", () => {
     expect(body.error?.code).toBe("past_slot");
   });
 
+  it("applies date-specific availability exceptions before weekly recurrence", async () => {
+    await db.execute(sql`
+      insert into availability_exceptions (
+        supervisor_profile_id,
+        exception_date,
+        mode,
+        ranges,
+        timezone,
+        note
+      ) values (
+        '30000000-0000-0000-0000-000000000100',
+        '2026-07-06',
+        'unavailable',
+        '[]'::jsonb,
+        'Asia/Seoul',
+        '휴무'
+      )
+    `);
+
+    const blockedResponse = await callCreateRequestRoute(
+      currentUser(superviseeId, "supervisee"),
+      {
+        retentionDays: 30,
+        selectedSlotEnd: "2026-07-06T14:00:00+09:00",
+        selectedSlotStart: "2026-07-06T13:00:00+09:00",
+        serviceProductId: productId,
+        urgency: "normal"
+      }
+    );
+    const blockedBody = (await blockedResponse.json()) as ApiEnvelope;
+
+    expect(blockedResponse.status, JSON.stringify(blockedBody)).toBe(409);
+    expect(blockedBody.error?.code).toBe("slot_unavailable");
+
+    await db.execute(sql`
+      update availability_exceptions
+      set
+        mode = 'custom',
+        ranges = ${JSON.stringify([{ startTime: "12:00", endTime: "13:00" }])}::jsonb,
+        note = '오후 전환'
+      where supervisor_profile_id = '30000000-0000-0000-0000-000000000100'
+        and exception_date = '2026-07-06'
+    `);
+
+    const customResponse = await callCreateRequestRoute(
+      currentUser(superviseeId, "supervisee"),
+      {
+        retentionDays: 30,
+        selectedSlotEnd: "2026-07-06T13:00:00+09:00",
+        selectedSlotStart: "2026-07-06T12:00:00+09:00",
+        serviceProductId: productId,
+        urgency: "normal"
+      }
+    );
+    const customBody = (await customResponse.json()) as {
+      data?: { request?: { id: string } };
+      error?: { code: string };
+    };
+
+    expect(customResponse.status, JSON.stringify(customBody)).toBe(200);
+    expect(customBody.data?.request?.id).toBeTruthy();
+  });
+
   it("succeeds timed booking with platform-only calendar when the supervisor has not connected Google Calendar", async () => {
     const fetchMock = vi.fn();
     vi.stubGlobal("fetch", fetchMock);
@@ -234,6 +302,49 @@ describe("supervision request integration", () => {
     expect(body.data?.calendarSync).toBe("not_required");
     expect(rowsOf(bookingCount)[0]?.count ?? 0).toBe(1);
     expect(fetchMock).not.toHaveBeenCalled();
+  });
+
+  it("rejects a selected slot held by another supervisee for the same supervisor", async () => {
+    const otherRequest = await withUserContext(
+      db,
+      { role: "supervisee", userId: otherSuperviseeId },
+      (tx) =>
+        supervision.createSupervisionRequest(tx, otherSuperviseeId, {
+          desiredDeadline: null,
+          retentionDays: 30,
+          serviceProductId: productId,
+          urgency: "normal"
+        })
+    );
+    expect(otherRequest).toBeTruthy();
+
+    const otherBooking = await withUserContext(
+      db,
+      { role: "supervisee", userId: otherSuperviseeId },
+      (tx) =>
+        supervision.createBookingForRequest(tx, {
+          requestId: otherRequest?.id ?? "",
+          scheduledEnd: new Date("2026-06-01T05:00:00.000Z"),
+          scheduledStart: new Date("2026-06-01T04:00:00.000Z"),
+          superviseeId: otherSuperviseeId
+        })
+    );
+    expect(otherBooking).toBeTruthy();
+
+    const response = await callCreateRequestRoute(
+      currentUser(superviseeId, "supervisee"),
+      {
+        retentionDays: 30,
+        selectedSlotEnd: "2026-06-01T14:00:00+09:00",
+        selectedSlotStart: "2026-06-01T13:00:00+09:00",
+        serviceProductId: productId,
+        urgency: "normal"
+      }
+    );
+    const body = (await response.json()) as ApiEnvelope;
+
+    expect(response.status, JSON.stringify(body)).toBe(409);
+    expect(body.error?.code).toBe("slot_unavailable");
   });
 
   it("creates a booking and Google Calendar event when a selected slot is available", async () => {
@@ -333,7 +444,7 @@ describe("supervision request integration", () => {
     expect(rowsOf(createdNotifications)).toEqual([
       {
         kind: "supervision_request_scheduled_supervisee",
-        title: "예약 초안이 생성되었습니다",
+        title: "예약 의뢰가 임시 저장되었습니다",
         userId: superviseeId
       },
       {
@@ -886,6 +997,7 @@ describe("supervision request integration", () => {
   });
 
   it("records supervisor session outcomes on the booking", async () => {
+    vi.setSystemTime(new Date("2026-06-18T00:00:00.000Z"));
     const request = await createDraft();
     expect(request).toBeTruthy();
     const booking = await createBooking(request?.id ?? "", {
