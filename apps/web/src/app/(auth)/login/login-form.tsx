@@ -25,6 +25,8 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" }
   });
+  const emailError = form.formState.errors.email;
+  const passwordError = form.formState.errors.password;
 
   useEffect(() => {
     setIsHydrated(true);
@@ -72,6 +74,8 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
             이메일
           </Label>
           <Input
+            aria-describedby={emailError ? "email-error" : undefined}
+            aria-invalid={emailError ? true : undefined}
             autoComplete="email"
             className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
             id="email"
@@ -79,9 +83,9 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
             type="email"
             {...form.register("email")}
           />
-          {form.formState.errors.email ? (
-            <p className="text-sm text-[#c24141]">
-              {form.formState.errors.email.message}
+          {emailError ? (
+            <p className="text-sm text-[#c24141]" id="email-error">
+              {emailError.message}
             </p>
           ) : null}
         </Field>
@@ -102,6 +106,8 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
           </div>
           <div className="relative">
             <Input
+              aria-describedby={passwordError ? "password-error" : undefined}
+              aria-invalid={passwordError ? true : undefined}
               autoComplete="current-password"
               className="h-12 rounded-[16px] border-[#e7ebf1] bg-[#f8faff] px-4 pr-12 text-base shadow-none placeholder:text-[#94a0bc] focus-visible:outline-[#2563ff]"
               id="password"
@@ -118,9 +124,9 @@ export function LoginForm({ returnTo = "" }: { returnTo?: string }) {
               {showPassword ? "숨기기" : "보기"}
             </button>
           </div>
-          {form.formState.errors.password ? (
-            <p className="text-sm text-[#c24141]">
-              {form.formState.errors.password.message}
+          {passwordError ? (
+            <p className="text-sm text-[#c24141]" id="password-error">
+              {passwordError.message}
             </p>
           ) : null}
         </Field>

@@ -89,7 +89,7 @@ export default function HomePage() {
               className="h-12 rounded-[14px] bg-[#2563ff] px-6 text-base font-semibold text-white hover:bg-[#1f58e6]"
               size="lg"
             >
-              <Link href="/requests/new">슈퍼비전 신청하기</Link>
+              <Link href="/supervisors">슈퍼바이저 찾기</Link>
             </Button>
             <Button
               asChild

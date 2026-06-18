@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { supervision, withUserContext } from "@csp/db";
-import { FlowStepNav, SectionBlock } from "../../../components/clinicflow-shell";
+import { SectionBlock } from "../../../components/clinicflow-shell";
 import { AppShell } from "../../../components/app-shell";
 import { Button } from "../../../components/ui/button";
 import {
@@ -17,16 +17,6 @@ import { contextFor } from "../../../lib/supervision/authz";
 export const dynamic = "force-dynamic";
 
 type RequestSummary = supervision.SupervisionRequestSummary;
-
-const flowSteps = [
-  "슈퍼바이저 선택",
-  "슈퍼비전 방식",
-  "예약 시간",
-  "사례자료 정리",
-  "답변 확인",
-  "결제",
-  "수락 대기"
-];
 
 export default async function CaseArchivePage() {
   const current = await getCurrentUser();
@@ -89,7 +79,6 @@ export default async function CaseArchivePage() {
         </Button>
       }
     >
-      <FlowStepNav current="수락 대기" steps={flowSteps} />
       {completed.length === 0 ? (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <SectionBlock

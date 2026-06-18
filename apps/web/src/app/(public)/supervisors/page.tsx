@@ -4,6 +4,10 @@ import { Badge } from "../../../components/ui/badge";
 import { Button } from "../../../components/ui/button";
 import { SiteHeader } from "../../../components/clinicflow-shell";
 import { createRuntimeDatabase } from "../../../lib/auth/database";
+import {
+  DEMO_PUBLIC_SUPERVISORS,
+  shouldUsePublicDemoSupervisors
+} from "../../../lib/demo/supervision";
 import { displaySupervisionMethodName } from "../../../lib/supervision-method-catalog";
 
 type SearchParams = {
@@ -26,81 +30,6 @@ type SupervisorWithQualifications = PublicSupervisor & {
 };
 
 const SUPERVISOR_SEARCH_TIMEOUT_MS = 4_000;
-
-const DEMO_SUPERVISORS: SupervisorWithQualifications[] = [
-  {
-    averageRating: "4.9",
-    avgResponseMinutes: 180,
-    bio: "심리평가 보고서 구조화와 초심 상담자의 사례 개념화를 차분하게 돕습니다.",
-    displayName: "이민서 슈퍼바이저",
-    headline: "성인 평가와 사례 개념화",
-    id: "demo-supervisor-adult",
-    photoUrl: null,
-    qualifications: [{ name: "임상심리전문가" }],
-    serviceProducts: [
-      {
-        description: "보고서 초안과 질문을 함께 검토합니다.",
-        id: "demo-product-adult",
-        kind: "zoom_60",
-        priceKrw: 120000,
-        turnaroundHours: 72,
-        title: "사례 개념화 60분"
-      }
-    ],
-    specialties: ["성인 평가", "보고서 피드백", "사례 개념화"],
-    totalCompleted: 128,
-    userId: "demo-supervisor-adult-user",
-    yearsOfExperience: 12
-  },
-  {
-    averageRating: "4.8",
-    avgResponseMinutes: 240,
-    bio: "아동·청소년 평가 자료를 보호자 설명과 개입 계획까지 이어지게 정리합니다.",
-    displayName: "최유나 슈퍼바이저",
-    headline: "아동 평가와 보호자 피드백",
-    id: "demo-supervisor-child",
-    photoUrl: null,
-    qualifications: [{ name: "정신건강임상심리사 1급" }],
-    serviceProducts: [
-      {
-        description: "검사 결과와 면담 요약을 검토합니다.",
-        id: "demo-product-child",
-        kind: "async_comment",
-        priceKrw: 90000,
-        turnaroundHours: 96,
-        title: "서면 피드백"
-      }
-    ],
-    specialties: ["아동 평가", "보호자 상담", "발달"],
-    totalCompleted: 86,
-    userId: "demo-supervisor-child-user",
-    yearsOfExperience: 10
-  },
-  {
-    averageRating: "4.9",
-    avgResponseMinutes: 120,
-    bio: "위기 사례에서 놓치기 쉬운 위험도 판단과 기관 공유 문장을 함께 다듬습니다.",
-    displayName: "박재현 슈퍼바이저",
-    headline: "위기 사례 의사소통",
-    id: "demo-supervisor-crisis",
-    photoUrl: null,
-    qualifications: [{ name: "상담심리사 1급" }],
-    serviceProducts: [
-      {
-        description: "긴급 사례의 핵심 판단과 진행 방향을 정리합니다.",
-        id: "demo-product-crisis",
-        kind: "urgent_24h",
-        priceKrw: 180000,
-        turnaroundHours: 24,
-        title: "24시간 긴급 검토"
-      }
-    ],
-    specialties: ["위기 사례", "기관 소통", "위험도 판단"],
-    totalCompleted: 64,
-    userId: "demo-supervisor-crisis-user",
-    yearsOfExperience: 15
-  }
-];
 
 export const dynamic = "force-dynamic";
 
@@ -210,6 +139,11 @@ async function loadSupervisors(input: {
   keyword: string;
   sort: "average_rating" | "avg_response_minutes" | "total_completed";
 }): Promise<{ supervisors: SupervisorWithQualifications[]; error: boolean }> {
+  const demoFallback = shouldUsePublicDemoSupervisors();
+  const fallback = demoFallback
+    ? { supervisors: filterDemoSupervisors(input.keyword), error: false }
+    : { supervisors: [], error: true };
+
   try {
     const db = createRuntimeDatabase();
     return await resolveWithTimeout(
@@ -226,25 +160,25 @@ async function loadSupervisors(input: {
           specialtyCodes: []
         })
         .then((supervisors) => ({ supervisors, error: false }))
-        .catch(() => ({ supervisors: filterDemoSupervisors(input.keyword), error: false })),
+        .catch(() => fallback),
       SUPERVISOR_SEARCH_TIMEOUT_MS,
-      { supervisors: filterDemoSupervisors(input.keyword), error: false }
+      fallback
     );
   } catch {
-    return { supervisors: filterDemoSupervisors(input.keyword), error: false };
+    return fallback;
   }
 }
 
 function filterDemoSupervisors(keyword: string): SupervisorWithQualifications[] {
-  if (!keyword) return DEMO_SUPERVISORS;
+  if (!keyword) return DEMO_PUBLIC_SUPERVISORS;
   const normalized = keyword.toLowerCase();
-  return DEMO_SUPERVISORS.filter((supervisor) =>
+  return DEMO_PUBLIC_SUPERVISORS.filter((supervisor) =>
     [
       supervisor.displayName,
-      supervisor.headline ?? "",
-      supervisor.bio ?? "",
+      supervisor.headline,
+      supervisor.bio,
       ...supervisor.specialties,
-      ...(supervisor.qualifications ?? []).map((qualification) => qualification.name)
+      ...supervisor.qualifications.map((qualification) => qualification.name)
     ].some((value) => value.toLowerCase().includes(normalized))
   );
 }

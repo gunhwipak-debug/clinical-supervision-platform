@@ -5,6 +5,88 @@ const now = "2026-06-15T09:00:00.000Z";
 
 type RequestStatus = supervision.SupervisionRequestSummary["status"];
 
+export type DemoSupervisorProduct = {
+  description: string | null;
+  id: string;
+  kind: string | null;
+  priceKrw: number;
+  turnaroundHours: number | null;
+  title: string;
+};
+
+export type DemoSupervisor = {
+  averageRating: string;
+  avgResponseMinutes: number;
+  bio: string;
+  displayName: string;
+  headline: string;
+  id: string;
+  photoUrl: string | null;
+  qualifications: Array<{ name: string }>;
+  serviceProducts: DemoSupervisorProduct[];
+  specialties: string[];
+  totalCompleted: number;
+  userId: string;
+  yearsOfExperience: number;
+};
+
+export const DEMO_PUBLIC_SUPERVISORS: DemoSupervisor[] = [
+  {
+    averageRating: "4.7",
+    avgResponseMinutes: 240,
+    bio: "성인 정신병리 평가와 성격평가 보고서 피드백을 중심으로, 근거 기반 해석과 윤리적 문서화를 함께 점검합니다.",
+    displayName: "김도현 슈퍼바이저",
+    headline: "성인 정신병리·MMPI·로르샤흐 슈퍼비전",
+    id: DEMO_IDS.approvedSupervisor,
+    photoUrl: null,
+    qualifications: [{ name: "임상심리전문가" }],
+    serviceProducts: [
+      {
+        description: "예약한 시간에 화상으로 사례를 함께 검토합니다.",
+        id: DEMO_IDS.productZoom,
+        kind: "zoom_90",
+        priceKrw: 360000,
+        turnaroundHours: 90,
+        title: "화상 슈퍼비전"
+      },
+      {
+        description: "업로드한 사례자료를 검토한 뒤 글로 피드백을 제공합니다.",
+        id: DEMO_IDS.productAsync,
+        kind: "async_comment",
+        priceKrw: 120000,
+        turnaroundHours: 72,
+        title: "서면 피드백"
+      }
+    ],
+    specialties: ["성인 정신병리", "성격평가", "보고서 피드백"],
+    totalCompleted: 84,
+    userId: DEMO_IDS.approvedSupervisor,
+    yearsOfExperience: 12
+  }
+];
+
+export function getDemoPublicSupervisor(id: string): DemoSupervisor | null {
+  return DEMO_PUBLIC_SUPERVISORS.find((supervisor) => supervisor.id === id) ?? null;
+}
+
+type PublicDemoFallbackEnv = Record<string, string | undefined>;
+
+export function shouldUsePublicDemoSupervisors(
+  env: PublicDemoFallbackEnv = process.env
+): boolean {
+  const vercelEnv = env["VERCEL_ENV"];
+  if (vercelEnv) return vercelEnv !== "production";
+
+  const deploymentEnv = env["CLINICFLOW_DEPLOYMENT_ENV"] ?? env["APP_ENV"];
+  if (deploymentEnv) {
+    return ["development", "demo", "preview", "staging", "test"].includes(
+      deploymentEnv
+    );
+  }
+
+  return env["NODE_ENV"] !== "production";
+}
+
 function summary(input: {
   id: string;
   superviseeId: string;

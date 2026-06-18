@@ -62,7 +62,7 @@ type SelectionSummary = {
 
 const asyncRequestFlowSteps = [
   "슈퍼바이저 선택",
-  "슈퍼비전 방식",
+  "세션·일정",
   "사례자료 정리",
   "답변 확인",
   "결제",
@@ -72,8 +72,7 @@ const asyncRequestFlowSteps = [
 
 const liveRequestFlowSteps = [
   "슈퍼바이저 선택",
-  "슈퍼비전 방식",
-  "날짜와 시간",
+  "세션·일정",
   "사례자료 정리",
   "답변 확인",
   "결제",
@@ -159,11 +158,7 @@ export function NewRequestForm({
     : "예약 시간 선택 없음";
   const currentStep = !selection.supervisorName
     ? "슈퍼바이저 선택"
-    : !hasSelectedProduct
-      ? "슈퍼비전 방식"
-      : requiresSelectedSlot && !hasSelectedSlot
-        ? "날짜와 시간"
-        : "사례자료 정리";
+    : "세션·일정";
   const requestFlowSteps = requiresSelectedSlot
     ? liveRequestFlowSteps
     : asyncRequestFlowSteps;
@@ -638,7 +633,7 @@ function buildRequestSteps({
         : { action: { href: "/supervisors", label: "방식 선택" } }),
       state: hasSelectedProduct
         ? "completed"
-        : currentStep === "슈퍼비전 방식"
+        : currentStep === "세션·일정"
           ? "current"
           : "locked"
     }
@@ -656,7 +651,7 @@ function buildRequestSteps({
         ? "locked"
         : hasSelectedSlot
           ? "completed"
-          : currentStep === "날짜와 시간"
+          : currentStep === "세션·일정"
             ? "current"
             : "locked"
     });
@@ -674,7 +669,7 @@ function buildRequestSteps({
       label: "사례자료 정리",
       value: canSubmit ? "초안 저장 후 작성 화면으로 이동" : "앞 단계 선택 필요",
       description: "사례 요약과 질문은 의뢰 상세에서 작성합니다.",
-      state: canSubmit ? "current" : "locked"
+      state: "locked"
     },
     {
       label: "답변 확인",

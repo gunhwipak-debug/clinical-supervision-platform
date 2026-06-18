@@ -9,7 +9,7 @@ const publicLinks = [
 
 export function SiteHeader({
   active = "",
-  actionHref = "/requests/new",
+  actionHref = "/supervisors",
   actionLabel = "슈퍼비전 신청하기",
   showAction = true,
   showLogin = true

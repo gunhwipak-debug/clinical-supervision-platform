@@ -1,7 +1,6 @@
 import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
 import {
-  AdminDarkPanel,
   AdminListFrame,
   AdminLockedState,
   AdminShell
@@ -82,7 +81,7 @@ export async function AdminHomePage() {
       title="운영 처리 목록"
       subtitle="운영자가 개입해야 하는 요청을 한 화면에 모았습니다."
     >
-      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+      <section className="grid gap-4">
         <AdminListFrame>
           <div className="grid divide-y divide-line">
             {items.map((item) => (
@@ -91,26 +90,6 @@ export async function AdminHomePage() {
           </div>
         </AdminListFrame>
 
-        <AdminDarkPanel
-          title="운영 확인"
-          description="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 확인하고 처리 기록을 남깁니다."
-          className="h-fit lg:sticky lg:top-8"
-        >
-          <dl className="grid gap-4 border-t border-line pt-6 text-sm leading-7 text-ink-600">
-            <div>
-              <dt className="font-semibold text-ink-900">우선순위</dt>
-              <dd className="mt-1 break-keep">
-                자격 심사, 환불, 정산 순서로 운영자가 개입할 화면을 엽니다.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-semibold text-ink-900">처리 방식</dt>
-              <dd className="mt-1 break-keep">
-                상태 변경은 각 대기열의 상세 화면에서 기록합니다.
-              </dd>
-            </div>
-          </dl>
-        </AdminDarkPanel>
       </section>
     </AdminShell>
   );
@@ -129,15 +108,15 @@ type HomeQueueItem = {
 function HomeQueueRow({ item }: { item: HomeQueueItem }) {
   return (
     <a
-      className="group grid gap-4 px-6 py-6 transition hover:bg-surface-sunken md:grid-cols-[minmax(0,1fr)_88px_auto] md:items-start"
+      className="group grid gap-4 px-5 py-4 transition hover:bg-surface-sunken md:grid-cols-[minmax(0,1fr)_88px_auto] md:items-center"
       href={item.href}
     >
       <span className="min-w-0">
         <span className="text-sm font-semibold text-ink-400">{item.label}</span>
-        <strong className="mt-3 block break-keep text-[32px] font-bold leading-tight text-ink-900">
+        <strong className="mt-2 block break-keep text-2xl font-bold leading-tight text-ink-900">
           {item.title}
         </strong>
-        <span className="mt-4 block break-keep text-base leading-8 text-ink-700">
+        <span className="mt-2 block break-keep text-sm leading-6 text-ink-700">
           {item.description}
         </span>
       </span>

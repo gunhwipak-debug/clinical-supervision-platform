@@ -152,8 +152,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </Button>
         </div>
       }
+      contentWidth="wide"
       subtitle={`${detail.title ?? shortRequestId(detail.id)} · ${formatBookingSlot(detail)}`}
-      title="종합심리평가 보고서 검토"
+      title={workspaceTitle(detail.productTitle)}
     >
       <FlowStepNav current={flowStepForStatus(detail.status)} steps={supervisorSteps} />
 
@@ -179,36 +180,31 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
       />
 
       <section className="grid gap-7">
-        <section className="grid gap-6 xl:grid-cols-[minmax(0,1.65fr)_minmax(360px,1fr)] xl:items-start">
+        <section className="grid gap-6 2xl:grid-cols-[minmax(0,1fr)_360px] 2xl:items-start">
           <SectionBlock
             subtitle="보고서, 검사 결과, 면담 요약을 한 화면에서 확인하고 필요한 위치에 메모를 남깁니다."
             title={`첨부 자료 ${String(caseFiles.length)}개`}
           >
-            <div className="rounded-xl border border-line bg-surface-elevated p-4">
-              <CaseFilesPanel
-                canAnnotate={
-                  detail.status === "accepted" || detail.status === "in_review"
-                }
-                canDelete={false}
-                canRequestRevision={
-                  detail.status === "in_review" ||
-                  detail.status === "feedback_submitted"
-                }
-                canStampReturn={detail.status === "completion_record_issued"}
-                canUpload={false}
-                initialFiles={caseFiles.map((file) => ({
-                  id: file.id,
-                  kind: file.kind,
-                  originalFilename: file.originalFilename,
-                  mimeType: file.mimeType,
-                  sizeBytes: file.sizeBytes,
-                  virusScanStatus: file.virusScanStatus,
-                  phiScanStatus: file.phiScanStatus,
-                  uploadedAt: file.uploadedAt
-                }))}
-                requestId={id}
-              />
-            </div>
+            <CaseFilesPanel
+              canAnnotate={detail.status === "accepted" || detail.status === "in_review"}
+              canDelete={false}
+              canRequestRevision={
+                detail.status === "in_review" || detail.status === "feedback_submitted"
+              }
+              canStampReturn={detail.status === "completion_record_issued"}
+              canUpload={false}
+              initialFiles={caseFiles.map((file) => ({
+                id: file.id,
+                kind: file.kind,
+                originalFilename: file.originalFilename,
+                mimeType: file.mimeType,
+                sizeBytes: file.sizeBytes,
+                virusScanStatus: file.virusScanStatus,
+                phiScanStatus: file.phiScanStatus,
+                uploadedAt: file.uploadedAt
+              }))}
+              requestId={id}
+            />
           </SectionBlock>
 
           <div className="grid gap-5 xl:sticky xl:top-24" id="supervisor-actions">
@@ -242,16 +238,6 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
           </div>
           <div className="grid gap-3 lg:grid-cols-2">
             <ContextDetails title="사례 요약">
-              <SummaryLine label="의뢰 번호" value={shortRequestId(detail.id)} />
-              <SummaryLine
-                label="세션"
-                value={detail.productTitle ?? "슈퍼비전 의뢰"}
-              />
-              <SummaryLine label="예약 일정" value={formatBookingSlot(detail)} />
-              <SummaryLine
-                label="예약 상태"
-                value={bookingStatusLabel(detail.bookingStatus)}
-              />
               <SummaryLine
                 label="주호소"
                 value={detail.chiefComplaint ?? "저장된 주호소가 없습니다."}
@@ -263,14 +249,9 @@ export default async function Page({ params }: { params: Promise<{ id: string }>
             </ContextDetails>
 
             <ContextDetails title="검토 초점">
-              <SummaryLine label="진행 상태" value={statusLabel(detail.status)} />
               <SummaryLine
                 label="다음 제출물"
                 value={nextDeliverableLabel(detail.status)}
-              />
-              <SummaryLine
-                label="화상 세션"
-                value={detail.meetingUrl ? "입장 링크 준비됨" : "링크 대기"}
               />
               <SummaryLine
                 label="자료 검토 상태"
@@ -343,6 +324,11 @@ function nextDeliverableLabel(status: string): string {
     return "완료 기록 확인";
   }
   return "현재 상태 확인";
+}
+
+function workspaceTitle(productTitle: string | null): string {
+  if (!productTitle) return "슈퍼비전 검토";
+  return `${productTitle} 검토`;
 }
 
 function primarySupervisorAction(status: string): { href: string; label: string } {
@@ -428,16 +414,4 @@ function statusLabel(status: string): string {
     cancelled: "취소"
   };
   return labels[status] ?? "상태 미정";
-}
-
-function bookingStatusLabel(status: string | null): string {
-  const labels: Record<string, string> = {
-    cancelled: "취소됨",
-    completed: "세션 완료",
-    no_show_supervisee: "신청자 불참",
-    no_show_supervisor: "슈퍼바이저 불참",
-    rescheduled: "일정 변경됨",
-    scheduled: "예약됨"
-  };
-  return labels[status ?? ""] ?? "예약 상태 미정";
 }

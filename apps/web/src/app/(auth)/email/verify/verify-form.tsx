@@ -2,7 +2,7 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { MailCheck } from "lucide-react";
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -18,12 +18,13 @@ type VerifyValues = z.infer<typeof verifySchema>;
 
 export function VerifyForm() {
   const [message, setMessage] = useState("");
+  const autoSubmittedToken = useRef("");
   const form = useForm<VerifyValues>({
     resolver: zodResolver(verifySchema),
     defaultValues: { mailCode: "" }
   });
 
-  async function submit(values: VerifyValues) {
+  const submit = useCallback(async (values: VerifyValues) => {
     const response = await fetch("/api/auth/email/verify", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -32,14 +33,23 @@ export function VerifyForm() {
     const body = (await response.json()) as { error?: { code: string } };
     const nextMessage = response.ok
       ? "이메일 인증이 완료되었습니다."
-      : (body.error?.code ?? "인증 실패");
+      : verifyErrorMessage(body.error?.code);
     setMessage(nextMessage);
     if (response.ok) {
       toast.success(nextMessage);
     } else {
       toast.error(nextMessage);
     }
-  }
+  }, []);
+
+  useEffect(() => {
+    const token = new URLSearchParams(window.location.search).get("token")?.trim();
+    if (!token || autoSubmittedToken.current === token) return;
+
+    autoSubmittedToken.current = token;
+    form.setValue("mailCode", token, { shouldValidate: true });
+    void submit({ mailCode: token });
+  }, [form, submit]);
 
   return (
     <section className="grid gap-5">
@@ -89,4 +99,14 @@ export function VerifyForm() {
       </form>
     </section>
   );
+}
+
+function verifyErrorMessage(code: string | undefined): string {
+  const messages: Record<string, string> = {
+    expired_token: "인증 시간이 지났습니다. 로그인 화면에서 인증 메일을 다시 요청해주세요.",
+    invalid_token: "인증 정보를 확인할 수 없습니다. 메일의 링크를 다시 열어주세요.",
+    token_not_found: "인증 정보를 찾지 못했습니다. 메일의 링크를 다시 확인해주세요.",
+    user_not_found: "가입한 계정을 찾지 못했습니다. 이메일 주소를 확인한 뒤 다시 가입해주세요."
+  };
+  return messages[code ?? ""] ?? "인증을 완료하지 못했습니다. 메일의 링크를 다시 열거나 로그인 화면에서 다시 시도해주세요.";
 }

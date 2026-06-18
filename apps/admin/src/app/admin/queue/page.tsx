@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, ShieldCheck } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
 import {
@@ -127,7 +127,7 @@ export default async function AdminQueuePage() {
       title="대기열"
       subtitle="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 먼저 확인합니다."
     >
-      <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
+      <section className="grid gap-5">
         <AdminListFrame>
           <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
             <div>
@@ -181,35 +181,6 @@ export default async function AdminQueuePage() {
           </div>
         </AdminListFrame>
 
-        <aside className="h-fit rounded-lg border border-line bg-surface-elevated p-5">
-          <div className="flex items-start gap-3">
-            <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
-              <ShieldCheck aria-hidden size={22} />
-            </span>
-            <div>
-              <h2 className="text-xl font-bold text-ink-900">운영 확인</h2>
-              <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
-                자격 심사, 환불, 정산처럼 이용자 진행을 멈추는 항목을 먼저 확인하고 처리
-                사유를 남깁니다.
-              </p>
-            </div>
-          </div>
-          <dl className="mt-5 grid gap-4 text-sm leading-relaxed">
-            <div>
-              <dt className="font-bold text-ink-500">우선순위</dt>
-              <dd className="mt-1 break-keep text-ink-900">
-                자격 승인, 환불, 정산, 기록 확인 순서로 운영자가 개입할 화면을
-                분리했습니다.
-              </dd>
-            </div>
-            <div>
-              <dt className="font-bold text-ink-500">처리 방식</dt>
-              <dd className="mt-1 break-keep text-ink-900">
-                실제 승인과 반려, 계산 실행은 각 하위 페이지에서 그대로 이어집니다.
-              </dd>
-            </div>
-          </dl>
-        </aside>
       </section>
     </AdminShell>
   );

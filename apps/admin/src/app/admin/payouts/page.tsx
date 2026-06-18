@@ -160,14 +160,14 @@ export default async function PayoutsPage() {
           </div>
         </AdminListFrame>
 
-        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
-          <h2 className="text-xl font-bold text-ink-900">정산 계산</h2>
-          <p className="mt-2 break-keep text-sm leading-relaxed text-ink-500">
+        <aside className="h-fit rounded-lg border border-line bg-surface-elevated p-4 lg:sticky lg:top-24">
+          <h2 className="text-base font-bold text-ink-900">정산 계산</h2>
+          <p className="mt-2 break-keep text-xs leading-relaxed text-ink-500">
             {payoutsUnavailable
               ? "지급 계산 준비 필요"
               : `정산 합계 ${totalNet.toLocaleString("ko-KR")}원 · ${payouts.length.toLocaleString("ko-KR")}건`}
           </p>
-          <div className="mt-5 border-t border-line pt-5">
+          <div className="mt-4 border-t border-line pt-4">
             <PayoutComputeForm />
           </div>
         </aside>

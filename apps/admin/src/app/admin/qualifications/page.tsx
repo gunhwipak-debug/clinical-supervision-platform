@@ -127,9 +127,13 @@ export default async function AdminQualificationsPage({
           >
             <Search aria-hidden size={20} />
             <input name="status" type="hidden" value={status} />
+            <label className="sr-only" htmlFor="qualification-search">
+              신청자, 자격명, 발급기관 검색
+            </label>
             <input
               className="min-w-0 flex-1 bg-transparent py-4 text-base text-ink-900 outline-none placeholder:text-ink-500"
               defaultValue={query}
+              id="qualification-search"
               name="q"
               placeholder="신청자, 자격명, 발급기관 검색"
             />

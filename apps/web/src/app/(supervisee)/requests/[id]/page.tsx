@@ -26,7 +26,6 @@ import { RequestDetailClient } from "./request-detail-client";
 import {
   flowStepForStatus,
   formatBookingSlot,
-  nextActionForStatus,
   pageSubtitle,
   pageTitle,
   readCompletionRecord,
@@ -113,7 +112,6 @@ export default async function RequestDetailPage({
     caseFiles = listDemoCaseFilesForRequest(id);
   }
   const completionRecord = await readCompletionRecord(db, current, id);
-  const nextAction = nextActionForStatus(basic.status, id);
   const currentStep = flowStepForStatus(basic.status);
   const showCompletionRecord =
     basic.status === "completion_record_issued" || basic.status === "completed";
@@ -129,8 +127,8 @@ export default async function RequestDetailPage({
 
       <WorkbenchStatusBar
         action={
-          <Button asChild size="sm" variant="secondary">
-            <a href={nextAction.href}>{nextAction.actionLabel}</a>
+          <Button asChild size="sm" variant="ghost">
+            <a href="/requests">의뢰 목록</a>
           </Button>
         }
         items={[

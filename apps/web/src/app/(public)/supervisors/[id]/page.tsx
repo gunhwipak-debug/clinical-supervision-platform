@@ -6,6 +6,11 @@ import { Button } from "../../../../components/ui/button";
 import { SiteHeader } from "../../../../components/clinicflow-shell";
 import { createRuntimeDatabase } from "../../../../lib/auth/database";
 import {
+  getDemoPublicSupervisor,
+  shouldUsePublicDemoSupervisors,
+  type DemoSupervisor
+} from "../../../../lib/demo/supervision";
+import {
   displaySupervisionMethodDescription,
   displaySupervisionMethodName,
   durationMinutesForProduct,
@@ -15,6 +20,7 @@ import {
 type PublicSupervisorDetail = NonNullable<
   Awaited<ReturnType<typeof profiles.getPublicSupervisorDetails>>
 >;
+type SupervisorProfile = PublicSupervisorDetail | DemoSupervisor;
 
 type SupervisorProduct = {
   id: string;
@@ -65,18 +71,25 @@ export default async function SupervisorDetailPage({
 async function loadSupervisor(id: string): Promise<{
   error: boolean;
   notFound: boolean;
-  supervisor: PublicSupervisorDetail | null;
+  supervisor: SupervisorProfile | null;
 }> {
+  const demoFallback = shouldUsePublicDemoSupervisors();
   try {
     const db = createRuntimeDatabase();
     const supervisor = await profiles.getPublicSupervisorDetails(db, id);
-    return { error: false, notFound: !supervisor, supervisor };
+    const demoSupervisor = demoFallback ? getDemoPublicSupervisor(id) : null;
+    return {
+      error: false,
+      notFound: !supervisor && !demoSupervisor,
+      supervisor: supervisor ?? demoSupervisor
+    };
   } catch {
-    return { error: true, notFound: false, supervisor: null };
+    const supervisor = demoFallback ? getDemoPublicSupervisor(id) : null;
+    return { error: !supervisor, notFound: false, supervisor };
   }
 }
 
-function SupervisorDetail({ supervisor }: { supervisor: PublicSupervisorDetail }) {
+function SupervisorDetail({ supervisor }: { supervisor: SupervisorProfile }) {
   const products = normalizeProducts(supervisor.serviceProducts);
   const primaryProduct = products[0];
   const startHref = primaryProduct
@@ -235,7 +248,7 @@ function isSupervisorProduct(value: unknown): value is SupervisorProduct {
   );
 }
 
-function qualificationText(supervisor: PublicSupervisorDetail): string {
+function qualificationText(supervisor: SupervisorProfile): string {
   if (supervisor.qualifications.length === 0) return "승인된 슈퍼바이저";
   return supervisor.qualifications.map((item) => item.name).join(" · ");
 }

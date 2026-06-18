@@ -17,6 +17,7 @@ export function AppShell({
   subtitle,
   action,
   children,
+  contentWidth = "default",
   currentUser
 }: {
   active?: NavKey;
@@ -24,8 +25,11 @@ export function AppShell({
   subtitle?: string;
   action?: ReactNode;
   children: ReactNode;
+  contentWidth?: "default" | "wide";
   currentUser?: AppShellUser | undefined;
 }) {
+  const authenticatedShellWidth =
+    contentWidth === "wide" ? "max-w-[1500px]" : "max-w-6xl";
   const introProps = {
     ...(action ? { action } : {}),
     ...(subtitle ? { subtitle } : {}),
@@ -75,7 +79,9 @@ export function AppShell({
 
           <section className="min-w-0">
             <header className="sticky top-0 z-40 border-b border-line/80 bg-surface-base/95 backdrop-blur-xl">
-              <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-5 py-3">
+              <div
+                className={`mx-auto flex ${authenticatedShellWidth} items-center justify-between gap-4 px-5 py-3`}
+              >
                 <a
                   className="flex min-w-0 items-center gap-3 font-bold text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600 lg:hidden"
                   href={homeForRole(currentUser.role)}
@@ -99,7 +105,9 @@ export function AppShell({
               </div>
             </header>
 
-            <div className="mx-auto grid max-w-6xl gap-5 px-5 py-5 lg:gap-6 lg:py-6">
+            <div
+              className={`mx-auto grid ${authenticatedShellWidth} gap-5 px-5 py-5 lg:gap-6 lg:py-6`}
+            >
               <MobileRoleNavigation active={active} groups={navigation} />
               <PageIntro {...introProps} />
               {children}
