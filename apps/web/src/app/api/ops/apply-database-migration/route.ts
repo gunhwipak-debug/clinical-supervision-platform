@@ -17,6 +17,21 @@ export async function POST(request: NextRequest) {
     return Response.json({ ok: false }, { status: 404 });
   }
 
+  const safety = migrationSafety();
+
+  if (!safety.allowed) {
+    return Response.json(
+      {
+        ok: false,
+        error: {
+          code: safety.code,
+          message: safety.message
+        }
+      },
+      { status: 403 }
+    );
+  }
+
   try {
     const db = createDatabase();
     await db.execute(sql`
@@ -81,6 +96,37 @@ export async function POST(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function migrationSafety():
+  | { allowed: true }
+  | { allowed: false; code: string; message: string } {
+  const deploymentEnv =
+    process.env["VERCEL_ENV"] ??
+    process.env["CLINICFLOW_DEPLOYMENT_ENV"] ??
+    process.env["APP_ENV"] ??
+    "";
+  const manualMigrationsEnabled = process.env["OPS_ALLOW_MANUAL_MIGRATIONS"] === "1";
+  const allowedEnvironments = new Set(["preview", "staging", "demo"]);
+
+  if (!manualMigrationsEnabled) {
+    return {
+      allowed: false,
+      code: "manual_migrations_disabled",
+      message: "Manual migrations require OPS_ALLOW_MANUAL_MIGRATIONS=1."
+    };
+  }
+
+  if (!allowedEnvironments.has(deploymentEnv)) {
+    return {
+      allowed: false,
+      code: "manual_migrations_environment_blocked",
+      message:
+        "Manual migrations require VERCEL_ENV, CLINICFLOW_DEPLOYMENT_ENV, or APP_ENV to be preview, staging, or demo."
+    };
+  }
+
+  return { allowed: true };
 }
 
 function splitMigration(migrationSql: string): string[] {

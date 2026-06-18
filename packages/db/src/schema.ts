@@ -424,6 +424,40 @@ export const availabilitySlots = pgTable("availability_slots", {
   timezone: text("timezone").notNull().default("Asia/Seoul")
 });
 
+export const availabilityExceptions = pgTable(
+  "availability_exceptions",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    supervisorProfileId: uuid("supervisor_profile_id")
+      .notNull()
+      .references(() => supervisorProfiles.id),
+    exceptionDate: date("exception_date").notNull(),
+    mode: text("mode").notNull(),
+    ranges: jsonb("ranges")
+      .$type<Array<{ endTime: string; startTime: string }>>()
+      .notNull()
+      .default([]),
+    timezone: text("timezone").notNull().default("Asia/Seoul"),
+    note: text("note"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { withTimezone: true }).notNull().defaultNow()
+  },
+  (table) => [
+    uniqueIndex("availability_exceptions_profile_date_unique").on(
+      table.supervisorProfileId,
+      table.exceptionDate
+    ),
+    check(
+      "availability_exceptions_mode_allowed",
+      sql`${table.mode} in ('unavailable', 'custom')`
+    ),
+    check(
+      "availability_exceptions_timezone_seoul",
+      sql`${table.timezone} = 'Asia/Seoul'`
+    )
+  ]
+);
+
 export const supervisionRequests = pgTable(
   "supervision_requests",
   {
@@ -749,17 +783,25 @@ export const payouts = pgTable(
   ]
 );
 
-export const bookings = pgTable("bookings", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  supervisionRequestId: uuid("supervision_request_id")
-    .notNull()
-    .references(() => supervisionRequests.id),
-  scheduledStart: timestamp("scheduled_start", { withTimezone: true }).notNull(),
-  scheduledEnd: timestamp("scheduled_end", { withTimezone: true }).notNull(),
-  meetingUrlEnc: bytea("meeting_url_enc"),
-  status: bookingStatus("status").notNull().default("scheduled"),
-  createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
-});
+export const bookings = pgTable(
+  "bookings",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    supervisionRequestId: uuid("supervision_request_id")
+      .notNull()
+      .references(() => supervisionRequests.id),
+    scheduledStart: timestamp("scheduled_start", { withTimezone: true }).notNull(),
+    scheduledEnd: timestamp("scheduled_end", { withTimezone: true }).notNull(),
+    meetingUrlEnc: bytea("meeting_url_enc"),
+    status: bookingStatus("status").notNull().default("scheduled"),
+    createdAt: timestamp("created_at", { withTimezone: true }).notNull().defaultNow()
+  },
+  (table) => [
+    index("bookings_active_request_time_idx")
+      .on(table.supervisionRequestId, table.scheduledStart, table.scheduledEnd)
+      .where(sql`${table.status} in ('scheduled', 'rescheduled')`)
+  ]
+);
 
 export const externalCalendarConnections = pgTable(
   "external_calendar_connections",

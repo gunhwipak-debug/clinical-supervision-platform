@@ -1,4 +1,4 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { PGlite } from "@electric-sql/pglite";
 import { pgcrypto } from "@electric-sql/pglite/contrib/pgcrypto";
@@ -8,29 +8,14 @@ import { seedDemoData } from "../packages/db/src/dev-seed";
 const root = resolve(new URL("..", import.meta.url).pathname);
 const evidenceDir = join(root, "demo-evidence");
 const dataDir = join(root, "dev-data/pglite");
+const migrationsDir = join(root, "packages/db/drizzle");
 const storageDir = join(root, "dev-data/storage");
 const setupLogPath = join(evidenceDir, "setup.log");
 const seedLogPath = join(evidenceDir, "seed.log");
 
-const migrationFiles = [
-  "0000_initial_schema.sql",
-  "0001_rls_policies.sql",
-  "0002_app_role_and_fixes.sql",
-  "0003_default_privileges.sql",
-  "0004_auth_columns.sql",
-  "0005_auth_tokens.sql",
-  "0006_totp_recovery_codes.sql",
-  "0007_specialty_catalog_seed.sql",
-  "0008_profile_constraints.sql",
-  "0009_supervision_request_constraints.sql",
-  "0010_payments_constraints.sql",
-  "0011_critical_path.sql",
-  "0012_case_files_security.sql",
-  "0013_document_workspace.sql",
-  "0014_google_calendar.sql",
-  "0015_qualification_evidence.sql",
-  "0016_add_zoom_meeting_url.sql"
-] as const;
+const migrationFiles = readdirSync(migrationsDir)
+  .filter((file) => /^\d{4}_.+\.sql$/u.test(file))
+  .sort();
 
 async function main() {
   mkdirSync(evidenceDir, { recursive: true });
@@ -139,7 +124,7 @@ async function isMigrationApplied(pg: PGlite, name: string): Promise<boolean> {
 }
 
 function readMigrationStatements(file: string): string[] {
-  const path = join(root, "packages/db/drizzle", file);
+  const path = join(migrationsDir, file);
   return readFileSync(path, "utf8")
     .split(/--> statement-breakpoint/g)
     .map((statement) => statement.trim())

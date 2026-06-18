@@ -21,6 +21,7 @@
     "journey:matrix": "tsx scripts/role-matrix-audit.ts",
     "ops:smoke": "tsx scripts/ops-smoke.ts",
     "ops:db-smoke": "tsx scripts/real-db-smoke.ts",
+    "ops:generate-manual-migrations": "node scripts/generate-manual-migrations.mjs",
     "files:purge-expired": "tsx scripts/purge-expired-case-files.ts",
     "bookings:expire-holds": "tsx scripts/expire-stale-booking-holds.ts",
     "bookings:retry-calendar-cancellations": "tsx scripts/retry-calendar-cancellations.ts",
