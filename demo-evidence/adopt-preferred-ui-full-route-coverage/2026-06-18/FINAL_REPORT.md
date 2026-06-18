@@ -145,6 +145,7 @@ Generated evidence/report files under `demo-evidence/adopt-preferred-ui-full-rou
 - `contact-sheet.png`
 - `screenshots/*.png`
 - `verification-results.md`
+- `REVIEWER_VERDICT.md`
 - `ROLLBACK_PLAN.md`
 - `capture-results.json`
 - `capture-summary.json`
@@ -167,6 +168,15 @@ All real verification commands passed. See `verification-results.md`.
 - `AI_SLOP_CLEANER_REPORT.md`: PASS WITH NOTES; no code changes.
 - Deferred: oversized source files should only be split in a separate behavior-pinned refactor.
 - Accepted: `scripts/clinicflow-origin14-guard.mjs` uses `console.log` as CLI output.
+
+## 9.2 Final reviewer gate
+
+- Final ULW reviewer: UNCONDITIONAL APPROVAL
+- recommendation: APPROVE
+- architectStatus: CLEAR
+- critical blockers: none
+- READY TO PREVIEW: yes, for local/branch preview, not production
+- See `REVIEWER_VERDICT.md`.
 
 ## 10. Remaining risks
 
