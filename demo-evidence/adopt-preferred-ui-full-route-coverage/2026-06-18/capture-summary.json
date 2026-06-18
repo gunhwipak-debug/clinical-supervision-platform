@@ -1,0 +1,12 @@
+{
+  "generatedAt": "2026-06-18T00:26:09.973Z",
+  "viewport": "1440x1000",
+  "expected": 44,
+  "captured": 44,
+  "broken": 0,
+  "missing": 0,
+  "intentionallyRedirected": 5,
+  "pass": 39,
+  "passWithMinorIssues": 0,
+  "ignoredPrefetchAborts": 3
+}
