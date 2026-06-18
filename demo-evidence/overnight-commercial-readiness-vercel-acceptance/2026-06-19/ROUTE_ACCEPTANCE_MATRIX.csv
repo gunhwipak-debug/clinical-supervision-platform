@@ -1,0 +1,16 @@
+app,route,surface,viewport,verdict,note
+web,/,Vercel,1980/1440,KEEP,"Public landing renders with product-clear hero, workbench preview, and no visible layout break."
+web,/supervisors,Vercel,1980/1440,KEEP,Directory row/list structure renders; preview demo supervisor appears only through preview/demo fallback path.
+web,/supervisors/[id],Vercel,1980/1440,KEEP,"Supervisor detail renders products, credentials, and primary request CTA cleanly."
+web,/login,Vercel,1980/1440,KEEP,Form-first auth layout renders cleanly.
+web,/signup,Vercel,1980/1440,KEEP,Form-first signup renders with required consent controls.
+web,/email/verify,Vercel,1980/1440,KEEP WITH CAUTION,Invalid verification-link recovery copy renders; successful verification remains dependent on Preview auth/DB readiness.
+web,/requests/new,Vercel,1980/1440,PARTIAL KEEP,Route renders login-required gate; authenticated request-workbench visual not proven because demo login did not establish a Preview session.
+web,/requests/[id],Vercel,1980/1440,PARTIAL KEEP,Route renders login-required gate; authenticated detail-workbench visual not proven on Vercel.
+web,/case-archive,Vercel,1980/1440,PARTIAL KEEP,Route renders login-required gate; authenticated archive contents not proven on Vercel.
+web,/supervisor/requests/[id],Vercel,1980/1440,PARTIAL KEEP,Route renders login-required gate; authenticated supervisor workspace not proven on Vercel.
+admin,/admin,Vercel,1980/1440,BLOCKED,"Build READY, but route returns admin_network_blocked / missing_allowlist."
+admin,/admin/queue,Vercel,1980/1440,BLOCKED,"Build READY, but route returns admin_network_blocked / missing_allowlist."
+admin,/admin/qualifications,Vercel,1980/1440,BLOCKED,"Build READY, but route returns admin_network_blocked / missing_allowlist."
+admin,/admin/payouts,Vercel,1980/1440,BLOCKED,"Build READY, but route returns admin_network_blocked / missing_allowlist."
+admin-local,/admin*,Local supplement,1980/1440,SUPPLEMENT ONLY,Local admin locked-state pages render cleanly; post-auth admin operational rows still require a valid admin Preview session.

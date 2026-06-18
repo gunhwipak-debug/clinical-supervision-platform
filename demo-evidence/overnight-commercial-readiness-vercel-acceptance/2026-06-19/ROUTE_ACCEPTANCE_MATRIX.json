@@ -1,0 +1,122 @@
+[
+  {
+    "app": "web",
+    "route": "/",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "KEEP",
+    "note": "Public landing renders with product-clear hero, workbench preview, and no visible layout break."
+  },
+  {
+    "app": "web",
+    "route": "/supervisors",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "KEEP",
+    "note": "Directory row/list structure renders; preview demo supervisor appears only through preview/demo fallback path."
+  },
+  {
+    "app": "web",
+    "route": "/supervisors/[id]",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "KEEP",
+    "note": "Supervisor detail renders products, credentials, and primary request CTA cleanly."
+  },
+  {
+    "app": "web",
+    "route": "/login",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "KEEP",
+    "note": "Form-first auth layout renders cleanly."
+  },
+  {
+    "app": "web",
+    "route": "/signup",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "KEEP",
+    "note": "Form-first signup renders with required consent controls."
+  },
+  {
+    "app": "web",
+    "route": "/email/verify",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "KEEP WITH CAUTION",
+    "note": "Invalid verification-link recovery copy renders; successful verification remains dependent on Preview auth/DB readiness."
+  },
+  {
+    "app": "web",
+    "route": "/requests/new",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "PARTIAL KEEP",
+    "note": "Route renders login-required gate; authenticated request-workbench visual not proven because demo login did not establish a Preview session."
+  },
+  {
+    "app": "web",
+    "route": "/requests/[id]",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "PARTIAL KEEP",
+    "note": "Route renders login-required gate; authenticated detail-workbench visual not proven on Vercel."
+  },
+  {
+    "app": "web",
+    "route": "/case-archive",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "PARTIAL KEEP",
+    "note": "Route renders login-required gate; authenticated archive contents not proven on Vercel."
+  },
+  {
+    "app": "web",
+    "route": "/supervisor/requests/[id]",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "PARTIAL KEEP",
+    "note": "Route renders login-required gate; authenticated supervisor workspace not proven on Vercel."
+  },
+  {
+    "app": "admin",
+    "route": "/admin",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "BLOCKED",
+    "note": "Build READY, but route returns admin_network_blocked / missing_allowlist."
+  },
+  {
+    "app": "admin",
+    "route": "/admin/queue",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "BLOCKED",
+    "note": "Build READY, but route returns admin_network_blocked / missing_allowlist."
+  },
+  {
+    "app": "admin",
+    "route": "/admin/qualifications",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "BLOCKED",
+    "note": "Build READY, but route returns admin_network_blocked / missing_allowlist."
+  },
+  {
+    "app": "admin",
+    "route": "/admin/payouts",
+    "surface": "Vercel",
+    "viewport": "1980/1440",
+    "verdict": "BLOCKED",
+    "note": "Build READY, but route returns admin_network_blocked / missing_allowlist."
+  },
+  {
+    "app": "admin-local",
+    "route": "/admin*",
+    "surface": "Local supplement",
+    "viewport": "1980/1440",
+    "verdict": "SUPPLEMENT ONLY",
+    "note": "Local admin locked-state pages render cleanly; post-auth admin operational rows still require a valid admin Preview session."
+  }
+]
