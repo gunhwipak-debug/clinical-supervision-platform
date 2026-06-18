@@ -1,0 +1,70 @@
+{
+  "generatedAt": "2026-06-18T00:39:38.145Z",
+  "aiSlopCleaner": {
+    "status": "passed_with_notes",
+    "evidence": "demo-evidence/adopt-preferred-ui-full-route-coverage/2026-06-18/AI_SLOP_CLEANER_REPORT.md"
+  },
+  "verification": {
+    "status": "passed",
+    "commands": [
+      "git diff --check",
+      "pnpm origin14:check",
+      "pnpm --filter @csp/web typecheck",
+      "pnpm --filter @csp/admin typecheck",
+      "pnpm --filter @csp/web build",
+      "pnpm --filter @csp/admin build",
+      "pnpm lint"
+    ],
+    "evidence": "demo-evidence/adopt-preferred-ui-full-route-coverage/2026-06-18/verification-results.md"
+  },
+  "browserEvidence": {
+    "status": "passed",
+    "viewport": "1440x1000",
+    "expected": 44,
+    "captured": 44,
+    "missing": 0,
+    "broken": 0,
+    "intentionallyRedirected": 5,
+    "evidence": [
+      "demo-evidence/adopt-preferred-ui-full-route-coverage/2026-06-18/contact-sheet.png",
+      "demo-evidence/adopt-preferred-ui-full-route-coverage/2026-06-18/SCREENSHOT_MANIFEST.md",
+      "demo-evidence/adopt-preferred-ui-full-route-coverage/2026-06-18/ROUTE_COVERAGE_MATRIX.json"
+    ]
+  },
+  "protectedScope": {
+    "status": "passed",
+    "evidence": "Forbidden path scan returned empty for API auth/payment, DB/schema, case-files/PDF, package/lockfile, and admin API paths."
+  },
+  "codeReview": {
+    "status": "approved",
+    "recommendation": "APPROVE",
+    "architectStatus": "CLEAR",
+    "evidence": "demo-evidence/adopt-preferred-ui-full-route-coverage/2026-06-18/REVIEWER_VERDICT.md"
+  },
+  "commits": [
+    {
+      "hash": "54f81fb",
+      "message": "refactor(ui): adopt preferred ClinicFlow workbench structure"
+    },
+    {
+      "hash": "5786548",
+      "message": "docs: add ClinicFlow full route coverage evidence"
+    },
+    {
+      "hash": "0e1071b",
+      "message": "docs: record final ClinicFlow reviewer approval"
+    }
+  ],
+  "criteriaCoverage": {
+    "totalCriteria": 3,
+    "passCount": 3,
+    "adversarialClassesCovered": [
+      "dirty_worktree: explicit staging and protected-scope scan",
+      "misleading_success_output: browser screenshot matrix plus command reruns",
+      "hung_or_long_commands: timeout-aware verification rerun",
+      "stale_state: Codex stale goal conflict snapshot recorded",
+      "regression: typecheck/build/lint/origin14 guard"
+    ]
+  },
+  "finalVerdict": "READY TO PREVIEW"
+}
