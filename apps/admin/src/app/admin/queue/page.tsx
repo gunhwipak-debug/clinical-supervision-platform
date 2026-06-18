@@ -3,7 +3,7 @@ import { ArrowRight, ShieldCheck } from "lucide-react";
 import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
 import {
-  AdminCard,
+  AdminListFrame,
   AdminLockedState,
   AdminShell
 } from "../../../components/admin-shell";
@@ -128,7 +128,7 @@ export default async function AdminQueuePage() {
       subtitle="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 먼저 확인합니다."
     >
       <section className="grid gap-5 lg:grid-cols-[1fr_320px]">
-        <AdminCard className="overflow-hidden p-0">
+        <AdminListFrame>
           <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-4">
             <div>
               <h2 className="text-2xl font-bold text-ink-900">
@@ -179,9 +179,9 @@ export default async function AdminQueuePage() {
               </Link>
             ))}
           </div>
-        </AdminCard>
+        </AdminListFrame>
 
-        <AdminCard className="h-fit">
+        <aside className="h-fit rounded-lg border border-line bg-surface-elevated p-5">
           <div className="flex items-start gap-3">
             <span className="grid size-11 place-items-center rounded-lg bg-brand-50 text-brand-600">
               <ShieldCheck aria-hidden size={22} />
@@ -209,7 +209,7 @@ export default async function AdminQueuePage() {
               </dd>
             </div>
           </dl>
-        </AdminCard>
+        </aside>
       </section>
     </AdminShell>
   );

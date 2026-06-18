@@ -9,13 +9,14 @@ Origin-14 is the baseline, not the ceiling. It prevents regression into generic 
 Active source-of-truth hierarchy:
 
 1. `AGENTS.md`
-2. `docs/ui-ux/clinicflow-origin14-design-system.md`
-3. `docs/ui-ux/clinicflow-current-design-contract.md`
-4. `docs/ui-ux/clinicflow-route-alignment-manifest.md`
-5. `docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md`
-6. `scripts/clinicflow-origin14-guard.mjs`
-7. `demo-evidence/rebuild-tech-ui/SCREENSHOT_MANIFEST.md`
-8. `demo-evidence/rebuild-tech-ui/README.md`
+2. `docs/design-system/CLINICFLOW_DESIGN_JUDGMENT.md`
+3. `docs/ui-ux/clinicflow-origin14-design-system.md`
+4. `docs/ui-ux/clinicflow-current-design-contract.md`
+5. `docs/ui-ux/clinicflow-route-alignment-manifest.md`
+6. `docs/ui-ux/clinicflow-ia-navigation-refactor-plan.md`
+7. `scripts/clinicflow-origin14-guard.mjs`
+8. `demo-evidence/rebuild-tech-ui/SCREENSHOT_MANIFEST.md`
+9. `demo-evidence/rebuild-tech-ui/README.md`
 
 과거 audit/report는 판단 참고자료이지 현재 지시가 아닙니다. 특히 아래 문서는 superseded 또는 historical reference입니다.
 
@@ -81,6 +82,20 @@ archived 또는 historical 문서가 active source와 충돌하면 active source
 - 비적용: Calistoga 영문 headline, 과한 decorative motion, 섹션마다 반복되는 badge/pill, 불필요한 gradient 장식.
 - 한국어 제품 기준: `Noto Sans KR` 우선, `#081225` ink, `#2563ff` action, `#e7ebf1` line, 흰 배경, line-list와 단일 side panel.
 - 토큰 기준: `packages/design-tokens/src/tokens.ts`와 `tokens.css`는 Origin-14 팔레트를 기준으로 동기화합니다. 과거 Stitch 계열의 `#F9F9FF`, `#0058BE`, `#2170E4` 같은 색상은 새 route 확장 기준으로 사용하지 않습니다.
+
+## StyleSeed-Informed Design Judgment
+
+StyleSeed is a design judgment reference for this experiment, not a visual skin. ClinicFlow keeps its clinical workbench identity.
+
+- one interaction accent: `#2563ff`
+- grayscale-first interface, with semantic colors only for meaning
+- radius and shadow must read as one coherent clinical system
+- operational lists remain row/table-first
+- static metadata belongs in compact top status bars
+- public pages can be more expressive, but authenticated pages stay compact
+- no Toss/Stripe/Linear/Raycast/Arc/Vercel skin transplant
+
+When StyleSeed's generic card-first rule conflicts with ClinicFlow's row/table-first workbench rule, ClinicFlow wins.
 
 ## Posteady Structural Reference
 

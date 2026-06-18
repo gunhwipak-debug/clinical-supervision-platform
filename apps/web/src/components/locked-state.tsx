@@ -31,8 +31,8 @@ export function LoginRequiredState({
             </Button>
           }
         />
-        <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-6 lg:sticky lg:top-28">
-          <h2 className="text-xl font-bold text-ink-900">로그인 후 확인</h2>
+        <aside className="h-fit rounded-lg border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <h2 className="text-lg font-bold text-ink-900">로그인 후 확인</h2>
           <dl className="mt-5 grid gap-4 text-sm leading-relaxed">
             <div>
               <dt className="font-bold text-ink-500">진행 중인 의뢰</dt>

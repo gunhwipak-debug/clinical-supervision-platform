@@ -156,19 +156,19 @@ export default async function Page() {
           </section>
         </div>
 
-        <aside className="h-fit rounded-xl bg-ink-900 p-5 text-white lg:sticky lg:top-24">
-          <p className="text-sm font-bold text-brand-200">심사 기준</p>
-          <h2 className="mt-2 text-2xl font-bold">제출 전 확인할 항목</h2>
-          <p className="mt-3 text-sm leading-relaxed text-white/80">
+        <aside className="h-fit rounded-lg border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
+          <p className="text-sm font-bold text-brand-700">심사 기준</p>
+          <h2 className="mt-2 text-xl font-bold text-ink-900">제출 전 확인할 항목</h2>
+          <p className="mt-3 text-sm leading-relaxed text-ink-600">
             공개 프로필에 표시될 자격, 전문분야, 소개 문구가 제출 증빙과 맞는지 운영자가
             확인합니다.
           </p>
-          <div className="mt-5 grid divide-y divide-white/10 text-sm">
+          <div className="mt-5 grid divide-y divide-line text-sm">
             <DarkSummaryLine label="심사 대기" value={`${String(pendingCount)}건`} />
             <DarkSummaryLine label="승인됨" value={`${String(approvedCount)}건`} />
             <DarkSummaryLine label="반려됨" value={`${String(rejectedCount)}건`} />
           </div>
-          <div className="mt-5 grid gap-3 text-sm leading-relaxed text-white/80">
+          <div className="mt-5 grid gap-3 text-sm leading-relaxed text-ink-600">
             <p>자격번호와 발급기관이 공개 문구와 일치해야 합니다.</p>
             <p>증빙 파일이 오래되었거나 만료되면 다시 제출해야 합니다.</p>
             <p>승인 전까지는 검색 공개 전환이 제한될 수 있습니다.</p>
@@ -221,8 +221,8 @@ function qualificationChecklist(status: string): string {
 function DarkSummaryLine({ label, value }: { label: string; value: string }) {
   return (
     <div className="grid gap-1 py-3">
-      <span className="font-bold text-white/60">{label}</span>
-      <span className="font-semibold leading-relaxed text-white">{value}</span>
+      <span className="font-bold text-ink-500">{label}</span>
+      <span className="font-semibold leading-relaxed text-ink-900">{value}</span>
     </div>
   );
 }

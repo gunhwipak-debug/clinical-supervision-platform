@@ -32,12 +32,12 @@ export function RoleNavigation({
     <nav aria-label={`${roleDisplayLabel(role)} 메뉴`} className="grid gap-4">
       {groups.map((group) => (
         <div className="grid gap-1" key={group.label}>
-          <p className="px-3 text-xs font-bold text-ink-400">{group.label}</p>
+          <p className="px-3 text-xs font-bold uppercase tracking-[0.05em] text-ink-400">{group.label}</p>
           {group.items.map((item) => (
             <a
               aria-current={active === item.key ? "page" : undefined}
               className={cn(
-                "grid rounded-md border-l-2 px-3 py-2 text-sm transition",
+                "grid min-h-11 rounded-md border-l-2 px-3 py-2 text-sm transition",
                 active === item.key
                   ? "border-brand-600 bg-brand-50 text-brand-700"
                   : "border-transparent text-ink-700 hover:bg-surface-sunken hover:text-ink-900"
@@ -77,7 +77,7 @@ export function MobileRoleNavigation({
         <a
           aria-current={active === item.key ? "page" : undefined}
           className={cn(
-            "whitespace-nowrap rounded-md border px-3 py-2 text-sm font-bold",
+            "min-h-11 whitespace-nowrap rounded-md border px-3 py-2 text-sm font-bold",
             active === item.key
               ? "border-brand-600 bg-brand-600 text-white"
               : "border-line bg-surface-elevated text-ink-700"

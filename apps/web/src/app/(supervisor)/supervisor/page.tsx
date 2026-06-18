@@ -179,7 +179,7 @@ export default async function Page() {
         </SectionBlock>
 
         <aside className="h-fit rounded-xl border border-line bg-surface-elevated p-5 lg:sticky lg:top-24">
-          <p className="text-sm font-bold text-brand-700">업무 요약</p>
+          <p className="text-sm font-bold text-brand-700">업무 점검</p>
           <h2 className="mt-2 text-xl font-bold text-ink-900">오늘 점검할 준비 항목</h2>
           <p className="mt-2 text-sm leading-relaxed text-ink-500">
             요청 검토를 멈추지 않도록 공개 정보와 일정 설정 상태만 함께 확인합니다.

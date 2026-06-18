@@ -114,18 +114,18 @@ export default async function PaymentsPage() {
       ) : (
         <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="grid gap-5">
-            <section className="rounded-2xl bg-ink-900 px-6 py-7 text-white">
+            <section className="rounded-lg border border-line bg-surface-elevated px-6 py-6">
               <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
                 <div>
-                  <p className="inline-flex rounded-full bg-white px-3 py-1 text-xs font-bold text-brand-700">
+                  <p className="inline-flex rounded-md bg-brand-50 px-3 py-1 text-xs font-bold text-brand-700">
                     최종 확인
                   </p>
-                  <h2 className="mt-4 text-3xl font-bold tracking-tight">
+                  <h2 className="mt-4 text-2xl font-bold tracking-normal text-ink-900">
                     {pendingPayments.length > 0
                       ? "선택 내용을 확인하고 결제합니다"
                       : "결제와 신청 완료 내역을 확인합니다"}
                   </h2>
-                  <p className="mt-3 max-w-3xl text-sm leading-7 text-white/80">
+                  <p className="mt-3 max-w-3xl text-sm leading-relaxed text-ink-600">
                     {pendingPayments.length > 0
                       ? "중단된 결제가 있으면 같은 의뢰에서 바로 이어서 진행할 수 있습니다."
                       : "완료된 결제와 환불 상태를 한 줄씩 확인하고 필요한 영수증 화면으로 이동합니다."}

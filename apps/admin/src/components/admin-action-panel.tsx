@@ -50,11 +50,11 @@ export function AdminActionPanel({
   }
 
   return (
-    <div className="grid gap-3 rounded-xl bg-brand-50 p-4 md:grid-cols-[1fr_auto_auto] md:items-end">
+    <div className="grid gap-3 rounded-lg border border-brand-100 bg-brand-50 p-4 md:grid-cols-[1fr_auto_auto] md:items-end">
       <label className="grid gap-2 text-sm font-semibold text-ink-700">
         <span>{reasonLabel}</span>
         <textarea
-          className="min-h-24 rounded-xl border border-line bg-surface-elevated px-3 py-2"
+          className="min-h-24 rounded-md border border-line bg-surface-elevated px-3 py-2"
           minLength={30}
           onChange={(event) => setReason(event.target.value)}
           placeholder={reasonPlaceholder}
@@ -72,8 +72,8 @@ export function AdminActionPanel({
           <button
             className={
               action.tone === "primary"
-                ? "inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
-                : "inline-flex items-center justify-center gap-2 rounded-xl border border-line bg-surface-elevated px-4 py-3 text-sm font-semibold text-ink-700 disabled:cursor-not-allowed disabled:opacity-50"
+                ? "inline-flex min-h-11 items-center justify-center gap-2 rounded-md bg-brand-600 px-4 py-2.5 text-sm font-semibold text-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
+                : "inline-flex min-h-11 items-center justify-center gap-2 rounded-md border border-line bg-surface-elevated px-4 py-2.5 text-sm font-semibold text-ink-700 disabled:cursor-not-allowed disabled:opacity-50"
             }
             disabled={
               busyAction !== null ||

@@ -21,8 +21,8 @@ export function SiteHeader({
   showLogin?: boolean;
 }) {
   return (
-    <header className="sticky top-3 z-50 px-4 py-3">
-      <div className="mx-auto flex min-h-16 max-w-7xl flex-wrap items-center justify-between gap-3 rounded-[18px] border border-line/90 bg-surface-base/90 px-5 py-3 shadow-[0_12px_28px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:px-8">
+    <header className="sticky top-0 z-50 border-b border-line/80 bg-surface-base/95 px-4 py-2 backdrop-blur-xl">
+      <div className="mx-auto flex min-h-14 max-w-7xl flex-wrap items-center justify-between gap-3 px-1 py-2 sm:px-3">
         <Link
           className="flex items-center gap-3 font-bold text-ink-900 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-brand-600"
           href="/"
@@ -82,9 +82,9 @@ export function PageIntro({
     <section className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div className="grid gap-2">
         {eyebrow ? (
-          <p className="text-sm font-bold tracking-normal text-brand-700">{eyebrow}</p>
+          <p className="text-xs font-bold tracking-[0.05em] text-brand-700 uppercase">{eyebrow}</p>
         ) : null}
-        <h1 className="max-w-4xl text-3xl font-bold leading-tight text-ink-900 md:text-[42px]">
+        <h1 className="max-w-4xl text-2xl font-bold leading-tight text-ink-900 md:text-[32px]">
           {title}
         </h1>
         {subtitle ? (
@@ -112,7 +112,7 @@ export function FlowStepNav({
         진행 위치 {String(stepNumber)} / {String(steps.length)} ·{" "}
         <span className="text-ink-900">{current}</span>
       </p>
-      <ol className="grid overflow-hidden rounded-xl border border-line bg-surface-elevated text-sm font-bold text-ink-500 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
+      <ol className="grid overflow-hidden rounded-lg border border-line bg-surface-elevated text-sm font-bold text-ink-500 sm:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
         {steps.map((step, index) => (
           <li
             aria-current={index === currentIndex ? "step" : undefined}
@@ -140,7 +140,7 @@ export function PrimaryActionPanel({
   eyebrow,
   title,
   variant = "compact",
-  theme = "dark"
+  theme = "light"
 }: {
   action?: React.ReactNode;
   children: React.ReactNode;
@@ -152,7 +152,7 @@ export function PrimaryActionPanel({
   return (
     <section
       className={cn(
-        "grid gap-4 rounded-xl border md:grid-cols-[1fr_auto] md:items-center",
+        "grid gap-4 rounded-lg border md:grid-cols-[1fr_auto] md:items-center",
         theme === "dark"
           ? "border-line bg-ink-900 text-white"
           : "border-line bg-surface-elevated text-ink-900",
@@ -203,13 +203,13 @@ export function WorkbenchStatusBar({
   note?: string;
 }) {
   return (
-    <section className="rounded-xl border border-line bg-surface-elevated px-4 py-3">
+    <section className="rounded-lg border border-line bg-surface-elevated px-4 py-3">
       <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
         <dl className="grid gap-x-5 gap-y-3 text-sm sm:grid-cols-2 lg:grid-cols-[repeat(auto-fit,minmax(120px,1fr))]">
           {items.map((item) => (
             <div className="min-w-0" key={item.label}>
-              <dt className="font-bold text-ink-400">{item.label}</dt>
-              <dd className="mt-1 break-words font-semibold leading-relaxed text-ink-900">
+              <dt className="text-xs font-bold uppercase tracking-[0.05em] text-ink-400">{item.label}</dt>
+              <dd className="mt-1 break-words text-sm font-semibold leading-relaxed text-ink-900">
                 {item.value}
               </dd>
             </div>
@@ -240,7 +240,7 @@ export function SectionBlock({
   return (
     <section className="grid gap-4">
       <div>
-        <h2 className="text-2xl font-bold text-ink-900">{title}</h2>
+        <h2 className="text-xl font-bold text-ink-900">{title}</h2>
         {subtitle ? (
           <p className="mt-1 max-w-2xl text-base leading-relaxed text-ink-500">
             {subtitle}

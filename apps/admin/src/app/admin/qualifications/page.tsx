@@ -5,8 +5,8 @@ import { withUserContext } from "@csp/db";
 import { Search } from "lucide-react";
 import { AdminActionPanel } from "../../../components/admin-action-panel";
 import {
-  AdminCard,
   AdminDarkPanel,
+  AdminListFrame,
   AdminLockedState,
   AdminShell
 } from "../../../components/admin-shell";
@@ -157,7 +157,7 @@ export default async function AdminQualificationsPage({
             ))}
           </div>
 
-          <AdminCard className="overflow-hidden p-0" id="qualification-list">
+          <AdminListFrame id="qualification-list">
             {queue.length === 0 ? (
               <p className="px-6 py-8 text-sm font-semibold text-ink-500">
                 {qualificationsUnavailable
@@ -275,7 +275,7 @@ export default async function AdminQualificationsPage({
                 ))}
               </div>
             )}
-          </AdminCard>
+          </AdminListFrame>
         </div>
 
         <AdminDarkPanel
@@ -283,9 +283,9 @@ export default async function AdminQualificationsPage({
           description="공개 프로필에 표시될 자격, 전문분야, 소개 문구가 제출 증빙과 맞는지 확인합니다."
           className="h-fit lg:sticky lg:top-8"
         >
-          <dl className="grid gap-4 border-t border-white/10 pt-6 text-sm leading-7 text-slate-200">
+          <dl className="grid gap-4 border-t border-line pt-6 text-sm leading-7 text-ink-600">
             <div>
-              <dt className="font-semibold text-white">표시 중</dt>
+              <dt className="font-semibold text-ink-900">표시 중</dt>
               <dd className="mt-1">
                 {qualificationsUnavailable
                   ? "연결 대기"
@@ -293,7 +293,7 @@ export default async function AdminQualificationsPage({
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-white">현재 필터</dt>
+              <dt className="font-semibold text-ink-900">현재 필터</dt>
               <dd className="mt-1 break-keep">
                 {statusTabs.find((tab) => tab.value === status)?.label ?? "대기 중"}
                 {query ? ` · 검색어 "${query}"` : ""}

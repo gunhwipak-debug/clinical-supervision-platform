@@ -624,6 +624,31 @@ function assertVisualHygiene() {
   }
 }
 
+function assertStyleSeedCoherenceMarkers() {
+  const tokenCssPath = "packages/design-tokens/src/tokens.css";
+  if (!existsSync(projectPath(tokenCssPath))) {
+    addCheck("StyleSeed coherence tokens are present", false, tokenCssPath);
+    return;
+  }
+
+  const tokenCss = readText(tokenCssPath);
+  addCheck(
+    "StyleSeed-informed clinical tokens avoid pure black primary colors",
+    !/--color-(?:primary|tertiary):\s*#000000/i.test(tokenCss),
+    tokenCssPath
+  );
+  addCheck(
+    "StyleSeed-informed tokens keep one ClinicFlow interaction accent",
+    /--color-brand-500:\s*#2563ff/i.test(tokenCss) &&
+      /--color-brand-600:\s*#2563ff/i.test(tokenCss),
+    tokenCssPath
+  );
+  addWarning(
+    "StyleSeed coherence reminder",
+    "Use StyleSeed as a judgment layer only: one accent, grayscale discipline, restrained radius/shadow, and ClinicFlow clinical-workbench tone."
+  );
+}
+
 function assertAntiNoiseWarnings() {
   const sourceFiles = [
     ...walkFiles("apps/web/src/app", (file) => /\.(ts|tsx)$/.test(file)),
@@ -721,6 +746,7 @@ assertAuthenticatedNavigation();
 assertRequestCreationStepDiscipline();
 assertRoleGuardStates();
 assertVisualHygiene();
+assertStyleSeedCoherenceMarkers();
 assertAntiNoiseWarnings();
 assertOperationalAdminCardLimits();
 

@@ -1,6 +1,6 @@
 # ClinicFlow Component Usage
 
-Status: active component guidance  
+Status: active component guidance
 Last updated: 2026-06-15
 
 This document records component usage rules only. It does not introduce new components or implementation behavior.
@@ -10,6 +10,7 @@ This document records component usage rules only. It does not introduce new comp
 Current visual rules come from:
 
 - `AGENTS.md`
+- `docs/design-system/CLINICFLOW_DESIGN_JUDGMENT.md`
 - `docs/ui-ux/clinicflow-origin14-design-system.md`
 - `docs/ui-ux/clinicflow-current-design-contract.md`
 
@@ -22,6 +23,8 @@ Current implementation primitives include:
 - `apps/admin/src/components/admin-shell.tsx`
 
 Origin-14 is the baseline, not the ceiling. It prevents regression into generic AI card UI, but it must not block clearer desktop workbench layouts.
+
+The StyleSeed-informed experiment adds a design-judgment layer: one ClinicFlow accent, grayscale discipline, restrained radius/shadow, compact workbench type, and explicit surface hierarchy. It is not a permission to copy a Toss/Stripe/Linear/Raycast/Vercel skin or to convert clinical workflows into generic dashboards.
 
 ## Card
 
@@ -42,6 +45,8 @@ Avoid cards for:
 - repeated KPI blocks
 - nested panels
 - unrelated information grouped only to fill space
+
+StyleSeed note: card/background separation matters, but ClinicFlow operational work does not require every item to become a floating card. Row and table frames remain first-class workbench surfaces.
 
 ### Strict Anti-Grid and Nesting Rule:
 
@@ -178,6 +183,14 @@ Authenticated pages may use stable desktop app chrome instead of floating rounde
 - Floating sidebar cards are not required.
 - PageHeader should be proportional to workbench pages, not marketing hero.
 - Public landing hero may be visually strong, but authenticated work pages should be compact.
+
+StyleSeed coherence rules for app chrome:
+
+- one active-state accent
+- subtle border over visible shadow
+- smaller operational radius
+- stable row height and target size
+- no decorative gradients or random elevation
 
 ## Empty, Error, and Locked States
 

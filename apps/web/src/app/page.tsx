@@ -58,7 +58,7 @@ export default function HomePage() {
               <span className="inline-flex rounded-full bg-[#173276] px-3 py-1 text-xs font-semibold text-[#b9cbff]">
                 {item.kicker}
               </span>
-              <h2 className="mt-6 text-[2rem] font-bold tracking-normal text-white">
+              <h2 className="mt-6 break-keep text-[2rem] font-bold leading-tight tracking-normal text-white">
                 {item.title}
               </h2>
               <p className="mt-4 break-keep text-base leading-8 text-[#c0cae0]">

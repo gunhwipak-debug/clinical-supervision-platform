@@ -16,7 +16,7 @@ export const tokens = {
       outline: "#667085",
       "outline-variant": "#E7EBF1",
       "surface-tint": "#667085",
-      primary: "#000000",
+      primary: "#081225",
       "on-primary": "#FFFFFF",
       "primary-container": "#131B2E",
       "on-primary-container": "#7C839B",
@@ -25,7 +25,7 @@ export const tokens = {
       "on-secondary": "#FFFFFF",
       "secondary-container": "#2563FF",
       "on-secondary-container": "#FEFCFF",
-      tertiary: "#000000",
+      tertiary: "#263143",
       "on-tertiary": "#FFFFFF",
       "tertiary-container": "#151C23",
       "on-tertiary-container": "#7D858D",
@@ -74,18 +74,18 @@ export const tokens = {
       100: "#E7EBF1"
     },
     line: "#E7EBF1",
-    success: "#2563FF",
+    success: "#4F8A6D",
     danger: "#BA1A1A",
     warn: "#F59E0B",
     info: "#2563FF"
   },
-  radius: { sm: 8, md: 12, lg: 16, xl: 20, pill: 9999 },
+  radius: { xs: 3, sm: 4, md: 6, lg: 8, xl: 12, pill: 9999 },
   stitchRadius: {
     sm: "0.25rem",
-    DEFAULT: "0.5rem",
-    md: "0.75rem",
-    lg: "1rem",
-    xl: "1.5rem",
+    DEFAULT: "0.375rem",
+    md: "0.5rem",
+    lg: "0.75rem",
+    xl: "1rem",
     full: "9999px"
   },
   stitchSpacing: {
@@ -120,8 +120,8 @@ export const tokens = {
     lineHeight: { tight: 1.25, normal: 1.55, relaxed: 1.7 }
   },
   shadow: {
-    card: "0 1px 2px rgba(17,28,45,0.04), 0 4px 12px rgba(17,28,45,0.05)",
-    pop: "0 8px 24px rgba(17,28,45,0.10)"
+    card: "0 1px 2px rgba(17,28,45,0.035)",
+    pop: "0 8px 18px rgba(17,28,45,0.075)"
   },
   motion: {
     ease: { standard: "cubic-bezier(0.2,0,0,1)" },

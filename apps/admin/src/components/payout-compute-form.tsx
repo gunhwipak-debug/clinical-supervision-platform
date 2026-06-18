@@ -86,12 +86,12 @@ export function PayoutComputeForm() {
           결제 완료액에서 완료 환불액을 차감해 슈퍼바이저별 예정 정산을 갱신합니다.
         </p>
         <button
-          className="inline-flex items-center justify-center rounded-xl bg-brand-600 px-4 py-3 text-sm font-semibold text-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
+          className="inline-flex min-w-32 shrink-0 items-center justify-center whitespace-nowrap rounded-md bg-brand-600 px-5 py-3 text-sm font-semibold text-surface-elevated disabled:cursor-not-allowed disabled:opacity-50"
           disabled={disabled}
           onClick={() => void submit()}
           type="button"
         >
-          {busy ? "계산 중" : "이번 기간 지급액 계산"}
+          {busy ? "계산 중" : "지급액 계산"}
         </button>
       </div>
       {message ? <p className="text-xs font-semibold text-ink-700">{message}</p> : null}

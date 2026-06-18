@@ -1,6 +1,11 @@
 import { sql, type SQL } from "drizzle-orm";
 import { withUserContext } from "@csp/db";
-import { AdminCard, AdminDarkPanel, AdminLockedState, AdminShell } from "./admin-shell";
+import {
+  AdminDarkPanel,
+  AdminListFrame,
+  AdminLockedState,
+  AdminShell
+} from "./admin-shell";
 import { createRuntimeDatabase, getCurrentAdmin } from "../lib/auth/current-admin";
 import { isMissingDatabaseRelation } from "../lib/db/missing-relation";
 
@@ -78,28 +83,28 @@ export async function AdminHomePage() {
       subtitle="운영자가 개입해야 하는 요청을 한 화면에 모았습니다."
     >
       <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <AdminCard className="overflow-hidden p-0">
+        <AdminListFrame>
           <div className="grid divide-y divide-line">
             {items.map((item) => (
               <HomeQueueRow item={item} key={item.href} />
             ))}
           </div>
-        </AdminCard>
+        </AdminListFrame>
 
         <AdminDarkPanel
           title="운영 확인"
           description="승인, 환불, 정산처럼 사용자 진행을 멈추는 항목을 확인하고 처리 기록을 남깁니다."
           className="h-fit lg:sticky lg:top-8"
         >
-          <dl className="grid gap-4 border-t border-white/10 pt-6 text-sm leading-7 text-slate-200">
+          <dl className="grid gap-4 border-t border-line pt-6 text-sm leading-7 text-ink-600">
             <div>
-              <dt className="font-semibold text-white">우선순위</dt>
+              <dt className="font-semibold text-ink-900">우선순위</dt>
               <dd className="mt-1 break-keep">
                 자격 심사, 환불, 정산 순서로 운영자가 개입할 화면을 엽니다.
               </dd>
             </div>
             <div>
-              <dt className="font-semibold text-white">처리 방식</dt>
+              <dt className="font-semibold text-ink-900">처리 방식</dt>
               <dd className="mt-1 break-keep">
                 상태 변경은 각 대기열의 상세 화면에서 기록합니다.
               </dd>

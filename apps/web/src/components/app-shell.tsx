@@ -39,7 +39,7 @@ export function AppShell({
 
     return (
       <main className="min-h-screen bg-surface-base">
-        <div className="grid min-h-screen lg:grid-cols-[252px_minmax(0,1fr)]">
+        <div className="grid min-h-screen lg:grid-cols-[244px_minmax(0,1fr)]">
           <aside className="hidden border-r border-line bg-surface-elevated lg:sticky lg:top-0 lg:flex lg:h-screen lg:flex-col">
             <div className="border-b border-line px-5 py-5">
               <a
@@ -49,8 +49,8 @@ export function AppShell({
                 <span className="size-4 rounded-full bg-ink-900" aria-hidden="true" />
                 <span className="text-base">ClinicFlow</span>
               </a>
-              <div className="mt-5 rounded-lg bg-surface-sunken px-3 py-3">
-                <p className="text-sm font-bold text-ink-900">{roleLabel}</p>
+              <div className="mt-5 rounded-md border border-line bg-surface-base px-3 py-3">
+                <p className="text-xs font-bold uppercase tracking-[0.05em] text-ink-500">{roleLabel}</p>
                 <p className="mt-1 truncate text-xs font-semibold text-ink-500">
                   {currentUser.email}
                 </p>
@@ -99,7 +99,7 @@ export function AppShell({
               </div>
             </header>
 
-            <div className="mx-auto grid max-w-6xl gap-6 px-5 py-6 lg:gap-7 lg:py-8">
+            <div className="mx-auto grid max-w-6xl gap-5 px-5 py-5 lg:gap-6 lg:py-6">
               <MobileRoleNavigation active={active} groups={navigation} />
               <PageIntro {...introProps} />
               {children}

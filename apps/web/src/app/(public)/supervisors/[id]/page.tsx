@@ -185,7 +185,7 @@ function SupervisorDetail({ supervisor }: { supervisor: PublicSupervisorDetail }
               <dd className="mt-1 text-ink-900">보고서, 검사 결과, 질문</dd>
             </div>
             <div>
-              <dt className="font-bold text-ink-500">다음 행동</dt>
+              <dt className="font-bold text-ink-500">신청 절차</dt>
               <dd className="mt-1 text-ink-900">세션과 일정을 선택합니다</dd>
             </div>
           </dl>
